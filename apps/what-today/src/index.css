@@ -1,0 +1,60 @@
+@import 'tailwindcss';
+
+/* === Tailwind v4 테마 설정 === */
+@theme {
+  --color-black: #000000;
+  --color-gray-black: #171717;
+  --color-gray-700: #333236;
+  --color-gray-600: #4b4b4b;
+  --color-gray-500: #787486;
+  --color-gray-400: #9fa6b2;
+  --color-gray-300: #d9d9d9;
+  --color-gray-200: #eeeeee;
+  --color-gray-100: #fafafa;
+  --color-white: #ffffff;
+
+  --color-violet: #5534da;
+  --color-Magnolia: #f1effd;
+  --color-red: #d6173a;
+  --color-green: #7ac555;
+  --color-purple: #760dde;
+  --color-orange: #ffa500;
+  --color-blue: #76a5ea;
+  --color-pink: #e876ea;
+
+  --color-capybara: #764d4d;
+  --color-cream: #fef8e5;
+
+  --spacing: 0.0625rem;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.25rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.375rem;
+  --text-md: 0.875rem;
+  --text-md--line-height: 1.5rem;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.625rem;
+  --text-2lg: 1.125rem;
+  --text-2lg--line-height: 1.625rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 2rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.625rem;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('./assets/fonts/PretendardVariable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+  }
+
+  html {
+    font-family: 'Pretendard', system-ui, sans-serif;
+    word-break: keep-all;
+  }
+}

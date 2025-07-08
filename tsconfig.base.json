@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "jsx": "react-jsx",
+    "target": "es5",
+
+    "baseUrl": ".",
+    "paths": {
+      "@what-today/design-system": ["packages/design-system/src/index.ts"]
+    }
+  }
+}
