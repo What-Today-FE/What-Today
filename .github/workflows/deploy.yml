@@ -1,0 +1,37 @@
+name: Deploy to Vercel (Monorepo)
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  sync:
+    name: Sync forked repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.AUTO_ACTIONS }}
+          fetch-depth: 0
+
+      - name: Add remote-url
+        run: |
+          git remote add forked-repo https://MyungJiwoo:${{ secrets.AUTO_ACTIONS }}@github.com/MyungJiwoo/What-Today
+          git config user.name MyungJiwoo
+          git config user.email ${{ secrets.EMAIL }}
+
+      - name: Push develop and main branches
+        run: |
+          git fetch origin develop
+          git fetch origin main
+
+          git push -f forked-repo origin/develop:develop
+          git push -f forked-repo origin/main:main
+
+      - name: Clean up
+        run: |
+          git remote remove forked-repo
