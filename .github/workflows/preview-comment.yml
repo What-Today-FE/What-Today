@@ -39,3 +39,11 @@ jobs:
             🚀 **오늘뭐해 Preview Deploy 완료!**
             👉 [미리보기 링크](${{ steps.vercel.outputs.preview_url }})
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: read
+  pages: write
+  deployments: write
+  id-token: write
+  issues: write
+  pull-requests: write
