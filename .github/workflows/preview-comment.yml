@@ -25,8 +25,8 @@ jobs:
 
       - name: Deploy preview to Vercel
         id: vercel
+        working-directory: apps/what-today
         run: |
-          cd apps/what-today
           URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --build-env NODE_ENV=preview --yes)
           echo "preview_url=$URL" >> $GITHUB_OUTPUT
 
