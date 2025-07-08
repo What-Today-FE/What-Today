@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - develop
-    paths:
-      - 'apps/what-today/**'
-      - 'packages/design-system/**'
     paths-ignore:
       - 'README.md'
       - '.github/**'
