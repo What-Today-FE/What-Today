@@ -1,0 +1,39 @@
+name: PR Preview Deploy to Vercel
+
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'apps/what-today/**'
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install
+
+      - name: Deploy preview to Vercel
+        id: vercel
+        run: |
+          cd apps/what-today
+          URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --build-env NODE_ENV=preview --yes)
+          echo "preview_url=$URL" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            🚀 **오늘뭐해 Preview Deploy 완료!**
+            👉 [미리보기 링크](${{ steps.vercel.outputs.preview_url }})
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
