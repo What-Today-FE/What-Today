@@ -1,68 +1,60 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import 'tailwindcss';
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* === Tailwind v4 테마 설정 === */
+@theme {
+  --color-black: #000000;
+  --color-gray-black: #171717;
+  --color-gray-700: #333236;
+  --color-gray-600: #4b4b4b;
+  --color-gray-500: #787486;
+  --color-gray-400: #9fa6b2;
+  --color-gray-300: #d9d9d9;
+  --color-gray-200: #eeeeee;
+  --color-gray-100: #fafafa;
+  --color-white: #ffffff;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  --color-violet: #5534da;
+  --color-Magnolia: #f1effd;
+  --color-red: #d6173a;
+  --color-green: #7ac555;
+  --color-purple: #760dde;
+  --color-orange: #ffa500;
+  --color-blue: #76a5ea;
+  --color-pink: #e876ea;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+  --color-capybara: #764d4d;
+  --color-cream: #fef8e5;
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+  --spacing: 0.0625rem;
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.25rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.375rem;
+  --text-md: 0.875rem;
+  --text-md--line-height: 1.5rem;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.625rem;
+  --text-2lg: 1.125rem;
+  --text-2lg--line-height: 1.625rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 2rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.625rem;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('./assets/fonts/PretendardVariable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+
+  html {
+    font-family: 'Pretendard', system-ui, sans-serif;
+    word-break: keep-all;
   }
 }
