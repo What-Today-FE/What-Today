@@ -17,11 +17,21 @@ export default tseslint.config(
 
   // 3. TypeScript, React 등 설정 및 규칙
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['apps/what-today/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './apps/what-today/tsconfig.app.json', // TypeScript 프로젝트 설정 파일
+        project: './apps/what-today/tsconfig.app.json',
+      },
+      globals: globals.browser,
+    },
+  },
+  {
+    files: ['packages/design-system/**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './packages/design-system/tsconfig.app.json',
       },
       globals: globals.browser,
     },
