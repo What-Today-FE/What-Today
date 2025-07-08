@@ -16,6 +16,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest && npm install --global pnpm
+
       - uses: pnpm/action-setup@v3
         with:
           version: 9
