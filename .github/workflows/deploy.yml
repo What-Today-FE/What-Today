@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - main
 
 jobs:
   sync:
@@ -16,7 +17,6 @@ jobs:
         with:
           token: ${{ secrets.AUTO_ACTIONS }}
           fetch-depth: 0
-          ref: develop
 
       - name: Add remote-url
         run: |
@@ -24,9 +24,13 @@ jobs:
           git config user.name MyungJiwoo
           git config user.email ${{ secrets.EMAIL }}
 
-      - name: Push changes to forked-repo
+      - name: Push develop and main branches
         run: |
-          git push -f forked-repo develop
+          git fetch origin develop
+          git fetch origin main
+
+          git push -f forked-repo origin/develop:develop
+          git push -f forked-repo origin/main:main
 
       - name: Clean up
         run: |
