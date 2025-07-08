@@ -5,8 +5,8 @@ on:
     branches:
       - develop
     paths:
-      - 'apps/web/**'
-      - 'apps/admin/**'
+      - 'apps/what-today/**'
+      - 'packages/design-system/**'
     paths-ignore:
       - 'README.md'
       - '.github/**'
