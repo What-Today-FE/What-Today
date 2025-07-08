@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - develop
-    paths-ignore:
-      - 'README.md'
-      - '.github/**'
-      - '.gitignore'
-      - '.eslintrc.*'
-      - '.prettierrc*'
-      - '*.md'
 
 jobs:
   sync:
