@@ -1,4 +1,4 @@
-name: PR Preview Deploy to Vercel
+name: PR Preview Deploy to Vercel (What-Today)
 
 on:
   pull_request:
@@ -29,7 +29,12 @@ jobs:
       - name: Deploy preview to Vercel
         id: vercel
         run: |
-          URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --build-env NODE_ENV=preview --yes)
+          URL=$(npx vercel \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }} \
+            --project ${{ secrets.VERCEL_PROJECT_ID }} \
+            --build-env NODE_ENV=preview \
+            --yes)
           echo "preview_url=$URL" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
