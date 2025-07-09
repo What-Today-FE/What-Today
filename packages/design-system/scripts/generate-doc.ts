@@ -74,8 +74,8 @@ export default function ${pascalName}Doc() {
     if (!routesFile.includes(`${pascalName}Doc`)) {
       const importStatement = `import ${pascalName}Doc from '@pages/${pascalName}Doc';`;
       const updatedRoutes = routesFile
-        .replace(/(import LandingPage.*)/, `$1\n${importStatement}`)
-        .replace(/(path: 'button',[\s\S]+?}),/, `$1,\n${newRoute}`);
+        .replace(/(path: 'button-example',[\s\S]+?},)/, `$1\n${newRoute}`)
+        .replace(/(import LandingPage.*)/, `$1\n${importStatement}`);
 
       fs.writeFileSync(routesPath, updatedRoutes);
       console.log('✅ routes/index.tsx에 라우트 추가 완료!');
