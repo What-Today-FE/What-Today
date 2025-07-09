@@ -16,8 +16,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest && npm install --global pnpm
+      - name: Remove old Vercel CLI (if any)
+        run: npm uninstall -g vercel || true
+
+      - name: Install Vercel CLI and pnpm
+        run: |
+          npm install --global vercel@latest
+          npm install --global pnpm
 
       - uses: pnpm/action-setup@v3
         with:
