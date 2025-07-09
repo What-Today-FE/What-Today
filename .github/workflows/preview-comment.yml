@@ -1,17 +1,33 @@
-name: PR Preview Deploy to Vercel (What-Today)
+name: PR Preview Deploy to Vercel
 
 on:
   pull_request:
-    branches:
-      - develop
-    paths:
-      - 'apps/what-today/**'
+    branches: [develop]
 
 jobs:
-  deploy-preview:
-    if: contains(github.event.pull_request.changed_files, 'apps/what-today/')
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      design-system: ${{ steps.filter.outputs.design-system }}
+      what-today: ${{ steps.filter.outputs.what-today }}
 
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            design-system:
+              - 'packages/design-system/**'
+            what-today:
+              - 'apps/what-today/**'
+
+  design-system-deploy:
+    needs: changes
+    if: needs.changes.outputs.design-system == 'true'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +48,7 @@ jobs:
       - name: Install deps
         run: pnpm install
 
-      - name: Deploy preview to Vercel
+      - name: Deploy preview to Vercel (DS)
         id: vercel
         run: |
           URL=$(npx vercel \
@@ -42,7 +58,49 @@ jobs:
             --yes)
           echo "preview_url=$URL" >> $GITHUB_OUTPUT
 
-      - name: Comment on PR
+      - name: Comment on PR (DS)
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            🎨 **오늘뭐해 디자인 시스템 Preview Deploy 완료!**
+            👉 [미리보기 링크](${{ steps.vercel.outputs.preview_url }})
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  what-today-deploy:
+    needs: changes
+    if: needs.changes.outputs.what-today == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove old Vercel CLI (if any)
+        run: npm uninstall -g vercel || true
+
+      - name: Install Vercel CLI and pnpm
+        run: |
+          npm install --global vercel@latest
+          npm install --global pnpm
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install
+
+      - name: Deploy preview to Vercel (What-Today)
+        id: vercel
+        run: |
+          URL=$(npx vercel \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }} \
+            --build-env NODE_ENV=preview \
+            --yes)
+          echo "preview_url=$URL" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR (What-Today)
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
