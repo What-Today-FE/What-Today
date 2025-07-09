@@ -1,11 +1,11 @@
-name: PR Preview Deploy to Vercel (What-Today)
+name: PR Preview Deploy to Vercel (Design System)
 
 on:
   pull_request:
     branches:
       - develop
     paths:
-      - 'apps/what-today/**'
+      - 'packages/design-system/**'
 
 jobs:
   deploy-preview:
@@ -45,7 +45,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            🚀 **오늘뭐해 Preview Deploy 완료!**
+            🎨 **오늘뭐해 디자인 시스템 Preview Deploy 완료!**
             👉 [미리보기 링크](${{ steps.vercel.outputs.preview_url }})
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
