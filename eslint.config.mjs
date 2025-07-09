@@ -6,34 +6,29 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
 import unusedImportsPlugin from 'eslint-plugin-unused-imports';
 import tseslint from 'typescript-eslint';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default tseslint.config(
   // 1. 무시할 경로 지정 (.eslintignore 대체)
-  { ignores: ['dist'] },
+  { ignores: ['dist', '**/node_modules/**'] },
 
   // 2. JavaScript + TypeScript 추천 규칙
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
-  // 3. what-today 소스 타입 린트
+  // 3. design-system 소스 타입 린트 및 규칙
   {
-    files: ['apps/what-today/**/*.{ts,tsx}'],
+    files: ['packages/design-system/**/*.{ts,tsx}', 'apps/what-today/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './apps/what-today/tsconfig.app.json',
-      },
-      globals: globals.browser,
-    },
-  },
-
-  // 4. design-system 소스 타입 린트 및 규칙
-  {
-    files: ['packages/design-system/**/*.{ts,tsx}'],
-    languageOptions: {
-      parser: tseslint.parser,
-      parserOptions: {
-        project: './packages/design-system/tsconfig.app.json',
+        project: [
+          path.join(__dirname, 'apps/what-today/tsconfig.app.json'),
+          path.join(__dirname, 'packages/design-system/tsconfig.app.json'),
+        ],
       },
       globals: globals.browser,
     },
@@ -122,19 +117,19 @@ export default tseslint.config(
     },
   },
 
-  // 5. JS 파일 타입 검사 생략
+  // 4. JS 파일 타입 검사 생략
   {
     files: ['**/*.js'],
     extends: [tseslint.configs.disableTypeChecked],
   },
 
-  // 6. Vite 설정 파일 타입 기반 린트
+  // 5. Vite 설정 파일 타입 기반 린트
   {
     files: ['apps/what-today/vite.config.ts'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './apps/what-today/tsconfig.node.json',
+        project: path.join(__dirname, 'apps/what-today/tsconfig.node.json'),
       },
     },
   },
@@ -143,11 +138,11 @@ export default tseslint.config(
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './packages/design-system/tsconfig.node.json',
+        project: path.join(__dirname, 'packages/design-system/tsconfig.node.json'),
       },
     },
   },
 
-  // 7. Prettier 설정
+  // 6. Prettier 설정
   eslintConfigPrettier,
 );
