@@ -9,6 +9,7 @@ on:
 
 jobs:
   deploy-preview:
+    if: contains(github.event.pull_request.changed_files, 'packages/design-system/')
     runs-on: ubuntu-latest
 
     steps:
