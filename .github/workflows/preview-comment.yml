@@ -37,7 +37,6 @@ jobs:
           URL=$(npx vercel \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope ${{ secrets.VERCEL_ORG_ID }} \
-            --project ${{ secrets.VERCEL_PROJECT_ID }} \
             --build-env NODE_ENV=preview \
             --yes)
           echo "preview_url=$URL" >> $GITHUB_OUTPUT
