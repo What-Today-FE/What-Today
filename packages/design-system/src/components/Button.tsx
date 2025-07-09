@@ -8,11 +8,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const Button: React.FC<ButtonProps> = ({ variant = 'primary', children, ...rest }) => {
   const style = {
     padding: '8px 16px',
-    borderRadius: '4px',
+    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer',
-    fontWeight: 600,
-    background: variant === 'primary' ? '#eb25a9' : '#e5e7eb',
+    fontSize: '12px',
+    background: variant === 'primary' ? '#006aff' : '#e5e7eb',
     color: variant === 'primary' ? '#fff' : '#222',
   } as React.CSSProperties;
 
