@@ -1,12 +1,9 @@
 import './index.css';
+import 'highlight.js/styles/github-dark-dimmed.css';
 
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 
-import App from './App.tsx';
+import router from './routes/index.tsx';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+createRoot(document.getElementById('root')!).render(<RouterProvider router={router} />);
