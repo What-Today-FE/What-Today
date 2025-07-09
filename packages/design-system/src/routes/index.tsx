@@ -1,12 +1,12 @@
 import Sidebar from '@layouts/Sidebar';
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import LandingPage from '@pages/LandingPage';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Sidebar />,
+    element: <Navigate replace to='/docs' />,
   },
   {
     path: '/docs',
