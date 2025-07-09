@@ -10,7 +10,7 @@ export default function DesignSystemLayout() {
         </Link>
         <nav>
           <ul className='m-0 list-none p-0'>
-            <SidebarNavItem label='Example Button' to='/docs/button' />
+            <SidebarNavItem label='Button (Example Doc)' to='/docs/button-example' />
             {/* ✅ 아래에 <SidebarNavItem>을 활용한 컴포넌트 문서 링크를 추가해주세요. */}
           </ul>
         </nav>

@@ -1,5 +1,5 @@
 import Sidebar from '@layouts/Sidebar';
-import ButtonDocs from '@pages/ButtonDocs';
+import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import LandingPage from '@pages/LandingPage';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -17,8 +17,8 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: 'button',
-        element: <ButtonDocs />,
+        path: 'button-example',
+        element: <ButtonExampleDocs />,
       },
     ],
   },
