@@ -4,29 +4,25 @@
 /* === Tailwind v4 테마 설정 === */
 @theme {
   --color-black: #000000;
-  --color-gray-black: #171717;
-  --color-gray-700: #333236;
-  --color-gray-600: #4b4b4b;
-  --color-gray-500: #787486;
-  --color-gray-400: #9fa6b2;
-  --color-gray-300: #d9d9d9;
-  --color-gray-200: #eeeeee;
-  --color-gray-100: #fafafa;
   --color-white: #ffffff;
 
-  --color-violet: #5534da;
-  --color-Magnolia: #f1effd;
-  --color-red: #d6173a;
-  --color-green: #7ac555;
-  --color-purple: #760dde;
-  --color-orange: #ffa500;
-  --color-blue: #76a5ea;
-  --color-pink: #e876ea;
+  --color-gray-950: #1f1f22;
+  --color-gray-900: #323236;
+  --color-gray-800: #49494c;
+  --color-gray-700: #5d5d61;
+  --color-gray-600: #707177;
+  --color-gray-500: #84858c;
+  --color-gray-400: #9fa0a7;
+  --color-gray-300: #b3b4bc;
+  --color-gray-200: #c6c8cf;
+  --color-gray-100: #e0e0e5;
+  --color-gray-50: #edeef2;
+  --color-gray-25: #f8f8f8;
 
-  --color-capybara: #764d4d;
-  --color-cream: #fef8e5;
+  --color-primary-100: #e5f3ff;
+  --color-primary-500: #3d9ef2;
 
-  --color-primary-100: #006fed;
+  --color-red-500: #ff2727;
 
   --spacing: 0.0625rem;
 
