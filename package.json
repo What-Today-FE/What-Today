@@ -4,7 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-web": "pnpm --filter what-today install",
+    "install-design": "pnpm --filter @what-today/design-system install",
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "preview": "pnpm -r --parallel run preview",
+    "lint": "eslint \"apps/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\"",
+    "format": "prettier --check .",
+    "format-fix": "prettier --write .",
+    "dev-web": "pnpm --filter what-today dev",
+    "build-web": "pnpm --filter what-today build",
+    "preview-web": "pnpm --filter what-today preview",
+    "dev-design": "pnpm --filter @what-today/design-system dev",
+    "build-design": "pnpm --filter @what-today/design-system build",
+    "preview-design": "pnpm --filter @what-today/design-system preview",
+    "generate-doc": "pnpm --filter @what-today/design-system run generate-doc"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +57,16 @@
     "motion": "^12.23.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "react-router-dom": "^7.6.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md,json,yaml}": [
+      "prettier --write"
+    ]
   }
 }

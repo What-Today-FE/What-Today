@@ -1,4 +1,4 @@
-name: PR Preview Deploy to Vercel
+name: PR Preview Deploy to Vercel (What-Today)
 
 on:
   pull_request:
@@ -16,6 +16,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Remove old Vercel CLI (if any)
+        run: npm uninstall -g vercel || true
+
+      - name: Install Vercel CLI and pnpm
+        run: |
+          npm install --global vercel@latest
+          npm install --global pnpm
+
       - uses: pnpm/action-setup@v3
         with:
           version: 9
@@ -26,8 +34,11 @@ jobs:
       - name: Deploy preview to Vercel
         id: vercel
         run: |
-          cd apps/what-today
-          URL=$(npx vercel --token=${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --build-env NODE_ENV=preview --yes)
+          URL=$(npx vercel \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope ${{ secrets.VERCEL_ORG_ID }} \
+            --build-env NODE_ENV=preview \
+            --yes)
           echo "preview_url=$URL" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
@@ -37,3 +48,11 @@ jobs:
             🚀 **오늘뭐해 Preview Deploy 완료!**
             👉 [미리보기 링크](${{ steps.vercel.outputs.preview_url }})
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: read
+  pages: write
+  deployments: write
+  id-token: write
+  issues: write
+  pull-requests: write
