@@ -1,5 +1,4 @@
 {
   "rewrites": [{ "source": "/(.*)", "destination": "/" }],
-  "buildCommand": "pnpm approve-builds && pnpm build",
-  "outputDirectory": "dist"
+  "buildCommand": "pnpm approve-builds && pnpm build"
 }
