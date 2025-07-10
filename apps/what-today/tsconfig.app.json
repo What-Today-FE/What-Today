@@ -37,8 +37,8 @@
       "@routes/*": ["src/routes/*"],
       "@schemas/*": ["src/schemas/*"],
       "@stores/*": ["src/stores/*"],
-      "@utils/*": ["src/utils/*"],
-      "@what-today/design-system": ["../../packages/design-system/dist/types/index.d.ts"]
+      "@utils/*": ["src/utils/*"]
+      // "@what-today/design-system": ["../../packages/design-system/dist/types/index.d.ts"]
     }
   },
   "include": ["src"]

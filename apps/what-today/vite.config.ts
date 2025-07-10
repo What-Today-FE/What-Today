@@ -19,10 +19,10 @@ export default defineConfig({
       { find: '@schemas', replacement: path.resolve(__dirname, 'src/schemas') },
       { find: '@stores', replacement: path.resolve(__dirname, 'src/stores') },
       { find: '@utils', replacement: path.resolve(__dirname, 'src/utils') },
-      {
-        find: '@what-today/design-system',
-        replacement: path.resolve(__dirname, '../../packages/design-system/dist/components/index.js'),
-      },
+      // {
+      //   find: '@what-today/design-system',
+      //   replacement: path.resolve(__dirname, '../../packages/design-system/dist/components/index.js'),
+      // },
     ],
   },
 });
