@@ -1,12 +1,9 @@
-import { Button } from '@what-today/design-system';
+import { Outlet } from 'react-router-dom';
 
-function App() {
+export default function App() {
   return (
-    <>
-      <h1>Design System 연결 테스트</h1>
-      <Button variant='primary'>Button</Button>
-    </>
+    <main>
+      <Outlet />
+    </main>
   );
 }
-
-export default App;
