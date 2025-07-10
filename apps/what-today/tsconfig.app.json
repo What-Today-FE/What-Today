@@ -26,9 +26,7 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      // "@what-today/design-system/*": ["../../packages/design-system/src/*"],
-      "@what-today/design-system": ["../../packages/design-system/src/index.ts"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"]
