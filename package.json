@@ -8,7 +8,7 @@
     "install-web": "pnpm --filter what-today install",
     "install-design": "pnpm --filter @what-today/design-system install",
     "dev": "pnpm -r --parallel run dev",
-    "build": "pnpm -r run build",
+    "build": "pnpm build-design && pnpm build-web",
     "preview": "pnpm -r --parallel run preview",
     "lint": "eslint \"apps/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\"",
     "format": "prettier --check .",
