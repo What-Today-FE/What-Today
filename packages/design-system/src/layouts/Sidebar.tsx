@@ -6,7 +6,7 @@ export default function DesignSystemLayout() {
     <div className='flex min-h-[100vh] bg-white'>
       <aside className='w-[17vw] min-w-[12rem] border-r border-gray-200 bg-gray-50 p-24'>
         <Link to='/docs'>
-          <h2 className='text-primary-100 mb-36 text-lg font-light'>WhatToday Design System</h2>
+          <h2 className='text-primary-500 mb-36 text-lg font-light'>WhatToday Design System</h2>
         </Link>
         <nav>
           <ul className='m-0 list-none p-0'>
