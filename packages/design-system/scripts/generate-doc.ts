@@ -29,9 +29,26 @@ rl.question(
     }
 
     const pascalName = toPascalCase(name);
+
+    // 0. 컴포넌트 파일 생성
+    const componentPath = path.resolve(__dirname, `../src/components/${pascalName}.tsx`);
+    const componentTemplate = `export default function ${pascalName}() {
+  return <></>;
+}
+`;
+    fs.writeFileSync(componentPath, componentTemplate);
+    console.log(`✅ ${pascalName}.tsx 컴포넌트 파일 생성 완료!`);
+
+    // 디자인 시스템 문서 템플릿 생성
     const filePath = path.resolve(__dirname, `../src/pages/${pascalName}Doc.tsx`);
 
     const template = `import DocTemplate, { DocCode } from '../layouts/DocTemplate';
+import Playground from '@/layouts/Playground';
+import ${pascalName} from '../components/${pascalName}';
+
+/* Playground는 편집 가능한 코드 블록입니다. */
+/* Playground에서 사용할 예시 코드를 작성해주세요. */
+const code = \`예시 코드를 작성해주세요.\`;
 
 export default function ${pascalName}Doc() {
   return (
@@ -54,6 +71,11 @@ export default function ${pascalName}Doc() {
       <DocCode
         code={\`<${pascalName} variant="primary">Click me</${pascalName}>\`}
       />
+
+      {/* Playground는 편집 가능한 코드 블록입니다. */}
+      <div className='mt-24'>
+        <Playground code={code} scope={{ ${pascalName} }} />
+      </div>
     </>
   );
 }

@@ -3,21 +3,30 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "./dist/components/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/components/index.js",
+      "types": "./dist/types/index.d.ts"
     }
   },
+  "files": [
+    "dist/components",
+    "dist/types"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "echo '=== TSC ===' && tsc --project tsconfig.build.json && echo '=== VITE ===' && vite build",
+    "build:docs": "tsc -b && vite build --config vite.docs.config.ts",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview:ui": "vite preview",
+    "preview": "vite preview --config vite.docs.config.ts",
     "generate-doc": "tsx scripts/generate-doc.ts"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
+    "react-live": "^4.1.8",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1"

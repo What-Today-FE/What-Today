@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ variant = 'primary', children, ...rest 
     border: 'none',
     cursor: 'pointer',
     fontSize: '12px',
-    background: variant === 'primary' ? '#006fed' : '#e5e7eb',
+    background: variant === 'primary' ? '#000000' : '#e5e7eb',
     color: variant === 'primary' ? '#fff' : '#222',
   } as React.CSSProperties;
 

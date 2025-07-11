@@ -1,10 +1,11 @@
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig, type PluginOption } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), visualizer() as PluginOption],
   resolve: {
     alias: [
       { find: '@', replacement: path.resolve(__dirname, 'src') },
@@ -19,10 +20,10 @@ export default defineConfig({
       { find: '@schemas', replacement: path.resolve(__dirname, 'src/schemas') },
       { find: '@stores', replacement: path.resolve(__dirname, 'src/stores') },
       { find: '@utils', replacement: path.resolve(__dirname, 'src/utils') },
-      {
-        find: '@what-today/design-system',
-        replacement: path.resolve(__dirname, '../../packages/design-system/src/index.ts'),
-      },
+      // {
+      //   find: '@what-today/design-system',
+      //   replacement: path.resolve(__dirname, '../../packages/design-system/dist/components/index.js'),
+      // },
     ],
   },
 });
