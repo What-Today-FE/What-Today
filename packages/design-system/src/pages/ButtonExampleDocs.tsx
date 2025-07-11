@@ -1,6 +1,11 @@
-import Button from '@components/Button';
-
 import DocTemplate, { DocCode } from '@/layouts/DocTemplate';
+import Playground from '@/layouts/Playground';
+
+import Button from '../components/Button';
+
+const code = `<Button variant='primary' onClick={() => alert('클릭됨!')}>
+  확인
+</Button>`;
 
 export default function ButtonDocs() {
   return (
@@ -63,6 +68,10 @@ import { Button } from '@what-today/design-system';
 </Button>`}
           language='tsx'
         />
+      </div>
+
+      <div className='mt-24'>
+        <Playground code={code} scope={{ Button }} />
       </div>
     </>
   );
