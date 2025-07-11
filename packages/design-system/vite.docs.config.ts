@@ -1,9 +1,10 @@
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig, type PluginOption } from 'vite';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), visualizer() as PluginOption],
   build: {
     outDir: 'dist/docs',
     emptyOutDir: true,
