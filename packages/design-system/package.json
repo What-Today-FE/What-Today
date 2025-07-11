@@ -20,8 +20,8 @@
     "build": "echo '=== TSC ===' && tsc --project tsconfig.build.json && echo '=== VITE ===' && vite build",
     "build:docs": "tsc -b && vite build --config vite.docs.config.ts",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "preview:docs": "vite preview --config vite.docs.config.ts",
+    "preview:ui": "vite preview",
+    "preview": "vite preview --config vite.docs.config.ts",
     "generate-doc": "tsx scripts/generate-doc.ts"
   },
   "dependencies": {
