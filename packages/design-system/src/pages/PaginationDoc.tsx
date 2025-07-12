@@ -41,7 +41,7 @@ import { Pagination } from '@what-today/design-system';
           code={`<Pagination
   currentPage={currentPage}
   totalPages={totalPages}
-  onPageChange={setPage}
+  onPageChange={setCurrentPage}
   classNames={{
     prev: 'text-red-500', // 이전 버튼 커스텀 스타일
     next: 'text-green-500', // 다음 버튼 커스텀 스타일
