@@ -68,6 +68,19 @@ export default function LoginPage() {
     }
   };
 
+  const getActivities = async () => {
+    try {
+      const response = await axiosInstance.get('activities', { params: { method: 'offset' } });
+      console.log(response.data);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className='m-24 flex w-500 flex-col gap-16'>
       <h1>여기는 로그인 페이지 입니다</h1>
@@ -107,6 +120,9 @@ export default function LoginPage() {
       </button>
       <button className='bg-primary-100 text-primary-500 cursor-pointer rounded-md px-10 py-5' onClick={getMyProfile}>
         내 정보 가져오기
+      </button>
+      <button className='cursor-pointer rounded-md bg-purple-200 px-10 py-5 text-purple-500' onClick={getActivities}>
+        체험 리스트 목록 가져오기
       </button>
     </div>
   );

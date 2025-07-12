@@ -20,9 +20,24 @@ const axiosInstance = axios.create({
   },
 });
 
+const EXCLUDE_AUTH_URLS = ['auth/login', 'auth/tokens', 'oauth/sign-in', 'oauth/sign-up'];
+
 axiosInstance.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
-  console.log('✅ 엑세스 토큰을 추가했습니다!');
+  const url = config.url ?? '';
+  const method = config.method?.toUpperCase();
+
+  // 로그인이 필요 없는 api는 토큰을 생략합니다.
+  const isGetActivities = method === 'GET' && url.startsWith('activities');
+  const isInExcludeList = EXCLUDE_AUTH_URLS.some((excluded) => url.startsWith(excluded));
+  const shouldSkipAuth = isInExcludeList || isGetActivities;
+
+  if (!shouldSkipAuth) {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log('✅ 엑세스 토큰을 추가했습니다!');
+    }
+  }
   return config;
 });
 
