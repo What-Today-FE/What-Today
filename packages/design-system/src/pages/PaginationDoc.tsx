@@ -65,8 +65,6 @@ import { Pagination } from '@what-today/design-system';
           onPageChange={setCurrentPage}
         />
       </div>
-
-      <DocCode code='<Pagination currentPage={currentPage} totalPages={10} onPageChange={setCurrentPage} />' />
     </>
   );
 }
