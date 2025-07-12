@@ -41,12 +41,12 @@ export default function CalendarHeader({ currentMonth, onPrev, onNext }: Current
   return (
     <div className='flex w-full justify-center gap-30 py-6'>
       {/* ◀︎ 아이콘으로 수정 예정, 버튼 공통컴포넌트로 수정 예정 */}
-      <button className='cursor-pointer' onClick={onPrev}>
+      <button aria-label='이전 달로 이동' className='cursor-pointer' type='button' onClick={onPrev}>
         ◀︎
       </button>
       <div className='text-lg font-bold text-[#1b1b1b] md:text-xl'>{currentMonth.format('YYYY년 MM월')}</div>
       {/* ▶︎ 아이콘으로 수정 예정, 버튼 공통컴포넌트로 수정 예정 */}
-      <button className='cursor-pointer' onClick={onNext}>
+      <button aria-label='다음 달로 이동' className='cursor-pointer' type='button' onClick={onNext}>
         ▶︎
       </button>
     </div>

@@ -28,7 +28,10 @@ export default function Calendar() {
   };
 
   return (
-    <div className='flex max-w-640 flex-col gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'>
+    <div
+      aria-label='예약 캘린더'
+      className='flex max-w-640 flex-col gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
+    >
       <CalendarHeader currentMonth={currentMonth} onNext={handleNextMonth} onPrev={handlePrevMonth} />
       <CalendarGrid currentMonth={currentMonth} />
     </div>
