@@ -32,6 +32,7 @@
  * @prop {number} currentPage - 현재 선택된 페이지 번호 (1부터 시작)
  * @prop {number} totalPages - 전체 페이지 수
  * @prop {(page: number) => void} onPageChange - 페이지 버튼 클릭 시 호출되는 핸들러
+ * @prop {boolean} [isLoading] - 로딩 중일 때 버튼 클릭을 막기 위한 상태값입니다. true인 경우 모든 버튼이 비활성화됩니다.
  * @prop {object} [classNames] - 각 요소에 대한 사용자 정의 Tailwind CSS 클래스명
  * @prop {string} [classNames.prev] - 이전 페이지 버튼에 적용할 클래스
  * @prop {string} [classNames.next] - 다음 페이지 버튼에 적용할 클래스
@@ -44,6 +45,7 @@ type PaginationProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  isLoading?: boolean;
   classNames?: {
     prev?: string;
     next?: string;
@@ -53,7 +55,13 @@ type PaginationProps = {
   };
 };
 
-export default function Pagination({ currentPage, totalPages, onPageChange, classNames }: PaginationProps) {
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  classNames,
+  isLoading = false,
+}: PaginationProps) {
   const generatePageRange = (): (number | string)[] => {
     const pages: (number | string)[] = []; //string = 생략기호 (...)
     const maxVisible = 3; // 중간 페이지 최대 표시 개수
@@ -106,7 +114,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
       {/* < 이전 */}
       <button
         className={`px-3 text-lg text-black disabled:opacity-30 ${classNames?.prev ?? ''}`}
-        disabled={currentPage === 1}
+        disabled={currentPage === 1 || isLoading}
         onClick={() => onPageChange(currentPage - 1)}
       >
         {'<'}
@@ -122,6 +130,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
                 ? `border-blue-500 text-black ${classNames?.activePage ?? ''}`
                 : `border-transparent text-gray-300 hover:text-black ${classNames?.page ?? ''}`
             }`}
+            disabled={isLoading}
             onClick={() => onPageChange(page)}
           >
             {page}
@@ -139,7 +148,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
       {/* > 다음 */}
       <button
         className={`px-3 text-lg disabled:opacity-30 ${classNames?.next ?? ''}`}
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || isLoading}
         onClick={() => onPageChange(currentPage + 1)}
       >
         {'>'}

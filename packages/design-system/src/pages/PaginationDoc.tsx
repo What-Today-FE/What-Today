@@ -17,7 +17,7 @@ export default function PaginationDoc() {
 \`\`\`tsx
 import { Pagination } from '@what-today/design-system';
 
-<Pagination currentPage={currentPage} totalPages={10} onPageChange={setCurrentPage} />
+<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 \`\`\`
         `}
         propsDescription={`
@@ -27,7 +27,7 @@ import { Pagination } from '@what-today/design-system';
 | totalPages   | number                       | Yes      | 전체 페이지 수             |  
 | onPageChange | (page: number) => void       | Yes      | 페이지 변경 핸들러 
 | classNames   | { prev?: string; next?: string; page?: string; activePage?: string; ellipsis?: string; } | No | 각 버튼에 적용할 클래스 이름들을 커스터마이징 가능 |
-         
+| isLoading    | boolean                      | No       | 로딩 중일 때 버튼 클릭을 방지하며, 모든 버튼이 비활성화됨          
         `}
         title='Pagination (Example Doc)'
       />
@@ -61,9 +61,22 @@ import { Pagination } from '@what-today/design-system';
             ellipsis: 'text-black opacity-70', // 생략 기호 (...)
           }}
           currentPage={currentPage}
-          totalPages={10}
+          totalPages={20} //예시를 위해서 하드코딩
           onPageChange={setCurrentPage}
         />
+
+        <div>
+          <h2 className='text-xl'>isLoading 사용 예시</h2>
+          <p className='text-gray-200'>isLoading 사용 시 useState로 상태관리</p>
+          <DocCode
+            code={`<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={setCurrentPage}
+  isLoading={isLoading}
+/>`}
+          />
+        </div>
       </div>
     </>
   );
