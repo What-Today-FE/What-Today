@@ -1,12 +1,23 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
 
-import CalendarGrid from './CalendarGrid';
-import CalendarHeader from './CalendarHeader';
+import CalendarGrid from '@/components/calendar/CalendarGrid';
+import CalendarHeader from '@/components/calendar/CalendarHeader';
 
-// Calendar 최상위 컴포넌트
+/**
+ * Calendar 컴포넌트 (월 단위의 달력을 렌더링하는 최상위 UI 컴포넌트)
+ *
+ * - 현재 월 상태를 관리하며, 이전/다음 달로 이동할 수 있습니다.
+ * - 상단에는 월 이동을 위한 헤더(`CalendarHeader`)가 있고,
+ * - 하단에는 날짜 그리드(`CalendarGrid`)가 표시됩니다.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Calendar />
+ * ```
+ */
 export default function Calendar() {
-  // 현재 월 상태관리
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
 
   const handlePrevMonth = () => {
@@ -17,7 +28,7 @@ export default function Calendar() {
   };
 
   return (
-    <div className='flex w-640 flex-col gap-30 rounded-3xl pt-20 pb-10 shadow-sm'>
+    <div className='flex w-640 flex-col gap-30 rounded-3xl pt-20 pb-10 shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'>
       <CalendarHeader currentMonth={currentMonth} onNext={handleNextMonth} onPrev={handlePrevMonth} />
       <CalendarGrid currentMonth={currentMonth} />
     </div>

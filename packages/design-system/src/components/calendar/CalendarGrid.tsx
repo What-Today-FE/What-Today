@@ -3,17 +3,34 @@ import dayjs from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
 
 interface CalendarGridProps {
+  /**
+   * 현재 표시 중인 월 (Dayjs 객체)
+   */
   currentMonth: Dayjs;
 }
+// dayjs 확장 및 로케일 설정
 dayjs.extend(localeData);
 dayjs.locale('en');
 
+/**
+ * CalendarGrid 컴포넌트
+ *
+ * - 전달받은 currentMonth를 기준으로 달력 형태의 날짜 그리드를 구성합니다.
+ * - 주 단위 배열로 분할하여 렌더링하며, 해당 월이 아닌 날짜는 흐리게 표시합니다.
+ *
+ * @component
+ * @param {CalendarGridProps} props
+ * @returns {JSX.Element}
+ *
+ * @example
+ * ```tsx
+ * <CalendarGrid currentMonth={dayjs()} />
+ * ```
+ */
 export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
-  // 요일 계산(일~토)
   const Weekdays = dayjs.weekdays();
   const oneLetterWeekdays = Weekdays.map((day) => day.charAt(0));
 
-  // 날짜 계산(..1~31..)
   const startDate = dayjs(currentMonth).startOf('month').startOf('week');
   const endDate = dayjs(currentMonth).endOf('month').endOf('week');
 
@@ -31,22 +48,22 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
 
   return (
     <div className='text-lg'>
-      <div className='flex border-b border-gray-100 pb-12 font-bold'>
+      <div className='flex border-b border-gray-100 pb-12'>
         {oneLetterWeekdays.map((day, idx) => (
-          <div key={idx} className='flex w-92 justify-center p-12'>
+          <div key={idx} className='flex w-92 justify-center p-12 font-bold text-gray-900'>
             {day}
           </div>
         ))}
       </div>
       <div className='divide-y divide-solid divide-gray-50'>
-        {weeks.map((week, i) => (
-          <div key={i} className='flex'>
-            {week.map((day, j) => {
+        {weeks.map((week, idx) => (
+          <div key={idx} className='flex'>
+            {week.map((day) => {
               const isOtherMonth = day.month() !== currentMonth.month();
               return (
                 <div
-                  key={j}
-                  className={`flex h-124 w-92 items-stretch justify-center p-12 ${
+                  key={day.format('MM/DD')}
+                  className={`flex h-124 w-92 items-start justify-center p-12 font-medium ${
                     isOtherMonth ? 'text-gray-300' : 'text-gray-800'
                   }`}
                 >
