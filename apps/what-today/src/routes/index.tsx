@@ -11,6 +11,8 @@ import ReservationsListPage from '@/pages/mypage/reservations-list';
 import ReservationsStatusPage from '@/pages/mypage/reservations-status';
 import SignupPage from '@/pages/signup';
 
+import { authGuardLoader } from './authGuardLoader';
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -22,6 +24,7 @@ export const router = createBrowserRouter([
       { path: 'activities/:id', element: <ActivityDetailPage /> },
       {
         path: 'mypage',
+        loader: authGuardLoader,
         element: <MyPageLayout />,
         children: [
           { index: true, element: <EditProfilePage /> }, // 기본 진입 시 edit-profile로 연결
