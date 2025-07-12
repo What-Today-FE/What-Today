@@ -20,6 +20,12 @@ const axiosInstance = axios.create({
   },
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+  console.log('✅ 엑세스 토큰을 추가했습니다!');
+  return config;
+});
+
 // 에러 메시지 추출 유틸 함수
 const getErrorMessage = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
@@ -34,7 +40,44 @@ const getErrorMessage = (error: unknown): string => {
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(new Error(getErrorMessage(error))),
+  async (error) => {
+    const { config } = error;
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+
+      if (status === 401) {
+        const originRequest = config;
+        const refreshToken = localStorage.getItem('refreshToken');
+        try {
+          const response = await axios.post(
+            '/auth/tokens',
+            {},
+            {
+              baseURL: import.meta.env.VITE_API_BASE_URL,
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            },
+          );
+          localStorage.setItem('accessToken', response.data.accessToken);
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+          originRequest.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`; // 이전 요청 이어서 다시 요청
+          return axios(originRequest);
+        } catch (error) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          alert('다시 로그인해주세요.');
+          return Promise.reject(error);
+        }
+        return;
+      }
+
+      return Promise.reject(new Error(getErrorMessage(error)));
+    }
+
+    return Promise.reject(error);
+  },
 );
 
 export default axiosInstance;
