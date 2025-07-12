@@ -22,8 +22,14 @@ const axiosInstance = axios.create({
   },
 });
 
+/** EXCLUDE_AUTH_URLS
+ * @description 인증이 필요 없는 API 경로입니다. 요청 인터셉터에서 해당 경로들은 accessToken을 헤더에 포함하지 않습니다.
+ */
 const EXCLUDE_AUTH_URLS = ['auth/login', 'auth/tokens', 'oauth/sign-in', 'oauth/sign-up'];
 
+/** 요청 인터셉터
+ * 인증이 필요한 요청에는 Authorization 헤더에 accessToken을 자동으로 추가합니다.
+ */
 axiosInstance.interceptors.request.use((config) => {
   const url = config.url ?? '';
   const method = config.method?.toUpperCase();
@@ -55,6 +61,11 @@ const getErrorMessage = (error: unknown): string => {
   return '알 수 없는 오류가 발생했습니다.';
 };
 
+/** 응답 인터셉터
+ * 1. 서버에서 401 Unauthorized 응답을 받을 경우, refreshToken을 사용하여 accessToken을 갱신합니다.
+ * 2. 재발급에 성공하면 원래의 요청을 다시 시도합니다.
+ * 3. 재발급에 실패하면 "다시 로그인해 주세요." 알림을 보내고, 로그인 페이지로 리다이렉트합니다.
+ */
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -87,7 +98,7 @@ axiosInstance.interceptors.response.use(
           return axios(originalRequest);
         } catch (error) {
           useWhatTodayStore.getState().clearAuth();
-          alert('다시 로그인해주세요.');
+          alert('다시 로그인해 주세요.');
           return Promise.reject(error);
         }
         return;

@@ -1,10 +1,9 @@
+import useAuth from '@hooks/useAuth';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import axiosInstance from '@/apis/axiosInstance';
 import { useWhatTodayStore } from '@/stores';
-
-import useAuth from './useAuth';
 
 export default function LoginPage() {
   const { user, isLoggedIn, setUser } = useWhatTodayStore();
@@ -20,6 +19,10 @@ export default function LoginPage() {
     setPassword(e.target.value);
   };
 
+  /** handleLogin
+   * @description 로그인 요청을 보내고, 성공 시 토큰과 사용자 정보를 전역 상태로 저장합니다.
+   * @throws 에러 발생 시 메시지를 alert로 출력합니다.
+   */
   const handleLogin = async () => {
     try {
       await loginUser(email, password);
