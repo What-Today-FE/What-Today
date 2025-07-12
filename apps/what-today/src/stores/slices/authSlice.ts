@@ -4,7 +4,7 @@ interface User {
   id: number;
   email: string;
   nickname: string;
-  profilImageUrl: string;
+  profileImageUrl: string | null;
   createdAt: string;
   updatedAt: string;
 }
