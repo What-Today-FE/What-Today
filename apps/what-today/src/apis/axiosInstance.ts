@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { useWhatTodayStore } from '@/stores';
+
 /**
  * .env 파일에서 설정한 VITE_BASE_URL을 기준으로 Axios 인스턴스를 생성하여 반환합니다.
  * 이 인스턴스를 통해 공통 설정이 적용된 API 요청을 수행할 수 있습니다.
@@ -32,10 +34,10 @@ axiosInstance.interceptors.request.use((config) => {
   const shouldSkipAuth = isInExcludeList || isGetActivities;
 
   if (!shouldSkipAuth) {
-    const token = localStorage.getItem('accessToken');
+    const token = useWhatTodayStore.getState().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('✅ 엑세스 토큰을 추가했습니다!');
+      console.log('✔️ 엑세스 토큰을 추가했습니다!');
     }
   }
   return config;
@@ -62,8 +64,9 @@ axiosInstance.interceptors.response.use(
       const status = error.response?.status;
 
       if (status === 401) {
-        const originRequest = config;
-        const refreshToken = localStorage.getItem('refreshToken');
+        console.log('토큰을 재요청합니다.');
+        const originalRequest = config;
+        const refreshToken = useWhatTodayStore.getState().refreshToken;
         try {
           const response = await axios.post(
             '/auth/tokens',
@@ -75,13 +78,15 @@ axiosInstance.interceptors.response.use(
               },
             },
           );
-          localStorage.setItem('accessToken', response.data.accessToken);
-          localStorage.setItem('refreshToken', response.data.refreshToken);
-          originRequest.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`; // 이전 요청 이어서 다시 요청
-          return axios(originRequest);
+          const { accessToken, refreshToken: newRefreshToken } = response.data;
+
+          useWhatTodayStore.getState().setAccessToken(accessToken);
+          useWhatTodayStore.getState().setRefreshToken(newRefreshToken);
+
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`; // 이전 요청 이어서 다시 요청
+          return axios(originalRequest);
         } catch (error) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
+          useWhatTodayStore.getState().clearAuth();
           alert('다시 로그인해주세요.');
           return Promise.reject(error);
         }

@@ -1,24 +1,14 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import axiosInstance from '@/apis/axiosInstance';
-
-interface Profile {
-  id: number;
-  nickname: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-  profileImageUrl: string | null;
-}
+import { useWhatTodayStore } from '@/stores';
 
 export default function LoginPage() {
+  const { user, isLoggedIn, setAccessToken, setRefreshToken, setUser, clearAuth } = useWhatTodayStore();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const [isLogin, setIsLogin] = useState<boolean>(() => {
-    return !!localStorage.getItem('accessToken');
-  });
-  const [myProfile, setMyProfile] = useState<Profile | null>(null);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -27,17 +17,17 @@ export default function LoginPage() {
     setPassword(e.target.value);
   };
 
-  const login = async () => {
+  const handleLogin = async () => {
     try {
       const response = await axiosInstance.post('auth/login', {
         email,
         password,
       });
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
+      const { accessToken, refreshToken } = response.data;
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
       setEmail('');
       setPassword('');
-      setIsLogin(true);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -48,17 +38,14 @@ export default function LoginPage() {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setIsLogin(false);
-    setMyProfile(null);
+  const handleLogout = () => {
+    clearAuth();
   };
 
   const getMyProfile = async () => {
     try {
       const response = await axiosInstance.get('users/me');
-      setMyProfile(response.data);
+      setUser(response.data);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -86,14 +73,14 @@ export default function LoginPage() {
       <h1>여기는 로그인 페이지 입니다</h1>
 
       <div>
-        {isLogin ? (
+        {isLoggedIn ? (
           <p className='text-green-500'>로그인에 성공했습니다.</p>
         ) : (
           <p className='text-gray-300'>로그인이 필요합니다.</p>
         )}
-        {myProfile && (
+        {user && (
           <p>
-            👤 닉네임: <strong>{myProfile.nickname}</strong> / ID: <strong>{myProfile.id}</strong>
+            👤 닉네임: <strong>{user.nickname}</strong> / ID: <strong>{user.id}</strong>
           </p>
         )}
       </div>
@@ -112,18 +99,31 @@ export default function LoginPage() {
         value={password}
         onChange={handlePasswordChange}
       />
-      <button className='bg-primary-500 cursor-pointer rounded-md px-10 py-5 text-white' onClick={login}>
+
+      <button className='bg-primary-500 cursor-pointer rounded-md px-10 py-5 text-white' onClick={handleLogin}>
         로그인
       </button>
-      <button className='cursor-pointer rounded-md bg-red-400 px-10 py-5 text-white' onClick={logout}>
+      <button className='cursor-pointer rounded-md bg-red-400 px-10 py-5 text-white' onClick={handleLogout}>
         로그아웃
       </button>
+
       <button className='bg-primary-100 text-primary-500 cursor-pointer rounded-md px-10 py-5' onClick={getMyProfile}>
         내 정보 가져오기
       </button>
       <button className='cursor-pointer rounded-md bg-purple-200 px-10 py-5 text-purple-500' onClick={getActivities}>
         체험 리스트 목록 가져오기
       </button>
+
+      <Link to='/signup'>
+        <button className='text-primary-500 cursor-pointer rounded-md px-10 py-5 hover:underline'>
+          회원가입 페이지로 이동
+        </button>
+      </Link>
+      <Link to='/mypage'>
+        <button className='text-primary-500 cursor-pointer rounded-md px-10 py-5 hover:underline'>
+          마이 페이지로 이동
+        </button>
+      </Link>
     </div>
   );
 }
