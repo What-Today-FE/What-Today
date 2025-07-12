@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import axiosInstance from '@/apis/axiosInstance';
 import { useWhatTodayStore } from '@/stores';
 
+import useAuth from './useAuth';
+
 export default function LoginPage() {
-  const { user, isLoggedIn, setAccessToken, setRefreshToken, setUser, clearAuth } = useWhatTodayStore();
+  const { user, isLoggedIn, setUser } = useWhatTodayStore();
+  const { loginUser, logoutUser, fetchMyProfile } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,30 +22,17 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axiosInstance.post('auth/login', {
-        email,
-        password,
-      });
-      const { accessToken, refreshToken } = response.data;
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
+      await loginUser(email, password);
+      await fetchMyProfile();
       setEmail('');
       setPassword('');
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-        alert(error.message);
-      } else {
-        console.error(error);
-      }
+      alert(error instanceof Error ? error.message : '로그인에 실패했습니다.');
     }
   };
 
-  const handleLogout = () => {
-    clearAuth();
-  };
-
-  const getMyProfile = async () => {
+  // * 로그인이 필요한 api 요청 테스트용 (삭제 예정)
+  const testProtectedApiCall = async () => {
     try {
       const response = await axiosInstance.get('users/me');
       setUser(response.data);
@@ -55,7 +45,8 @@ export default function LoginPage() {
     }
   };
 
-  const getActivities = async () => {
+  // * 로그인이 필요없는 api 요청 테스트용 (삭제 예정)
+  const testPublicApiCall = async () => {
     try {
       const response = await axiosInstance.get('activities', { params: { method: 'offset' } });
       console.log(response.data);
@@ -103,15 +94,21 @@ export default function LoginPage() {
       <button className='bg-primary-500 cursor-pointer rounded-md px-10 py-5 text-white' onClick={handleLogin}>
         로그인
       </button>
-      <button className='cursor-pointer rounded-md bg-red-400 px-10 py-5 text-white' onClick={handleLogout}>
+      <button className='cursor-pointer rounded-md bg-red-400 px-10 py-5 text-white' onClick={logoutUser}>
         로그아웃
       </button>
 
-      <button className='bg-primary-100 text-primary-500 cursor-pointer rounded-md px-10 py-5' onClick={getMyProfile}>
-        내 정보 가져오기
+      <button
+        className='bg-primary-100 text-primary-500 cursor-pointer rounded-md px-10 py-5'
+        onClick={testProtectedApiCall}
+      >
+        내 정보 가져오기 - 로그인이 필요한 api 요청 테스트
       </button>
-      <button className='cursor-pointer rounded-md bg-purple-200 px-10 py-5 text-purple-500' onClick={getActivities}>
-        체험 리스트 목록 가져오기
+      <button
+        className='cursor-pointer rounded-md bg-purple-200 px-10 py-5 text-purple-500'
+        onClick={testPublicApiCall}
+      >
+        체험 리스트 목록 가져오기 - 로그인이 필요없는 api 요청 테스트
       </button>
 
       <Link to='/signup'>
@@ -121,7 +118,7 @@ export default function LoginPage() {
       </Link>
       <Link to='/mypage'>
         <button className='text-primary-500 cursor-pointer rounded-md px-10 py-5 hover:underline'>
-          마이 페이지로 이동
+          마이 페이지로 이동 - 로그인이 이후 접근 가능
         </button>
       </Link>
     </div>
