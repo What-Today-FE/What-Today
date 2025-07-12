@@ -102,50 +102,48 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
   const pages = generatePageRange();
 
   return (
-    <div className='mt-20'>
-      <div className='flex h-40 items-center justify-center gap-2'>
-        {/* < 이전 */}
-        <button
-          className={`px-3 text-lg text-black disabled:opacity-30 ${classNames?.prev ?? ''}`}
-          disabled={currentPage === 1}
-          onClick={() => onPageChange(currentPage - 1)}
-        >
-          {'<'}
-        </button>
+    <div className='flex h-40 items-center justify-center gap-2'>
+      {/* < 이전 */}
+      <button
+        className={`px-3 text-lg text-black disabled:opacity-30 ${classNames?.prev ?? ''}`}
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+      >
+        {'<'}
+      </button>
 
-        {/* 페이지 번호들 */}
-        {pages.map((page) =>
-          typeof page === 'number' ? (
-            <button
-              key={page}
-              className={`flex items-center justify-center border-b-2 px-10 text-lg ${
-                currentPage === page
-                  ? `border-blue-500 text-black ${classNames?.activePage ?? ''}`
-                  : `border-transparent text-gray-300 hover:text-black ${classNames?.page ?? ''}`
-              }`}
-              onClick={() => onPageChange(page)}
-            >
-              {page}
-            </button>
-          ) : (
-            <span
-              key={page}
-              className={`flex h-10 w-10 items-center justify-center text-gray-400 ${classNames?.ellipsis ?? ''}`}
-            >
-              ...
-            </span>
-          ),
-        )}
+      {/* 페이지 번호들 */}
+      {pages.map((page) =>
+        typeof page === 'number' ? (
+          <button
+            key={page}
+            className={`flex items-center justify-center border-b-2 px-10 text-lg ${
+              currentPage === page
+                ? `border-blue-500 text-black ${classNames?.activePage ?? ''}`
+                : `border-transparent text-gray-300 hover:text-black ${classNames?.page ?? ''}`
+            }`}
+            onClick={() => onPageChange(page)}
+          >
+            {page}
+          </button>
+        ) : (
+          <span
+            key={page}
+            className={`flex h-10 w-10 items-center justify-center text-gray-400 ${classNames?.ellipsis ?? ''}`}
+          >
+            ...
+          </span>
+        ),
+      )}
 
-        {/* > 다음 */}
-        <button
-          className={`px-3 text-lg disabled:opacity-30 ${classNames?.next ?? ''}`}
-          disabled={currentPage === totalPages}
-          onClick={() => onPageChange(currentPage + 1)}
-        >
-          {'>'}
-        </button>
-      </div>
+      {/* > 다음 */}
+      <button
+        className={`px-3 text-lg disabled:opacity-30 ${classNames?.next ?? ''}`}
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+      >
+        {'>'}
+      </button>
     </div>
   );
 }
