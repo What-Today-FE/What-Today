@@ -39,12 +39,12 @@ interface CurrentHeaderProps {
  */
 export default function CalendarHeader({ currentMonth, onPrev, onNext }: CurrentHeaderProps) {
   return (
-    <div className='flex justify-center gap-30 py-6'>
+    <div className='flex w-full justify-center gap-30 py-6'>
       {/* ◀︎ 아이콘으로 수정 예정, 버튼 공통컴포넌트로 수정 예정 */}
       <button className='cursor-pointer' onClick={onPrev}>
         ◀︎
       </button>
-      <div className='text-xl font-bold text-[#1b1b1b]'>{currentMonth.format('YYYY년 MM월')}</div>
+      <div className='text-lg font-bold text-[#1b1b1b] md:text-xl'>{currentMonth.format('YYYY년 MM월')}</div>
       {/* ▶︎ 아이콘으로 수정 예정, 버튼 공통컴포넌트로 수정 예정 */}
       <button className='cursor-pointer' onClick={onNext}>
         ▶︎

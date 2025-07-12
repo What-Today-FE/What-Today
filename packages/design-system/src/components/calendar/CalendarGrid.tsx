@@ -47,23 +47,23 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
   }
 
   return (
-    <div className='text-lg'>
-      <div className='flex border-b border-gray-100 pb-12'>
+    <div className='w-full'>
+      <div className='grid grid-cols-7 border-b border-gray-100 pb-12'>
         {oneLetterWeekdays.map((day, idx) => (
-          <div key={idx} className='flex w-92 justify-center p-12 font-bold text-gray-900'>
+          <div key={idx} className='flex justify-center p-12 text-sm font-bold text-gray-900 md:text-lg'>
             {day}
           </div>
         ))}
       </div>
       <div className='divide-y divide-solid divide-gray-50'>
         {weeks.map((week, idx) => (
-          <div key={idx} className='flex'>
+          <div key={idx} className='grid grid-cols-7'>
             {week.map((day) => {
               const isOtherMonth = day.month() !== currentMonth.month();
               return (
                 <div
                   key={day.format('MM/DD')}
-                  className={`flex h-124 w-92 items-start justify-center p-12 font-medium ${
+                  className={`flex h-104 items-start justify-center p-12 text-xs font-medium md:h-124 md:text-lg ${
                     isOtherMonth ? 'text-gray-300' : 'text-gray-800'
                   }`}
                 >
