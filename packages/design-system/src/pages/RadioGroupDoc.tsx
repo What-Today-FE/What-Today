@@ -10,23 +10,7 @@ const categories = [
   { value: 'sightseeing', icon: '🌿', label: '관광' },
   { value: 'wellness', icon: '☘️', label: '웰빙' },
 ];
-//예약버튼 예시 하드코딩
-const getSelectedStyle = (value: string) => {
-  switch (value) {
-    case '승인':
-      return 'bg-cyan-50  text-cyan-500  ';
-    case '체험':
-      return ' bg-blue-100 text-blue-400 ';
-    case '완료':
-      return ' bg-green-100 text-green-500 ';
-    case '취소':
-      return ' bg-gray-100 text-gray-600 ';
-    case '거절':
-      return ' bg-red-100 text-red-400 ';
-    default:
-      return 'bg-white text-gray-600';
-  }
-};
+
 const options = [
   { value: '승인', label: '예약 승인' },
   { value: '체험', label: '체험 완료' },
@@ -94,14 +78,7 @@ return (
           <div className='flex gap-12'>
             {categories.map(({ value, icon, label }) => (
               <RadioGroup.Radio key={value} value={value}>
-                <span
-                  className={
-                    'flex cursor-pointer items-center gap-10 rounded-full border from-indigo-100 to-cyan-200 px-14 py-8 font-bold whitespace-nowrap transition-colors hover:bg-gray-100 ' +
-                    (selectedCategory === value
-                      ? 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white transition-all duration-300 ease-in-out hover:scale-110 active:scale-95'
-                      : 'border-gray-300 bg-white text-gray-700')
-                  }
-                >
+                <span className='flex gap-12'>
                   <span aria-label={value} role='img'>
                     {icon}
                   </span>
@@ -123,14 +100,7 @@ return (
           <div className='flex gap-12'>
             {options.map(({ value, label }) => (
               <RadioGroup.Radio key={value} value={value}>
-                <span
-                  className={
-                    'flex cursor-pointer items-center gap-10 rounded-full border from-indigo-100 to-cyan-200 px-14 py-8 font-bold whitespace-nowrap transition-colors hover:bg-gray-100 ' +
-                    (selectedCategory === value
-                      ? 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white transition-all duration-300 ease-in-out hover:scale-110 active:scale-95'
-                      : 'border-gray-300 bg-white text-gray-700')
-                  }
-                >
+                <span>
                   <span className='select-none'>{label}</span>
                 </span>
               </RadioGroup.Radio>
@@ -165,30 +135,6 @@ return (
         </RadioGroup>`}
         language='tsx'
       />
-
-      <h2 className='mt-40 mb-20 text-2xl'>예약 내역 라디오 입니다</h2>
-      <div className='flex'>
-        <RadioGroup
-          radioGroupClassName='gap-6'
-          selectedValue={selectedCategory}
-          titleClassName='text-lg font-semibold mb-2'
-        >
-          <div className='flex gap-12'>
-            {options.map(({ value, label }) => (
-              <RadioGroup.Radio key={value} value={value}>
-                <span
-                  className={
-                    'flex cursor-pointer items-center gap-10 rounded-full border px-6 py-4 text-sm font-bold whitespace-nowrap ' +
-                    getSelectedStyle(value)
-                  }
-                >
-                  <span className='select-none'>{label}</span>
-                </span>
-              </RadioGroup.Radio>
-            ))}
-          </div>
-        </RadioGroup>
-      </div>
     </>
   );
 }

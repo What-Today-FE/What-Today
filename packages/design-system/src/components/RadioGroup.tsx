@@ -91,7 +91,7 @@ export default function RadioGroup({
   children,
 }: RadioContextType) {
   return (
-    <RadioContext.Provider value={{ title, selectedValue, onSelect, titleClassName }}>
+    <RadioContext.Provider value={{ title, selectedValue, onSelect, titleClassName, radioGroupClassName }}>
       {title && <RadioGroup.Title />}
       <div className={`flex flex-col gap-2 ${radioGroupClassName ?? ''}`}>{children}</div>
     </RadioContext.Provider>
@@ -104,14 +104,23 @@ RadioGroup.Title = function Title() {
   return <h2 className={`title-text ${titleClassName ?? ''}`}>{title}</h2>;
 };
 
-RadioGroup.Radio = function Radio({ value, children, ...props }: RadioProps) {
+RadioGroup.Radio = function Radio({ value, children, className = '', ...props }: RadioProps) {
   const { selectedValue, onSelect } = useRadioContext();
 
+  const isSelected = selectedValue === value;
   const handleChange = () => {
     onSelect?.(isSelected ? '' : value);
   };
 
-  const isSelected = selectedValue === value;
+  /** baseStyle: 라디오 버튼의 공통 기본 스타일 클래스 */
+  const baseStyle =
+    'flex cursor-pointer items-center gap-10 rounded-full border px-14 py-8 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
+
+  /** selectedStyle: 선택된 라디오 버튼에 적용되는 스타일 클래스 */
+  const selectedStyle = 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95';
+
+  /** unselectedStyle: 선택되지 않은 라디오 버튼에 적용되는 스타일 클래스 */
+  const unselectedStyle = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
 
   return (
     <label className='content-text flex w-fit cursor-pointer items-center gap-4'>
@@ -121,12 +130,11 @@ RadioGroup.Radio = function Radio({ value, children, ...props }: RadioProps) {
         name='radioGroup'
         type='radio'
         value={value}
-        onChange={handleChange}
         onClick={handleChange}
         {...props}
       />
 
-      <span className={'text-gray-700' + (isSelected ? ' text-primary-100' : '')}>{children}</span>
+      <span className={`${baseStyle} ${isSelected ? selectedStyle : unselectedStyle} ${className}`}>{children}</span>
     </label>
   );
 };
