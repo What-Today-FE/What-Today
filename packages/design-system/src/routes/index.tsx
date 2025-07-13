@@ -1,5 +1,6 @@
 import Sidebar from '@layouts/Sidebar';
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
+import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import LandingPage from '@pages/LandingPage';
 import PaginationDoc from '@pages/PaginationDoc';
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'Pagination',
         element: <PaginationDoc />,
+      },
+      {
+        path: 'Calendar',
+        element: <CalendarDoc />,
       },
     ],
   },
