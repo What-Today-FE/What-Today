@@ -1,19 +1,5 @@
-import Dropdown from '@/components/dropdown/Dropdown';
-import DropdownItem from '@/components/dropdown/DropdownItem';
-import DropdownMenu from '@/components/dropdown/DropdownMenu';
-import DropdownTrigger from '@/components/dropdown/DropdownTrigger';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@/components';
 import DocTemplate, { DocCode } from '@/layouts/DocTemplate';
-import Playground from '@/layouts/Playground';
-
-/* Playground는 편집 가능한 코드 블록입니다. */
-/* Playground에서 사용할 예시 코드를 작성해주세요. */
-const code = `<Dropdown>
-        <DropdownTrigger />
-        <DropdownMenu>
-          <DropdownItem onClick={() => alert('수정하기')}>수정하기</DropdownItem>
-          <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>`;
 
 export default function DropdownDoc() {
   return (
@@ -27,6 +13,20 @@ Dropdown은 버튼을 클릭했을 때 메뉴 리스트를 표시하는 컴포�
 - DropdownTrigger: 드롭다운을 열고 닫는 버튼 역할입니다.
 - DropdownMenu: 드롭다운이 열렸을 때 표시되는 영역입니다.
 - DropdownItem: 실제 메뉴 항목입니다. 클릭 시 드롭다운을 자동으로 닫을 수 있습니다.
+
+아래는 기본적인 사용 예시입니다:
+
+\`\`\`tsx
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@what-today/design-system';
+
+<Dropdown>
+  <DropdownTrigger />
+  <DropdownMenu className="">
+    <DropdownItem onClick={() => alert('수정')}>수정하기</DropdownItem>
+    <DropdownItem onClick={() => alert('삭제')}>삭제하기</DropdownItem>
+  </DropdownMenu>
+</Dropdown>
+\`\`\`
 `}
         propsDescription={`
 ### Dropdown
@@ -35,44 +35,73 @@ Dropdown은 버튼을 클릭했을 때 메뉴 리스트를 표시하는 컴포�
 |------|------|------|
 | children | React.ReactNode | 드롭다운 하위 요소들을 포함합니다. |
 
-### DropdownTrigger (button 확장)
+### DropdownTrigger
 
 | 이름 | 타입 | 설명 |
 |------|------|------|
-| ...props | ButtonHTMLAttributes | HTML button 요소에 전달되는 모든 속성을 지원합니다. |
+| children? | React.ReactNode | 버튼 내부에 표시할 내용입니다. |
+| className? | string | 버튼에 적용할 CSS 클래스명입니다. |
 
-### DropdownMenu (div 확장)
-
-| 이름 | 타입 | 설명 |
-|------|------|------|
-| ...props | HTMLAttributes | HTML div 요소에 전달되는 모든 속성을 지원합니다. |
-
-### DropdownItem (div 확장)
+### DropdownMenu
 
 | 이름 | 타입 | 설명 |
 |------|------|------|
-| onClick | (e: MouseEvent) => void | 클릭 시 실행할 동작입니다. 클릭 후 드롭다운은 자동으로 닫힙니다. |
-| ...props | HTMLAttributes | HTML div 요소에 전달되는 모든 속성을 지원합니다. |
+| className? | string | 메뉴에 적용할 CSS 클래스명입니다. |
+| children | React.ReactNode | 메뉴 내부에 표시할 내용입니다. |
+
+### DropdownItem
+
+| 이름 | 타입 | 설명 |
+|------|------|------|
+| className? | string | 메뉴 항목에 적용할 CSS 클래스명입니다. |
+| children | React.ReactNode | 메뉴 항목에 표시할 내용입니다. |
+| onClick | (e: MouseEvent) => void | 클릭 시 실행할 함수입니다. 실행 후 드롭다운은 자동으로 닫힙니다. |
 `}
         title='Dropdown'
       />
-      {/* 실제 컴포넌트를 아래에 작성해주세요 */}
-      {/* 예시 코드 */}
+      <h2 className='text-2xl'>기본 드롭다운</h2>
       <DocCode
         code={`<Dropdown>
-  <DropdownTrigger className="bg-blue-500 text-white px-4 py-2 rounded">
-    메뉴 열기
-  </DropdownTrigger>
-  <DropdownMenu className="mt-2 w-40 bg-white rounded shadow">
+  <DropdownTrigger />
+  <DropdownMenu>
     <DropdownItem onClick={() => alert('수정하기')}>수정하기</DropdownItem>
     <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
   </DropdownMenu>
 </Dropdown>`}
       />
-
-      {/* Playground는 편집 가능한 코드 블록입니다. */}
-      <div className='mt-24'>
-        <Playground code={code} scope={{ Dropdown, DropdownTrigger, DropdownMenu, DropdownItem }} />
+      <div className='h-200 pl-100'>
+        <Dropdown>
+          <DropdownTrigger />
+          <DropdownMenu>
+            <DropdownItem onClick={() => alert('수정하기')}>수정하기</DropdownItem>
+            <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
+      <h2 className='text-2xl'>커스텀 드롭다운</h2>
+      <DocCode
+        code={`<Dropdown>
+  <DropdownTrigger className='rounded-full border p-4 text-sm'>버튼</DropdownTrigger>
+  <DropdownMenu className='top-full -left-30 mt-4'>
+    <DropdownItem onClick={() => alert('등록하기')}>등록하기</DropdownItem>
+    <DropdownItem className='hover:bg-red-200' onClick={() => alert('수정하기')}>
+      수정하기
+    </DropdownItem>
+    <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
+  </DropdownMenu>
+</Dropdown>`}
+      />
+      <div className='h-200 pl-100'>
+        <Dropdown>
+          <DropdownTrigger className='rounded-full border p-4 text-sm'>버튼</DropdownTrigger>
+          <DropdownMenu className='top-full -left-30 mt-4'>
+            <DropdownItem onClick={() => alert('등록하기')}>등록하기</DropdownItem>
+            <DropdownItem className='hover:bg-red-200' onClick={() => alert('수정하기')}>
+              수정하기
+            </DropdownItem>
+            <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     </>
   );
