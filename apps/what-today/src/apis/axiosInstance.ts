@@ -101,7 +101,6 @@ axiosInstance.interceptors.response.use(
           alert('다시 로그인해 주세요.');
           return Promise.reject(error);
         }
-        return;
       }
 
       return Promise.reject(new Error(getErrorMessage(error)));
