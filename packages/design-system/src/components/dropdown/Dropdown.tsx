@@ -26,7 +26,7 @@ interface DropdownProps {
  */
 export default function Dropdown({ children }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [triggerRef, setTriggerRef] = useState<HTMLElement | null>(null);
+  const [triggerRef, setTriggerRef] = useState<HTMLButtonElement | null>(null);
 
   // dropdown 상태 반전
   const toggle = useCallback(() => {

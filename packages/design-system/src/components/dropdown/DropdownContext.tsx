@@ -16,11 +16,11 @@ export interface DropdownContextType {
   /**
    * 드롭다운을 여는 트리거 요소의 참조
    */
-  triggerRef?: HTMLElement | null;
+  triggerRef?: HTMLButtonElement | null;
   /**
    * 트리거 요소의 참조를 설정하는 함수
    */
-  setTriggerRef: (ref: HTMLElement | null) => void;
+  setTriggerRef: (ref: HTMLButtonElement | null) => void;
 }
 
 export const DropdownContext = createContext<DropdownContextType | null>(null);

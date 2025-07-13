@@ -35,18 +35,26 @@ interface DropdownMenuProps {
  * ```
  */
 export default function DropdownMenu({ className, children }: DropdownMenuProps) {
-  const { isOpen, close } = useDropdownContext();
+  const { isOpen, close, triggerRef } = useDropdownContext();
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 외부 영역 클릭하면 dropdown 닫기
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node) &&
+        triggerRef &&
+        !triggerRef.contains(e.target as Node)
+      ) {
         close();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-  }, [close]);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [close, triggerRef]);
 
   const baseClass = 'absolute top-10 right-10 w-95 rounded-lg border border-gray-100 bg-white';
 
