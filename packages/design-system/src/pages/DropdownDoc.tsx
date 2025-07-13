@@ -1,4 +1,4 @@
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@/components';
+import { Dropdown } from '@/components';
 import DocTemplate, { DocCode } from '@/layouts/DocTemplate';
 
 export default function DropdownDoc() {
@@ -19,13 +19,13 @@ Dropdown은 버튼을 클릭했을 때 메뉴 리스트를 표시하는 컴포�
 \`\`\`tsx
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@what-today/design-system';
 
-<Dropdown>
-  <DropdownTrigger />
-  <DropdownMenu className="">
-    <DropdownItem onClick={() => alert('수정')}>수정하기</DropdownItem>
-    <DropdownItem onClick={() => alert('삭제')}>삭제하기</DropdownItem>
-  </DropdownMenu>
-</Dropdown>
+<Dropdown.Root>
+  <Dropdown.Trigger />
+  <Dropdown.Menu>
+    <Dropdown.Item onClick={() => alert('수정')}>수정하기</DropdownItem>
+    <Dropdown.Item onClick={() => alert('삭제')}>삭제하기</DropdownItem>
+  </Dropdown.Menu>
+</Dropdown.Root>
 \`\`\`
 `}
         propsDescription={`
@@ -61,47 +61,47 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@what-tod
       />
       <h2 className='text-2xl'>기본 드롭다운</h2>
       <DocCode
-        code={`<Dropdown>
-  <DropdownTrigger />
-  <DropdownMenu>
-    <DropdownItem onClick={() => alert('수정하기')}>수정하기</DropdownItem>
-    <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
-  </DropdownMenu>
-</Dropdown>`}
+        code={`<Dropdown.Root>
+  <Dropdown.Trigger />
+  <Dropdown.Menu>
+    <Dropdown.Item onClick={() => alert('수정하기')}>수정하기</Dropdown.Item>
+    <Dropdown.Item onClick={() => alert('삭제하기')}>삭제하기</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown.Root>`}
       />
       <div className='h-200 pl-100'>
-        <Dropdown>
-          <DropdownTrigger />
-          <DropdownMenu>
-            <DropdownItem onClick={() => alert('수정하기')}>수정하기</DropdownItem>
-            <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        <Dropdown.Root>
+          <Dropdown.Trigger />
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => alert('수정하기')}>수정하기</Dropdown.Item>
+            <Dropdown.Item onClick={() => alert('삭제하기')}>삭제하기</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown.Root>
       </div>
       <h2 className='text-2xl'>커스텀 드롭다운</h2>
       <DocCode
-        code={`<Dropdown>
-  <DropdownTrigger className='rounded-full border p-4 text-sm'>버튼</DropdownTrigger>
-  <DropdownMenu className='top-full -left-30 mt-4'>
-    <DropdownItem onClick={() => alert('등록하기')}>등록하기</DropdownItem>
-    <DropdownItem className='hover:bg-red-200' onClick={() => alert('수정하기')}>
+        code={`<Dropdown.Root>
+  <Dropdown.Trigger className='rounded-full border p-4 text-sm'>버튼</Dropdown.Trigger>
+  <Dropdown.Menu className='top-full -left-30 mt-4'>
+    <Dropdown.Item onClick={() => alert('등록하기')}>등록하기</Dropdown.Item>
+    <Dropdown.Item className='hover:bg-red-200' onClick={() => alert('수정하기')}>
       수정하기
-    </DropdownItem>
-    <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
-  </DropdownMenu>
-</Dropdown>`}
+    </Dropdown.Item>
+    <Dropdown.Item onClick={() => alert('삭제하기')}>삭제하기</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown.Root>`}
       />
       <div className='h-200 pl-100'>
-        <Dropdown>
-          <DropdownTrigger className='rounded-full border p-4 text-sm'>버튼</DropdownTrigger>
-          <DropdownMenu className='top-full -left-30 mt-4'>
-            <DropdownItem onClick={() => alert('등록하기')}>등록하기</DropdownItem>
-            <DropdownItem className='hover:bg-red-200' onClick={() => alert('수정하기')}>
+        <Dropdown.Root>
+          <Dropdown.Trigger className='rounded-full border p-4 text-sm'>버튼</Dropdown.Trigger>
+          <Dropdown.Menu className='top-full -left-30 mt-4'>
+            <Dropdown.Item onClick={() => alert('등록하기')}>등록하기</Dropdown.Item>
+            <Dropdown.Item className='hover:bg-red-200' onClick={() => alert('수정하기')}>
               수정하기
-            </DropdownItem>
-            <DropdownItem onClick={() => alert('삭제하기')}>삭제하기</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => alert('삭제하기')}>삭제하기</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown.Root>
       </div>
     </>
   );
