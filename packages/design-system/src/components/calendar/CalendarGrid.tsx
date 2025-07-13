@@ -60,13 +60,10 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
           <div key={idx} className='grid grid-cols-7'>
             {week.map((day) => {
               const isOtherMonth = day.month() !== currentMonth.month();
+              const baseClass = 'flex h-104 items-start justify-center p-12 text-xs font-medium md:h-124 md:text-lg';
+              const textColorClass = isOtherMonth ? 'text-gray-300' : 'text-gray-800';
               return (
-                <div
-                  key={day.format('MM/DD')}
-                  className={`flex h-104 items-start justify-center p-12 text-xs font-medium md:h-124 md:text-lg ${
-                    isOtherMonth ? 'text-gray-300' : 'text-gray-800'
-                  }`}
-                >
+                <div key={day.format('MM/DD')} className={`${baseClass} ${textColorClass}`}>
                   {day.date()}
                 </div>
               );
