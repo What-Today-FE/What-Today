@@ -75,8 +75,16 @@ axiosInstance.interceptors.response.use(
       const status = error.response?.status;
 
       if (status === 401) {
-        console.log('토큰을 재요청합니다.');
         const originalRequest = config;
+
+        // 토큰 재발급 무한 루프 방지
+        if (originalRequest._retry) {
+          useWhatTodayStore.getState().clearAuth();
+          alert('다시 로그인해 주세요.');
+          return Promise.reject(error);
+        }
+        originalRequest._retry = true;
+
         const refreshToken = useWhatTodayStore.getState().refreshToken;
         try {
           const response = await axios.post(
