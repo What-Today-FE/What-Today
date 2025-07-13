@@ -1,5 +1,6 @@
 import Sidebar from '@layouts/Sidebar';
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
+import DropdownDoc from '@pages/DropdownDoc';
 import LandingPage from '@pages/LandingPage';
 import PaginationDoc from '@pages/PaginationDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: 'button-example',
         element: <ButtonExampleDocs />,
+      },
+      {
+        path: 'Dropdown',
+        element: <DropdownDoc />,
       },
       {
         path: 'Pagination',
