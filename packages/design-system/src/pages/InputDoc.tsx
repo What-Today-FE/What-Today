@@ -28,7 +28,7 @@ const EmailInputError = memo(function EmailInput() {
     <Input.Root error='이메일 형식으로 작성해주세요.'>
       <Input.Label>이메일</Input.Label>
       <Input.Wrapper>
-        <Input.Field placeholder='이메일 형식으로 작성해주세요' value='email.email' onChange={(e) => {}} />
+        <Input.Field placeholder='이메일 형식으로 작성해주세요' value='email.email' onChange={() => {}} />
       </Input.Wrapper>
       <Input.ErrorMessage />
     </Input.Root>
@@ -36,7 +36,7 @@ const EmailInputError = memo(function EmailInput() {
 });
 
 const TitleInput = memo(function TitleInput() {
-  const [value, setValue] = useState('');
+  const [_, setValue] = useState('');
 
   return (
     <Input.Root>
