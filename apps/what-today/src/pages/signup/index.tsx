@@ -44,7 +44,7 @@ export default function SignupPage() {
       <p>유효성 검사를 제외하고 기능만 구현하였습니다. (비밀번호 확인도 제외)</p>
       <input
         className='rounded-md border'
-        placeholder='아이디'
+        placeholder='이메일'
         type='text'
         value={email}
         onChange={handleEmailChange}

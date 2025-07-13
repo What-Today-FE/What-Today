@@ -81,7 +81,7 @@ export default function LoginPage() {
 
       <input
         className='rounded-md border'
-        placeholder='아이디'
+        placeholder='이메일'
         type='text'
         value={email}
         onChange={handleEmailChange}
