@@ -23,7 +23,7 @@ const EmailInput = memo(function EmailInput() {
   );
 });
 
-const EmailInputError = memo(function EmailInput() {
+const EmailInputError = memo(function EmailInputError() {
   return (
     <Input.Root error='이메일 형식으로 작성해주세요.'>
       <Input.Label>이메일</Input.Label>
