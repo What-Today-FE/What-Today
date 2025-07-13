@@ -26,7 +26,7 @@ import {
   TriangleIcon,
   UserIcon,
   WellbeingIcon,
-} from '@what-today/design-system';
+} from '@components/icons';
 
 import Playground from '@/layouts/Playground';
 
