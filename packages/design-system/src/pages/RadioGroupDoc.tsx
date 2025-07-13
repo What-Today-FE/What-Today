@@ -110,29 +110,39 @@ return (
       </div>
 
       <DocCode
-        code={`<RadioGroup
-          titleClassName='text-lg font-semibold mb-2'
-          radioGroupClassName='gap-6'
-          selectedValue={selectedCategory}
-          onSelect={setSelectedCategory}
-        >
-          <div className='flex gap-12'>
-            {options.map(({ value, label }) => (
-              <RadioGroup.Radio key={value} value={value}>
-                <span
-                  className={
-                    'flex cursor-pointer items-center gap-10 rounded-full border from-indigo-100 to-cyan-200 px-14 py-8 font-bold whitespace-nowrap transition-colors hover:bg-gray-100 ' +
-                    (selectedCategory === value
-                      ? 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white transition-all duration-300 ease-in-out hover:scale-110 active:scale-95'
-                      : 'border-gray-300 bg-white text-gray-700')
-                  }
-                >
-                  <span className='select-none'>{label}</span>
-                </span>
-              </RadioGroup.Radio>
-            ))}
-          </div>
-        </RadioGroup>`}
+        code={`
+    
+    const categories = [
+  { value: 'music', icon: '🎵', label: '문화 · 예술' },
+  { value: 'tour', icon: '🏙️', label: '투어' },
+  { value: 'food', icon: '🍜', label: '식음료' },
+  { value: 'sightseeing', icon: '🌿', label: '관광' },
+  { value: 'wellness', icon: '☘️', label: '웰빙' },
+];
+  
+    
+    
+    <div className='mb-20 flex'>
+  <RadioGroup
+    radioGroupClassName='gap-6'
+    selectedValue={selectedCategory}
+    titleClassName='text-lg font-semibold mb-2'
+    onSelect={setSelectedCategory}
+  >
+    <div className='flex gap-12'>
+      {categories.map(({ value, icon, label }) => (
+        <RadioGroup.Radio key={value} value={value}>
+          <span className='flex gap-12'>
+            <span aria-label={value} role='img'>
+              {icon}
+            </span>
+            <span className='select-none'>{label}</span>
+          </span>
+        </RadioGroup.Radio>
+      ))}
+    </div>
+  </RadioGroup>
+</div>`}
         language='tsx'
       />
     </>
