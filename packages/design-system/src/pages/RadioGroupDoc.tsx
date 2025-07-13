@@ -20,7 +20,9 @@ const options = [
 ];
 
 export default function RadioGroupDoc() {
-  const [selectedCategory, setSelectedCategory] = useState<string | number>('');
+  const [selectedCategory1, setSelectedCategory1] = useState<string | number>('');
+  const [selectedCategory2, setSelectedCategory2] = useState<string | number>('');
+
   return (
     <>
       <DocTemplate
@@ -32,7 +34,7 @@ RadioGroup 컴포넌트는 여러 개의 라디오 버튼 중 하나를 선택�
 아래는 기본적인 사용 예시입니다:
 
 \`\`\`tsx
-import RadioGroup from '../components/RadioGroup';
+import RadioGroup from '@what-today/design-system';
 
 return (
     <RadioGroup
@@ -71,9 +73,9 @@ return (
       <div className='mb-20 flex'>
         <RadioGroup
           radioGroupClassName='gap-6'
-          selectedValue={selectedCategory}
+          selectedValue={selectedCategory1}
           titleClassName='text-lg font-semibold mb-2'
-          onSelect={setSelectedCategory}
+          onSelect={setSelectedCategory1}
         >
           <div className='flex gap-12'>
             {categories.map(({ value, icon, label }) => (
@@ -93,9 +95,9 @@ return (
       <div className='mb-20 flex'>
         <RadioGroup
           radioGroupClassName='gap-6'
-          selectedValue={selectedCategory}
+          selectedValue={selectedCategory2}
           titleClassName='text-lg font-semibold mb-2'
-          onSelect={setSelectedCategory}
+          onSelect={setSelectedCategory2}
         >
           <div className='flex gap-12'>
             {options.map(({ value, label }) => (
