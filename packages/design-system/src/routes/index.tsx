@@ -2,6 +2,7 @@ import Sidebar from '@layouts/Sidebar';
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import LandingPage from '@pages/LandingPage';
 import PaginationDoc from '@pages/PaginationDoc';
+import RadioGroupDoc from '@pages/RadioGroupDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
         path: 'button-example',
         element: <ButtonExampleDocs />,
       },
+      {
+        path: 'RadioGroup',
+        element: <RadioGroupDoc />,
+      },
+
       {
         path: 'Pagination',
         element: <PaginationDoc />,
