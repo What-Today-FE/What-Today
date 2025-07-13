@@ -16,6 +16,8 @@ export default function DropdownItem({ onClick, ...props }: HTMLAttributes<HTMLD
       className={twMerge('cursor-pointer px-20 py-14 text-center text-lg font-medium text-gray-950', props.className)}
       onClick={handleClick}
       {...props}
-    />
+    >
+      {props.children}
+    </div>
   );
 }
