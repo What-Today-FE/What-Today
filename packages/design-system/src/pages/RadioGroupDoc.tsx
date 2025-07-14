@@ -133,7 +133,7 @@ return (
   >
     <div className='flex gap-12'>
       {categories.map(({ value, icon, label }) => (
-        <RadioGroup.Radio key={value} value={value}>
+        <RadioGroup.Radio key={value} value={value} className="외부에서 스타일 따로 커스텀 하고싶을때 쓰면 됩니다">
           <span className='flex gap-12'>
             <span aria-label={value} role='img'>
               {icon}

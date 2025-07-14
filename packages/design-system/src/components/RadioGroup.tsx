@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 //////////////////////////////////////////
 // Context 타입 정의
@@ -103,7 +104,7 @@ export default function RadioGroup({
       }}
     >
       {title && <RadioGroup.Title />}
-      <div className={`flex flex-col gap-2 ${radioGroupClassName ?? ''}`}>{children}</div>
+      <div className={twMerge('flex flex-col gap-2', radioGroupClassName)}>{children}</div>
     </RadioContext.Provider>
   );
 }
@@ -124,10 +125,12 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
     onSelect?.(isSelected ? '' : value);
   };
 
-  const baseStyle =
+  const BASE_STYLE =
     'flex cursor-pointer items-center gap-10 rounded-full border px-14 py-8 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
-  const selectedStyle = 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95';
-  const unselectedStyle = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
+  const SELECTED_STYLE = 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95';
+  const UNSELECTED_STYLE = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
+
+  const mergedClassName = twMerge(BASE_STYLE, isSelected ? SELECTED_STYLE : UNSELECTED_STYLE, className);
 
   return (
     <label className='content-text flex w-fit cursor-pointer items-center gap-4' htmlFor={id}>
@@ -142,7 +145,7 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
         onChange={handleChange}
         {...props}
       />
-      <span className={`${baseStyle} ${isSelected ? selectedStyle : unselectedStyle} ${className}`}>{children}</span>
+      <span className={mergedClassName}>{children}</span>
     </label>
   );
 };
