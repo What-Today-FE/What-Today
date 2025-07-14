@@ -46,7 +46,7 @@ function InputRoot({ id, size = 'md', className, disabled, error, children }: In
 
   return (
     <InputContext.Provider value={contextValue}>
-      <div className={twMerge(twJoin('flex flex-col', INPUT_SIZE[size]), className)}>{children}</div>
+      <div className={twMerge(twJoin('relative flex flex-col', INPUT_SIZE[size]), className)}>{children}</div>
     </InputContext.Provider>
   );
 }
