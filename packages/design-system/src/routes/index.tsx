@@ -1,6 +1,10 @@
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import InputDoc from '@pages/InputDoc';
+import CalendarDoc from '@pages/CalendarDoc';
+import IconDoc from '@pages/IconDoc';
 import LandingPage from '@pages/LandingPage';
+import LogoDoc from '@pages/LogoDoc';
+import PaginationDoc from '@pages/PaginationDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import Sidebar from '@/layouts/Sidebar';
@@ -25,6 +29,22 @@ const router = createBrowserRouter([
       {
         path: 'Input',
         element: <InputDoc />,
+      },
+      {
+        path: 'Logo',
+        element: <LogoDoc />,
+      },
+      {
+        path: 'Icon',
+        element: <IconDoc />,
+      },
+      {
+        path: 'Pagination',
+        element: <PaginationDoc />,
+      },
+      {
+        path: 'Calendar',
+        element: <CalendarDoc />,
       },
     ],
   },

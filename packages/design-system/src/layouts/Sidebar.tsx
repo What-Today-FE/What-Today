@@ -13,6 +13,10 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Button (Example Doc)' to='/docs/button-example' />
             {/* ✅ 아래에 <SidebarNavItem>을 활용한 컴포넌트 문서 링크를 추가해주세요. */}
             <SidebarNavItem label='Input' to='/docs/Input' />
+            <SidebarNavItem label='Icon' to='/docs/Icon' />
+            <SidebarNavItem label='Logo' to='/docs/Logo' />
+            <SidebarNavItem label='Pagination' to='/docs/Pagination' />
+            <SidebarNavItem label='Calendar' to='/docs/Calendar' />
           </ul>
         </nav>
       </aside>
