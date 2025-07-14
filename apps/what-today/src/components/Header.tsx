@@ -17,11 +17,21 @@ export default function Header() {
 
       {isLoggedIn ? (
         <div className='text-md flex items-center gap-8 text-gray-950'>
-          <div className='relative cursor-pointer hover:opacity-60'>
+          <button
+            aria-describedby='notification-dot'
+            aria-label='알림'
+            className='relative cursor-pointer hover:opacity-60'
+            type='button'
+          >
             {/* 알람 있을 때 사용 */}
-            <DotIcon className='absolute top-2 left-12 size-8' color='var(--color-red-500)' />
+            <DotIcon
+              aria-label='새 알림 있음'
+              className='absolute top-2 left-12 size-8'
+              color='var(--color-red-500)'
+              id='notification-dot'
+            />
             <BellIcon className='size-20' color='var(--color-gray-600)' />
-          </div>
+          </button>
 
           <div className='mx-12 h-16 w-px bg-gray-100' />
 
