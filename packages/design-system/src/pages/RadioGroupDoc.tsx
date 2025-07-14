@@ -3,22 +3,6 @@ import { useState } from 'react';
 import RadioGroup from '../components/RadioGroup';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
-const categories = [
-  { value: 'music', icon: '🎵', label: '문화 · 예술' },
-  { value: 'tour', icon: '🏙️', label: '투어' },
-  { value: 'food', icon: '🍜', label: '식음료' },
-  { value: 'sightseeing', icon: '🌿', label: '관광' },
-  { value: 'wellness', icon: '☘️', label: '웰빙' },
-];
-
-const options = [
-  { value: '승인', label: '예약 승인' },
-  { value: '체험', label: '체험 완료' },
-  { value: '완료', label: '예약 완료' },
-  { value: '취소', label: '예약 취소' },
-  { value: '거절', label: '예약 거절' },
-];
-
 export default function RadioGroupDoc() {
   const [selectedCategory1, setSelectedCategory1] = useState<string | number>('');
   const [selectedCategory2, setSelectedCategory2] = useState<string | number>('');
@@ -78,21 +62,17 @@ return (
           onSelect={setSelectedCategory1}
         >
           <div className='flex gap-12'>
-            {categories.map(({ value, icon, label }) => (
-              <RadioGroup.Radio key={value} value={value}>
-                <span className='flex gap-12'>
-                  <span aria-label={value} role='img'>
-                    {icon}
-                  </span>
-                  <span className='select-none'>{label}</span>
-                </span>
-              </RadioGroup.Radio>
-            ))}
+            <RadioGroup.Radio value='Art'>문화 예술</RadioGroup.Radio>
+            <RadioGroup.Radio value='Food'>음식</RadioGroup.Radio>
+            <RadioGroup.Radio value='Sport'>스포츠</RadioGroup.Radio>
+            <RadioGroup.Radio value='Wellbeing'>웰빙</RadioGroup.Radio>
+            <RadioGroup.Radio value='Bus'>버스</RadioGroup.Radio>
+            <RadioGroup.Radio value='Tour'>여행</RadioGroup.Radio>
           </div>
         </RadioGroup>
       </div>
 
-      <div className='mb-20 flex'>
+      <div>
         <RadioGroup
           radioGroupClassName='gap-6'
           selectedValue={selectedCategory2}
@@ -100,51 +80,68 @@ return (
           onSelect={setSelectedCategory2}
         >
           <div className='flex gap-12'>
-            {options.map(({ value, label }) => (
-              <RadioGroup.Radio key={value} value={value}>
-                <span>
-                  <span className='select-none'>{label}</span>
-                </span>
-              </RadioGroup.Radio>
-            ))}
+            <RadioGroup.Radio value='승인'>예약 승인</RadioGroup.Radio>
+            <RadioGroup.Radio value='체험'>체험 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='완료'>예약 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='취소'>예약 취소</RadioGroup.Radio>
+            <RadioGroup.Radio value='거절'>예약 거절</RadioGroup.Radio>
           </div>
         </RadioGroup>
       </div>
 
+      <h2 className='mt-40 text-2xl'>라디오 예시 코드입니다</h2>
       <DocCode
-        code={`
-    
-    const categories = [
-  { value: 'music', icon: '🎵', label: '문화 · 예술' },
-  { value: 'tour', icon: '🏙️', label: '투어' },
-  { value: 'food', icon: '🍜', label: '식음료' },
-  { value: 'sightseeing', icon: '🌿', label: '관광' },
-  { value: 'wellness', icon: '☘️', label: '웰빙' },
-];
-  
-    
-    
-    <div className='mb-20 flex'>
-  <RadioGroup
-    radioGroupClassName='gap-6'
-    selectedValue={selectedCategory}
-    titleClassName='text-lg font-semibold mb-2'
-    onSelect={setSelectedCategory}
-  >
-    <div className='flex gap-12'>
-      {categories.map(({ value, icon, label }) => (
-        <RadioGroup.Radio key={value} value={value} className="외부에서 스타일 따로 커스텀 하고싶을때 쓰면 됩니다">
-          <span className='flex gap-12'>
-            <span aria-label={value} role='img'>
-              {icon}
-            </span>
-            <span className='select-none'>{label}</span>
-          </span>
-        </RadioGroup.Radio>
-      ))}
-    </div>
-  </RadioGroup>
-</div>`}
+        code={`    
+
+          import { useState } from 'react';
+          import RadioGroup from '../components/RadioGroup';
+
+          const [selectedCategory1, setSelectedCategory1] = useState<string | number>('');
+
+    <div >
+        <RadioGroup
+          radioGroupClassName='gap-6'
+          selectedValue={selectedCategory1}
+          titleClassName='text-lg font-semibold mb-2'
+          onSelect={setSelectedCategory1}
+        >
+          <div className='flex gap-12'>
+            <RadioGroup.Radio value='Art'>문화 예술</RadioGroup.Radio>
+            <RadioGroup.Radio value='Food'>음식</RadioGroup.Radio>
+            <RadioGroup.Radio value='Sport'>스포츠</RadioGroup.Radio>
+            <RadioGroup.Radio value='Wellbeing'>웰빙</RadioGroup.Radio>
+            <RadioGroup.Radio value='Bus'>버스</RadioGroup.Radio>
+            <RadioGroup.Radio value='Tour'>여행</RadioGroup.Radio>
+          </div>
+        </RadioGroup>
+      </div>`}
+        language='tsx'
+      />
+
+      <h2 className='mt-40 text-2xl'>라디오 예시 코드입니다</h2>
+      <DocCode
+        code={`    
+          import { useState } from 'react';
+          import RadioGroup from '../components/RadioGroup';
+
+          const [selectedCategory2, setSelectedCategory2] = useState<string | number>('');
+
+    <div>
+        <RadioGroup
+          radioGroupClassName='gap-6'
+          selectedValue={selectedCategory2}
+          titleClassName='text-lg font-semibold mb-2'
+          onSelect={setSelectedCategory2}
+        >
+          <div className='flex gap-12'>
+            <RadioGroup.Radio value='승인'>예약 승인</RadioGroup.Radio>
+            <RadioGroup.Radio value='체험'>체험 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='완료'>예약 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='취소'>예약 취소</RadioGroup.Radio>
+            <RadioGroup.Radio value='거절'>예약 거절</RadioGroup.Radio>
+          </div>
+        </RadioGroup>
+      </div>`}
         language='tsx'
       />
     </>

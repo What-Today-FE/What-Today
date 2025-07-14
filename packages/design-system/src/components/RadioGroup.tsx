@@ -1,6 +1,17 @@
 import { createContext, useContext } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from './icons';
+
+const categoryIcons: Record<string, React.FC<{ className?: string }>> = {
+  Art: ArtIcon,
+  Tour: TourIcon,
+  Food: FoodIcon,
+  Sport: SportIcon,
+  Wellbeing: WellbeingIcon,
+  Bus: BusIcon,
+};
+
 //////////////////////////////////////////
 // Context 타입 정의
 //////////////////////////////////////////
@@ -126,14 +137,30 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
   };
 
   const BASE_STYLE =
-    'flex cursor-pointer items-center gap-10 rounded-full border px-14 py-8 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
+    'flex cursor-pointer items-center rounded-full border  px-12 py-6 md:px-18 md:py-8 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
   const SELECTED_STYLE = 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95';
   const UNSELECTED_STYLE = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
 
   const mergedClassName = twMerge(BASE_STYLE, isSelected ? SELECTED_STYLE : UNSELECTED_STYLE, className);
 
+  const Icon = categoryIcons[String(value)];
+
+  // 아이콘 칠드런입니다.
+  const IconChildren =
+    typeof Icon === 'function' && typeof children === 'string' ? (
+      <span className={twMerge('text-md flex items-center gap-4 md:gap-10 md:text-lg', className)}>
+        <Icon className='size-15 md:size-20' />
+        <span>{children}</span>
+      </span>
+    ) : (
+      children
+    );
+
   return (
-    <label className='content-text flex w-fit cursor-pointer items-center gap-4' htmlFor={id}>
+    <label
+      className='content-text text-md flex w-fit cursor-pointer items-center gap-4 select-none md:text-lg'
+      htmlFor={id}
+    >
       <input
         checked={isSelected}
         className='sr-only'
@@ -145,7 +172,7 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
         onChange={handleChange}
         {...props}
       />
-      <span className={mergedClassName}>{children}</span>
+      <span className={mergedClassName}>{IconChildren}</span>
     </label>
   );
 };
