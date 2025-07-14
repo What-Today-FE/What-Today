@@ -4,6 +4,17 @@ import { createContext, useContext } from 'react';
 // Context 타입 정의
 //////////////////////////////////////////
 
+/**
+ * RadioGroup 컨텍스트의 타입 정의입니다.
+ *
+ * @property {string} [title] - 라디오 그룹 상단의 제목 (선택 사항)
+ * @property {string} [titleClassName] - 제목의 커스텀 클래스명
+ * @property {string} [radioGroupClassName] - 라디오 그룹(wrapper)의 커스텀 클래스명
+ * @property {string | number} [selectedValue] - 현재 선택된 라디오의 값
+ * @property {(value: string | number) => void} onSelect - 라디오 선택 시 호출되는 콜백
+ * @property {React.ReactNode} [children] - 하위 라디오 버튼 요소들
+ */
+
 interface RadioContextType {
   title?: string;
   titleClassName?: string;
@@ -12,6 +23,13 @@ interface RadioContextType {
   onSelect?: (value: string | number) => void;
   children?: React.ReactNode;
 }
+
+/**
+ * Radio 버튼 컴포넌트의 props 정의입니다.
+ *
+ * @property {string | number} value - 라디오 버튼의 고유 값
+ * @property {React.ReactNode} [children] - 라벨에 들어갈 내용 (텍스트 또는 아이콘 등)
+ */
 
 interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
   value: number | string;
@@ -25,6 +43,14 @@ interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 
 const RadioContext = createContext<RadioContextType | null>(null);
 
+/**
+ * RadioGroup 내부에서만 사용할 수 있는 커스텀 훅입니다.
+ * 컨텍스트가 없으면 에러를 throw 합니다.
+ *
+ * @returns {RadioContextType} 라디오 그룹 컨텍스트 값
+ * @throws {Error} 컨텍스트 외부에서 사용 시 에러 발생
+ */
+
 function useRadioContext() {
   const context = useContext(RadioContext);
   if (!context) {
@@ -36,6 +62,27 @@ function useRadioContext() {
 //////////////////////////////////////////
 // RadioGroup 컴포넌트
 //////////////////////////////////////////
+
+/**
+ * RadioGroup 컴포넌트는 여러 개의 라디오 버튼을 그룹으로 묶는 컨테이너입니다.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * import { useState } from 'react';
+ *
+ * export default function exam() {
+ * const [selectedCategory, setSelectedCategory] = useState()
+ *
+ * <RadioGroup selectedValue={value} onSelect={setValue}>
+ *   <RadioGroup.Radio value="one">Option 1</RadioGroup.Radio>
+ *   <RadioGroup.Radio value="two">Option 2</RadioGroup.Radio>
+ * </RadioGroup>
+ * ```
+ *
+ * @param {RadioContextType} props - 컴포넌트 속성
+ * @returns {JSX.Element}
+ */
 
 export default function RadioGroup({
   title,
