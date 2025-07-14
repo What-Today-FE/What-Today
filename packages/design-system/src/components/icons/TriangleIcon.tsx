@@ -11,7 +11,7 @@ import { getRotationOffset } from './utils/getRotationOffset';
  *
  * @component
  * @param {string} [direction='bottom'] - 아이콘의 방향 (기본값: 'bottom')
- * @param {string} [color='var(--color-gray-950)'] - 아이콘의 색상 (기본값: 'var(--color-gray-950)')
+ * @param {string} [color='#1f1f22'] - 아이콘의 색상 (기본값: '#1f1f22')
  * @param {React.SVGProps<SVGSVGElement>} ...rest - 기타 SVG 속성 (예: className, aria-label 등)
  *
  * @example
@@ -27,11 +27,7 @@ import { getRotationOffset } from './utils/getRotationOffset';
  * <TriangleIcon color='var(--color-blue)' />
  */
 
-export default function TriangleIcon({
-  direction = 'bottom',
-  color = 'var(--color-gray-950)',
-  ...rest
-}: DirectionIconProps) {
+export default function TriangleIcon({ direction = 'bottom', color = '#1f1f22', ...rest }: DirectionIconProps) {
   const baseDirection = 'bottom';
   const rotation = getRotationOffset(baseDirection, direction);
   return (
