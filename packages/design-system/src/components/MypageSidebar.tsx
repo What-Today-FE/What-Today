@@ -1,14 +1,39 @@
 import { useState } from 'react';
 
 import { CalendarIcon, DeleteIcon, ListIcon, SettingIcon, UserIcon } from '@/components/icons';
-
-import { ProfileLogo } from './logos';
+import { ProfileLogo } from '@/components/logos';
 
 interface MypageSidebarProps {
+  /**
+   * 프로필 이미지 URL (없으면 기본 프로필 로고가 표시됨)
+   */
   profileImgUrl?: string;
+  /**
+   * 사이드바 항목 클릭 시 호출되는 함수
+   * @param label 클릭된 항목의 이름
+   */
   onClick: (label: string) => void;
 }
 
+/**
+ * MypageSidebar 컴포넌트
+ *
+ * - 마이페이지 좌측 사이드바 UI를 구성합니다.
+ * - 사용자 프로필 이미지 또는 기본 아이콘을 상단에 보여줍니다.
+ * - '내 정보', '예약 내역', '내 체험 관리', '예약 현황', '로그아웃' 등의 항목을 제공합니다.
+ * - 항목 클릭 시 선택 상태가 변경되며, `onClick(label)` 콜백이 호출됩니다.
+ *
+ * @component
+ * @param {MypageSidebarProps} props - 프로필 이미지 URL과 클릭 핸들러
+ *
+ * @example
+ * ```tsx
+ * <MypageSidebar
+ *   profileImgUrl="/me.png"
+ *   onClick={(label) => console.log(label)}
+ * />
+ * ```
+ */
 export default function MypageSidebar({ profileImgUrl, onClick }: MypageSidebarProps) {
   const [selected, setSelected] = useState('내 정보');
   const items = [
