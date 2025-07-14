@@ -1,7 +1,7 @@
-import DropdownItem from '@/components/dropdown//DropdownItem';
-import DropdownMenu from '@/components/dropdown//DropdownMenu';
-import DropdownTrigger from '@/components/dropdown//DropdownTrigger';
-import DropdownRoot from '@/components/dropdown/Dropdown';
+import DropdownRoot from './Dropdown';
+import DropdownItem from './DropdownItem';
+import DropdownMenu from './DropdownMenu';
+import DropdownTrigger from './DropdownTrigger';
 
 /**
  * @description Dropdown 합성 컴포넌트

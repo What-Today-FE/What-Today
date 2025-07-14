@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { useDropdownContext } from '@/components/dropdown/DropdownContext';
+import { useDropdownContext } from './DropdownContext';
 
 interface DropdownMenuProps {
   /**

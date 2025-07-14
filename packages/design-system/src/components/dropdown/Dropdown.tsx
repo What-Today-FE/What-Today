@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { DropdownContext } from '@/components/dropdown/DropdownContext';
+import { DropdownContext } from './DropdownContext';
 
 interface DropdownProps {
   /**

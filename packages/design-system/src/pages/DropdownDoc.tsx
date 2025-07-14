@@ -1,5 +1,17 @@
 import { Dropdown } from '@/components';
+import DropdownItem from '@/components/dropdown/DropdownItem';
+import DropdownMenu from '@/components/dropdown/DropdownMenu';
+import DropdownTrigger from '@/components/dropdown/DropdownTrigger';
 import DocTemplate, { DocCode } from '@/layouts/DocTemplate';
+import Playground from '@/layouts/Playground';
+
+const code = `<Dropdown.Root>
+          <Dropdown.Trigger />
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => alert('수정하기')}>수정하기</Dropdown.Item>
+            <Dropdown.Item onClick={() => alert('삭제하기')}>삭제하기</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown.Root>`;
 
 export default function DropdownDoc() {
   return (
@@ -102,6 +114,9 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@what-tod
             <Dropdown.Item onClick={() => alert('삭제하기')}>삭제하기</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown.Root>
+      </div>
+      <div className='mt-24'>
+        <Playground code={code} scope={{ Dropdown, DropdownTrigger, DropdownMenu, DropdownItem }} />
       </div>
     </>
   );
