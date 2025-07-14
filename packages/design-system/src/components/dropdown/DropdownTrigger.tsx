@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import { MoreIcon } from '../icons';
 import { useDropdownContext } from './DropdownContext';
 
 interface DropdownTriggerProps {
@@ -45,8 +46,7 @@ export default function DropdownTrigger({ className, children }: DropdownTrigger
 
   return (
     <button ref={triggerRef} className={twMerge('cursor-pointer text-2xl', className)} type='button' onClick={toggle}>
-      {/* 아이콘으로 수정 예정 */}
-      {children || ':'}
+      {children || <MoreIcon />}
     </button>
   );
 }

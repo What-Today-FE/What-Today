@@ -56,7 +56,7 @@ export default function DropdownMenu({ className, children }: DropdownMenuProps)
     };
   }, [close, triggerRef]);
 
-  const baseClass = 'absolute top-10 right-10 w-95 rounded-lg border border-gray-100 bg-white';
+  const baseClass = 'absolute top-0 right-10 w-95 rounded-lg border border-gray-100 bg-white';
 
   return isOpen ? (
     <div ref={menuRef} className={twMerge(baseClass, className)}>
