@@ -20,6 +20,7 @@ import {
   PlusIcon,
   SearchIcon,
   SettingIcon,
+  SpinIcon,
   SportIcon,
   StarIcon,
   TourIcon,
@@ -67,6 +68,7 @@ const colorIcons = [
   { name: 'DotIcon', component: DotIcon, props: { color: 'var(--color-gray-500)' } },
   { name: 'PlusIcon', component: PlusIcon, props: { color: 'var(--color-gray-700)' } },
   { name: 'MinusIcon', component: MinusIcon, props: { color: 'var(--color-gray-900)' } },
+  { name: 'SpinIcon', component: SpinIcon, props: { color: 'var(--color-red-500)' } },
 ];
 
 const ColorIconPropsCode = `<LocationIcon className="size-50" color="var(--color-blue-500)" />`;
@@ -101,6 +103,7 @@ const iconScope = {
   DeleteIcon,
   MoreIcon,
   LocationIcon,
+  SpinIcon,
 };
 
 export default function IconDoc() {
