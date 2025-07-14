@@ -16,6 +16,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Logo' to='/docs/Logo' />
             <SidebarNavItem label='Pagination' to='/docs/Pagination' />
             <SidebarNavItem label='Calendar' to='/docs/Calendar' />
+            <SidebarNavItem label='MypageSidebar' to='/docs/MypageSidebar' />
           </ul>
         </nav>
       </aside>

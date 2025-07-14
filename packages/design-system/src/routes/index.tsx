@@ -4,6 +4,7 @@ import CalendarDoc from '@pages/CalendarDoc';
 import IconDoc from '@pages/IconDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: 'button-example',
         element: <ButtonExampleDocs />,
+      },
+      {
+        path: 'MypageSidebar',
+        element: <MypageSidebarDoc />,
       },
       {
         path: 'Logo',
