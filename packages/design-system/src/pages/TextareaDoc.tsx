@@ -76,7 +76,7 @@ const AutoResizeTextareaExample = memo(function AutoResizeTextareaExample() {
 /* Playground는 편집 가능한 코드 블록입니다. */
 /* Playground에서 사용할 예시 코드를 작성해주세요. */
 const code = `function Example() {
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = useState('');
 
   return (
     <Input.Root>
@@ -223,7 +223,7 @@ Textarea의 높이 조정은 \`Input.Textarea\`의 \`className\`을 확장해야
 
       {/* Playground는 편집 가능한 코드 블록입니다. */}
       <div className='mt-24'>
-        <LiveProvider noInline code={code} language='tsx' scope={{ Input }}>
+        <LiveProvider noInline code={code} language='tsx' scope={{ Input, useState }}>
           <p className='mb-8 font-light text-gray-400'>4. Playground</p>
           <div className='rounded p-4'>
             <div className='mb-4'>
