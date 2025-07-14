@@ -1,6 +1,7 @@
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import InputDoc from '@pages/InputDoc';
 import CalendarDoc from '@pages/CalendarDoc';
+import DropdownDoc from '@pages/DropdownDoc';
 import IconDoc from '@pages/IconDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: 'Icon',
         element: <IconDoc />,
+      },
+      {
+        path: 'Dropdown',
+        element: <DropdownDoc />,
       },
       {
         path: 'Pagination',
