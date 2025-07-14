@@ -8,7 +8,7 @@ import type { ColorIconProps } from './types';
  * - 아이콘의 크기는 CSS 클래스(`size-20`, `size-24` 등)를 통해 조정할 수 있습니다.
  *
  * @component
- * @param {string} [color='var(--color-gray-600)'] - 아이콘의 색상 (기본값: 'var(--color-gray-600)')
+ * @param {string} [color='#707177'] - 아이콘의 색상 (기본값: '#707177')
  * @param {React.SVGProps<SVGSVGElement>} ...rest - 기타 SVG 속성 (예: className, aria-label 등)
  *
  * @example
@@ -24,7 +24,7 @@ import type { ColorIconProps } from './types';
  * <ListIcon color='var(--color-red)' />
  */
 
-export default function ListIcon({ color = 'var(--color-gray-600)', ...rest }: ColorIconProps) {
+export default function ListIcon({ color = '#707177', ...rest }: ColorIconProps) {
   return (
     <svg fill='none' height='20' viewBox='0 0 20 20' width='20' {...rest} xmlns='http://www.w3.org/2000/svg'>
       <path

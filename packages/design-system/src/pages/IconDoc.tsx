@@ -26,18 +26,11 @@ import {
   TriangleIcon,
   UserIcon,
   WellbeingIcon,
-} from '@what-today/design-system';
+} from '@components/icons';
 
 import Playground from '@/layouts/Playground';
 
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
-
-const svgIcons = [
-  { name: 'BellIcon', component: BellIcon },
-  { name: 'EyeIcon', component: EyeIcon },
-  { name: 'EyeOffIcon', component: EyeOffIcon },
-  { name: 'SearchIcon', component: SearchIcon },
-];
 
 const fillIcons = [
   { name: 'StarIcon (filled)', component: StarIcon, props: { filled: true } },
@@ -52,6 +45,10 @@ const directionIcons = [
 ];
 
 const colorIcons = [
+  { name: 'BellIcon', component: BellIcon },
+  { name: 'EyeIcon', component: EyeIcon },
+  { name: 'EyeOffIcon', component: EyeOffIcon },
+  { name: 'SearchIcon', component: SearchIcon },
   { name: 'GithubIcon', component: GithubIcon },
   { name: 'KaKaoIcon', component: KaKaoIcon },
   { name: 'ArtIcon', component: ArtIcon, props: { color: 'red' } },
@@ -72,7 +69,6 @@ const colorIcons = [
   { name: 'MinusIcon', component: MinusIcon, props: { color: 'var(--color-gray-900)' } },
 ];
 
-const SVGPropsCode = `<BellIcon className="size-50" />`;
 const ColorIconPropsCode = `<LocationIcon className="size-50" color="var(--color-blue-500)" />`;
 const DirectionIconPropsCode = `<ChevronIcon className="size-50" direction="right" />`;
 const FillIconPropsCode = `<StarIcon className="size-50" filled />`;
@@ -114,12 +110,11 @@ export default function IconDoc() {
         description={`
 # Icon 컴포넌트
 
-디자인 시스템에서 제공하는 아이콘들은 네 가지 타입으로 나뉩니다:
+디자인 시스템에서 제공하는 아이콘들은 세 가지 타입으로 나뉩니다:
 
-1. **SVGProps 아이콘**: 일반적인 SVGProps만 갖는 기본 아이콘
-2. **FillIconProps 아이콘**: \`filled: boolean\`으로 채움 여부 제어
-3. **DirectionIconProps 아이콘**: \`direction: 'top' | 'right' | 'bottom' | 'left'\` 방향 지정
-4. **ColorIconProps 아이콘**: \`color\` 속성으로 색상 지정
+1. **FillIconProps 아이콘**: \`filled: boolean\`으로 채움 여부 제어
+2. **DirectionIconProps 아이콘**: \`direction: 'top' | 'right' | 'bottom' | 'left'\` 방향 지정
+3. **ColorIconProps 아이콘**: \`color\` 속성으로 색상 지정
 
 각 아이콘은 TailwindCSS의 \`className\`으로 사이즈/여백 등을 조절할 수 있으며, 아래 Playground에서 직접 테스트할 수 있습니다.
         `}
@@ -134,22 +129,19 @@ export default function IconDoc() {
         title='Icon'
       />
 
-      {renderIconGrid('SVGProps 아이콘', svgIcons)}
       {renderIconGrid('FillIconProps 아이콘', fillIcons)}
       {renderIconGrid('DirectionIconProps 아이콘', directionIcons)}
       {renderIconGrid('ColorIconProps 아이콘', colorIcons)}
 
       <div className='mt-24'>
-        <h2>1) SVGProps 아이콘은 className으로 크기 조절 가능합니다.</h2>
-        <DocCode code={SVGPropsCode} />
-        <h2>2) ColorIconProps 아이콘은 className과 color로 색상 조절 가능합니다.</h2>
+        <h2>1) ColorIconProps 아이콘은 className과 color로 색상 조절 가능합니다.</h2>
         <DocCode code={ColorIconPropsCode} />
-        <h2>3) DirectionIconProps 아이콘은 className과 direction으로 방향 조절 가능합니다.</h2>
+        <h2>2) DirectionIconProps 아이콘은 className과 direction으로 방향 조절 가능합니다.</h2>
         <DocCode code={DirectionIconPropsCode} />
-        <h2>4) FillIconProps 아이콘은 className과 filled로 채움 여부 조절 가능합니다.</h2>
+        <h2>3) FillIconProps 아이콘은 className과 filled로 채움 여부 조절 가능합니다.</h2>
         <DocCode code={FillIconPropsCode} />
 
-        <Playground code={SVGPropsCode} scope={iconScope} />
+        <Playground code={ColorIconPropsCode} scope={iconScope} />
       </div>
     </>
   );
