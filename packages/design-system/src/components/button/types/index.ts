@@ -1,11 +1,11 @@
 export type ButtonProps<T extends React.ElementType> = {
   /**
    * 버튼 스타일을 선택합니다.
-   * - 'filled': 배경이 채워진 버튼
-   * - 'outlined': 테두리만 있는 버튼
+   * - 'fill': 배경이 채워진 버튼
+   * - 'outline': 테두리만 있는 버튼
    * - 'ghost': 투명 배경
    * - 'none': 스타일 없음
-   * @default 'filled'
+   * @default 'fill'
    */
   variant?: 'fill' | 'outline' | 'ghost' | 'none';
 
