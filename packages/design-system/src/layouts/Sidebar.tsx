@@ -18,6 +18,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Pagination' to='/docs/Pagination' />
             <SidebarNavItem label='Calendar' to='/docs/Calendar' />
             <SidebarNavItem label='Textarea' to='/docs/Textarea' />
+            <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
           </ul>
         </nav>
       </aside>
