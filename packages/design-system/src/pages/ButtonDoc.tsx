@@ -48,7 +48,7 @@ export default function ButtonDoc() {
 </Button>`}
         />
         <DocCode
-          code={`<Button className='w-full' size='xl' variant='fill'>
+          code={`<Button disabled className='w-full' size='xl' variant='fill'>
   로그인하기
 </Button>`}
         />
