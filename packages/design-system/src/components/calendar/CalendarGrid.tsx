@@ -28,8 +28,11 @@ dayjs.locale('en');
  * ```
  */
 export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
-  const Weekdays = dayjs.weekdays();
-  const oneLetterWeekdays = Weekdays.map((day) => day.charAt(0));
+  const Weekdays = dayjs.weekdaysShort();
+  const weekdayColorMap: Record<string, string> = {
+    Sun: 'text-red-500',
+    Sat: 'text-blue-500',
+  };
 
   const startDate = dayjs(currentMonth).startOf('month').startOf('week');
   const endDate = dayjs(currentMonth).endOf('month').endOf('week');
@@ -49,11 +52,14 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
   return (
     <div className='w-full'>
       <div className='grid grid-cols-7 border-b border-gray-100 pb-12'>
-        {oneLetterWeekdays.map((day, idx) => (
-          <div key={idx} className='flex justify-center p-12 text-sm font-bold text-gray-900 md:text-lg'>
-            {day}
-          </div>
-        ))}
+        {Weekdays.map((day) => {
+          const textColor = weekdayColorMap[day] ?? 'text-gray-950';
+          return (
+            <div key={day} className={`${textColor} flex justify-center p-12 text-sm font-bold md:text-lg`}>
+              {day}
+            </div>
+          );
+        })}
       </div>
       <div className='divide-y divide-solid divide-gray-50'>
         {weeks.map((week, idx) => (
