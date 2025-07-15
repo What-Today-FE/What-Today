@@ -2,6 +2,8 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
 
+import DayCell from './DayCell';
+
 interface CalendarGridProps {
   /**
    * 현재 표시 중인 월 (Dayjs 객체)
@@ -66,12 +68,13 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
           <div key={idx} className='grid grid-cols-7'>
             {week.map((day) => {
               const isOtherMonth = day.month() !== currentMonth.month();
-              const baseClass = 'flex h-104 items-start justify-center p-12 text-xs font-medium md:h-124 md:text-lg';
+              const baseClass = 'flex h-104 items-center justify-center p-12 text-xs font-medium md:h-124 md:text-lg';
               const textColorClass = isOtherMonth ? 'text-gray-300' : 'text-gray-800';
               return (
-                <div key={day.format('MM/DD')} className={`${baseClass} ${textColorClass}`}>
-                  {day.date()}
-                </div>
+                // <div key={day.format('MM/DD')} className={`${baseClass} ${textColorClass}`}>
+                //   {day.date()}
+                // </div>
+                <DayCell key={day.format('MM/DD')} currentMonth={currentMonth} day={day} />
               );
             })}
           </div>
