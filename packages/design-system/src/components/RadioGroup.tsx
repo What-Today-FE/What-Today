@@ -1,16 +1,7 @@
 import { createContext, useContext } from 'react';
+import { cloneElement, isValidElement, type ReactElement } from 'react';
+import React from 'react';
 import { twMerge } from 'tailwind-merge';
-
-import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from './icons';
-
-const categoryIcons: Record<string, React.FC<{ className?: string }>> = {
-  Art: ArtIcon,
-  Tour: TourIcon,
-  Food: FoodIcon,
-  Sport: SportIcon,
-  Wellbeing: WellbeingIcon,
-  Bus: BusIcon,
-};
 
 //////////////////////////////////////////
 // Context 타입 정의
@@ -25,6 +16,9 @@ const categoryIcons: Record<string, React.FC<{ className?: string }>> = {
  * @property {string | number} [selectedValue] - 현재 선택된 라디오의 값
  * @property {(value: string | number) => void} onSelect - 라디오 선택 시 호출되는 콜백
  * @property {React.ReactNode} [children] - 하위 라디오 버튼 요소들
+ * @property {string} [selectedColor] - 선택된 라디오 버튼의 아이콘 색상 (기본값: 'white')
+ * @property {string} [selectedClassName] - 선택된 라디오 버튼에 적용할 커스텀 클래스
+ * @property {string} [unSelectedClassName] - 비선택된 라디오 버튼에 적용할 커스텀 클래스
  */
 
 interface RadioContextType {
@@ -34,19 +28,30 @@ interface RadioContextType {
   selectedValue?: string | number;
   onSelect?: (value: string | number) => void;
   children?: React.ReactNode;
+  selectedColor?: string;
+  selectedClassName?: string;
+  unSelectedClassName?: string;
 }
 
 /**
  * Radio 버튼 컴포넌트의 props 정의입니다.
  *
- * @property {string | number} value - 라디오 버튼의 고유 값
- * @property {React.ReactNode} [children] - 라벨에 들어갈 내용 (텍스트 또는 아이콘 등)
+ * @property {string | number} value - 고유 식별자. 이 값이 selectedValue와 일치하면 선택 상태로 간주됩니다.
+ * @property {string} [name='radioGroup'] - input의 name 속성 (기본: 'radioGroup')
+ * @property {React.ReactNode} [children] - 버튼 안에 들어갈 내용 (텍스트, 아이콘 등)
+ * @property {string} [selectedColor] - 선택된 경우 아이콘에 적용할 색상
+ * @property {string} [selectedClassName] - 선택된 상태에서의 커스텀 클래스
+ * @property {string} [unSelectedClassName] - 비선택 상태에서의 커스텀 클래스
+ *
  */
 
 interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
   value: number | string;
   name?: string;
   children?: React.ReactNode;
+  selectedColor?: string;
+  selectedClassName?: string;
+  unSelectedClassName?: string;
 }
 
 //////////////////////////////////////////
@@ -86,10 +91,26 @@ function useRadioContext() {
  * export default function exam() {
  * const [selectedCategory, setSelectedCategory] = useState()
  *
- * <RadioGroup selectedValue={value} onSelect={setValue}>
- *   <RadioGroup.Radio value="one">Option 1</RadioGroup.Radio>
- *   <RadioGroup.Radio value="two">Option 2</RadioGroup.Radio>
- * </RadioGroup>
+ *   <RadioGroup
+           radioGroupClassName='gap-6'
+           selectedValue={selectedCategory1}
+           titleClassName='text-lg font-semibold mb-2'
+           onSelect={setSelectedCategory1}
+           unSelectedClassName='bg-purple-200 text-gray-500'
+           selectedClassName='bg-red-400 text-green-300'
+           selectedColor='red'
+         >
+           <div className='flex gap-12'>
+             <RadioGroup.Radio value='Art' className='flex gap-8'>
+               <ArtIcon />
+               문화 예술
+             </RadioGroup.Radio>
+             <RadioGroup.Radio className='flex gap-8' value='Food'>
+               <FoodIcon className='size-20' />
+               음식
+             </RadioGroup.Radio>
+           </div>
+         </RadioGroup>
  * ```
  *
  * @param {RadioContextType} props - 컴포넌트 속성
@@ -103,6 +124,9 @@ export default function RadioGroup({
   selectedValue,
   onSelect,
   children,
+  selectedColor,
+  selectedClassName,
+  unSelectedClassName,
 }: RadioContextType) {
   return (
     <RadioContext.Provider
@@ -112,6 +136,9 @@ export default function RadioGroup({
         radioGroupClassName,
         selectedValue,
         onSelect,
+        selectedColor,
+        selectedClassName,
+        unSelectedClassName,
       }}
     >
       {title && <RadioGroup.Title />}
@@ -127,40 +154,53 @@ RadioGroup.Title = function Title() {
 };
 
 RadioGroup.Radio = function Radio({ value, children, className = '', name = 'radioGroup', ...props }: RadioProps) {
-  const { selectedValue, onSelect } = useRadioContext();
+  const {
+    selectedValue,
+    onSelect,
+    selectedColor: groupSelectedColor,
+    selectedClassName: groupSelectedClassName,
+    unSelectedClassName: groupUnselectedClassName,
+  } = useRadioContext();
+
+  const resolvedSelectedColor = props.selectedColor ?? groupSelectedColor ?? 'white';
+  const resolvedSelectedClassName = props.selectedClassName ?? groupSelectedClassName ?? '';
+  const resolvedUnselectedClassName = props.unSelectedClassName ?? groupUnselectedClassName ?? '';
 
   const isSelected = selectedValue === value;
   const id = `radio-${value}`;
+
+  const styledChildren = Array.isArray(children)
+    ? React.Children.map(children, (child) =>
+        isValidElement(child) && typeof child.type === 'function'
+          ? cloneElement(child as ReactElement<{ color?: string }>, {
+              color: isSelected ? resolvedSelectedColor : 'black',
+            })
+          : child,
+      )
+    : isValidElement(children) && typeof children.type === 'function'
+      ? cloneElement(children as ReactElement<{ color?: string }>, {
+          color: isSelected ? resolvedSelectedColor : 'black',
+        })
+      : children;
 
   const handleChange = () => {
     onSelect?.(isSelected ? '' : value);
   };
 
   const BASE_STYLE =
-    'flex cursor-pointer items-center rounded-full border  px-12 py-6 md:px-18 md:py-8 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
-  const SELECTED_STYLE = 'bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95';
+    'flex gap-8 text-md md:text-lg  cursor-pointer items-center rounded-full border  px-12 py-6 md:px-18 md:py-9 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
+  const SELECTED_STYLE = 'bg-black text-white hover:scale-110 active:scale-95';
   const UNSELECTED_STYLE = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
 
-  const mergedClassName = twMerge(BASE_STYLE, isSelected ? SELECTED_STYLE : UNSELECTED_STYLE, className);
-
-  const Icon = categoryIcons[String(value)];
-
-  // 아이콘 칠드런입니다.
-  const IconChildren =
-    typeof Icon === 'function' && typeof children === 'string' ? (
-      <span className={twMerge('text-md flex items-center gap-4 md:gap-10 md:text-lg', className)}>
-        <Icon className='size-15 md:size-20' />
-        <span>{children}</span>
-      </span>
-    ) : (
-      children
-    );
+  const mergedClassName = twMerge(
+    BASE_STYLE,
+    isSelected ? SELECTED_STYLE : UNSELECTED_STYLE,
+    className,
+    isSelected ? resolvedSelectedClassName : resolvedUnselectedClassName,
+  );
 
   return (
-    <label
-      className='content-text text-md flex w-fit cursor-pointer items-center gap-4 select-none md:text-lg'
-      htmlFor={id}
-    >
+    <label className='cursor-pointer select-none' htmlFor={id}>
       <input
         checked={isSelected}
         className='sr-only'
@@ -172,7 +212,7 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
         onChange={handleChange}
         {...props}
       />
-      <span className={mergedClassName}>{IconChildren}</span>
+      <span className={mergedClassName}>{styledChildren}</span>
     </label>
   );
 };

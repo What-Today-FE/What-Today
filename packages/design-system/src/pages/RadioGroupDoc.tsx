@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from '../components/icons';
 import RadioGroup from '../components/RadioGroup';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
@@ -52,7 +53,7 @@ return (
         title='RadioGroup'
       />
 
-      <p className='mb-20 text-2xl'>라디오 버튼입니다</p>
+      <p className='mb-20 text-2xl'>기본 라디오 입니다</p>
 
       <div className='mb-20 flex'>
         <RadioGroup
@@ -62,15 +63,76 @@ return (
           onSelect={setSelectedCategory1}
         >
           <div className='flex gap-12'>
-            <RadioGroup.Radio value='Art'>문화 예술</RadioGroup.Radio>
-            <RadioGroup.Radio value='Food'>음식</RadioGroup.Radio>
-            <RadioGroup.Radio value='Sport'>스포츠</RadioGroup.Radio>
-            <RadioGroup.Radio value='Wellbeing'>웰빙</RadioGroup.Radio>
-            <RadioGroup.Radio value='Bus'>버스</RadioGroup.Radio>
-            <RadioGroup.Radio value='Tour'>여행</RadioGroup.Radio>
+            <RadioGroup.Radio className='flex gap-8' value='Art'>
+              <ArtIcon />
+              문화 예술
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Food'>
+              <FoodIcon />
+              음식
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Sport'>
+              <SportIcon />
+              스포츠
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Wellbeing'>
+              <WellbeingIcon />
+              웰빙
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Bus'>
+              <BusIcon />
+              버스
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Tour'>
+              <TourIcon />
+              여행
+            </RadioGroup.Radio>
           </div>
         </RadioGroup>
       </div>
+
+      <p className='mb-20 text-2xl'>커스텀 라디오 입니다</p>
+
+      <div className='mb-20 flex'>
+        <RadioGroup
+          radioGroupClassName='gap-6'
+          selectedClassName='bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95'
+          selectedColor='white'
+          selectedValue={selectedCategory1}
+          titleClassName='text-lg font-semibold mb-2'
+          unSelectedClassName='bg-indigo-50 '
+          onSelect={setSelectedCategory1}
+        >
+          <div className='flex gap-12'>
+            <RadioGroup.Radio className='flex gap-8' value='Art'>
+              <ArtIcon />
+              문화 예술
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Food'>
+              <FoodIcon />
+              음식
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Sport'>
+              <SportIcon />
+              스포츠
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Wellbeing'>
+              <WellbeingIcon />
+              웰빙
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Bus'>
+              <BusIcon />
+              버스
+            </RadioGroup.Radio>
+            <RadioGroup.Radio value='Tour'>
+              <TourIcon />
+              여행
+            </RadioGroup.Radio>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <p className='mb-20 text-2xl'>예약 라디오 입니다</p>
 
       <div>
         <RadioGroup
@@ -89,7 +151,77 @@ return (
         </RadioGroup>
       </div>
 
-      <h2 className='mt-40 text-2xl'>라디오 예시 코드입니다</h2>
+      <p className='mt-20 mb-20 text-2xl'>예약 라디오 커스텀 입니다</p>
+
+      <div>
+        <RadioGroup
+          radioGroupClassName='gap-6'
+          selectedClassName='bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95'
+          selectedValue={selectedCategory2}
+          titleClassName='text-lg font-semibold mb-2'
+          unSelectedClassName='bg-indigo-50'
+          onSelect={setSelectedCategory2}
+        >
+          <div className='flex gap-12'>
+            <RadioGroup.Radio value='승인'>예약 승인</RadioGroup.Radio>
+            <RadioGroup.Radio value='체험'>체험 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='완료'>예약 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='취소'>예약 취소</RadioGroup.Radio>
+            <RadioGroup.Radio value='거절'>예약 거절</RadioGroup.Radio>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <h2 className='mt-40 text-2xl'>라디오 예시 입니다</h2>
+      <DocCode
+        code={`    
+
+          import { useState } from 'react';
+          import RadioGroup from '../components/RadioGroup';
+          import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from '../components/icons';
+          const [selectedCategory1, setSelectedCategory1] = useState<string | number>('');
+
+   
+         <div className='mb-20 flex'>
+        <RadioGroup
+          radioGroupClassName='gap-6'
+          selectedValue={selectedCategory1}
+          titleClassName='text-lg font-semibold mb-2'
+          onSelect={setSelectedCategory1}
+        >
+          아이콘 기본 size=20입니다. size 조절 시 아이콘 컴포넌트 안에서 className="size="" 조절가능합니다
+          <div className='flex gap-12'>
+            <RadioGroup.Radio value='Art'>
+              <ArtIcon />
+              문화 예술
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Food'>
+              <FoodIcon/>
+              음식
+            </RadioGroup.Radio>
+            <RadioGroup.Radio ' value='Sport'>
+              <SportIcon/>
+              스포츠
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Wellbeing'>
+              <WellbeingIcon/>
+              웰빙
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Bus'>
+              <BusIcon/>
+              버스
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Tour'>
+              <TourIcon/>
+              여행
+            </RadioGroup.Radio>
+          </div>
+        </RadioGroup>
+      </div>`}
+        language='tsx'
+      />
+
+      <h2 className='mt-40 text-2xl'>라디오 커스텀 예시 입니다</h2>
       <DocCode
         code={`    
 
@@ -98,27 +230,49 @@ return (
 
           const [selectedCategory1, setSelectedCategory1] = useState<string | number>('');
 
-    <div >
+       <div className='mb-20 flex'>
         <RadioGroup
           radioGroupClassName='gap-6'
           selectedValue={selectedCategory1}
           titleClassName='text-lg font-semibold mb-2'
           onSelect={setSelectedCategory1}
+          unSelectedClassName='bg-indigo-50 '    추가
+          selectedClassName='bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95' 추가
+          selectedColor='white'                  추가
         >
+          아이콘 기본 size=20입니다. size 조절 시 아이콘 컴포넌트 안에서 className="size="" 조절가능합니다
           <div className='flex gap-12'>
-            <RadioGroup.Radio value='Art'>문화 예술</RadioGroup.Radio>
-            <RadioGroup.Radio value='Food'>음식</RadioGroup.Radio>
-            <RadioGroup.Radio value='Sport'>스포츠</RadioGroup.Radio>
-            <RadioGroup.Radio value='Wellbeing'>웰빙</RadioGroup.Radio>
-            <RadioGroup.Radio value='Bus'>버스</RadioGroup.Radio>
-            <RadioGroup.Radio value='Tour'>여행</RadioGroup.Radio>
+            <RadioGroup.Radio value='Art'>
+              <ArtIcon />
+              문화 예술
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Food'>
+              <FoodIcon/>
+              음식
+            </RadioGroup.Radio>
+            <RadioGroup.Radio ' value='Sport'>
+              <SportIcon/>
+              스포츠
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Wellbeing'>
+              <WellbeingIcon/>
+              웰빙
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Bus'>
+              <BusIcon/>
+              버스
+            </RadioGroup.Radio>
+            <RadioGroup.Radio  value='Tour'>
+              <TourIcon/>
+              여행
+            </RadioGroup.Radio>
           </div>
         </RadioGroup>
       </div>`}
         language='tsx'
       />
 
-      <h2 className='mt-40 text-2xl'>라디오 예시 코드입니다</h2>
+      <h2 className='mt-40 text-2xl'>예약 라디오 예시 입니다</h2>
       <DocCode
         code={`    
           import { useState } from 'react';
@@ -132,6 +286,35 @@ return (
           selectedValue={selectedCategory2}
           titleClassName='text-lg font-semibold mb-2'
           onSelect={setSelectedCategory2}
+        >
+          <div className='flex gap-12'>
+            <RadioGroup.Radio value='승인'>예약 승인</RadioGroup.Radio>
+            <RadioGroup.Radio value='체험'>체험 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='완료'>예약 완료</RadioGroup.Radio>
+            <RadioGroup.Radio value='취소'>예약 취소</RadioGroup.Radio>
+            <RadioGroup.Radio value='거절'>예약 거절</RadioGroup.Radio>
+          </div>
+        </RadioGroup>
+      </div>`}
+        language='tsx'
+      />
+
+      <h2 className='mt-40 text-2xl'>예약 라디오 커스텀 입니다</h2>
+      <DocCode
+        code={`    
+          import { useState } from 'react';
+          import RadioGroup from '../components/RadioGroup';
+
+          const [selectedCategory2, setSelectedCategory2] = useState<string | number>('');
+
+    <div>
+        <RadioGroup
+          radioGroupClassName='gap-6'
+          selectedValue={selectedCategory2}
+          titleClassName='text-lg font-semibold mb-2'
+          onSelect={setSelectedCategory2}
+          unSelectedClassName='bg-indigo-50'                추가
+          selectedClassName='bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95'  추가
         >
           <div className='flex gap-12'>
             <RadioGroup.Radio value='승인'>예약 승인</RadioGroup.Radio>
