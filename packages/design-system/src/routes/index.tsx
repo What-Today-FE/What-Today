@@ -1,12 +1,11 @@
 import Sidebar from '@layouts/Sidebar';
+import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import IconDoc from '@pages/IconDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-
-import ButtonDoc from '@/pages/ButtonDoc';
 
 const router = createBrowserRouter([
   {
