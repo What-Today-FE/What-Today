@@ -29,6 +29,9 @@ interface PopoverTriggerProps extends BaseProp {
  */
 function PopoverTrigger({ children, className, asChild = false }: PopoverTriggerProps) {
   const { triggerRef, open, setOpen } = usePopoverContext();
+  // Trigger도 Overlay 위쪽으로 올라와야 하면 아래 overlayClass 사용
+  // const zIndex = open && 'z-[910]';
+  // const overlayClass = twMerge('relative w-full', zIndex);
 
   const handleClick = () => setOpen(!open);
 
@@ -42,7 +45,7 @@ function PopoverTrigger({ children, className, asChild = false }: PopoverTrigger
     }
 
     return (
-      <div ref={triggerRef} className='relative z-50 w-full'>
+      <div ref={triggerRef} className='relative w-full'>
         <Slot className={twMerge('w-full cursor-pointer', className)} onClick={handleClick}>
           {children as React.ReactElement<React.HTMLAttributes<HTMLElement>>}
         </Slot>
@@ -51,7 +54,7 @@ function PopoverTrigger({ children, className, asChild = false }: PopoverTrigger
   }
 
   return (
-    <div ref={triggerRef} className='relative z-50 w-full'>
+    <div ref={triggerRef} className='relative w-full'>
       <button className={twMerge('w-full cursor-pointer', className)} onClick={() => setOpen(!open)}>
         {children}
       </button>
