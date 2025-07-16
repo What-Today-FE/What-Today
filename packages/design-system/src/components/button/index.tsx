@@ -29,8 +29,7 @@ function LoadingButton({ className, children }: { className: string; children: R
   );
 }
 
-export default function Button<T extends React.ElementType = 'button'>({
-  as,
+export default function Button({
   type = 'button',
   variant = 'fill',
   size = 'md',
@@ -39,8 +38,18 @@ export default function Button<T extends React.ElementType = 'button'>({
   className,
   children,
   ...rest
-}: ButtonProps<T>) {
-  const Component = as || 'button';
+}: ButtonProps) {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled || loading) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
+    if (typeof rest.onClick === 'function') {
+      rest.onClick(e);
+    }
+  };
 
   const buttonClassNames = twMerge(
     'inline-flex cursor-pointer items-center justify-center rounded-sm font-medium whitespace-nowrap gap-6',
@@ -62,8 +71,8 @@ export default function Button<T extends React.ElementType = 'button'>({
   });
 
   return (
-    <Component className={buttonClassNames} disabled={disabled || loading} type={type} {...rest}>
+    <button className={buttonClassNames} disabled={disabled || loading} type={type} onClick={handleClick} {...rest}>
       {loading ? <LoadingButton className={loadingClassNames}>{children}</LoadingButton> : validChildren}
-    </Component>
+    </button>
   );
 }
