@@ -1,6 +1,7 @@
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
+import ExperienceCardDoc from '@pages/ExperienceCardDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: 'button-example',
         element: <ButtonExampleDocs />,
+      },
+      {
+        path: 'ExperienceCard',
+        element: <ExperienceCardDoc />,
       },
       {
         path: 'Textarea',
