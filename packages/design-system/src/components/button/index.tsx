@@ -13,11 +13,11 @@ const BUTTON_VARIANTS = {
 };
 
 const BUTTON_SIZE = {
-  xl: 'h-54 px-40 py-14 text-lg font-bold rounded-2xl',
-  lg: 'h-51 px-12 py-16 text-lg rounded-xl',
-  md: 'h-37 px-10 py-10 text-md rounded-lg',
-  sm: 'h-47 px-40 py-14 text-lg rounded-[14px]',
-  xs: 'h-41 px-40 py-12 text-md font-bold rounded-xl',
+  xl: 'w-640 h-54 px-40 py-14 text-lg font-bold rounded-2xl',
+  lg: 'w-410 h-51 px-12 py-16 text-lg rounded-xl',
+  md: 'w-232 h-37 px-10 py-10 text-md rounded-lg',
+  sm: 'w-138 h-47 px-40 py-14 text-lg rounded-[14px]',
+  xs: 'w-120 h-41 px-40 py-12 text-md font-bold rounded-xl',
 };
 
 const SPIN_ICON_SIZE = {
