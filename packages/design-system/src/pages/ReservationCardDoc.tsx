@@ -42,7 +42,7 @@ import { ReservationCard } from '@what-today/design-system';
 |----------------|----------------------------------------------------------------------|----------|-------------------------------------------|
 | title          | \`string\`                                                           | Yes      | 체험 제목                                  |
 | bannerImageUrl | \`string\`                                                           | Yes      | 썸네일 이미지 URL                          |
-| status         | \`string\` | Yes      | 예약 상태("pending", "confirmed", "declined", "canceled", "completed")                                 |
+| status         | \`string\`                                                           | Yes      | 예약 상태("pending", "confirmed", "declined", "canceled", "completed")                                 |
 | totalPrice     | \`number\`                                                           | Yes      | 총 가격 (₩)                               |
 | headCount      | \`number\`                                                           | Yes      | 인원 수                                    |
 | startTime      | \`string\`                                                           | Yes      | 시작 시간 (24시간제 'HH:mm' 포맷)        |

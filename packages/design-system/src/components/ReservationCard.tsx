@@ -53,8 +53,8 @@ interface ReservationCardProps {
  *   status="confirmed"
  *   totalPrice={54000}
  *   headCount={2}
- *   startTime="2025-08-01T10:00"
- *   endTime="2025-08-01T11:00"
+ *   startTime="10:00"
+ *   endTime="11:00"
  * />
  * ```
  */
@@ -70,11 +70,11 @@ export default function ReservationCard({
   const formatPrice = (value: number) => value.toLocaleString('ko');
   // badge 컴포넌트로 수정 예정
   const reservationStatus = {
-    pending: { badge: '체험 완료', style: 'bg-[#DAF0FF] text-[#0D6CD1]' },
+    pending: { badge: '신청 완료', style: 'bg-[#DAF0FF] text-[#0D6CD1]' },
     confirmed: { badge: '예약 승인', style: 'bg-[#DDF9F9] text-[#1790A0]' },
     declined: { badge: '예약 거절', style: 'bg-[#FCECEA] text-[#F96767]' },
     canceled: { badge: '예약 취소', style: 'bg-[#E0E0E5] text-[#707177]' },
-    completed: { badge: '예약 완료', style: 'bg-[#E9FBE4] text-[#2BA90D]' },
+    completed: { badge: '체험 완료', style: 'bg-[#E9FBE4] text-[#2BA90D]' },
   };
   const { badge, style } = reservationStatus[status];
 
@@ -88,7 +88,7 @@ export default function ReservationCard({
             <h3 className='xl:text-2lg text-sm font-bold text-gray-950'>{title}</h3>
           </div>
           <div className='text-sm font-medium text-gray-500 xl:text-lg'>
-            <time dateTime={startTime}>{startTime}</time>-<time dateTime={endTime}>{endTime}</time>
+            <time>{startTime}</time>-<time>{endTime}</time>
           </div>
         </header>
         <div className='flex items-center gap-4'>
