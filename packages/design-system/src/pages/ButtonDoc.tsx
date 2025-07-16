@@ -54,7 +54,7 @@ export default function ButtonDoc() {
         />
         <DocCode
           code={`<Button className='w-full font-medium' size='xl' variant='outline'>
-  <KaKaoIcon /> &nbsp; 카카오 로그인
+  <KaKaoIcon /> 카카오 로그인
 </Button>`}
         />
       </div>
@@ -69,7 +69,7 @@ export default function ButtonDoc() {
         </Button>
 
         <Button className='w-full font-medium' size='xl' variant='outline'>
-          <KaKaoIcon /> &nbsp; 카카오 로그인
+          <KaKaoIcon /> 카카오 로그인
         </Button>
       </div>
 
@@ -181,7 +181,7 @@ export default function ButtonDoc() {
                     </Button>
                     {/* 아이콘 + 텍스트 */}
                     <Button size={size} variant={variant}>
-                      <WellbeingIcon /> &nbsp; 아이콘 텍스트
+                      <WellbeingIcon /> 아이콘 텍스트
                     </Button>
                     {/* 아이콘만 */}
                     <Button size={size} variant={variant}>

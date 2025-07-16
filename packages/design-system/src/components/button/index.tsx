@@ -51,7 +51,7 @@ export default function Button<T extends React.ElementType = 'button'>({
   const Component = as || 'button';
 
   const buttonClassNames = twMerge(
-    'inline-flex cursor-pointer items-center justify-center rounded-sm font-medium whitespace-nowrap',
+    'inline-flex cursor-pointer items-center justify-center rounded-sm font-medium whitespace-nowrap gap-6',
     'disabled:cursor-not-allowed disabled:border-none disabled:bg-gray-200 disabled:text-gray-50',
     BUTTON_VARIANTS[variant],
     BUTTON_SIZE[size],
