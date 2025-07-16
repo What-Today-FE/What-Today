@@ -16,8 +16,15 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Icon' to='/docs/Icon' />
             <SidebarNavItem label='Logo' to='/docs/Logo' />
             <SidebarNavItem label='Pagination' to='/docs/Pagination' />
+
+            <SidebarNavItem label='RadioGroup' to='/docs/RadioGroup' />
+
             <SidebarNavItem label='Calendar' to='/docs/Calendar' />
+
+
+
             <SidebarNavItem label='Textarea' to='/docs/Textarea' />
+
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
           </ul>
