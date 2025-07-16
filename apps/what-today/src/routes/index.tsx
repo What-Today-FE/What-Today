@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import App from '@/App';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import MyPageLayout from '@/layouts/Mypage';
 import ActivityDetailPage from '@/pages/activities';
 import LoginPage from '@/pages/login';
@@ -18,20 +19,27 @@ export const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <MainPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
-      { path: 'activities/:id', element: <ActivityDetailPage /> },
+
       {
-        path: 'mypage',
-        loader: authGuardLoader,
-        element: <MyPageLayout />,
+        element: <DefaultLayout />,
         children: [
-          { index: true, element: <EditProfilePage /> }, // 기본 진입 시 edit-profile로 연결
-          { path: 'edit-profile', element: <EditProfilePage /> },
-          { path: 'reservations-list', element: <ReservationsListPage /> },
-          { path: 'manage-activities', element: <ManageActivitiesPage /> },
-          { path: 'reservations-status', element: <ReservationsStatusPage /> },
+          { index: true, element: <MainPage /> },
+          { path: 'activities/:id', element: <ActivityDetailPage /> },
+
+          {
+            path: 'mypage',
+            loader: authGuardLoader,
+            element: <MyPageLayout />,
+            children: [
+              { index: true, element: <EditProfilePage /> },
+              { path: 'edit-profile', element: <EditProfilePage /> },
+              { path: 'reservations-list', element: <ReservationsListPage /> },
+              { path: 'manage-activities', element: <ManageActivitiesPage /> },
+              { path: 'reservations-status', element: <ReservationsStatusPage /> },
+            ],
+          },
         ],
       },
     ],
