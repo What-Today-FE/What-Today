@@ -4,12 +4,12 @@ import Playground from '@/layouts/Playground';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 const code = `
-      <Popover direction='fixed-center-center' className="w-400">
+      <Popover.Root direction='fixed-center-center' className="w-400">
         <Popover.Trigger className="bg-gray-100 px-4 py-2 rounded">클릭</Popover.Trigger>
           <Popover.Content overlay preventInteraction className="p-4 h-300 rounded-2xl border border-gray-300 bg-white shadow flex items-center justify-center">
             Popover로 띄워진 내용입니다!
         </Popover.Content>
-      </Popover>
+      </Popover.Root>
 `;
 
 export default function PopoverDoc() {
@@ -22,7 +22,7 @@ export default function PopoverDoc() {
 
 ### 👉🏻 구성 요소
 
-- \`<Popover>\` : 전체 컨텍스트와 상태를 제공하는 루트 컴포넌트입니다. **(필수)**
+- \`<Popover.Root>\` : 전체 컨텍스트와 상태를 제공하는 루트 컴포넌트입니다. **(필수)**
 - \`<Popover.Trigger>\` : 콘텐츠를 열기 위한 트리거 요소입니다. **(필수)**
 - \`<Popover.Content>\` : 실제 드롭다운 등의 UI가 렌더링되는 부분입니다. **(필수)**
 
@@ -51,7 +51,7 @@ Slot을 사용하기 위해서는 asChild로 명시적으로 활성화해주어�
 
         `}
         propsDescription={`
-### Popover
+### Popover.Root
 | 이름         | 타입                            | 설명                                              |
 |--------------|----------------------------------|---------------------------------------------------|
 | children     | \`ReactNode\`                    | \`Trigger\`, \`Content\` 등의 하위 요소를 포함해야 합니다. |
@@ -83,32 +83,32 @@ Slot을 사용하기 위해서는 asChild로 명시적으로 활성화해주어�
         title='Popover'
       />
 
-      <Popover className='w-300' direction='top'>
+      <Popover.Root className='w-300' direction='top'>
         <Popover.Trigger className='rounded bg-gray-100 px-4 py-2'>클릭하면 위로!</Popover.Trigger>
         <Popover.Content className='rounded bg-white p-4 shadow'>위쪽에 위치한 Popover입니다.</Popover.Content>
-      </Popover>
+      </Popover.Root>
       <DocCode
-        code={`<Popover className='w-300' direction='top'>
+        code={`<Popover.Root className='w-300' direction='top'>
   <Popover.Trigger className='bg-gray-100 px-4 py-2 rounded'>클릭하면 위로!</Popover.Trigger>
   <Popover.Content>
     <div>
       위쪽에 위치한 Popover입니다.
     </div>
   </Popover.Content>
-</Popover>`}
+</Popover.Root>`}
       />
 
       {/* direction 각각 예시 */}
       <div className='my-24 flex flex-wrap gap-6'>
         {(['top', 'right', 'bottom', 'left'] as const).map((dir) => (
-          <Popover key={dir} className='w-200' direction={dir}>
+          <Popover.Root key={dir} className='w-200' direction={dir}>
             <Popover.Trigger className='rounded border border-gray-300 px-4 py-2'>{dir} 방향</Popover.Trigger>
             <Popover.Content>
               <div className='h-100 rounded-2xl border border-gray-100 bg-white p-10 shadow-md'>
                 {dir}에서 나타나는 Popover
               </div>
             </Popover.Content>
-          </Popover>
+          </Popover.Root>
         ))}
       </div>
 

@@ -8,7 +8,7 @@ import { getPopoverPosition } from './utils/popoverPosition';
 const EMPTY_COORDS: Coords = { top: 0, left: 0 };
 const EMPTY_SIZE = { width: 0, height: 0 };
 
-interface PopoverRootProps extends BaseProp {
+export interface PopoverRootProps extends BaseProp {
   direction?: Position; // Popover가 뜰 위치 (ex. Trigger 기준 => 'bottom' / 뷰포트 기준 => 'fixed-top-center')
 }
 

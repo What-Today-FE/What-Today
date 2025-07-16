@@ -7,7 +7,8 @@ import { Title } from './SelectTitle';
 import { Trigger } from './SelectTrigger';
 import { Value } from './SelectValue';
 
-export const Select = Object.assign(Root, {
+export const Select = {
+  Root,
   Trigger,
   Content,
   Group,
@@ -15,4 +16,4 @@ export const Select = Object.assign(Root, {
   Label,
   Title,
   Value,
-});
+};

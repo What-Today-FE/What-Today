@@ -9,7 +9,7 @@ const code = `function Example() {
   const [selectedValue, setSelectedValue] = useState('');
 
   return (
-    <Select className='w-300 md:w-500 xl:w-700' value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
+    <Select.Root className='w-300 md:w-500 xl:w-700' value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
       <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
         <Select.Value />
       </Select.Trigger>
@@ -20,7 +20,7 @@ const code = `function Example() {
           <Select.Item value="banana">🍌 바나나</Select.Item>
         </Select.Group>
       </Select.Content>
-    </Select>
+    </Select.Root>
   );
 }
 
@@ -29,7 +29,6 @@ render(<Example />);`;
 export default function SelectDoc() {
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedValue2, setSelectedValue2] = useState('');
-  const [selectedValue3, setSelectedValue3] = useState('');
 
   return (
     <>
@@ -119,7 +118,7 @@ export default function SelectDoc() {
 
       {/* 1. 기본 예시 */}
       <div className='mb-12'>
-        <Select
+        <Select.Root
           className='w-300 md:w-500 xl:w-700'
           value={selectedValue}
           onChangeValue={(value) => setSelectedValue(value)}
@@ -137,11 +136,11 @@ export default function SelectDoc() {
               <Select.Item value='banana'>🍇 포도</Select.Item>
             </Select.Group>
           </Select.Content>
-        </Select>
+        </Select.Root>
         <p className='text-md text-gray-500'>선택된 값: {selectedValue}</p>
       </div>
       <DocCode
-        code={`<Select value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
+        code={`<Select.Root value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
   <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
     <Select.Value placeholder='좋아하는 과일은 무엇인가요?' />
   </Select.Trigger>
@@ -152,12 +151,12 @@ export default function SelectDoc() {
       <Select.Item value='banana'>🍌 바나나</Select.Item>
     </Select.Group>
   </Select.Content>
-</Select>`}
+</Select.Root>`}
       />
 
       <div className='my-24 space-y-20'>
         <div>
-          <Select className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
+          <Select.Root className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
             <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
               <Select.Value />
             </Select.Trigger>
@@ -192,11 +191,11 @@ export default function SelectDoc() {
                 </Select.Item>
               </Select.Group>
             </Select.Content>
-          </Select>
+          </Select.Root>
           <p className='text-md text-gray-500'>선택된 값: {selectedValue2}</p>
         </div>
         <DocCode
-          code={`<Select className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
+          code={`<Select.Root className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
   <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
     <Select.Value />
   </Select.Trigger>
@@ -212,7 +211,7 @@ export default function SelectDoc() {
       <Select.Item value='react'>React</Select.Item>
     </Select.Group>
   </Select.Content>
-</Select>`}
+</Select.Root>`}
         />
       </div>
 

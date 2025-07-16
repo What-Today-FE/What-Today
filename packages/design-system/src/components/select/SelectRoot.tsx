@@ -44,9 +44,9 @@ function SelectRoot({ children, onChangeValue, value: _value, className }: RootP
 
   return (
     <SelectContext.Provider value={{ handleClickItem, selectedItem }}>
-      <Popover className={className} direction='bottom'>
+      <Popover.Root className={className} direction='bottom'>
         {children}
-      </Popover>
+      </Popover.Root>
     </SelectContext.Provider>
   );
 }

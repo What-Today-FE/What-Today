@@ -2,7 +2,7 @@ import { twMerge } from 'tailwind-merge';
 
 import { useSelectContext } from './context';
 
-interface SelectValueProps {
+export interface SelectValueProps {
   placeholder?: string;
   className?: string;
 }

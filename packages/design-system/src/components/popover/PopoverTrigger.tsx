@@ -5,7 +5,7 @@ import { Slot } from '../Slot';
 import { usePopoverContext } from './PopoverContext';
 import type { BaseProp } from './types';
 
-interface PopoverTriggerProps extends BaseProp {
+export interface PopoverTriggerProps extends BaseProp {
   asChild?: boolean;
 }
 

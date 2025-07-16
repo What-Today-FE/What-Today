@@ -5,7 +5,7 @@ import { Portal } from '../Portal';
 import { usePopoverContext } from './PopoverContext';
 import type { BaseProp } from './types';
 
-interface PopoverContentProps extends BaseProp {
+export interface PopoverContentProps extends BaseProp {
   preventInteraction?: boolean; // 스크롤 방지 여부
   overlay?: boolean; // 배경 오버레이 표시 여부
   matchTriggerWidth?: boolean;
