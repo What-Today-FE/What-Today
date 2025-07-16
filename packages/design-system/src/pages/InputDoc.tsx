@@ -154,6 +154,8 @@ Input은 합성 컴포넌트 패턴으로 구현되어 있으며, 다음과 같�
 - \`<Input.Field>\`: 실제 input 태그 **(필수)**
   - props : value, onChange, ref, type = 'text', className, ...
 - \`<Input.Icon>\`: 좌/우 아이콘을 렌더링하는 요소 (단순 텍스트, displayName이 'Icon'인 컴포넌트만 허용)
+- \`<Input.TextCounter>\`: 글자 수 카운터 UI
+  - props : length, maxLength(생략 가능), className
 - \`<Input.ErrorMessage>\`: 에러 메시지를 표시하는 요소
 
 ---
@@ -175,6 +177,14 @@ Input은 합성 컴포넌트 패턴으로 구현되어 있으며, 다음과 같�
 
 - Context 기반으로 구성되어 있어, 컴포넌트는 반드시 \`<Input.Root>\` 안에서 사용되어야 합니다.
 - \`<Input.Root>\`,  \`<Input.Wrapper>\`,  \`<Input.Field>\`은 필수 요소입니다.
+
+---
+
+### 💬 TextCounter 컴포넌트
+
+- \`<Input.TextCounter>\`는 \`<Input.Wrapper>\` 외부에서 사용합니다. \`<Input.ErrorMessage>\`와 순서는 상관 없습니다.
+- \`<Input.TextCounter>\`는 단순히 글자수를 계산하여 보여주는 UI 컴포넌트입니다.  
+  따라서 maxLength를 설정하더라도 실제 값에는 영향이 없으므로, \`<Input.Field>\`에서 설정해주세요.
 
 ---
 
@@ -208,6 +218,7 @@ Input은 합성 컴포넌트 패턴으로 구현되어 있으며, 다음과 같�
 
 `}
         propsDescription={`
+### Input.Root
 | 이름      | 타입                                     | 설명                              |
 |-----------|------------------------------------------|-----------------------------------|
 | size      | \`'xl', 'lg, 'md, 'sm', 'xs', 'full'\` | Root 기준 사이즈 클래스 지정       |
@@ -215,6 +226,47 @@ Input은 합성 컴포넌트 패턴으로 구현되어 있으며, 다음과 같�
 | id        | \`string\`                                | Field/Label/Aria 연결용 ID        |
 | disabled  | \`boolean\`                               | 비활성화 여부                     |
 | error     | \`string\`                                | 에러 메시지 (존재 시 invalid 처리) |
+
+### Input.Label
+| 이름       | 타입         | 설명                                         |
+|------------|--------------|----------------------------------------------|
+| className  | \`string\`     | 외부에서 레이아웃 확장용 스타일              |
+| children   | \`ReactNode\`  | 라벨로 렌더링할 텍스트 또는 노드              |
+
+### Input.Wrapper
+| 이름       | 타입         | 설명                                                                 |
+|------------|--------------|----------------------------------------------------------------------|
+| className  | \`string\`     | 외부에서 스타일을 확장하거나 덮어쓰기 위한 TailwindCSS 클래스         |
+| children   | \`ReactNode\`  | 내부에 렌더링할 컴포넌트들 (예: \`Input.Field\`, \`Input.Textarea\`, \`Input.Icon\`)       |
+
+### Input.Icon
+| 이름        | 타입         | 설명                                                                 |
+|-------------|--------------|----------------------------------------------------------------------|
+| className   | \`string?\`     | 외부에서 스타일을 확장하거나 덮어쓰기 위한 TailwindCSS 클래스         |
+| children    | \`ReactNode\`   | 렌더링할 아이콘 또는 문자열                                           |
+
+### Input.Field
+| 이름        | 타입                                         | 설명                                                                 |
+|-------------|----------------------------------------------|----------------------------------------------------------------------|
+| value       | \`string, number, readonly string[]\`     | 현재 입력된 값                                                       |
+| onChange    | \`(e: ChangeEvent<HTMLInputElement>) => void\` | 입력 변경 핸들러 함수                                                |
+| type        | \`string\`                                    | \`input\`의 타입 (기본값: \`'text'\`)                                   |
+| className   | \`string?\`                                   | 외부에서 스타일을 확장하거나 덮어쓰기 위한 TailwindCSS 클래스         |
+| ref         | \`React.Ref<HTMLInputElement>\`               | input DOM에 대한 참조                                                |
+| ...props    | \`InputHTMLAttributes<HTMLInputElement>\`     | 기본 HTML input 속성을 모두 지원                                    |
+
+
+### Input.TextCounter
+| 이름        | 타입       | 설명                                                                 |
+|-------------|------------|----------------------------------------------------------------------|
+| length      | \`number\`   | 현재 입력된 글자 수 (필수)                                           |
+| maxLength   | \`number?\`  | 최대 입력 가능 글자 수 (생략 가능)                                   |
+| className   | \`string?\`  | 외부에서 스타일을 확장하거나 덮어쓰기 위한 TailwindCSS 클래스         |
+
+### Input.ErrorMessage
+| 이름        | 타입       | 설명                                                              |
+|-------------|------------|-------------------------------------------------------------------|
+| className   | \`string?\`  | 외부에서 스타일을 확장하거나 덮어쓰기 위한 TailwindCSS 클래스      |
 `}
         title='Input'
       />
