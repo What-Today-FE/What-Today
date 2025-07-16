@@ -9,11 +9,11 @@ interface ReservationCardProps {
   bannerImageUrl: string;
   /**
    * 예약 상태
-   * - pending: 체험 완료
+   * - pending: 신청 완료
    * - confirmed: 예약 승인
    * - declined: 예약 거절
    * - canceled: 예약 취소
-   * - completed: 예약 완료
+   * - completed: 체험 완료
    */
   status: 'pending' | 'confirmed' | 'declined' | 'canceled' | 'completed';
   /**
