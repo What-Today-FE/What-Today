@@ -1,5 +1,5 @@
 import { Children, isValidElement } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
 
 import SpinIcon from '@/components/icons/SpinIcon';
 
@@ -18,14 +18,6 @@ const BUTTON_SIZE = {
   md: 'w-232 h-37 px-10 py-10 text-md rounded-lg',
   sm: 'w-138 h-47 px-40 py-14 text-lg rounded-[14px]',
   xs: 'w-120 h-41 px-40 py-12 text-md font-bold rounded-xl',
-};
-
-const SPIN_ICON_SIZE = {
-  xl: 'size-24',
-  lg: 'size-20',
-  md: 'size-20',
-  sm: 'size-20',
-  xs: 'size-20',
 };
 
 function LoadingButton({ className, children }: { className: string; children: React.ReactNode }) {
@@ -58,7 +50,7 @@ export default function Button<T extends React.ElementType = 'button'>({
     className,
   );
 
-  const loadingClassNames = SPIN_ICON_SIZE[size];
+  const loadingClassNames = twJoin(size === 'xl' ? 'size-24' : 'size-20');
 
   const validChildren = Children.toArray(children).filter((child) => {
     return (
