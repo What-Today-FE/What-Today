@@ -6,9 +6,9 @@ import SpinIcon from '@/components/icons/SpinIcon';
 import type { ButtonProps } from './types';
 
 const BUTTON_VARIANTS = {
-  fill: 'bg-primary-500 text-white hover:bg-blue-500 active:bg-blue-600',
-  outline: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
-  ghost: 'bg-white text-gray-600 hover:bg-gray-100 active:bg-gray-200',
+  fill: 'bg-primary-500 text-white hover:brightness-95 active:brightness-90',
+  outline: 'bg-white border border-gray-200 text-gray-700 hover:brightness-95 active:brightness-90',
+  ghost: 'bg-white text-gray-600 hover:brightness-95 active:brightness-90',
   none: '',
 };
 
