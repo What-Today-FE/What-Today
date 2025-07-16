@@ -37,48 +37,48 @@ export function getPopoverPosition(rect: DOMRect, position: Position, contentSiz
       };
     case 'fixed-top-left':
       return {
-        top: scrollY,
+        top: 0,
         left: 0,
       };
     case 'fixed-top-center':
       return {
-        top: scrollY,
-        left: scrollX + (viewportWidth - contentSize.width) / 2,
+        top: 0,
+        left: (viewportWidth - contentSize.width) / 2,
       };
     case 'fixed-top-right':
       return {
-        top: scrollY,
-        left: window.innerWidth - contentSize.width,
+        top: 0,
+        left: viewportWidth - contentSize.width,
       };
     case 'fixed-center-left':
       return {
-        top: scrollY + (viewportHeight - contentSize.height) / 2,
+        top: (viewportHeight - contentSize.height) / 2,
         left: 0,
       };
     case 'fixed-center-center':
       return {
-        top: scrollY + (viewportHeight - contentSize.height) / 2,
-        left: scrollX + (viewportWidth - contentSize.width) / 2,
+        top: (viewportHeight - contentSize.height) / 2,
+        left: (viewportWidth - contentSize.width) / 2,
       };
     case 'fixed-center-right':
       return {
-        top: scrollY + (viewportHeight - contentSize.height) / 2,
-        left: scrollX + viewportWidth - contentSize.width,
+        top: (viewportHeight - contentSize.height) / 2,
+        left: viewportWidth - contentSize.width,
       };
     case 'fixed-bottom-left':
       return {
-        top: scrollY + viewportHeight - contentSize.height,
+        top: viewportHeight - contentSize.height,
         left: 0,
       };
     case 'fixed-bottom-center':
       return {
-        top: scrollY + viewportHeight - contentSize.height,
-        left: scrollX + (viewportWidth - contentSize.width) / 2,
+        top: viewportHeight - contentSize.height,
+        left: (viewportWidth - contentSize.width) / 2,
       };
     case 'fixed-bottom-right':
       return {
-        top: scrollY + viewportHeight - contentSize.height,
-        left: scrollX + viewportWidth - contentSize.width,
+        top: viewportHeight - contentSize.height,
+        left: viewportWidth - contentSize.width,
       };
   }
 }
