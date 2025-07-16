@@ -1,6 +1,14 @@
-import type { Position } from '../types';
+import type { Position, Size } from '../types';
 
-export function getPopoverPosition(rect: DOMRect, position: Position, dropdownSize: { width: number; height: number }) {
+/** getPopoverPosition
+ * @description Popover.Trigger 위치 기반  or 뷰포트 기반 Popover.Content의 위치 계산
+ *
+ * @param rect : Popover.Trigger 위치 (triggerPosition)
+ * @param position : top | bottom | left | right : Popover.Trigger 기반 & fixed- : 뷰포트 기반
+ * @param contentSize : Popover.Content의 크기
+ * @returns Popover.Content의 좌표 위치 (top, left)
+ */
+export function getPopoverPosition(rect: DOMRect, position: Position, contentSize: Size) {
   const scrollY = window.scrollY;
   const scrollX = window.scrollX;
   const viewportWidth = window.innerWidth;
@@ -9,7 +17,7 @@ export function getPopoverPosition(rect: DOMRect, position: Position, dropdownSi
   switch (position) {
     case 'top':
       return {
-        top: rect.top + scrollY - dropdownSize.height,
+        top: rect.top + scrollY - contentSize.height,
         left: rect.left + scrollX,
       };
     case 'bottom':
@@ -20,7 +28,7 @@ export function getPopoverPosition(rect: DOMRect, position: Position, dropdownSi
     case 'left':
       return {
         top: rect.top + scrollY,
-        left: rect.left + scrollX - dropdownSize.width,
+        left: rect.left + scrollX - contentSize.width,
       };
     case 'right':
       return {
@@ -35,42 +43,42 @@ export function getPopoverPosition(rect: DOMRect, position: Position, dropdownSi
     case 'fixed-top-center':
       return {
         top: scrollY,
-        left: scrollX + (viewportWidth - dropdownSize.width) / 2,
+        left: scrollX + (viewportWidth - contentSize.width) / 2,
       };
     case 'fixed-top-right':
       return {
         top: scrollY,
-        left: window.innerWidth - dropdownSize.width,
+        left: window.innerWidth - contentSize.width,
       };
     case 'fixed-center-left':
       return {
-        top: scrollY + (viewportHeight - dropdownSize.height) / 2,
+        top: scrollY + (viewportHeight - contentSize.height) / 2,
         left: 0,
       };
     case 'fixed-center-center':
       return {
-        top: scrollY + (viewportHeight - dropdownSize.height) / 2,
-        left: scrollX + (viewportWidth - dropdownSize.width) / 2,
+        top: scrollY + (viewportHeight - contentSize.height) / 2,
+        left: scrollX + (viewportWidth - contentSize.width) / 2,
       };
     case 'fixed-center-right':
       return {
-        top: scrollY + (viewportHeight - dropdownSize.height) / 2,
-        left: scrollX + viewportWidth - dropdownSize.width,
+        top: scrollY + (viewportHeight - contentSize.height) / 2,
+        left: scrollX + viewportWidth - contentSize.width,
       };
     case 'fixed-bottom-left':
       return {
-        top: scrollY + viewportHeight - dropdownSize.height,
+        top: scrollY + viewportHeight - contentSize.height,
         left: 0,
       };
     case 'fixed-bottom-center':
       return {
-        top: scrollY + viewportHeight - dropdownSize.height,
-        left: scrollX + (viewportWidth - dropdownSize.width) / 2,
+        top: scrollY + viewportHeight - contentSize.height,
+        left: scrollX + (viewportWidth - contentSize.width) / 2,
       };
     case 'fixed-bottom-right':
       return {
-        top: scrollY + viewportHeight - dropdownSize.height,
-        left: scrollX + viewportWidth - dropdownSize.width,
+        top: scrollY + viewportHeight - contentSize.height,
+        left: scrollX + viewportWidth - contentSize.width,
       };
   }
 }
