@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
+import RadioGroup from '@/components/RadioGroup/RadioGroup';
+
 import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from '../components/icons';
-import RadioGroup from '../components/RadioGroup';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 export default function RadioGroupDoc() {
@@ -97,7 +98,7 @@ return (
         <RadioGroup
           radioGroupClassName='gap-6'
           selectedClassName='bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95'
-          selectedColor='white'
+          selectedIconColor='white'
           selectedValue={selectedCategory1}
           titleClassName='text-lg font-semibold mb-2'
           unSelectedClassName='bg-indigo-50 '
@@ -238,7 +239,7 @@ return (
           onSelect={setSelectedCategory1}
           unSelectedClassName='bg-indigo-50 '    추가
           selectedClassName='bg-gradient-to-r from-indigo-400 to-cyan-500 text-white hover:scale-110 active:scale-95' 추가
-          selectedColor='white'                  추가
+          selectedIconColor='white'                  추가
         >
           아이콘 기본 size=20입니다. size 조절 시 아이콘 컴포넌트 안에서 className="size="" 조절가능합니다
           <div className='flex gap-12'>
