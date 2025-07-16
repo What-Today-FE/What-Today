@@ -23,7 +23,7 @@ function SelectItem({ value, children, className }: BaseProps & { value: string 
 
   return (
     <div
-      className={twMerge('hover:bg-primary-100 rounded-xl p-10', className)}
+      className={twMerge('hover:bg-primary-100 rounded-xl p-10 break-words', className)}
       onClick={() => handleClickItem(value, children)}
     >
       {children}

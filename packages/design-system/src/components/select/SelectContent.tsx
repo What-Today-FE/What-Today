@@ -21,6 +21,7 @@ import type { BaseProps } from './types';
 function SelectContent({ className, children }: BaseProps) {
   return (
     <Popover.Content
+      matchTriggerWidth
       className={twMerge(
         'mt-4 max-h-300 overflow-y-scroll rounded-2xl border border-gray-100 bg-white p-10',
         className,
