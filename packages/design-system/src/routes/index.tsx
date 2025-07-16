@@ -7,6 +7,7 @@ import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
+import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import Sidebar from '@/layouts/Sidebar';
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: 'button-example',
         element: <ButtonExampleDocs />,
+      },
+      {
+        path: 'Textarea',
+        element: <TextareaDoc />,
       },
       {
         path: 'ReservationCard',
