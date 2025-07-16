@@ -1,22 +1,18 @@
-import type { Dayjs } from 'dayjs';
+import { twMerge } from 'tailwind-merge';
 
 import { TriangleIcon } from '@/components/icons';
 
+import { useCalendarContext } from './CalendarContext';
+
 interface CurrentHeaderProps {
   /**
-   * 현재 표시 중인 월 (Dayjs 객체)
+   * Header컴포넌트 커스텀 가능
    */
-  currentMonth: Dayjs;
-
+  headerClass?: string;
   /**
-   * 이전 달로 이동할 때 호출되는 콜백 함수
+   * Title 커스텀 가능
    */
-  onPrev: () => void;
-
-  /**
-   * 다음 달로 이동할 때 호출되는 콜백 함수
-   */
-  onNext: () => void;
+  titleClass?: string;
 }
 
 /**
@@ -39,16 +35,24 @@ interface CurrentHeaderProps {
  * />
  * ```
  */
-export default function CalendarHeader({ currentMonth, onPrev, onNext }: CurrentHeaderProps) {
+export default function CalendarHeader({ headerClass, titleClass }: CurrentHeaderProps) {
+  const { currentMonth, setCurrentMonth } = useCalendarContext();
+  const handlePrevMonth = () => {
+    setCurrentMonth(currentMonth.subtract(1, 'month'));
+  };
+  const handleNextMonth = () => {
+    setCurrentMonth(currentMonth.add(1, 'month'));
+  };
+
   return (
-    <div className='flex w-full justify-center gap-30 py-6'>
+    <div className={twMerge('flex w-full justify-center gap-30', headerClass)}>
       {/*버튼 공통컴포넌트로 수정 예정 */}
-      <button aria-label='이전 달로 이동' className='cursor-pointer' type='button' onClick={onPrev}>
+      <button aria-label='이전 달로 이동' className='cursor-pointer' type='button' onClick={handlePrevMonth}>
         <TriangleIcon direction='left' />
       </button>
-      <div className='text-lg font-bold text-gray-950 md:text-xl'>{currentMonth.format('YYYY년 MM월')}</div>
+      <div className={twMerge('text-lg font-bold text-gray-950', titleClass)}>{currentMonth.format('YYYY년 MM월')}</div>
       {/*버튼 공통컴포넌트로 수정 예정 */}
-      <button aria-label='다음 달로 이동' className='cursor-pointer' type='button' onClick={onNext}>
+      <button aria-label='다음 달로 이동' className='cursor-pointer' type='button' onClick={handleNextMonth}>
         <TriangleIcon direction='right' />
       </button>
     </div>

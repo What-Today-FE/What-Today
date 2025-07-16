@@ -1,8 +1,11 @@
+import type { Dayjs } from 'dayjs';
 import { createContext, useContext } from 'react';
 
 export interface CalendarContextType {
   selectedDate: string | null;
   onSelectDate: (date: string) => void;
+  currentMonth: Dayjs;
+  setCurrentMonth: (day: Dayjs) => void;
 }
 
 export const CalendarContext = createContext<CalendarContextType | null>(null);

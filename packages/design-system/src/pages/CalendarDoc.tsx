@@ -1,11 +1,16 @@
+import { Calendar } from '@/components';
 import Playground from '@/layouts/Playground';
 
-import Calendar from '../components/calendar/Calendar';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
 /* Playground에서 사용할 예시 코드를 작성해주세요. */
-const code = `<Calendar />`;
+const code = `<Calendar.Root className='gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'>
+        <Calendar.Header headerClass='py-6' titleClass='md:text-xl' />
+        <Calendar.Grid weekdayType='long' weekdayClass='text-sm font-bold md:text-lg' divider>
+          {(day) => <Calendar.DayCell day={day} dayCellClass='h-104 items-start md:h-124' dateClass='size-28 flex m-4 md:m-9' />}
+        </Calendar.Grid>
+      </Calendar.Root>`;
 
 export default function CalendarDoc() {
   return (
@@ -17,11 +22,11 @@ export default function CalendarDoc() {
 
 아래는 기본적인 사용 예시입니다:
 
-\`\`\`tsx
-import { Calendar } from '@what-today/design-system';
+// \`\`\`tsx
+// import { Calendar } from '@what-today/design-system';
 
-<Calendar />
-\`\`\`
+// <Calendar />
+// \`\`\`
 `}
         propsDescription={`
 | 이름         | 타입           | 설명                                      |
@@ -34,6 +39,12 @@ import { Calendar } from '@what-today/design-system';
       />
       {/* 실제 컴포넌트를 아래에 작성해주세요 */}
       {/* 예시 코드 */}
+      <Calendar.Root>
+        <Calendar.Header />
+        <Calendar.Grid divider={false} weekdayType='short'>
+          {(day) => <Calendar.DayCell day={day} reservableDates={new Set(['2025-07-18', '2025-07-25'])} />}
+        </Calendar.Grid>
+      </Calendar.Root>
       <DocCode code='<Calendar />' />
 
       {/* Playground는 편집 가능한 코드 블록입니다. */}

@@ -1,34 +1,34 @@
 import type { Dayjs } from 'dayjs';
-import { twJoin } from 'tailwind-merge';
+import { twJoin, twMerge } from 'tailwind-merge';
 
 import { useCalendarContext } from './CalendarContext';
 
 interface DayCellProps {
   day: Dayjs;
-  currentMonth: Dayjs;
+  reservableDates?: Set<string>;
+  dayCellClass?: string;
+  dateClass?: string;
 }
 
-export default function DayCell({ day, currentMonth }: DayCellProps) {
-  const { selectedDate, onSelectDate } = useCalendarContext();
+export default function DayCell({ day, reservableDates, dayCellClass, dateClass }: DayCellProps) {
+  const { currentMonth, selectedDate, onSelectDate } = useCalendarContext();
   const handleClick = () => {
     onSelectDate(day.format('YYYY-MM-DD'));
   };
 
+  const isReservable = reservableDates && reservableDates.has(day.format('YYYY-MM-DD'));
   const isOtherMonth = day.month() !== currentMonth.month();
   const isSelected = selectedDate === day.format('YYYY-MM-DD');
-  const dayCellClass = twJoin(
-    'flex h-104 items-start justify-center cursor-pointer md:h-124',
+  const dayCellBaseClass = 'flex w-full aspect-square items-center justify-center cursor-pointer p-1';
+  const dateBaseClass = twJoin(
+    'text-lg font-medium rounded-full size-42 flex justify-center items-center',
     isOtherMonth ? 'text-gray-300' : 'text-gray-800',
-  );
-  const dateClass = twJoin(
-    'text-xs font-medium md:text-lg',
-    isSelected
-      ? 'bg-primary-100 rounded-full size-20 md:size-32 flex justify-center items-center m-4 md:m-9'
-      : 'p-4 md:p-12',
+    isReservable && 'bg-primary-100 text-primary-500',
+    isSelected && 'bg-primary-500 text-white',
   );
   return (
-    <div className={`${dayCellClass}`} onClick={handleClick}>
-      <span className={`${dateClass}`}>{day.date()}</span>
+    <div className={twMerge(dayCellBaseClass, dayCellClass)} onClick={handleClick}>
+      <span className={twMerge(dateBaseClass, dateClass)}>{day.date()}</span>
     </div>
   );
 }

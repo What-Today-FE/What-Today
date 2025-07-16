@@ -1,14 +1,14 @@
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
+import { twMerge } from 'tailwind-merge';
 
-import DayCell from './DayCell';
+import { useCalendarContext } from './CalendarContext';
 
 interface CalendarGridProps {
-  /**
-   * 현재 표시 중인 월 (Dayjs 객체)
-   */
-  currentMonth: Dayjs;
+  weekdayType: 'long' | 'short';
+  weekdayClass?: string;
+  divider: boolean;
+  children: (day: Dayjs) => React.ReactNode;
 }
 // dayjs 확장 및 로케일 설정
 dayjs.extend(localeData);
@@ -29,11 +29,16 @@ dayjs.locale('en');
  * <CalendarGrid currentMonth={dayjs()} />
  * ```
  */
-export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
-  const Weekdays = dayjs.weekdaysShort();
+export default function CalendarGrid({ weekdayType, weekdayClass, divider, children }: CalendarGridProps) {
+  const { currentMonth } = useCalendarContext();
+  const weekdays = {
+    long: dayjs.weekdaysShort(),
+    short: dayjs.weekdaysShort().map((d) => d[0]),
+  };
+
   const weekdayColorMap: Record<string, string> = {
-    Sun: 'text-red-500',
-    Sat: 'text-blue-500',
+    0: 'text-red-500',
+    6: 'text-blue-500',
   };
 
   const startDate = dayjs(currentMonth).startOf('month').startOf('week');
@@ -53,29 +58,24 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
 
   return (
     <div className='w-full'>
-      <div className='grid grid-cols-7 border-b border-gray-100 pb-12'>
-        {Weekdays.map((day) => {
-          const textColor = weekdayColorMap[day] ?? 'text-gray-950';
+      <div className='grid grid-cols-7 border-b border-gray-100'>
+        {weekdays[weekdayType].map((day, idx) => {
+          const textColor = weekdayColorMap[idx] ?? 'text-gray-950';
           return (
-            <div key={day} className={`${textColor} flex justify-center p-12 text-sm font-bold md:text-lg`}>
+            <div
+              key={day}
+              className={twMerge('flex justify-center p-12 text-lg font-semibold', textColor, weekdayClass)}
+            >
               {day}
             </div>
           );
         })}
       </div>
-      <div className='divide-y divide-solid divide-gray-50'>
+      <div className={divider ? 'divide-y divide-solid divide-gray-50' : ''}>
         {weeks.map((week, idx) => (
           <div key={idx} className='grid grid-cols-7'>
             {week.map((day) => {
-              const isOtherMonth = day.month() !== currentMonth.month();
-              const baseClass = 'flex h-104 items-center justify-center p-12 text-xs font-medium md:h-124 md:text-lg';
-              const textColorClass = isOtherMonth ? 'text-gray-300' : 'text-gray-800';
-              return (
-                // <div key={day.format('MM/DD')} className={`${baseClass} ${textColorClass}`}>
-                //   {day.date()}
-                // </div>
-                <DayCell key={day.format('MM/DD')} currentMonth={currentMonth} day={day} />
-              );
+              return children(day);
             })}
           </div>
         ))}
