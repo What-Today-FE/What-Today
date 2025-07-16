@@ -9,3 +9,8 @@ export interface SelectContextType {
   handleClickItem: (value: string, label: ReactNode) => void;
   selectedItem: SelectItem;
 }
+
+export interface BaseProps {
+  className?: string;
+  children: ReactNode;
+}
