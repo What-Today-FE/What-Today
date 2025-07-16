@@ -37,6 +37,7 @@ export default function Button({
   disabled = false,
   className,
   children,
+  onClick,
   ...rest
 }: ButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,8 +47,8 @@ export default function Button({
       return;
     }
 
-    if (typeof rest.onClick === 'function') {
-      rest.onClick(e);
+    if (typeof onClick === 'function') {
+      onClick(e);
     }
   };
 
