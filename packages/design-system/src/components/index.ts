@@ -3,6 +3,6 @@ export * from './icons';
 export * from './input';
 export * from './logos';
 export { default as Pagination } from './Pagination';
+export { default as ReservationCard } from './ReservationCard';
 export * from '@/components/calendar/index';
 export * from '@/components/dropdown/index';
-export * from '@/components/ReservationCard';
