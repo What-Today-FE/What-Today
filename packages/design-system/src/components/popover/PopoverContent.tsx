@@ -10,6 +10,28 @@ interface PopoverContentProps extends BaseProp {
   overlay?: boolean; // 배경 오버레이 표시 여부
 }
 
+/**
+ * @component PopoverContent
+ * @description Popover의 실제 콘텐츠를 렌더링하는 컴포넌트입니다. `Portal`을 통해 루트 DOM에 렌더링되며, 트리거 요소(PopoverTrigger)의 위치에 따라 위치가 동적으로 계산됩니다.
+ * - `open` 상태에 따라 렌더링 여부가 결정됩니다.
+ * - `preventInteraction`이 true일 경우, 뒷 배경의 스크롤이 금지됩니다.
+ * - `overlay`가 true일 경우, Popover 아래 검은 레이어가 추가됩니다.
+ *
+ * @param {React.ReactNode} props.children - Popover 내부에 표시할 콘텐츠
+ * @param {boolean} [props.preventInteraction=false] - true일 경우 Popover 뒷 배경의 스크롤이 금지됩니다.
+ * @param {boolean} [props.overlay=false] - true일 경우 Popover 아래 검은 레이어가 추가됩니다.
+ * @param {string} [props.className] - 스타일 확장용 className
+ *
+ * @example
+ * ```tsx
+ * <Popover>
+ *   <PopoverTrigger>열기</PopoverTrigger>
+ *   <PopoverContent overlay preventInteraction>
+ *     <div className="p-4">내용</div>
+ *   </PopoverContent>
+ * </Popover>
+ * ```
+ */
 function PopoverContent({ children, className, preventInteraction = false, overlay = false }: PopoverContentProps) {
   const { open, handleContentRef, direction, contentCoords, triggerWidth, contentSize } = usePopoverContext();
 
@@ -29,7 +51,6 @@ function PopoverContent({ children, className, preventInteraction = false, overl
 
   return (
     <Portal>
-      {/* overlay : Popover 아래 검은 배경 */}
       {overlay && <div className='fixed inset-0 z-40 bg-black/30' />}
       <div
         ref={handleContentRef}

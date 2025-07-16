@@ -5,26 +5,34 @@ import { PopoverContext } from './PopoverContext';
 import type { BaseProp, Coords, Position } from './types';
 import { getPopoverPosition } from './utils/popoverPosition';
 
+const EMPTY_COORDS: Coords = { top: 0, left: 0 };
+const EMPTY_SIZE = { width: 0, height: 0 };
+
 interface PopoverRootProps extends BaseProp {
   direction?: Position; // Popover가 뜰 위치 (ex. Trigger 기준 => 'bottom' / 뷰포트 기준 => 'fixed-top-center')
 }
 
+/**
+ * @component PopoverRoot
+ * @description Popover의 위치, 크기, 외부 클릭, Esc 키 등 다양한 상호작용 로직을 포함한 루트 컴포넌트입니다.
+ */
 function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootProps) {
   const [open, setOpen] = useState(false); // Popover 열고 닫힘 상태
-  const [contentCoords, setContentCoords] = useState<Coords>({ top: 0, left: 0 }); // ? Popover.Content의 좌표
+  const [contentCoords, setContentCoords] = useState<Coords>(EMPTY_COORDS); // Popover.Content의 좌표
   const [triggerWidth, setTriggerWidth] = useState<number | null>(null); // Popover.Trigger의 크기
-  const [contentSize, setContentSize] = useState({ width: 0, height: 0 }); // Popover.Content의 크기
+  const [contentSize, setContentSize] = useState(EMPTY_SIZE); // Popover.Content의 크기
 
   const triggerRef = useRef<HTMLDivElement | null>(null); // Popover.Trigger의 Ref
-  const contentElementRef = useRef<HTMLDivElement | null>(null); // ? Popover.Content의 Ref
-  /** handleContentRef
-   * useCallback: open 값이 변경되지 않으면 리렌더링 되지 않도록.
-   * ref가 DOM에 연결될 때 React가 이 함수에 해당 DOM 노드를 넘긴다. => 여기에서는 Popover.Content의 크기를 계산합니다.
-   * DOM 노드를 ref에 담아 저장하며, DOM 요소의 렌더링된 실제 크기와 위치를 계산한다. (getBoundingClientRect())
-   * 측정한 크기를 setContentSize에 저장합니다.
-   *
-   * 즉, contentRef는 popover로 화면에 content가 나타났을 때 크기를 측정하기 위한 용도이고,
-   * contentElementRef는 그 DOM을 나중에 참조하기 위한 것.
+  const contentElementRef = useRef<HTMLDivElement | null>(null); // Popover.Content의 Ref
+
+  /**
+   * @function handleContentRef
+   * @description Popover.Content에 연결되는 ref 함수로, DOM이 mount될 때 content 크기를 측정하여 저장합니다.
+   * 1. useCallback: open 값이 변경되지 않으면 리렌더링 되지 않도록 합니다.
+   * 2. ref가 DOM에 연결될 때 React가 이 함수에 해당 DOM 노드를 넘깁니다. => 여기에서는 Popover.Content의 크기를 계산합니다.
+   * 3. DOM 노드를 ref에 담아 저장하며, DOM 요소의 렌더링된 실제 크기와 위치를 계산합니다. (getBoundingClientRect())
+   * 4. 측정한 크기를 setContentSize에 저장합니다.
+   * => 즉, contentRef는 popover로 화면에 content가 나타났을 때 크기를 측정하기 위한 용도이고,contentElementRef는 그 DOM을 나중에 참조하기 위한 것입니다.
    */
   const handleContentRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -37,6 +45,10 @@ function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootP
     [open],
   );
 
+  /**
+   * @effect Popover 위치 계산 및 resize/scroll 대응
+   * - Trigger 기준 또는 뷰포트 기준으로 위치를 동적으로 계산하며, Trigger 변화나 스크롤/리사이즈 이벤트에 대응
+   */
   useEffect(() => {
     if (!open || !triggerRef.current || !contentSize.width || !contentSize.height) return; // popover가 닫혀있거나, Trigger 혹은 Content의 내용이 없으면 생략
 
@@ -70,8 +82,10 @@ function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootP
   }, [open, direction, contentSize]);
 
   /**
-   * 만약 useEffect로 바꿔서 오류가 생기면 useLayoutEffect로 변경할 예정
-   * useLayoutEffect() : 브라우저 페인팅 전에 동기적으로 실행으로 권장되지 않음 (useEffect는 브라우저 페인팅 후 비동기적으로 실행)
+   * @effect Trigger 크기 추적 (ResizeObserver)
+   * - 반응형 대응을 위해 Trigger의 width를 추적하여 상태에 저장
+   * - 만약 useEffect로 바꿔서 오류가 생기면 useLayoutEffect로 변경할 예정
+   *   - useLayoutEffect() : 브라우저 페인팅 전에 동기적으로 실행으로 권장되지 않음 (useEffect는 브라우저 페인팅 후 비동기적으로 실행)
    */
   useEffect(() => {
     if (!triggerRef.current) return; // triggerRef가 없다면 생략
@@ -91,7 +105,9 @@ function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootP
     return () => triggerObserver.disconnect();
   }, []);
 
-  // Popover가 열려있을 때 닫힘 관련 설정
+  /**
+   * @effect 외부 클릭 및 ESC 키에 의한 Popover 닫기 처리
+   */
   useEffect(() => {
     if (!open) return;
 
