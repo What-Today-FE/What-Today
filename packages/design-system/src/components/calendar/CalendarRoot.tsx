@@ -3,53 +3,50 @@ import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { CalendarContext } from './CalendarContext';
-
+/**
+ * CalendarRootProps
+ *
+ * @property {React.ReactNode} children - 캘린더 하위 컴포넌트들
+ * @property {string} [initialDate] - 선택된 날짜의 초기값 (예: `'2025-08-01'`)
+ * @property {string} [className] - 사용자 정의 Tailwind 클래스
+ */
 interface CalendarRootProps {
   /**
-   * Calendar 내부에 포함될 자식 요소들 (Header, Grid 등)
+   * 캘린더 하위 컴포넌트들
    */
   children: React.ReactNode;
-  initialDate?: string;
+  /**
+   * CalendarRoot 커스텀 가능
+   */
   className?: string;
 }
+
 /**
- * CalendarRoot 컴포넌트 (월 단위의 달력을 렌더링하는 최상위 UI 컴포넌트)
+ * CalendarRoot 컴포넌트
  *
- * - 현재 월 상태를 관리하며, 이전/다음 달로 이동할 수 있습니다.
- * - 상단에는 월 이동을 위한 헤더(`CalendarHeader`)가 있고,
- * - 하단에는 날짜 그리드(`CalendarGrid`)가 표시됩니다.
+ * - 캘린더 컴포넌트의 루트이며, 날짜 선택 및 월 이동 상태를 전역으로 제공합니다.
+ * - 내부적으로 Context를 통해 현재 월(`currentMonth`)과 선택된 날짜(`selectedDate`)를 관리합니다.
+ * - 하위 컴포넌트는 반드시 `CalendarContext`를 통해 상태에 접근해야 합니다.
  *
  * @component
+ * @param {CalendarRootProps} props - 내부 요소, 스타일 커스터마이징을 위한 클래스
+ * @returns {JSX.Element} 캘린더 루트 컴포넌트
+ *
  * @example
  * ```tsx
- * <CalendarRoot />
+ * <CalendarRoot initialDate="2025-08-01">
+ *   <CalendarHeader />
+ *   <CalendarGrid />
+ * </CalendarRoot>
  * ```
  */
-export default function CalendarRoot({ children, initialDate, className }: CalendarRootProps) {
+export default function CalendarRoot({ children, className }: CalendarRootProps) {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
-  const [selectedDate, setSelectedDate] = useState<string>(initialDate || '');
-
-  // const handlePrevMonth = () => {
-  //   setCurrentMonth
-  //   ((prev) => prev.subtract(1, 'month'));
-  // };
-  // const handleNextMonth = () => {
-  //   setCurrentMonth((prev) => prev.add(1, 'month'));
-  // };
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   return (
     <CalendarContext.Provider value={{ selectedDate, onSelectDate: setSelectedDate, currentMonth, setCurrentMonth }}>
-      <div
-        aria-label='예약 캘린더'
-        className={twMerge('flex w-full max-w-640 flex-col gap-8', className)}
-        // >
-        //   <CalendarHeader currentMonth={currentMonth} onNext={handleNextMonth} onPrev={handlePrevMonth} />
-        //   <CalendarGrid currentMonth={currentMonth} />
-        // </div>
-        // <div
-        // aria-label='예약 캘린더'
-        // className='flex max-w-640 flex-col gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
-      >
+      <div aria-label='예약 캘린더' className={twMerge('flex w-full max-w-640 flex-col gap-8', className)}>
         {children}
       </div>
     </CalendarContext.Provider>

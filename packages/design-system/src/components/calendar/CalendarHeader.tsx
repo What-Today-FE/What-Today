@@ -6,11 +6,11 @@ import { useCalendarContext } from './CalendarContext';
 
 interface CurrentHeaderProps {
   /**
-   * Header컴포넌트 커스텀 가능
+   * 헤더 영역의 wrapper 클래스
    */
   headerClass?: string;
   /**
-   * Title 커스텀 가능
+   * 월 타이틀 텍스트에 적용될 클래스
    */
   titleClass?: string;
 }
@@ -18,21 +18,17 @@ interface CurrentHeaderProps {
 /**
  * CalendarHeader 컴포넌트
  *
- * - 현재 월을 텍스트로 표시하고,
- * - 이전/다음 월로 이동할 수 있는 버튼을 제공합니다.
- * - 월 이동 시 상위 컴포넌트로부터 전달된 핸들러(`onPrev`, `onNext`)를 호출합니다.
+ * - 현재 월을 표시하며, 이전/다음 달로 이동할 수 있는 버튼을 제공합니다.
+ * - 내부적으로 `CalendarContext`를 통해 `currentMonth` 상태를 조작합니다.
+ * - 버튼 클릭 시 `setCurrentMonth`를 사용해 월 단위로 이동합니다.
  *
  * @component
- * @param {CurrentHeaderProps} props
- * @returns {JSX.Element}
+ * @param {CurrentHeaderProps} props - 스타일 커스터마이징을 위한 클래스
+ * @returns {JSX.Element} 캘린더 헤더 UI
  *
  * @example
  * ```tsx
- * <CalendarHeader
- *   currentMonth={dayjs()}
- *   onPrev={() => setMonth((prev) => prev.subtract(1, 'month'))}
- *   onNext={() => setMonth((prev) => prev.add(1, 'month'))}
- * />
+ * <CalendarHeader headerClass="mb-4" titleClass="text-xl" />
  * ```
  */
 export default function CalendarHeader({ headerClass, titleClass }: CurrentHeaderProps) {
