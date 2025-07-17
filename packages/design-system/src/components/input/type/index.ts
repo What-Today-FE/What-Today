@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
 
 /** ComponentWithDisplayName
  * @description displayName을 가지는 React 컴포넌트 타입을 위한 인터페이스입니다. React.Element.type에 접근할 때 displayName을 검사하기 위해 사용됩니다.
@@ -57,4 +57,23 @@ export interface InputSubComponentProps {
  */
 export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'ref'> {
   ref?: React.Ref<HTMLInputElement>;
+}
+
+/** InputTextareaProps
+ * @description Input.Textarea 컴포넌트의 props입니다. HTML textarea 속성을 대부분 상속하며, autoHeight 옵션이 포함됩니다.
+ */
+export interface InputTextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'ref'> {
+  ref?: React.Ref<HTMLTextAreaElement>;
+
+  /** 입력 내용에 따라 높이를 자동 조절할지 여부 */
+  autoHeight?: boolean;
+}
+
+/** TextCounterProps
+ * @description 외부로부터 입력 값의 길이와 maxLength를 받아 작성 중인 글자 수를 보여줍니다.
+ */
+export interface TextCounterProps {
+  length: number;
+  maxLength?: number;
+  className?: string;
 }
