@@ -1,4 +1,5 @@
 import { useToast } from '@components/Toast';
+import { useNavigate } from 'react-router-dom';
 
 import Playground from '@/layouts/Playground';
 
@@ -10,12 +11,15 @@ const code = `예시 코드를 작성해주세요.`;
 
 export default function ToastDoc() {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     toast({
       title: '토스트 테스트',
       description: '정상적으로 동작 중입니다!',
+      type: 'error',
     });
+    navigate('/docs/Dropdown');
   };
   return (
     <>

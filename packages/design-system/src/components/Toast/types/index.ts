@@ -6,3 +6,17 @@ export interface ToastComponentProps {
 export interface ToastCloseProps extends ToastComponentProps {
   onClose?: () => void;
 }
+
+export type ToastType = 'default' | 'success' | 'error';
+
+export interface ToastOptions {
+  title: string;
+  description: string;
+  type?: ToastType;
+  duration?: number;
+}
+
+export interface ToastStyles {
+  className?: string;
+  icon: React.ReactNode;
+}
