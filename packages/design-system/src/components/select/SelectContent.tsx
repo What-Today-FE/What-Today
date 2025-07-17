@@ -3,20 +3,19 @@ import { twMerge } from 'tailwind-merge';
 
 import type { BaseProps } from './types';
 
-/** SelectContent
- * @description 필수 구성 요소로, Select 컴포넌트의 옵션 목록을 보여주는 영역입니다.
- * 내부적으로 `Popover.Content`를 확장하여 사용하며, 옵션들을 스크롤 가능한 드롭다운 형태로 렌더링합니다. (Popover.Content로 렌더링됩니다.)
+/**
+ * Renders the dropdown list of selectable options for a Select component.
  *
- * @param {ReactNode} props.children - 옵션 항목(`Select.Item`)들을 자식 요소로 받습니다. (혹은 `Select.Group`, `Select.Label`으로 그룹화 및 라벨링 가능)
- * @param {string} [props.className] - 스타일 확장용 className
+ * Displays its children inside a scrollable popover container, extending `Popover.Content`. The dropdown matches the trigger width and supports additional styling via the `className` prop.
+ *
+ * @param children - The selectable items or groups to display within the dropdown.
+ * @param className - Optional additional class names for custom styling.
  *
  * @example
- * ```tsx
  * <Select.Content>
  *   <Select.Item value="apple">Apple</Select.Item>
  *   <Select.Item value="banana">Banana</Select.Item>
  * </Select.Content>
- * ```
  */
 function SelectContent({ className, children }: BaseProps) {
   return (

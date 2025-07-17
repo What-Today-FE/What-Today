@@ -13,8 +13,12 @@ interface PopoverRootProps extends BaseProp {
 }
 
 /**
- * @component PopoverRoot
- * @description Popover의 위치, 크기, 외부 클릭, Esc 키 등 다양한 상호작용 로직을 포함한 루트 컴포넌트입니다.
+ * Provides the root logic and context for a popover UI, managing open state, positioning, sizing, and interaction handling.
+ *
+ * This component tracks the popover's trigger and content elements, dynamically calculates and updates the popover's position and size, and handles closing the popover on outside clicks or Escape key presses. All relevant state and handlers are provided to descendant components via context.
+ *
+ * @param direction - Optional. Specifies the preferred direction for popover placement relative to the trigger.
+ * @param className - Optional. Additional class names to apply to the root container.
  */
 function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootProps) {
   const [open, setOpen] = useState(false); // Popover 열고 닫힘 상태

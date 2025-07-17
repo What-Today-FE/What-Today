@@ -7,21 +7,18 @@ interface SelectValueProps {
   className?: string;
 }
 
-/** SelectValue
- * @description Select.Trigger 내부에서 Select에서 현재 선택된 항목의 label을 렌더링하는 컴포넌트입니다.
- * 선택된 항목이 없을 경우, `placeholder` 텍스트를 표시하며, `className`으로 스타일 확장이 가능합니다.
+/**
+ * Displays the label of the currently selected item within a select component, or a placeholder if no selection is made.
  *
- * <Select> 외부로 관리하는 값을 직접 사용하면 Select.Value를 생략할 수도 있습니다.
+ * Renders the selected item's label when present; otherwise, shows the provided `placeholder` text with default gray styling. Additional styles can be applied via the `className` prop. Intended for use inside `Select.Trigger` to reflect the current selection state.
  *
- * @param {string} [placeholder="값을 선택해주세요"] - 선택된 값이 없을 때 표시할 텍스트
- * @param {string} [className] - 스타일 확장용 className
+ * @param placeholder - Text to display when no item is selected (defaults to "값을 선택해주세요")
+ * @param className - Additional CSS classes for styling the placeholder
  *
  * @example
- * ```tsx
  * <Select.Trigger>
  *   <Select.Value placeholder="선택하세요" />
  * </Select.Trigger>
- * ```
  */
 function SelectValue({ placeholder = '값을 선택해주세요', className }: SelectValueProps) {
   const { selectedItem } = useSelectContext();

@@ -12,6 +12,11 @@ const code = `
       </Popover>
 `;
 
+/**
+ * Renders the documentation page for the Popover component, including usage instructions, prop tables, and interactive examples.
+ *
+ * Provides detailed explanations of the Popover's compound component structure, usage of the `asChild` prop to avoid invalid nested interactive elements, and demonstrates various positioning options. Includes live code examples and a playground for experimentation.
+ */
 export default function PopoverDoc() {
   return (
     <>

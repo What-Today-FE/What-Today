@@ -1,12 +1,14 @@
 import type { Position, Size } from '../types';
 
-/** getPopoverPosition
- * @description Popover.Trigger 위치 기반  or 뷰포트 기반 Popover.Content의 위치 계산
+/**
+ * Calculates the absolute top and left coordinates for positioning a popover content element relative to a trigger element or the viewport.
  *
- * @param rect : Popover.Trigger 위치 (triggerPosition)
- * @param position : top | bottom | left | right : Popover.Trigger 기반 & fixed- : 뷰포트 기반
- * @param contentSize : Popover.Content의 크기
- * @returns Popover.Content의 좌표 위치 (top, left)
+ * For trigger-relative positions (`top`, `bottom`, `left`, `right`), the coordinates are based on the trigger's bounding rectangle and current scroll offsets. For fixed positions (prefixed with `fixed-`), the coordinates are calculated relative to the viewport, centering or aligning the popover content as specified.
+ *
+ * @param rect - The bounding rectangle of the trigger element
+ * @param position - Desired popover position, either relative to the trigger or fixed within the viewport
+ * @param contentSize - The dimensions of the popover content element
+ * @returns An object containing the computed `top` and `left` coordinates for the popover content
  */
 export function getPopoverPosition(rect: DOMRect, position: Position, contentSize: Size) {
   const scrollY = window.scrollY;

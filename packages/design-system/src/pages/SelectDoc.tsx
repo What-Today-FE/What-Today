@@ -26,6 +26,13 @@ const code = `function Example() {
 
 render(<Example />);`;
 
+/**
+ * Renders the documentation page for the `Select` component, including usage examples, API descriptions, and an interactive playground.
+ *
+ * Demonstrates various configurations of the `Select` component and its subcomponents, displays code snippets, and provides a live editor for experimentation.
+ *
+ * @returns The documentation page for the `Select` component.
+ */
 export default function SelectDoc() {
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedValue2, setSelectedValue2] = useState('');

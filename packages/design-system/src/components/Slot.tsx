@@ -40,11 +40,11 @@ interface EventHandler {
 export type WithAsChild<T> = T & { asChild?: boolean };
 
 /**
- * mergeRefs
+ * Combines multiple React refs into a single callback ref.
  *
- * @description 여러 ref를 하나로 병합합니다.
- * @param refs - 병합할 ref들
- * @returns 병합된 ref 함수
+ * The returned ref function assigns the provided element to all given refs, supporting both function and object refs.
+ *
+ * @returns A callback ref that updates all provided refs with the element.
  */
 function mergeRefs<T = HTMLElement>(...refs: Array<React.Ref<T> | undefined>): React.RefCallback<T> {
   return (value: T | null) => {
@@ -59,14 +59,11 @@ function mergeRefs<T = HTMLElement>(...refs: Array<React.Ref<T> | undefined>): R
 }
 
 /**
- * mergeProps
+ * Merges props from the Slot component and its child element, combining event handlers, styles, class names, and refs.
  *
- * @description Slot 컴포넌트(부모 컴포넌트)와 자식 요소의 props를 병합합니다.
- * @description 이벤트 핸들러는 중첩 실행되도록, `className`과 `style`은 합쳐지도록 처리합니다. `ref`는 존재할 경우, 두 ref를 하나로 병합합니다.
+ * Event handlers from both sources are chained so both are called. `className` values are concatenated, `style` objects are shallow merged, and refs are combined using `mergeRefs`. All other child props override those from the Slot.
  *
- * @param {ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> }} slotProps - Slot에서 전달된 props
- * @param {ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> }} childProps - 자식 엘리먼트에 전달된 props
- * @returns {ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> }} 병합된 props
+ * @returns The merged props object to be applied to the child element.
  */
 function mergeProps(
   slotProps: ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },

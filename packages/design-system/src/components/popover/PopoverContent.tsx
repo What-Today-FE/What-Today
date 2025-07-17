@@ -12,27 +12,15 @@ interface PopoverContentProps extends BaseProp {
 }
 
 /**
- * @component PopoverContent
- * @description Popover의 실제 콘텐츠를 렌더링하는 컴포넌트입니다. `Portal`을 통해 루트 DOM에 렌더링되며, 트리거 요소(PopoverTrigger)의 위치에 따라 위치가 동적으로 계산됩니다.
- * - `open` 상태에 따라 렌더링 여부가 결정됩니다.
- * - `preventInteraction`이 true일 경우, 뒷 배경의 스크롤이 금지됩니다.
- * - `overlay`가 true일 경우, Popover 아래 검은 레이어가 추가됩니다.
+ * Renders the content of a popover, positioned relative to its trigger and optionally displaying an overlay and disabling background scrolling.
  *
- * @param {React.ReactNode} props.children - Popover 내부에 표시할 콘텐츠
- * @param {boolean} [props.preventInteraction=false] - true일 경우 Popover 뒷 배경의 스크롤이 금지됩니다.
- * @param {boolean} [props.overlay=false] - true일 경우 Popover 아래 검은 레이어가 추가됩니다.
- * @param {boolean} [props.matchTriggerWidth=false] - Popover는 기본적으로 내부 콘텐츠 크기만큼 커집니다. 만약 true일 경우 Trigger 사이즈가 max-width로 설정됩니다.
- * @param {string} [props.className] - 스타일 확장용 className
+ * The popover content is rendered in a portal to the root DOM node and is only visible when open. Position and size are dynamically calculated based on the trigger element. An optional semi-transparent overlay can be displayed behind the popover, and background scrolling can be prevented while the popover is open.
  *
- * @example
- * ```tsx
- * <Popover>
- *   <PopoverTrigger>열기</PopoverTrigger>
- *   <PopoverContent overlay preventInteraction>
- *     <div className="p-4">내용</div>
- *   </PopoverContent>
- * </Popover>
- * ```
+ * @param children - The content to display inside the popover.
+ * @param preventInteraction - If true, disables background scrolling while the popover is open.
+ * @param overlay - If true, displays a semi-transparent black overlay behind the popover.
+ * @param matchTriggerWidth - If true, sets the popover width to match the trigger element's width.
+ * @param className - Additional class names for custom styling.
  */
 function PopoverContent({
   children,

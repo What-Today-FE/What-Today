@@ -2,16 +2,16 @@ import { twMerge } from 'tailwind-merge';
 
 import type { BaseProps } from './types';
 
-/** SelectTitle
- * @description Select 컴포넌트 상단에 제목을 나타내기 위한 컴포넌트입니다. `className`으로 스타일 확장이 가능합니다.
+/**
+ * Renders a styled title for a Select component.
  *
- * @param {ReactNode} props.children - 제목으로 표시할 내용
- * @param {string} [props.className] - 스타일 확장용 className
+ * Displays its children as the title content and allows additional styling through the `className` prop, which is merged with default styles.
+ *
+ * @param children - The content to display as the title
+ * @param className - Optional additional CSS classes for custom styling
  *
  * @example
- * ```tsx
- * <Select.Title>과일을 선택하세요</Select.Title>
- * ```
+ * <Select.Title>Choose a fruit</Select.Title>
  */
 function SelectTitle({ children, className }: BaseProps) {
   return <p className={twMerge('text-xl font-bold', className)}>{children}</p>;

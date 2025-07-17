@@ -1,6 +1,11 @@
 import SidebarNavItem from '@layouts/SidebarNavItem';
 import { Link, Outlet } from 'react-router-dom';
 
+/**
+ * Renders the layout for the design system documentation, including a sidebar navigation and a main content area.
+ *
+ * The sidebar provides links to various component documentation pages, while the main area displays the selected documentation content.
+ */
 export default function DesignSystemLayout() {
   return (
     <div className='flex min-h-[100vh] bg-white'>

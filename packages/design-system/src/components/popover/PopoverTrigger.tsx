@@ -10,22 +10,14 @@ interface PopoverTriggerProps extends BaseProp {
 }
 
 /**
- * @component PopoverTrigger
- * @description Popover를 여닫기 위한 트리거 역할을 하는 컴포넌트입니다. 클릭 시 Popover의 open 상태를 토글합니다.
- * 기본적으로 `<button>` 요소로 렌더링되며, `asChild` 옵션을 통해 Trigger를 커스텀하여 사용할 수 있습니다.
+ * Renders a trigger element that toggles the open state of a Popover when clicked.
  *
- * @param {ReactNode} props.children - Trigger에 들어갈 내용. `asChild`가 true일 경우 단일 React 엘리먼트만 허용됩니다.
- * @param {boolean} [props.asChild=false] - true일 경우 children을 직접 렌더링하고, Slot을 통해 prop을 주입합니다. (직접 렌더링시 Trigger는 <button>입니다.)
- * @param {string} [props.className] - 스타일 확장용 className
+ * By default, renders a `<button>` that toggles the Popover. If `asChild` is true, expects a single valid React element as a child and injects trigger behavior using a Slot.
  *
- * @example
- * ```
- * <Trigger asChild>
- *    <div className='bg-blue-500 px-4 py-2 text-white'>
- *      커스텀 트리거
- *    </div>
- * </Trigger>
- * ```
+ * @param asChild - If true, renders the child element directly and injects trigger behavior; otherwise, renders a `<button>`.
+ * @param children - The content or element to use as the trigger. Must be a single valid React element when `asChild` is true.
+ * @param className - Additional class names to apply to the trigger element.
+ * @returns The trigger element for the Popover, or `null` if `asChild` is true and the child is not a valid React element.
  */
 function PopoverTrigger({ children, className, asChild = false }: PopoverTriggerProps) {
   const { triggerRef, open, setOpen } = usePopoverContext();
