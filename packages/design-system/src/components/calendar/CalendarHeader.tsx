@@ -2,6 +2,7 @@ import { twMerge } from 'tailwind-merge';
 
 import { TriangleIcon } from '@/components/icons';
 
+import Button from '../button';
 import { useCalendarContext } from './CalendarContext';
 
 interface CurrentHeaderProps {
@@ -42,15 +43,13 @@ export default function CalendarHeader({ headerClass, titleClass }: CurrentHeade
 
   return (
     <div className={twMerge('flex w-full justify-center gap-30', headerClass)}>
-      {/*버튼 공통컴포넌트로 수정 예정 */}
-      <button aria-label='이전 달로 이동' className='cursor-pointer' type='button' onClick={handlePrevMonth}>
+      <Button className='h-auto w-auto p-0' size='xs' variant='none' onClick={handlePrevMonth}>
         <TriangleIcon direction='left' />
-      </button>
+      </Button>
       <div className={twMerge('text-lg font-bold text-gray-950', titleClass)}>{currentMonth.format('YYYY년 MM월')}</div>
-      {/*버튼 공통컴포넌트로 수정 예정 */}
-      <button aria-label='다음 달로 이동' className='cursor-pointer' type='button' onClick={handleNextMonth}>
+      <Button className='h-auto w-auto p-0' size='xs' variant='none' onClick={handleNextMonth}>
         <TriangleIcon direction='right' />
-      </button>
+      </Button>
     </div>
   );
 }
