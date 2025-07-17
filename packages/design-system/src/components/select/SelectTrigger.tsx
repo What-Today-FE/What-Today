@@ -27,6 +27,14 @@ function SelectTrigger({ className, children }: BaseProps) {
           'flex items-center justify-between rounded-xl border border-gray-100 bg-white px-15 py-10',
           className,
         )}
+        role='button'
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.currentTarget.click(); // asChild로 위임된 Popover 동작 트리거
+          }
+        }}
       >
         {children}
         <ChevronIcon direction='bottom' />
