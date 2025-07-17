@@ -80,5 +80,10 @@ export function getPopoverPosition(rect: DOMRect, position: Position, contentSiz
         top: viewportHeight - contentSize.height,
         left: viewportWidth - contentSize.width,
       };
+    default:
+      return {
+        top: rect.bottom + scrollY,
+        left: rect.left + scrollX,
+      };
   }
 }
