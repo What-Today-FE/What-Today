@@ -1,7 +1,7 @@
+import { Slot } from '@components/Slot';
 import { isValidElement } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { Slot } from '../Slot';
 import { usePopoverContext } from './PopoverContext';
 import type { BaseProp } from './types';
 
@@ -21,7 +21,7 @@ export interface PopoverTriggerProps extends BaseProp {
  * @example
  * ```
  * <Trigger asChild>
- *    <div className='bg-blue-500 px-4 py-2 text-white'>
+ *    <div className='px-4 py-2 text-white bg-blue-500'>
  *      커스텀 트리거
  *    </div>
  * </Trigger>

@@ -1,7 +1,7 @@
+import { Portal } from '@components/Portal';
 import { useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { Portal } from '../Portal';
 import { usePopoverContext } from './PopoverContext';
 import type { BaseProp } from './types';
 
