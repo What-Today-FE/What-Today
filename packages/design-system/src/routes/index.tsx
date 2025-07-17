@@ -1,3 +1,4 @@
+import BadgeDoc from '@pages/BadgeDoc';
 import ButtonExampleDocs from '@pages/ButtonExampleDocs';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
@@ -7,11 +8,8 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import PaginationDoc from '@pages/PaginationDoc';
-
 import RadioGroupDoc from '@pages/RadioGroupDoc';
-
 import TextareaDoc from '@pages/TextareaDoc';
-
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import Sidebar from '@/layouts/Sidebar';
@@ -32,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'button-example',
         element: <ButtonExampleDocs />,
+      },
+      {
+        path: 'Badge',
+        element: <BadgeDoc />,
       },
       {
         path: 'RadioGroup',

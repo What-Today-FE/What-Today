@@ -21,12 +21,11 @@ export default function DesignSystemLayout() {
 
             <SidebarNavItem label='Calendar' to='/docs/Calendar' />
 
-
-
             <SidebarNavItem label='Textarea' to='/docs/Textarea' />
 
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
+            <SidebarNavItem label='Badge' to='/docs/Badge' />
           </ul>
         </nav>
       </aside>
