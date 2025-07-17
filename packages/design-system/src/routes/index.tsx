@@ -7,6 +7,7 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import NoResultDoc from '@pages/NoResultDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import TextareaDoc from '@pages/TextareaDoc';
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'NoResult',
+        element: <NoResultDoc />,
       },
       {
         path: 'button',
