@@ -14,7 +14,7 @@ import type { BaseProps } from './types';
  * ```
  */
 function SelectTitle({ children, className }: BaseProps) {
-  return <p className={twMerge('text-xl font-bold', className)}>{children}</p>;
+  return <p className={twMerge('text-18 mb-4 font-bold text-gray-950', className)}>{children}</p>;
 }
 
 export const Title = SelectTitle;
