@@ -36,12 +36,7 @@ export default function NoResult({
     <div className='flex w-fit flex-col items-center gap-24 md:gap-32'>
       <EmptyLogo className='size-100 md:size-140' />
       <p className='text-lg text-gray-800'>앗, 아직 {dataName} 없습니다.</p>
-      <Button
-        className='w-full px-8 py-4 font-normal'
-        size='xs'
-        variant='outline'
-        onClick={() => navigate(redirectPath)}
-      >
+      <Button className='w-full font-normal' size='xs' variant='outline' onClick={() => navigate(redirectPath)}>
         {buttonMessage}
       </Button>
     </div>
