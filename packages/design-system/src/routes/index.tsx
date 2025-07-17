@@ -1,11 +1,21 @@
 import Sidebar from '@layouts/Sidebar';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
+import DropdownDoc from '@pages/DropdownDoc';
+import ExperienceCardDoc from '@pages/ExperienceCardDoc';
 import IconDoc from '@pages/IconDoc';
+import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import PaginationDoc from '@pages/PaginationDoc';
+
+import RadioGroupDoc from '@pages/RadioGroupDoc';
+
+import TextareaDoc from '@pages/TextareaDoc';
+
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
+import Sidebar from '@/layouts/Sidebar';
 
 const router = createBrowserRouter([
   {
@@ -25,12 +35,32 @@ const router = createBrowserRouter([
         element: <ButtonDoc />,
       },
       {
+        path: 'RadioGroup',
+        element: <RadioGroupDoc />,
+      },
+      {
+        path: 'ExperienceCard',
+        element: <ExperienceCardDoc />,
+      },
+      {
+        path: 'Textarea',
+        element: <TextareaDoc />,
+      },
+      {
+        path: 'Input',
+        element: <InputDoc />,
+      },
+      {
         path: 'Logo',
         element: <LogoDoc />,
       },
       {
         path: 'Icon',
         element: <IconDoc />,
+      },
+      {
+        path: 'Dropdown',
+        element: <DropdownDoc />,
       },
       {
         path: 'Pagination',
