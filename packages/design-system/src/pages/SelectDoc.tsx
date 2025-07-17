@@ -10,7 +10,7 @@ const code = `function Example() {
 
   return (
     <Select.Root className='w-300 md:w-500 xl:w-700' value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
-      <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
+      <Select.Trigger className='py-10 bg-white border w-300 rounded-2xl px-15'>
         <Select.Value />
       </Select.Trigger>
       <Select.Content>
@@ -131,9 +131,9 @@ export default function SelectDoc() {
               <Select.Label>과일</Select.Label>
               <Select.Item value='apple'>🍎 사과</Select.Item>
               <Select.Item value='banana'>🍌 바나나</Select.Item>
-              <Select.Item value='banana'>🍉 수박</Select.Item>
-              <Select.Item value='banana'>🍑 복숭아</Select.Item>
-              <Select.Item value='banana'>🍇 포도</Select.Item>
+              <Select.Item value='watermelon'>🍉 수박</Select.Item>
+              <Select.Item value='peach'>🍑 복숭아</Select.Item>
+              <Select.Item value='grape'>🍇 포도</Select.Item>
             </Select.Group>
           </Select.Content>
         </Select.Root>
@@ -141,7 +141,7 @@ export default function SelectDoc() {
       </div>
       <DocCode
         code={`<Select.Root value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
-  <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
+  <Select.Trigger className='py-10 bg-white border w-300 rounded-2xl px-15'>
     <Select.Value placeholder='좋아하는 과일은 무엇인가요?' />
   </Select.Trigger>
   <Select.Content>
@@ -196,7 +196,7 @@ export default function SelectDoc() {
         </div>
         <DocCode
           code={`<Select.Root className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
-  <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
+  <Select.Trigger className='py-10 bg-white border w-300 rounded-2xl px-15'>
     <Select.Value />
   </Select.Trigger>
   <Select.Content className='w-300'>

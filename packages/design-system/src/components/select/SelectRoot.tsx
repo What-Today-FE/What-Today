@@ -37,6 +37,7 @@ export interface RootProps {
 function SelectRoot({ children, onChangeValue, value: _value, className }: RootProps) {
   const [selectedItem, setSelectedItem] = useState<SelectItem | null>(null);
 
+  // Select 내부에서는 값을 {value, label}로 관리 + 외부에서는 value만 관리. 외부에서도 default value로 {value, label} 형태가 필요하면 이 부분을 수정할 예정.
   const handleClickItem = (value: string, label: ReactNode) => {
     onChangeValue?.(value);
     setSelectedItem({ value, label });
