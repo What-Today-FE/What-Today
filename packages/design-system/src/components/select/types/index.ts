@@ -7,7 +7,7 @@ export type SelectItem = {
 
 export interface SelectContextType {
   handleClickItem: (value: string, label: ReactNode) => void;
-  selectedItem: SelectItem;
+  selectedItem: SelectItem | null;
 }
 
 export interface BaseProps {
