@@ -19,6 +19,7 @@ export { default as MoreIcon } from './MoreIcon';
 export { default as PlusIcon } from './PlusIcon';
 export { default as SearchIcon } from './SearchIcon';
 export { default as SettingIcon } from './SettingIcon';
+export { default as SpinIcon } from './SpinIcon';
 export { default as SportIcon } from './SportIcon';
 export { default as StarIcon } from './StarIcon';
 export { default as TourIcon } from './TourIcon';
