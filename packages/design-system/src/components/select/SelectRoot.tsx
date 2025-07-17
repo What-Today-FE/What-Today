@@ -1,13 +1,13 @@
 import { Popover } from '@components/popover';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { SelectContext } from './context';
 import type { SelectItem } from './types';
 
 export interface RootProps {
   className?: string;
-  onChangeValue?: (selectedValue: string) => void;
-  value: string;
+  onChangeValue?: (selected: SelectItem) => void;
+  value: SelectItem;
   children?: ReactNode;
 }
 
@@ -18,7 +18,7 @@ export interface RootProps {
  *
  * @property {string} [className] - Popover에 전달할 사용자 정의 클래스명
  * @property {(selectedValue: string) => void} [onChangeValue] - 아이템 선택 시 호출되는 콜백 함수 (생략하면 외부에서는 Select 내부에서 선택된 값만 받아오게 됨)
- * @property {string} value - 현재 선택된 값
+ * @property {string} value - 현재 선택된 값 ({value: string; label: ReactNode;}) 타입
  * @property {ReactNode} [children] - Select 하위 컴포넌트들 (Trigger, Content, Item 등)
  *
  * @example
@@ -34,14 +34,20 @@ export interface RootProps {
  * </Select.Root>
  * ```
  */
-function SelectRoot({ children, onChangeValue, value: _value, className }: RootProps) {
-  const [selectedItem, setSelectedItem] = useState<SelectItem | null>(null);
+function SelectRoot({ children, onChangeValue, value, className }: RootProps) {
+  const [selectedItem, setSelectedItem] = useState<SelectItem | null>(value ?? null);
 
   // Select 내부에서는 값을 {value, label}로 관리 + 외부에서는 value만 관리. 외부에서도 default value로 {value, label} 형태가 필요하면 이 부분을 수정할 예정.
   const handleClickItem = (value: string, label: ReactNode) => {
-    onChangeValue?.(value);
+    onChangeValue?.({ value, label });
     setSelectedItem({ value, label });
   };
+
+  useEffect(() => {
+    if (value?.value !== selectedItem?.value) {
+      setSelectedItem(value);
+    }
+  }, [value]);
 
   return (
     <SelectContext.Provider value={{ handleClickItem, selectedItem }}>
