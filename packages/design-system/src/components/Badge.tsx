@@ -41,9 +41,6 @@ export default function Badge({ type, status, count }: BadgeProps) {
   const isOwner = type === 'owner';
 
   // Owner 일 경우, 미사용 뱃지 검사
-  if (isOwner && ['declined', 'canceled'].includes(status)) {
-    return null;
-  }
   if (isOwner) {
     if (['declined', 'canceled'].includes(status)) return null;
     if (count === 0 || !count) return null;
