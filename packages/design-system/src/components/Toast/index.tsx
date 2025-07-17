@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { twMerge } from 'tailwind-merge';
 
@@ -25,9 +26,8 @@ const toastStyleByType: Record<ToastType, ToastStyles> = {
 
 export const useToast = () => {
   const toastRoot = useRef<ReactDOM.Root | null>(null);
-  const ToastTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const toast = ({ title, description, type = 'default', duration = 30000 }: ToastOptions) => {
+  const toast = ({ title, description, type = 'default', duration = 3000 }: ToastOptions) => {
     if (toastRoot.current) {
       toastRoot.current.unmount();
     }
@@ -37,26 +37,48 @@ export const useToast = () => {
 
     const statusStyle = toastStyleByType[type];
 
-    toastRoot.current = ReactDOM.createRoot(node);
-    toastRoot.current.render(
-      <div
-        className={twMerge(
-          'fixed top-28 left-1/2 z-50 flex w-320 -translate-x-1/2 items-center gap-12 rounded-lg p-10 text-white shadow',
-          statusStyle.className,
-        )}
-      >
-        <span className='pl-4'>{statusStyle.icon}</span>
-        <div className='flex-1'>
-          <ToastTitle>{title}</ToastTitle>
-          <ToastDescription>{description}</ToastDescription>
-        </div>
-        <ToastClose className='absolute top-16 right-16' onClose={() => toastRoot.current?.unmount()} />
-      </div>,
-    );
+    const ToastWrapper = () => {
+      const [isVisible, setIsVisible] = useState(true);
 
-    ToastTimeout.current = setTimeout(() => {
-      toastRoot.current?.unmount();
-    }, duration);
+      useEffect(() => {
+        const timeout = setTimeout(() => {
+          setIsVisible(false);
+        }, duration);
+        return () => clearTimeout(timeout);
+      }, []);
+
+      return (
+        <AnimatePresence>
+          {isVisible && (
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              className={twMerge(
+                'fixed top-28 left-1/2 z-50 flex w-320 -translate-x-1/2 items-center gap-12 rounded-lg p-10 text-white shadow',
+                statusStyle.className,
+              )}
+              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.3 }}
+              onAnimationComplete={() => {
+                if (!isVisible) {
+                  toastRoot.current?.unmount();
+                }
+              }}
+            >
+              <span className='pl-4'>{statusStyle.icon}</span>
+              <div className='flex-1'>
+                <ToastTitle>{title}</ToastTitle>
+                <ToastDescription>{description}</ToastDescription>
+              </div>
+              <ToastClose className='absolute top-16 right-16' onClose={() => setIsVisible(false)} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      );
+    };
+
+    toastRoot.current = ReactDOM.createRoot(node);
+    toastRoot.current.render(<ToastWrapper />);
   };
 
   return { toast };
