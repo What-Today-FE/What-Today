@@ -4,11 +4,39 @@ type OwnerStatusProps = 'pending' | 'confirmed' | 'completed';
 type UserStatusProps = OwnerStatusProps | 'declined' | 'canceled';
 type BadgeTypeProps = 'user' | 'owner';
 interface BadgeProps {
+  /**
+   * 사용자 타입에 따른 뱃지 스타일 구분('user' | 'owner')
+   */
   type: BadgeTypeProps;
+  /**
+   * 예약 상태 구분('pending' | 'confirmed' | 'completed' | 'declined' | 'canceled')
+   */
   status: UserStatusProps | OwnerStatusProps;
+  /**
+   * `type`이 `owner`일 경우에만 노출되는 수치 정보
+   */
   count?: number;
 }
 
+/**
+ * Badge 컴포넌트
+ * 예약 상태에 따라 시각적 뱃지를 렌더링하는 컴포넌트입니다.
+ *
+ * @component
+ * @param {BadgeProps} props - 뱃지에 전달되는 props
+ * @param {BadgeTypeProps} props.type - 사용자 타입에 따른 뱃지 스타일 구분
+ * @param {UserStatusProps} props.status - 예약 상태
+ *   - `owner`일 경우에는 `'canceled'`와 `'declined'`는 사용할 수 없습니다.
+ * @param {number} [props.count] - `type`이 `owner`일 경우에만 노출되는 수치 정보
+ *
+ * @returns {JSX.Element} 예약 상태에 따른 스타일링된 뱃지 요소
+ *
+ * @example
+ * <Badge type="user" status="confirmed" />
+ *
+ * @example
+ * <Badge type="owner" status="pending" count={3} />
+ */
 export default function Badge({ type, status, count }: BadgeProps) {
   const isOwner = type === 'owner';
 
