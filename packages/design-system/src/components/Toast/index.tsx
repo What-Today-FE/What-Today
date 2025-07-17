@@ -11,15 +11,15 @@ import type { ToastOptions, ToastStyles, ToastType } from './types';
 const toastStyleByType: Record<ToastType, ToastStyles> = {
   success: {
     icon: <SuccessIcon className='size-20' />,
-    className: 'bg-green-500 border-1-green-600 text-white',
+    className: 'bg-[#ecfdf3] border-1 border-[#bffcd9] text-[#4CAF50]',
   },
   error: {
     icon: <ErrorIcon className='size-20' />,
-    className: 'bg-red-500 border-1-red-600 text-white',
+    className: 'bg-[#fff0f0] border-1 border-[#ffe0e1] text-red-500',
   },
   default: {
     icon: <InfoIcon className='size-20' />,
-    className: 'bg-zinc-800 border-1-zinc-600 text-white',
+    className: 'bg-[#f0f8ff] border-1 border-[#DDE7FD] text-[#2196F3]',
   },
 };
 
@@ -27,7 +27,7 @@ export const useToast = () => {
   const toastRoot = useRef<ReactDOM.Root | null>(null);
   const ToastTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const toast = ({ title, description, type = 'default', duration = 3000 }: ToastOptions) => {
+  const toast = ({ title, description, type = 'default', duration = 30000 }: ToastOptions) => {
     if (toastRoot.current) {
       toastRoot.current.unmount();
     }
@@ -41,16 +41,16 @@ export const useToast = () => {
     toastRoot.current.render(
       <div
         className={twMerge(
-          'fixed top-4 right-4 z-50 flex w-300 items-start gap-3 rounded p-10 text-white shadow',
+          'fixed top-28 left-1/2 z-50 flex w-320 -translate-x-1/2 items-center gap-12 rounded-lg p-10 text-white shadow',
           statusStyle.className,
         )}
       >
-        <span className='text-xl'>{statusStyle.icon}</span>
+        <span className='pl-4'>{statusStyle.icon}</span>
         <div className='flex-1'>
           <ToastTitle>{title}</ToastTitle>
           <ToastDescription>{description}</ToastDescription>
         </div>
-        <ToastClose onClose={() => toastRoot.current?.unmount()} />
+        <ToastClose className='absolute top-16 right-16' onClose={() => toastRoot.current?.unmount()} />
       </div>,
     );
 
