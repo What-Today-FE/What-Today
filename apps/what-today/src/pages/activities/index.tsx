@@ -1,3 +1,4 @@
+import Map from '@components/map';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -66,7 +67,9 @@ export default function ActivityDetailPage() {
       <p>상세페이지 ID: {activity.id}</p>
       <p>주소: {activity.address}</p>
 
-      <div className='h-480 w-760 bg-gray-500'>지도 테스트</div>
+      <div className='h-480 w-760 bg-gray-500'>
+        <Map address={activity.address} />
+      </div>
     </div>
   );
 }
