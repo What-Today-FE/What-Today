@@ -90,7 +90,10 @@ import {
       />
 
       <h3 className='mb-8 text-base font-semibold text-gray-600'>커스텀 캘린더</h3>
-      <Calendar.Root className='gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'>
+      <Calendar.Root
+        className='gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
+        initialDate='2025-07-20'
+      >
         <Calendar.Header headerClass='py-6' titleClass='md:text-xl' />
         <Calendar.Grid divider weekdayClass='text-sm font-bold md:text-lg' weekdayType='long'>
           {(day) => (

@@ -16,6 +16,10 @@ interface CalendarRootProps {
    */
   children: React.ReactNode;
   /**
+   * 선택된 날짜의 초기값 (예: `'2025-08-01'`)
+   */
+  initialDate?: string;
+  /**
    * CalendarRoot 커스텀 가능
    */
   className?: string;
@@ -29,7 +33,7 @@ interface CalendarRootProps {
  * - 하위 컴포넌트는 반드시 `CalendarContext`를 통해 상태에 접근해야 합니다.
  *
  * @component
- * @param {CalendarRootProps} props - 내부 요소, 스타일 커스터마이징을 위한 클래스
+ * @param {CalendarRootProps} props - 초기 설정값 및 스타일 클래스
  * @returns {JSX.Element} 캘린더 루트 컴포넌트
  *
  * @example
@@ -40,9 +44,9 @@ interface CalendarRootProps {
  * </CalendarRoot>
  * ```
  */
-export default function CalendarRoot({ children, className }: CalendarRootProps) {
+export default function CalendarRoot({ children, initialDate, className }: CalendarRootProps) {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
-  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<string>(initialDate || '');
 
   return (
     <CalendarContext.Provider value={{ selectedDate, onSelectDate: setSelectedDate, currentMonth, setCurrentMonth }}>
