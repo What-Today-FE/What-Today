@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { LiveEditor, LiveError, LivePreview, LiveProvider } from 'react-live';
 
 import { Select } from '@/components';
+import type { SelectItem } from '@/components/select/types';
 
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 const code = `function Example() {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState<{ value: string; label: ReactNode } | null>(null);
 
   return (
     <Select.Root className='w-300 md:w-500 xl:w-700' value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
@@ -27,8 +28,8 @@ const code = `function Example() {
 render(<Example />);`;
 
 export default function SelectDoc() {
-  const [selectedValue, setSelectedValue] = useState('');
-  const [selectedValue2, setSelectedValue2] = useState('');
+  const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
+  const [selectedValue2, setSelectedValue2] = useState<SelectItem | null>(null);
 
   return (
     <>
@@ -112,12 +113,27 @@ export default function SelectDoc() {
 |--------------|--------------|--------------------------------------------|
 | children     | \`ReactNode\` | 레이블 또는 타이틀 텍스트                 |
 | className    | \`string?\`   | 스타일 확장용 클래스입니다.               |
+
+---
+
+## ⚠️ 주의사항
+
+외부에서도 값을 \`{ value: string, label: ReactNode }\` 형태로 관리합니다.  
+value는 실제 선택된 값, label은 Select 내부에서 보여지는 문자열입니다.  
+\`label\`은 \`ReactNode\`이지만 \`{ value: 'banana', label: '🍌 바나나' }\`처럼 사용 가능합니다.
         `}
         title='Select'
       />
 
       {/* 1. 기본 예시 */}
       <div className='mb-12'>
+        <button
+          className='mb-12 cursor-pointer rounded-lg bg-gray-50 px-8 py-4 text-sm'
+          onClick={() => setSelectedValue({ value: 'banana', label: '🍌 바나나' })}
+        >
+          버튼을 눌러 banana 선택하기
+        </button>
+
         <Select.Root
           className='w-300 md:w-500 xl:w-700'
           value={selectedValue}
@@ -137,7 +153,9 @@ export default function SelectDoc() {
             </Select.Group>
           </Select.Content>
         </Select.Root>
-        <p className='text-md text-gray-500'>선택된 값: {selectedValue}</p>
+        <p className='text-md text-gray-500'>
+          선택된 값: {selectedValue?.value} - {selectedValue?.label}
+        </p>
       </div>
       <DocCode
         code={`<Select.Root value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
@@ -157,6 +175,7 @@ export default function SelectDoc() {
       <div className='my-24 space-y-20'>
         <div>
           <Select.Root className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
+            <Select.Title>기술 스택</Select.Title>
             <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
               <Select.Value />
             </Select.Trigger>
@@ -192,10 +211,13 @@ export default function SelectDoc() {
               </Select.Group>
             </Select.Content>
           </Select.Root>
-          <p className='text-md text-gray-500'>선택된 값: {selectedValue2}</p>
+          <p className='text-md text-gray-500'>
+            선택된 값: {selectedValue2?.value} - {selectedValue2?.label}
+          </p>
         </div>
         <DocCode
           code={`<Select.Root className='w-300' value={selectedValue2} onChangeValue={(value) => setSelectedValue2(value)}>
+  <Select.Title>기술 스택</Select.Title>
   <Select.Trigger className='py-10 bg-white border w-300 rounded-2xl px-15'>
     <Select.Value />
   </Select.Trigger>
