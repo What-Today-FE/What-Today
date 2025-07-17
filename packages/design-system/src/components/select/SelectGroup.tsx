@@ -9,7 +9,7 @@ import type { BaseProps } from './types';
  * @param {string} [props.className] - 스타일 확장용 className
  */
 function SelectGroup({ children, className }: BaseProps) {
-  return <div className={(twMerge('my-4'), className)}>{children}</div>;
+  return <div className={twMerge('my-4', className)}>{children}</div>;
 }
 
 export const Group = SelectGroup;
