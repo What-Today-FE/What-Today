@@ -1,4 +1,3 @@
-export { default as Badge } from './Badge';
 export { default as Button } from './button';
 export { default as ExperienceCard } from './ExperienceCard';
 export * from './icons';
@@ -8,5 +7,6 @@ export { default as OwnerBadge } from './OwnerBadge';
 export { default as Pagination } from './Pagination';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
 export { default as ReservationCard } from './ReservationCard';
+export { default as Badge } from './UserBadge';
 export * from '@/components/calendar/index';
 export * from '@/components/dropdown/index';

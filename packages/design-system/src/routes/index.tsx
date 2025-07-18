@@ -1,5 +1,4 @@
 import Sidebar from '@layouts/Sidebar';
-import BadgeDoc from '@pages/BadgeDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
@@ -15,6 +14,7 @@ import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
+import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
   {
@@ -30,8 +30,8 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: 'Badge',
-        element: <BadgeDoc />,
+        path: 'UserBadge',
+        element: <UserBadgeDoc />,
       },
       {
         path: 'OwnerBadge',

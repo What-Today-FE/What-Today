@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge';
 
 type OwnerStatusProps = 'pending' | 'confirmed' | 'completed';
-interface BadgeProps {
+interface OwnerBadgeProps {
   /**
    * 예약 상태 구분('pending' | 'confirmed' | 'completed')
    */
@@ -31,7 +31,7 @@ const reservationStatus: Record<OwnerStatusProps, { label: string; style: string
  * @example
  * <OwnerBadge status="confirmed" count={3} />
  */
-export default function OwnerBadge({ status, count }: BadgeProps) {
+export default function OwnerBadge({ status, count }: OwnerBadgeProps) {
   const { label, style } = reservationStatus[status];
   const baseClass =
     'flex w-full items-center justify-center gap-2 rounded-sm text-center text-xs font-medium md:text-sm';

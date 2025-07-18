@@ -21,7 +21,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Textarea' to='/docs/Textarea' />
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
-            <SidebarNavItem label='Badge' to='/docs/Badge' />
+            <SidebarNavItem label='UserBadge' to='/docs/UserBadge' />
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
             <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
           </ul>
