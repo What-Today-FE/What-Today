@@ -1,5 +1,6 @@
-import Button from './button';
-import { ClockIcon, DeleteIcon, DocumentIcon } from './icons';
+import Button from '@components/button';
+import { ClockIcon, DeleteIcon, DocumentIcon } from '@components/icons';
+import UserBadge from '@components/UserBadge';
 
 interface ParsedNotification {
   title: string;
@@ -59,9 +60,14 @@ export default function NotificationCard({ content, onDelete, onClickDetail }: N
   const { title, date, confirm } = parsedNotification;
 
   return (
-    <div className='text-md flex flex-col gap-4 p-16'>
+    <div className='text-md flex flex-col gap-8 p-16'>
       <div className='flex items-center justify-between'>
-        <h1 className='text-lg font-bold text-gray-900'>{confirm ? '예약이 승인되었어요!' : '예약이 거절되었어요.'}</h1>
+        <div className='flex gap-8'>
+          {confirm ? <UserBadge status='confirmed' /> : <UserBadge status='declined' />}
+          <h1 className='text-md font-semibold text-gray-900 md:text-lg'>
+            {confirm ? '예약이 승인되었어요!' : '예약이 거절되었어요.'}
+          </h1>
+        </div>
         <Button className='h-fit w-fit p-0' variant='none' onClick={onDelete}>
           <DeleteIcon className='size-10' color='var(--color-gray-300)' />
         </Button>
