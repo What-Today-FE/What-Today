@@ -8,12 +8,10 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
+import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
-
-
 import ReservationCardDoc from '@pages/ReservationCardDoc';
-
 import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
@@ -53,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: 'ReservationCard',
         element: <ReservationCardDoc />,
+      },
+      {
+        path: 'MypageSidebar',
+        element: <MypageSidebarDoc />,
       },
       {
         path: 'Input',
