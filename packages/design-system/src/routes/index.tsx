@@ -7,11 +7,20 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import MainCardDoc from '@pages/MainCardDoc';
+import MypageSidebarDoc from '@pages/MypageSidebarDoc';
+import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
+import PopoverDoc from '@pages/PopoverDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
+import ReservationCardDoc from '@pages/ReservationCardDoc';
+import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
+import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
+import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
   {
@@ -31,8 +40,24 @@ const router = createBrowserRouter([
         element: <NotificationCardDoc />,
       },
       {
+        path: 'NoResult',
+        element: <NoResultDoc />,
+      },
+      {
+        path: 'UserBadge',
+        element: <UserBadgeDoc />,
+      },
+      {
+        path: 'OwnerBadge',
+        element: <OwnerBadgeDoc />,
+      },
+      {
         path: 'button',
         element: <ButtonDoc />,
+      },
+      {
+        path: 'MainCard',
+        element: <MainCardDoc />,
       },
       {
         path: 'RadioGroup',
@@ -45,6 +70,22 @@ const router = createBrowserRouter([
       {
         path: 'Textarea',
         element: <TextareaDoc />,
+      },
+      {
+        path: 'ReservationCard',
+        element: <ReservationCardDoc />,
+      },
+      {
+        path: 'MypageSidebar',
+        element: <MypageSidebarDoc />,
+      },
+      {
+        path: 'Popover',
+        element: <PopoverDoc />,
+      },
+      {
+        path: 'Select',
+        element: <SelectDoc />,
       },
       {
         path: 'Input',

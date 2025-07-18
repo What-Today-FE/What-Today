@@ -9,6 +9,7 @@ export { default as DeleteIcon } from './DeleteIcon';
 export { default as DocumentIcon } from './DocumentIcon';
 export { default as DotIcon } from './DotIcon';
 export { default as EditIcon } from './EditIcon';
+export { default as ExitIcon } from './ExitIcon';
 export { default as EyeIcon } from './EyeIcon';
 export { default as EyeOffIcon } from './EyeOffIcon';
 export { default as FoodIcon } from './FoodIcon';
