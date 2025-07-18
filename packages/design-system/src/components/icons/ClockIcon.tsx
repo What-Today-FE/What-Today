@@ -19,7 +19,7 @@ import type { ColorIconProps } from './types';
  * <ClockIcon className='size-32' />
  */
 
-export default function ClockIcon({ className, ...rest }: ColorIconProps & { className: string }) {
+export default function ClockIcon({ className, ...rest }: ColorIconProps & { className?: string }) {
   return (
     <svg
       className={twMerge('fill-current', className)}

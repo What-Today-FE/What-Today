@@ -19,7 +19,7 @@ import type { ColorIconProps } from './types';
  * <DocumentIcon className='size-32' />
  */
 
-export default function DocumentIcon({ className, ...rest }: ColorIconProps & { className: string }) {
+export default function DocumentIcon({ className, ...rest }: ColorIconProps & { className?: string }) {
   return (
     <svg
       className={twMerge('fill-current', className)}
