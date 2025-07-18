@@ -27,24 +27,27 @@ interface NotificationCardProps {
  * @returns {ParsedNotification | null} 파싱된 예약 정보 객체 또는 형식이 맞지 않을 경우 null
  */
 const parseNotificationContent = (content: string): ParsedNotification | null => {
-  const parts = content.split(/[()]/);
+  try {
+    const match = content.match(/^(.+?)\((\d{4}-\d{2}-\d{2} \d{2}:\d{2}~\d{2}:\d{2})\)\s*(.+)$/);
+    if (!match) return null;
 
-  const title = parts[0].trim();
-  const dateTimeStr = parts[1].trim();
-  const statusText = parts[2].trim();
+    const [, title, dateTimeStr, statusText] = match;
+    const dateTimeMatch = dateTimeStr.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})~(\d{2}:\d{2})$/);
+    if (!dateTimeMatch) return null;
 
-  const dateTimeMatch = dateTimeStr.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})~(\d{2}:\d{2})$/);
-  if (!dateTimeMatch) return null;
+    const [_, year, rawMonth, rawDay, startTime, endTime] = dateTimeMatch;
+    const month = String(Number(rawMonth));
+    const day = String(Number(rawDay));
 
-  const [_, year, rawMonth, rawDay, startTime, endTime] = dateTimeMatch;
-  const month = String(Number(rawMonth));
-  const day = String(Number(rawDay));
-
-  return {
-    title,
-    date: { year, month, day, startTime, endTime },
-    confirm: statusText.includes('승인'),
-  };
+    return {
+      title,
+      date: { year, month, day, startTime, endTime },
+      confirm: statusText.includes('승인'),
+    };
+  } catch (error) {
+    console.warn('content 파싱에 실패했습니다.:', error);
+    return null;
+  }
 };
 
 /** NotificationCard
@@ -56,7 +59,22 @@ const parseNotificationContent = (content: string): ParsedNotification | null =>
  */
 export default function NotificationCard({ content, onDelete, onClickDetail }: NotificationCardProps) {
   const parsedNotification = parseNotificationContent(content);
-  if (!parsedNotification) return null;
+
+  // parsedNotification 실패시 기본 content를 메시지로 보여줍니다.
+  if (!parsedNotification) {
+    return (
+      <div className='text-md flex flex-col gap-4 p-16'>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-md font-semibold text-gray-900 md:text-lg'>알림</h1>
+          <Button className='h-fit w-fit p-0' variant='none' onClick={onDelete}>
+            <DeleteIcon className='size-10' color='var(--color-gray-300)' />
+          </Button>
+        </div>
+        <p className='text-gray-600'>{content}</p>
+      </div>
+    );
+  }
+
   const { title, date, confirm } = parsedNotification;
 
   return (
