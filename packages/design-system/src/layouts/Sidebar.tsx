@@ -23,6 +23,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
             <SidebarNavItem label='Badge' to='/docs/Badge' />
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
+            <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
           </ul>
         </nav>
       </aside>

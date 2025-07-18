@@ -14,6 +14,8 @@ import ReservationCardDoc from '@pages/ReservationCardDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
+import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -28,8 +30,12 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: 'badge',
+        path: 'Badge',
         element: <BadgeDoc />,
+      },
+      {
+        path: 'OwnerBadge',
+        element: <OwnerBadgeDoc />,
       },
       {
         path: 'button',
