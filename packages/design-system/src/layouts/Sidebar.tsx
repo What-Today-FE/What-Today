@@ -10,7 +10,7 @@ export default function DesignSystemLayout() {
         </Link>
         <nav>
           <ul className='m-0 list-none p-0'>
-            <SidebarNavItem label='Button (Example Doc)' to='/docs/button-example' />
+            <SidebarNavItem label='Button' to='/docs/button' />
             {/* ✅ 아래에 <SidebarNavItem>을 활용한 컴포넌트 문서 링크를 추가해주세요. */}
             <SidebarNavItem label='Input' to='/docs/Input' />
             <SidebarNavItem label='Icon' to='/docs/Icon' />
@@ -25,7 +25,11 @@ export default function DesignSystemLayout() {
 
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
+
             <SidebarNavItem label='MainCard' to='/docs/MainCard' />
+
+            <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
+
           </ul>
         </nav>
       </aside>

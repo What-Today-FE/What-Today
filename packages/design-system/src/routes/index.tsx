@@ -1,4 +1,5 @@
-import ButtonExampleDocs from '@pages/ButtonExampleDocs';
+import Sidebar from '@layouts/Sidebar';
+import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
@@ -9,10 +10,12 @@ import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
+
+
+import ReservationCardDoc from '@pages/ReservationCardDoc';
+
 import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-
-import Sidebar from '@/layouts/Sidebar';
 
 const router = createBrowserRouter([
   {
@@ -28,8 +31,8 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: 'button-example',
-        element: <ButtonExampleDocs />,
+        path: 'button',
+        element: <ButtonDoc />,
       },
       {
         path: 'MainCard',
@@ -46,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: 'Textarea',
         element: <TextareaDoc />,
+      },
+      {
+        path: 'ReservationCard',
+        element: <ReservationCardDoc />,
       },
       {
         path: 'Input',
