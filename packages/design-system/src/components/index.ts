@@ -3,6 +3,7 @@ export { default as ExperienceCard } from './ExperienceCard';
 export * from './icons';
 export * from './input';
 export * from './logos';
+export { default as MainCard } from './MainCard/MainCardRoot';
 export { default as OwnerBadge } from './OwnerBadge';
 export { default as Pagination } from './Pagination';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
