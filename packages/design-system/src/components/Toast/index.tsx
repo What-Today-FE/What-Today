@@ -30,6 +30,7 @@ export const useToast = () => {
   const toast = ({ title, description, type = 'default', duration = 3000 }: ToastOptions) => {
     if (toastRoot.current) {
       toastRoot.current.unmount();
+      toastRoot.current = null;
     }
 
     const node = document.getElementById('wt-toast');
