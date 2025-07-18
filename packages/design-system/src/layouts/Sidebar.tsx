@@ -25,7 +25,11 @@ export default function DesignSystemLayout() {
 
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
+
+            <SidebarNavItem label='MainCard' to='/docs/MainCard' />
+
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
+
           </ul>
         </nav>
       </aside>
