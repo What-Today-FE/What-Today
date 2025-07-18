@@ -31,7 +31,7 @@ const FALLBACK_LOCATION = {
   label: '위치를 찾을 수 없습니다',
 };
 
-export default function Map({ address }: MapProps) {
+export default function KakaoMap({ address }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
