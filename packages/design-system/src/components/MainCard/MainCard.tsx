@@ -12,25 +12,27 @@ import type { MainCardContextType, MainCardProps } from './types/index';
  * @component
  *
  * @example
- * 현재 하드코딩 , api 데이터 값 필요
- * <MainCard
- *   title="스카이다이빙"
- *   price={200000}
- *   bannerImageUrl="https://..."
- *   rating={4.8}
- *   reviewCount={121}
- * >
- *   <MainCard.Image />
- *   <MainCard.Content />
- * </MainCard>
+ * ```tsx
+  * <MainCard
+  *   title="스카이다이빙"
+  *   price={200000}
+  *   bannerImageUrl="https://..."
+  *   rating={4.8}
+  *   reviewCount={121}
+  * >
+  *   <MainCard.Image />
+  *   <MainCard.Content />
+  * </MainCard>
+ * ```
+
  *
- * @prop {string} title - 체험 제목
- * @prop {number} price - 체험 가격
- * @prop {string} bannerImageUrl - 카드 상단 이미지 URL
- * @prop {number} rating - 평균 평점
- * @prop {number} reviewCount - 리뷰 수
- * @prop {string} [className] - 카드 wrapper에 적용할 Tailwind 클래스
- * @prop {ReactNode} children - 내부에 MainCard.Image, MainCard.Content 포함
+ * @param {string} title - 체험 제목
+ * @param {number} price - 체험 가격
+ * @param {string} bannerImageUrl - 카드 상단 이미지 URL
+ * @param {number} rating - 평균 평점
+ * @param {number} reviewCount - 리뷰 수
+ * @param {string} [className] - 카드 wrapper에 적용할 Tailwind 클래스
+ * @param {ReactNode} children - 내부에 MainCard.Image, MainCard.Content 포함
  */
 
 const MainCardContext = createContext<MainCardContextType | null>(null);
@@ -47,7 +49,7 @@ function MainCardRoot({ title, price, bannerImageUrl, rating, reviewCount, child
       <div className=''>
         <div
           className={twMerge(
-            'relative h-[242px] w-full cursor-pointer overflow-visible transition-transform duration-300 hover:scale-105 md:h-[423px] lg:h-[366px]',
+            'relative h-242 w-full cursor-pointer overflow-visible transition-transform duration-300 hover:scale-105 md:h-423 lg:h-366',
             className,
           )}
         >
@@ -59,11 +61,11 @@ function MainCardRoot({ title, price, bannerImageUrl, rating, reviewCount, child
 }
 
 function MainCardImage({ className }: { className?: string }) {
-  const { bannerImageUrl } = useMainCardContext();
+  const { bannerImageUrl, title } = useMainCardContext();
   return (
     <img
-      alt=''
-      className={twMerge('h-[176px] w-full rounded-3xl object-cover md:h-[347px] lg:h-[290px]', className)}
+      alt={`${title} 체험 이미지`}
+      className={twMerge('h-176 w-full rounded-3xl object-cover md:h-347 lg:h-290', className)}
       src={bannerImageUrl}
     />
   );
@@ -142,7 +144,9 @@ function MainCardContent({
 
 // ---------------------- Export ----------------------
 
-export const MainCard = Object.assign(MainCardRoot, {
+const MainCard = Object.assign(MainCardRoot, {
   Image: MainCardImage,
   Content: MainCardContent,
 });
+
+export default MainCard;

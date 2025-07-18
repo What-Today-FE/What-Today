@@ -42,15 +42,30 @@ export interface MainCardImageProps {
 }
 
 /**
- * 📝 MainCard.Content의 Props 타입입니다.
- * 각 텍스트와 아이콘에 적용할 커스텀 클래스를 정의할 수 있습니다.
+ * 📝 MainCard.Content
  *
- * @property {string} [className] - content wrapper(card 안 하얀 박스)에 적용할 클래스
- * @property {string} [titleClassName] - 제목 텍스트 클래스
- * @property {string} [ratingClassName] - 평점 숫자 텍스트 클래스
- * @property {string} [priceClassName] - 가격 텍스트 클래스
- * @property {string} [iconColor='#FFC23D'] - 별 아이콘 색상
+ * 체험 카드 하단의 제목, 평점, 가격 정보를 보여주는 영역입니다.
+ *
+ * @component
+ *
+ * @example
+ * ```tsx
+ * <MainCard.Content
+ *   className="bg-white"
+ *   titleClassName="text-indigo-500"
+ *   ratingClassName="text-yellow-500"
+ *   priceClassName="text-red-500"
+ *   iconColor="#FACC15"
+ * />
+ * ```
+ *
+ * @param {string} [className] - content wrapper(card 안 하얀 박스)에 적용할 클래스
+ * @param {string} [titleClassName] - 제목 텍스트 클래스
+ * @param {string} [ratingClassName] - 평점 숫자 텍스트 클래스
+ * @param {string} [priceClassName] - 가격 텍스트 클래스
+ * @param {string} [iconColor='#FFC23D'] - 별 아이콘 색상
  */
+
 export interface MainCardContentProps {
   className?: string;
   titleClassName?: string;

@@ -1,11 +1,21 @@
 import Playground from '@/layouts/Playground';
 
-import { MainCard } from '../components/MainCard/MainCard';
+import MainCard from '../components/MainCard/MainCard';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
 /* Playground에서 사용할 예시 코드를 작성해주세요. */
-const code = `예시 코드를 작성해주세요.`;
+const code = `<MainCard
+  title='스카이다이빙'
+  price={200000}
+  bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
+  rating={4.8}
+ reviewCount={121}
+  className='w-[265px]'
+>
+  <MainCard.Image />
+  <MainCard.Content />
+</MainCard>`;
 
 export default function MainCardDoc() {
   return (
@@ -42,19 +52,6 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
       />
       {/* 실제 컴포넌트를 아래에 작성해주세요 */}
       {/* 예시 코드 */}
-      <h3 className='mb-20 text-2xl'>하드코딩 예시</h3>
-      <DocCode
-        code={`        <MainCard
-          title='스카이다이빙'
-          price={200000}
-          bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
-          rating={4.8}
-          reviewCount={121}
-        >
-          <MainCard.Image />
-          <MainCard.Content />
-        </MainCard>`}
-      />
 
       {/* Playground는 편집 가능한 코드 블록입니다. */}
       <div className='mt-24'>
@@ -112,7 +109,7 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
       </div>
 
       <DocCode
-        code={`         < <MainCard
+        code={`         <MainCard
           bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
           className='w-[265px]'
           price={200000}
