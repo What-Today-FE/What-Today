@@ -1,16 +1,25 @@
-import ButtonExampleDocs from '@pages/ButtonExampleDocs';
+import Sidebar from '@layouts/Sidebar';
+import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
+import ExperienceCardDoc from '@pages/ExperienceCardDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import NoResultDoc from '@pages/NoResultDoc';
+import MainCardDoc from '@pages/MainCardDoc';
+import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
 import SelectDoc from '@pages/SelectDoc';
+import RadioGroupDoc from '@pages/RadioGroupDoc';
+import ReservationCardDoc from '@pages/ReservationCardDoc';
+import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
-import Sidebar from '@/layouts/Sidebar';
+import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
+import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
   {
@@ -26,8 +35,44 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: 'button-example',
-        element: <ButtonExampleDocs />,
+        path: 'NoResult',
+        element: <NoResultDoc />,
+      },
+      {
+        path: 'UserBadge',
+        element: <UserBadgeDoc />,
+      },
+      {
+        path: 'OwnerBadge',
+        element: <OwnerBadgeDoc />,
+      },
+      {
+        path: 'button',
+        element: <ButtonDoc />,
+      },
+      {
+        path: 'MainCard',
+        element: <MainCardDoc />,
+      },
+      {
+        path: 'RadioGroup',
+        element: <RadioGroupDoc />,
+      },
+      {
+        path: 'ExperienceCard',
+        element: <ExperienceCardDoc />,
+      },
+      {
+        path: 'Textarea',
+        element: <TextareaDoc />,
+      },
+      {
+        path: 'ReservationCard',
+        element: <ReservationCardDoc />,
+      },
+      {
+        path: 'MypageSidebar',
+        element: <MypageSidebarDoc />,
       },
       {
         path: 'Popover',
