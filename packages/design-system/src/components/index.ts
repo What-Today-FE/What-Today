@@ -3,6 +3,7 @@ export { default as ExperienceCard } from './ExperienceCard';
 export * from './icons';
 export * from './input';
 export * from './logos';
+export { default as NoResult } from './NoResult';
 export { default as Pagination } from './Pagination';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
 export * from '@/components/calendar/index';
