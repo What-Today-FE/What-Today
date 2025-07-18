@@ -21,8 +21,8 @@ export default function Footer() {
         {/* 🔹 가운데: 링크만 중앙에 수직 정렬 */}
         <div className='flex flex-col items-center justify-center gap-4'>
           <div className='flex gap-6 text-base text-gray-500'>
-            <a className='text-lg md:text-xl'>Privacy</a>
-            <a className='text-lg md:text-xl'>FAQ</a>
+            <span className='text-lg md:text-xl'>Privacy</span>
+            <span className='text-lg md:text-xl'>FAQ</span>
           </div>
         </div>
 
