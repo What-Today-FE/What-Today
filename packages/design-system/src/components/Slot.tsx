@@ -51,7 +51,7 @@ function mergeRefs<T = HTMLElement>(...refs: Array<React.Ref<T> | undefined>): R
     refs.forEach((ref) => {
       if (typeof ref === 'function') {
         ref(value);
-      } else if (ref != null) {
+      } else if (ref != null && 'current' in ref) {
         ref.current = value;
       }
     });
@@ -194,14 +194,10 @@ export const Slot = ({ children, ref, ...props }: SlotProps) => {
     return isValidElement(newElement)
       ? cloneElement(
           newElement,
-          {
-            ...props,
-            ...newElement.props,
-            ...mergeProps(
-              { ...props, ref } as ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },
-              newElement.props as ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },
-            ),
-          },
+          mergeProps(
+            { ...props, ref } as ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },
+            newElement.props as ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },
+          ),
           newChildren,
         )
       : null;
@@ -209,8 +205,6 @@ export const Slot = ({ children, ref, ...props }: SlotProps) => {
 
   if (isValidElement(children)) {
     return cloneElement(children, {
-      ...props,
-      ...children.props,
       ...mergeProps(
         { ...props, ref } as ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },
         children.props as ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> },
