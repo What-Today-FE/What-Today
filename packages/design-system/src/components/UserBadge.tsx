@@ -21,7 +21,7 @@ const reservationStatus: Record<UserStatusProps, { label: string; style: string 
  *
  * @component
  * @param {BadgeProps} props - 뱃지에 전달되는 props
- * @param {UserStatusProps} [props.status] - 예약 상태 구분
+ * @param {UserStatusProps} props.status - 예약 상태 구분
  *
  * @returns {JSX.Element} 예약 상태에 따른 스타일링된 뱃지 요소
  *

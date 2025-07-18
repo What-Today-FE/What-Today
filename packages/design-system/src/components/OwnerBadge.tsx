@@ -23,8 +23,8 @@ const reservationStatus: Record<OwnerStatusProps, { label: string; style: string
  *
  * @component
  * @param {BadgeProps} props - 뱃지에 전달되는 props
- * @param {OwnerStatusProps} [props.status] - 예약 상태 구분
- * @param {number} [props.count] - 예약 상태별 수치 정보
+ * @param {OwnerStatusProps} props.status - 예약 상태 구분
+ * @param {number} props.count - 예약 상태별 수치 정보
  *
  * @returns {JSX.Element} 예약 상태에 따른 스타일링된 뱃지 요소
  *
