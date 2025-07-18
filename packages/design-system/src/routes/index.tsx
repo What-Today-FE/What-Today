@@ -11,6 +11,8 @@ import NoResultDoc from '@pages/NoResultDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import PaginationDoc from '@pages/PaginationDoc';
+import PopoverDoc from '@pages/PopoverDoc';
+import SelectDoc from '@pages/SelectDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
 import TextareaDoc from '@pages/TextareaDoc';
@@ -71,6 +73,14 @@ const router = createBrowserRouter([
       {
         path: 'MypageSidebar',
         element: <MypageSidebarDoc />,
+      },
+      {
+        path: 'Popover',
+        element: <PopoverDoc />,
+      },
+      {
+        path: 'Select',
+        element: <SelectDoc />,
       },
       {
         path: 'Input',

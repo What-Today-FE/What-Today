@@ -21,6 +21,8 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='MypageSidebar' to='/docs/MypageSidebar' />
             <SidebarNavItem label='Textarea' to='/docs/Textarea' />
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
+            <SidebarNavItem label='Select' to='/docs/Select' />
+            <SidebarNavItem label='Popover' to='/docs/Popover' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
             <SidebarNavItem label='NoResult' to='/docs/NoResult' />
             <SidebarNavItem label='UserBadge' to='/docs/UserBadge' />
