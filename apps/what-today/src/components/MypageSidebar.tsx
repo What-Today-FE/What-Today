@@ -20,6 +20,7 @@ interface MypageSidebarProps {
   /**
    * 로그아웃 버튼 클릭 시 실행되는 콜백 함수(아마 모달을 띄우지 않을까 싶습니다.)
    */
+  onLogoutClick: () => void;
   onClick: () => void;
 }
 
@@ -37,7 +38,7 @@ interface MypageSidebarProps {
  *   onClick={() => logout()}
  * />
  */
-export default function MypageSidebar({ profileImgUrl, onClick }: MypageSidebarProps) {
+export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick }: MypageSidebarProps) {
   const location = useLocation();
   /**
    * 사이드바에 표시할 고정 메뉴 항목 목록
@@ -66,7 +67,7 @@ export default function MypageSidebar({ profileImgUrl, onClick }: MypageSidebarP
 
           return (
             <li key={label}>
-              <Link className={`${baseClass} ${selectedClass} `} to={to}>
+              <Link className={`${baseClass} ${selectedClass} `} to={to} onClick={onClick}>
                 <div className='flex size-24 items-center justify-center'>
                   <Icon color={`${colorProps}`} />
                 </div>
@@ -76,7 +77,7 @@ export default function MypageSidebar({ profileImgUrl, onClick }: MypageSidebarP
           );
         })}
       </ul>
-      <Button className='w-full text-gray-400' size='lg' variant='ghost' onClick={onClick}>
+      <Button className='w-full text-gray-400' size='lg' variant='ghost' onClick={onLogoutClick}>
         <ExitIcon /> 로그아웃
       </Button>
     </nav>
