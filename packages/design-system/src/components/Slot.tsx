@@ -1,4 +1,4 @@
-import React from 'react';
+import { Children, cloneElement, isValidElement } from 'react';
 
 /**
  * === Slot이란? ===
@@ -170,19 +170,19 @@ export const Slottable = ({ children }: SlottableProps) => {
  * => console : "child" 출력 -> "slot" 출력
  */
 export const Slot = ({ children, ref, ...props }: SlotProps) => {
-  const childrenArray = React.Children.toArray(children);
+  const childrenArray = Children.toArray(children);
   const slottable = childrenArray.find((child) => {
-    return React.isValidElement(child) && child.type === Slottable;
+    return isValidElement(child) && child.type === Slottable;
   }) as React.ReactElement<SlottableProps>;
 
-  if (slottable && React.isValidElement(slottable.props.children)) {
+  if (slottable && isValidElement(slottable.props.children)) {
     const newElement = slottable.props.children as React.ReactElement<
       ExtendedHTMLAttributes & { ref?: React.Ref<HTMLElement> }
     >;
     const newChildren = childrenArray.map((child) => {
       if (child !== slottable) return child;
 
-      if (React.isValidElement(newElement)) {
+      if (isValidElement(newElement)) {
         return newElement.props.children;
       } else {
         console.warn('Slot은 하나의 React Element만 자식으로 받을 수 있습니다.');
@@ -191,8 +191,8 @@ export const Slot = ({ children, ref, ...props }: SlotProps) => {
       return null;
     });
 
-    return React.isValidElement(newElement)
-      ? React.cloneElement(
+    return isValidElement(newElement)
+      ? cloneElement(
           newElement,
           {
             ...props,
@@ -207,8 +207,8 @@ export const Slot = ({ children, ref, ...props }: SlotProps) => {
       : null;
   }
 
-  if (React.isValidElement(children)) {
-    return React.cloneElement(children, {
+  if (isValidElement(children)) {
+    return cloneElement(children, {
       ...props,
       ...children.props,
       ...mergeProps(
