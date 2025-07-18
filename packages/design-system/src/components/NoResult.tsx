@@ -19,7 +19,7 @@ interface NoResultProps {
  * <NoResult
  *   dataName="예약 내역이"
  *   buttonMessage="예약하러 가기"
- *   onClick={() => navigate('/mypage')}
+ *   onRedirect={() => navigate('/mypage')}
  * />
  * ```
  */
