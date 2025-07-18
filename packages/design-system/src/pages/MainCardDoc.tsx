@@ -1,6 +1,6 @@
 import Playground from '@/layouts/Playground';
 
-import MainCard from '../components/MainCard/MainCard';
+import MainCard from '../components/MainCard';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
@@ -57,21 +57,7 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
       <div className='mt-24'>
         <Playground code={code} scope={{ MainCard }} />
       </div>
-
       <h3 className='text-2xl'>기본 MainCard 예시 입니다.</h3>
-      <div className='flex gap-20'>
-        <MainCard
-          bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
-          className='w-[265px]'
-          price={200000}
-          rating={4.8}
-          reviewCount={121}
-          title='스카이다이빙'
-        >
-          <MainCard.Image />
-          <MainCard.Content />
-        </MainCard>
-      </div>
       <DocCode
         code={`        <MainCard
         title='스카이다이빙'
