@@ -56,7 +56,7 @@ Header의 알림창 팝오버에서 보여지며, 알림은 개별 삭제 가능
           onDelete={() => alert('삭제 API 요청')}
         />
         <NotificationCard
-          content='서울숲 플로깅(2025-08-05 18:00~19:30) 예약이 거절되었습니다.'
+          content='메시지 파싱에 실패하면 이렇게 보여집니다.'
           onClickDetail={() => navigate('/mypage/reservations-list')}
           onDelete={() => alert('삭제 API 요청')}
         />
