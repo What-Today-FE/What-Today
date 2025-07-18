@@ -29,7 +29,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='MainCard' to='/docs/MainCard' />
 
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
-
+            <SidebarNavItem label='Footer' to='/docs/Footer' />
           </ul>
         </nav>
       </aside>

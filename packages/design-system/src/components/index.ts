@@ -1,5 +1,6 @@
 export { default as Button } from './button';
 export { default as ExperienceCard } from './ExperienceCard';
+export { default as Footer } from './Footer';
 export * from './icons';
 export * from './input';
 export * from './logos';
