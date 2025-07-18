@@ -20,7 +20,8 @@ interface ExtendedHTMLAttributes extends React.HTMLAttributes<HTMLElement> {
  * Slot 컴포넌트에 전달되는 props 타입입니다. children은 반드시 하나의 ReactElement만 가집니다.
  */
 interface SlotProps extends React.HTMLAttributes<HTMLElement> {
-  children: React.ReactElement<React.HTMLAttributes<HTMLElement>>; // 범용적으로 HTMLElement 속성 전부를 받도록 타입 단언
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  children: React.ReactElement<any>; // 범용적으로 HTMLElement 속성 전부를 받도록 타입 단언 (유연한 타입을 위해 any 사용 + eslint 우회)
   ref?: React.Ref<HTMLElement>;
 }
 
