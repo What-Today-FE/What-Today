@@ -42,7 +42,9 @@ interface MypageSidebarProps {
  * @example
  * <MypageSidebar
  *   profileImgUrl="https://example.com/avatar.jpg"
- *   onClick={() => logout()}
+ *   isOpen={isSidebarOpen}
+ *   onClick={() => setSidebarOpen((prev) => !prev)}
+ *   onLogoutClick={() => alert('hi')}
  * />
  */
 export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, isOpen }: MypageSidebarProps) {
@@ -66,7 +68,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
         // 모바일에서 Drawer 위치
         isOpen ? 'h-474 translate-x-0' : 'bg-primary-100 border-primary-100 h-50 -translate-x-full',
         'md:translate-x-0',
-        'md: border-gray-50 bg-white',
+        'bg-white md:border-gray-50',
       )}
     >
       {/* 콘텐츠: PC는 항상, 모바일은 isOpen일 때만 */}
