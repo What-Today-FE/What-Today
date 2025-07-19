@@ -13,14 +13,17 @@ const toastStyleByType: Record<ToastType, ToastStyles> = {
   success: {
     icon: <SuccessIcon className='size-20' />,
     className: 'bg-[#ecfdf3] border-1 border-[#bffcd9] text-[#4CAF50]',
+    color: '#4CAF50',
   },
   error: {
     icon: <ErrorIcon className='size-20' />,
     className: 'bg-[#fff0f0] border-1 border-[#ffe0e1] text-red-500',
+    color: '#FF2727',
   },
   default: {
     icon: <InfoIcon className='size-20' />,
     className: 'bg-[#f0f8ff] border-1 border-[#DDE7FD] text-[#2196F3]',
+    color: '#2196F3',
   },
 };
 
@@ -67,11 +70,15 @@ export const useToast = () => {
               }}
             >
               <span className='pl-4'>{statusStyle.icon}</span>
-              <div className='flex-1'>
+              <div className='flex flex-col'>
                 <ToastTitle>{title}</ToastTitle>
                 <ToastDescription>{description}</ToastDescription>
               </div>
-              <ToastClose className='absolute top-16 right-16' onClose={() => setIsVisible(false)} />
+              <ToastClose
+                className='absolute top-16 right-16'
+                color={statusStyle.color}
+                onClose={() => setIsVisible(false)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
