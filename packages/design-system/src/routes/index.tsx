@@ -7,15 +7,16 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
-import NoResultDoc from '@pages/NoResultDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import MypageSidebarDoc from '@pages/MypageSidebarDoc';
+import NoResultDoc from '@pages/NoResultDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
-import SelectDoc from '@pages/SelectDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
+import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: 'ExperienceCard',
         element: <ExperienceCardDoc />,
+      },
+      {
+        path: 'Toast',
+        element: <ToastDoc />,
       },
       {
         path: 'Textarea',
