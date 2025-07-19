@@ -66,6 +66,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
         // 모바일에서 Drawer 위치
         isOpen ? 'h-474 translate-x-0' : 'bg-primary-100 border-primary-100 h-50 -translate-x-full',
         'md:translate-x-0',
+        'md: border-gray-50 bg-white',
       )}
     >
       {/* 콘텐츠: PC는 항상, 모바일은 isOpen일 때만 */}
@@ -81,18 +82,19 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
         ) : (
           <ProfileLogo className='rounded-full' size={120} />
         )}
-        <ul className='flex w-full flex-col justify-center'>
+        <ul className='flex w-full flex-col justify-center gap-4'>
           {items.map(({ label, icon: Icon, to }) => {
-            const isSelected = location.pathname.startsWith(to);
-            const baseClass = 'flex w-full cursor-pointer items-center gap-8 rounded-2xl px-20 py-14 text-gray-600';
-            const selectedClass = isSelected && 'bg-primary-100 text-gray-950';
-            const colorProps = isSelected ? '#3d9ef2' : '#707177';
-
+            const isSelected = location.pathname === to;
+            const itemClass = twMerge(
+              'flex w-full cursor-pointer items-center gap-8 rounded-2xl px-20 py-14',
+              isSelected ? 'bg-primary-100 text-gray-950' : 'text-gray-600 hover:bg-gray-25',
+            );
+            const iconColor = isSelected ? '#3d9ef2' : '#707177';
             return (
               <li key={label}>
-                <Link className={`${baseClass} ${selectedClass} `} to={to} onClick={onClick}>
+                <Link className={itemClass} to={to} onClick={onClick}>
                   <div className='flex size-24 items-center justify-center'>
-                    <Icon color={`${colorProps}`} />
+                    <Icon color={`${iconColor}`} />
                   </div>
                   <div className='text-lg font-medium'>{label}</div>
                 </Link>
