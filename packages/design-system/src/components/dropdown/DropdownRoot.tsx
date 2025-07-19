@@ -24,7 +24,7 @@ interface DropdownProps {
  * </Dropdown>
  * ```
  */
-export default function Dropdown({ children }: DropdownProps) {
+export default function DropdownRoot({ children }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [triggerRef, setTriggerRef] = useState<HTMLButtonElement | null>(null);
 
