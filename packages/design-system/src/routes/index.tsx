@@ -10,6 +10,7 @@ import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import NoResultDoc from '@pages/NoResultDoc';
+import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'NotificationCard',
+        element: <NotificationCardDoc />,
       },
       {
         path: 'NoResult',
