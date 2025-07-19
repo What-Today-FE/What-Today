@@ -57,15 +57,30 @@ export default function ProfileImageInput({ src, onChange }: ProfileImageInputPr
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 파일 최대 크기 5MB
+    if (file.size > MAX_FILE_SIZE) {
+      alert('파일 크기는 5MB 이하여야 합니다.');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드 가능합니다.');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
       updateImage(reader.result as string);
     };
     reader.readAsDataURL(file);
+
+    reader.onerror = () => {
+      alert('파일을 읽는 중 오류가 발생했습니다.');
+    };
   };
 
   const handleDelete = () => {
-    if (src) setPreviewUrl('');
+    if (initialSrc) setPreviewUrl(initialSrc);
     else setPreviewUrl('');
   };
 
@@ -88,8 +103,10 @@ export default function ProfileImageInput({ src, onChange }: ProfileImageInputPr
         )}
         <input
           accept='image/*'
+          aria-label='프로필 이미지 업로드'
           className='absolute inset-0 size-full cursor-pointer rounded-full opacity-0'
           id='profileImage'
+          name='profileImage'
           type='file'
           onChange={handleChange}
         />
