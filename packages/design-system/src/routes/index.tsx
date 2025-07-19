@@ -17,6 +17,7 @@ import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
 import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: 'ExperienceCard',
         element: <ExperienceCardDoc />,
+      },
+      {
+        path: 'Toast',
+        element: <ToastDoc />,
       },
       {
         path: 'Textarea',

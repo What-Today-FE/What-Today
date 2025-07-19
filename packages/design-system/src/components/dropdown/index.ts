@@ -1,6 +1,6 @@
-import DropdownRoot from './Dropdown';
 import DropdownItem from './DropdownItem';
 import DropdownMenu from './DropdownMenu';
+import DropdownRoot from './DropdownRoot';
 import DropdownTrigger from './DropdownTrigger';
 
 /**

@@ -30,6 +30,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
             <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
             <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
+            <SidebarNavItem label='Toast' to='/docs/Toast' />
           </ul>
         </nav>
       </aside>
