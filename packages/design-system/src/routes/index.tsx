@@ -1,4 +1,5 @@
 import Sidebar from '@layouts/Sidebar';
+import BottomSheetDoc from '@pages/BottomSheetDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+        path: 'BottomSheet',
+        element: <BottomSheetDoc />,
       },
     ],
   },
