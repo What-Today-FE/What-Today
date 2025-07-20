@@ -1,6 +1,6 @@
 import Playground from '@/layouts/Playground';
 
-import Carousel from '../components/Carousel';
+import Carousel from '../components/Carousel/Carousel';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 export default function CarouselDoc() {
