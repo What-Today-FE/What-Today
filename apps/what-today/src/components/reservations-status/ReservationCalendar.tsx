@@ -1,6 +1,5 @@
 import { Calendar } from '@what-today/design-system';
-
-export type ReservationStatus = 'completed' | 'confirmed' | 'pending';
+import type { ReservationStatus } from 'node_modules/@what-today/design-system/dist/types/calendar/DayCell';
 interface ReservationCalendarProps {
   reservationsByDate: Record<string, Record<ReservationStatus, number>>;
 }

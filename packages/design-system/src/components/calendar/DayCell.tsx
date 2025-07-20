@@ -3,7 +3,7 @@ import { twJoin, twMerge } from 'tailwind-merge';
 
 import OwnerBadge from '../OwnerBadge';
 import { useCalendarContext } from './CalendarContext';
-type ReservationStatus = 'completed' | 'confirmed' | 'pending';
+export type ReservationStatus = 'completed' | 'confirmed' | 'pending';
 interface DayCellProps {
   /**
    * 렌더링할 날짜 객체
@@ -68,7 +68,7 @@ export default function DayCell({ day, reservableDates, reservations, dayCellCla
       <span className={twMerge(dateBaseClass, dateClass)}>{day.date()}</span>
       {(['pending', 'confirmed', 'completed'] as const).map((status) => {
         const count = reservations?.[status] ?? 0;
-        return count > 0 ? <OwnerBadge count={count} status={status} /> : null;
+        return count > 0 ? <OwnerBadge key={status} count={count} status={status} /> : null;
       })}
     </div>
   );
