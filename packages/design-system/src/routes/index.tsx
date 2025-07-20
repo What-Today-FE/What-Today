@@ -1,20 +1,21 @@
 import Sidebar from '@layouts/Sidebar';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
+import CarouselDoc from '@pages/CarouselDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
-import NoResultDoc from '@pages/NoResultDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import MypageSidebarDoc from '@pages/MypageSidebarDoc';
+import NoResultDoc from '@pages/NoResultDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
-import SelectDoc from '@pages/SelectDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
+import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+        path: 'Carousel',
+        element: <CarouselDoc />,
       },
     ],
   },
