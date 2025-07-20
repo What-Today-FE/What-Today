@@ -8,7 +8,6 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
-import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
@@ -79,10 +78,6 @@ const router = createBrowserRouter([
       {
         path: 'ReservationCard',
         element: <ReservationCardDoc />,
-      },
-      {
-        path: 'MypageSidebar',
-        element: <MypageSidebarDoc />,
       },
       {
         path: 'Popover',
