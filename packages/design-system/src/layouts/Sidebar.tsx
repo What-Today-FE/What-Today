@@ -20,11 +20,16 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Calendar' to='/docs/Calendar' />
             <SidebarNavItem label='Textarea' to='/docs/Textarea' />
             <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
+            <SidebarNavItem label='Select' to='/docs/Select' />
+            <SidebarNavItem label='Popover' to='/docs/Popover' />
             <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
+            <SidebarNavItem label='NoResult' to='/docs/NoResult' />
             <SidebarNavItem label='UserBadge' to='/docs/UserBadge' />
             <SidebarNavItem label='MainCard' to='/docs/MainCard' />
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
             <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
+            <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
+            <SidebarNavItem label='Toast' to='/docs/Toast' />
           </ul>
         </nav>
       </aside>

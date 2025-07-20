@@ -8,10 +8,15 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
+import NoResultDoc from '@pages/NoResultDoc';
+import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
+import PopoverDoc from '@pages/PopoverDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
+import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -29,6 +34,14 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'NotificationCard',
+        element: <NotificationCardDoc />,
+      },
+      {
+        path: 'NoResult',
+        element: <NoResultDoc />,
       },
       {
         path: 'UserBadge',
@@ -55,12 +68,24 @@ const router = createBrowserRouter([
         element: <ExperienceCardDoc />,
       },
       {
+        path: 'Toast',
+        element: <ToastDoc />,
+      },
+      {
         path: 'Textarea',
         element: <TextareaDoc />,
       },
       {
         path: 'ReservationCard',
         element: <ReservationCardDoc />,
+      },
+      {
+        path: 'Popover',
+        element: <PopoverDoc />,
+      },
+      {
+        path: 'Select',
+        element: <SelectDoc />,
       },
       {
         path: 'Input',
