@@ -20,6 +20,10 @@ interface CalendarRootProps {
    */
   initialDate?: string;
   /**
+   * 날짜 선택 시 상위로 선택된 날짜(ISO 문자열)를 알려주는 콜백
+   */
+  onDateChange?: (date: string) => void;
+  /**
    * CalendarRoot 커스텀 가능
    */
   className?: string;
@@ -44,12 +48,17 @@ interface CalendarRootProps {
  * </CalendarRoot>
  * ```
  */
-export default function CalendarRoot({ children, initialDate, className }: CalendarRootProps) {
+export default function CalendarRoot({ children, initialDate, onDateChange, className }: CalendarRootProps) {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
   const [selectedDate, setSelectedDate] = useState<string>(initialDate || '');
 
+  const handleSelectDate = (date: string) => {
+    setSelectedDate(date);
+    onDateChange?.(date);
+  };
+
   return (
-    <CalendarContext.Provider value={{ selectedDate, onSelectDate: setSelectedDate, currentMonth, setCurrentMonth }}>
+    <CalendarContext.Provider value={{ selectedDate, onSelectDate: handleSelectDate, currentMonth, setCurrentMonth }}>
       <div aria-label='예약 캘린더' className={twMerge('flex w-full max-w-640 flex-col gap-8', className)}>
         {children}
       </div>
