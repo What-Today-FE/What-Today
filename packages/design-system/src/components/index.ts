@@ -1,4 +1,5 @@
 export { default as Button } from './button';
+export * from './calendar';
 export { default as ExperienceCard } from './ExperienceCard';
 export * from './icons';
 export * from './input';
@@ -12,5 +13,4 @@ export { default as ReservationCard } from './ReservationCard';
 export * from './select';
 export { Toaster, useToast } from './Toast';
 export { default as UserBadge } from './UserBadge';
-export * from '@/components/calendar/index';
 export * from '@/components/dropdown/index';

@@ -1,8 +1,9 @@
 import type { Dayjs } from 'dayjs';
 import { twJoin, twMerge } from 'tailwind-merge';
 
+import OwnerBadge from '../OwnerBadge';
 import { useCalendarContext } from './CalendarContext';
-
+type ReservationStatus = 'completed' | 'confirmed' | 'pending';
 interface DayCellProps {
   /**
    * 렌더링할 날짜 객체
@@ -12,6 +13,10 @@ interface DayCellProps {
    * 예약 가능한 날짜들의 ISO 문자열 집합 (예: `'2025-07-15'`)
    */
   reservableDates?: Set<string>;
+  /**
+   * 날짜별 예약 상태
+   */
+  reservations?: Record<ReservationStatus, number>;
   /**
    * 셀 전체에 적용할 클래스
    */
@@ -42,7 +47,7 @@ interface DayCellProps {
  * />
  * ```
  */
-export default function DayCell({ day, reservableDates, dayCellClass, dateClass }: DayCellProps) {
+export default function DayCell({ day, reservableDates, reservations, dayCellClass, dateClass }: DayCellProps) {
   const { currentMonth, selectedDate, onSelectDate } = useCalendarContext();
   const handleClick = () => {
     onSelectDate(day.format('YYYY-MM-DD'));
@@ -61,6 +66,10 @@ export default function DayCell({ day, reservableDates, dayCellClass, dateClass 
   return (
     <div className={twMerge(dayCellBaseClass, dayCellClass)} onClick={handleClick}>
       <span className={twMerge(dateBaseClass, dateClass)}>{day.date()}</span>
+      {(['pending', 'confirmed', 'completed'] as const).map((status) => {
+        const count = reservations?.[status] ?? 0;
+        return count > 0 ? <OwnerBadge count={count} status={status} /> : null;
+      })}
     </div>
   );
 }
