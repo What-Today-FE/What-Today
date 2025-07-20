@@ -7,6 +7,7 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import MainBannerDoc from '@pages/MainBannerDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+        path: 'MainBanner',
+        element: <MainBannerDoc />,
       },
     ],
   },
