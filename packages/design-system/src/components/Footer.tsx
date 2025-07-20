@@ -4,7 +4,7 @@ import { TextLogo } from './logos';
 export default function Footer() {
   return (
     <footer className='mt-80 w-full border-t border-gray-100 bg-white py-24'>
-      <div className='mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center gap-16 text-center md:grid-cols-3 md:text-left'>
+      <div className='mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center gap-16 text-center md:grid-cols-2 md:text-left'>
         {/* 🔹 왼쪽: 비전 메시지 + 로고 */}
         <div className='flex flex-col items-center gap-4 md:items-start'>
           <a className='flex items-center gap-2 transition hover:scale-105' href='/'>
@@ -16,14 +16,6 @@ export default function Footer() {
             무의미한 일상 속에서 <br className='sm:hidden' />
             작은 설렘을 주는 플랫폼이에요 🎈
           </p>
-        </div>
-
-        {/* 🔹 가운데: 링크만 중앙에 수직 정렬 */}
-        <div className='flex flex-col items-center justify-center gap-4'>
-          <div className='flex gap-6 text-base text-gray-500'>
-            <span className='text-lg md:text-xl'>Privacy</span>
-            <span className='text-lg md:text-xl'>FAQ</span>
-          </div>
         </div>
 
         {/* 🔹 오른쪽: GitHub + 날짜 (데스크탑 전용) */}

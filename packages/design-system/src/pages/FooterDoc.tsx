@@ -16,7 +16,7 @@ export default function FooterDoc() {
 
 페이지 하단에 고정되는 공통 푸터입니다.  
 로고, GitHub 링크 등을 포함합니다.
-반응형 레이아웃을 지원하며, 3열 그리드 구조로 되어 있습니다.
+반응형 레이아웃을 지원하며, 2열 그리드 구조로 되어 있습니다.
 `}
         propsDescription={`
 **현재 Footer 컴포넌트는 별도의 props를 받지 않습니다.**
