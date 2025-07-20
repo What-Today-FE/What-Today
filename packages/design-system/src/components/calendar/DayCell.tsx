@@ -56,7 +56,7 @@ export default function DayCell({ day, reservableDates, reservations, dayCellCla
   const isReservable = reservableDates && reservableDates.has(day.format('YYYY-MM-DD'));
   const isOtherMonth = day.month() !== currentMonth.month();
   const isSelected = selectedDate === day.format('YYYY-MM-DD');
-  const dayCellBaseClass = 'flex w-full aspect-square items-center justify-center cursor-pointer p-1';
+  const dayCellBaseClass = 'flex flex-col gap-4 w-full aspect-square items-center justify-center cursor-pointer p-1';
   const dateBaseClass = twJoin(
     'text-lg font-medium rounded-full size-42 flex justify-center items-center',
     isOtherMonth ? 'text-gray-300' : 'text-gray-800',
