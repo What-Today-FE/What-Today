@@ -1,171 +1,300 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { BottomSheetMetrics } from '../types';
+/**
+ * @hook useBodyScrollLock
+ * @description 바텀시트가 열릴 때 배경 페이지의 스크롤을 방지하는 훅입니다.
+ *
+ * @param isLocked - true일 때 스크롤 잠금, false일 때 스크롤 해제
+ *
+ * @example
+ * ```tsx
+ * function BottomSheet({ isOpen }) {
+ *   useBodyScrollLock(isOpen);
+ *   // ...
+ * }
+ * ```
+ */
+export function useBodyScrollLock(isLocked: boolean) {
+  useEffect(() => {
+    if (isLocked) {
+      // 현재 스크롤 위치 저장 (iOS에서 위치 변화 방지)
+      const scrollY = window.scrollY;
 
-// 바텀시트가 최대로 올라 갔을 때의 Y좌표 값
-const MIN_Y = 60;
-// 바텀시트가 최대로 내려갔을 때의 Y좌표 값 (초기값은 window 기준)
-const MAX_Y = typeof window !== 'undefined' ? window.innerHeight - 100 : 800;
+      // body 스크롤 방지
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      // 스크롤 위치 복원
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
 
-export function useBottomSheet() {
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+      // 이전 스크롤 위치로 복원
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
 
-  const metrics = useRef<BottomSheetMetrics>({
-    touchStart: {
-      sheetY: 0,
-      touchY: 0,
-    },
-    touchMove: {
-      prevTouchY: 0,
-      movingDirection: 'none',
-    },
-    isContentAreaTouched: false,
+    // cleanup: 컴포넌트 언마운트 시 스크롤 복원
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [isLocked]);
+}
+
+/**
+ * @hook useDynamicHeight
+ * @description 바텀시트의 높이를 콘텐츠에 따라 동적으로 조절하는 훅입니다.
+ *
+ * @param contentRef - 콘텐츠 영역 ref
+ * @param isOpen - 바텀시트 열림 상태
+ * @param maxHeight - 최대 높이 비율 (0-1, 기본값: 0.9 = 90%)
+ *
+ * @example
+ * ```tsx
+ * function BottomSheet({ isOpen }) {
+ *   const contentRef = useRef(null);
+ *   const { contentHeight, isScrollable } = useDynamicHeight(contentRef, isOpen);
+ *   // ...
+ * }
+ * ```
+ */
+export function useDynamicHeight(
+  contentRef: React.RefObject<HTMLDivElement | null>,
+  isOpen: boolean,
+  maxHeight: number = 0.9,
+) {
+  const [contentHeight, setContentHeight] = useState<number | null>(null);
+  const [isScrollable, setIsScrollable] = useState(false);
+
+  const calculateHeight = useCallback(() => {
+    if (!contentRef.current || !isOpen) return;
+
+    // 콘텐츠의 실제 높이 측정
+    const contentScrollHeight = contentRef.current.scrollHeight;
+
+    // 뷰포트 높이와 최대 허용 높이 계산
+    const viewportHeight = window.innerHeight;
+    const maxAllowedHeight = viewportHeight * maxHeight;
+
+    // 헤더 높이 고려 (대략 64px)
+    const headerHeight = 24;
+    const availableHeight = maxAllowedHeight - headerHeight;
+
+    if (contentScrollHeight <= availableHeight) {
+      // 콘텐츠가 최대 높이보다 작으면 콘텐츠 크기에 맞춤
+      setContentHeight(contentScrollHeight);
+      setIsScrollable(false);
+    } else {
+      // 콘텐츠가 최대 높이보다 크면 최대 높이로 제한하고 스크롤 허용
+      setContentHeight(availableHeight);
+      setIsScrollable(true);
+    }
+  }, [contentRef, isOpen, maxHeight]);
+
+  // 바텀시트가 열릴 때 높이 계산
+  useEffect(() => {
+    if (isOpen) {
+      // DOM 업데이트 후 높이 계산을 위해 약간의 지연
+      const timer = setTimeout(calculateHeight, 50);
+      return () => clearTimeout(timer);
+    } else {
+      // 닫힐 때 애니메이션 시간만큼 딜레이 후 상태 초기화 (깜빡임 방지)
+      const timer = setTimeout(() => {
+        setContentHeight(null);
+        setIsScrollable(false);
+      }, 300); // CSS transition duration과 동일하게 설정
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, calculateHeight]);
+
+  // 윈도우 리사이즈 시 높이 재계산
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleResize = () => {
+      calculateHeight();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen, calculateHeight]);
+
+  return {
+    contentHeight,
+    isScrollable,
+    recalculateHeight: calculateHeight,
+  };
+}
+
+/**
+ * @hook useDragToClose
+ * @description 바텀시트를 드래그해서 닫을 수 있는 기능을 제공하는 훅입니다.
+ * 헤더에서 드래그할 때는 스크롤 위치와 관계없이, 콘텐츠에서 드래그할 때는 스크롤이 맨 위에 있을 때만 닫기가 가능합니다.
+ *
+ * @param sheetRef - 바텀시트 DOM 요소 ref
+ * @param contentRef - 콘텐츠 영역 ref (스크롤 위치 확인용)
+ * @param onClose - 바텀시트 닫기 함수
+ * @param isOpen - 바텀시트 열림 상태
+ *
+ * @example
+ * ```tsx
+ * function BottomSheet({ isOpen, onClose }) {
+ *   const sheetRef = useRef(null);
+ *   const contentRef = useRef(null);
+ *   const { dragHandlers } = useDragToClose(sheetRef, contentRef, onClose, isOpen);
+ *
+ *   return (
+ *     <div ref={sheetRef} {...dragHandlers}>
+ *       // ...
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function useDragToClose(
+  sheetRef: React.RefObject<HTMLDivElement | null>,
+  contentRef: React.RefObject<HTMLDivElement | null>,
+  onClose: () => void,
+  isOpen: boolean,
+) {
+  const dragData = useRef({
+    isDragging: false,
+    startY: 0,
+    currentY: 0,
+    sheetHeight: 0,
+    canDragToClose: false, // 드래그로 닫기가 가능한지 여부
   });
 
-  // 바텀시트 드래그 동작 제어
+  // 바텀시트가 열릴 때 transform 상태 초기화
   useEffect(() => {
-    // 콘텐츠 스크롤 여부와 드래그 방향에 따라 바텀시트 이동 가능 여부 결정
-    const canUserMoveSheet = () => {
-      const { isContentAreaTouched, touchMove } = metrics.current;
+    if (isOpen && sheetRef.current) {
+      // 이전 드래그 상태 제거
+      sheetRef.current.style.transform = '';
+      sheetRef.current.style.transition = '';
+    }
+  }, [isOpen, sheetRef]);
 
-      // 바텀시트에서 컨텐츠 영역이 아닌 부분을 터치하면 바텀시트를 이동합니다.
-      if (!isContentAreaTouched) {
-        return true;
-      }
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      if (!sheetRef.current || !isOpen) return;
 
-      // 바텀 시트가 최대로 올라와 있는 상태가 아니라면 바텀 시트는 움직일 수 있습니다.
-      if (sheetRef.current!.getBoundingClientRect().y !== MIN_Y) {
-        return true;
-      }
+      const touch = e.touches[0];
+      const rect = sheetRef.current.getBoundingClientRect();
 
-      // 드래그(터치) 하는 상태에서 아래로 스크롤 했을 때 더 이상 스크롤이 불가능한 경우 바텀시트를 내립니다.
-      if (touchMove.movingDirection === 'down') {
-        return contentRef.current!.scrollTop <= 0;
-      }
+      // 터치 시작 위치가 헤더 영역인지 확인
+      const target = e.target as Element;
+      const isHeaderTouch = target.closest('[data-bottomsheet-header]') !== null;
 
-      // 위의 내용에 해당하지 않는 경우 바텀시트는 움직이지 않습니다.
-      return false;
-    };
-
-    // 드래그(터치) 시작 시 불려지는 함수
-    const handleTouchStart = (e: TouchEvent) => {
-      // metrics 객체로부터 touchStart 정보를 가져옵니다.
-      const { touchStart } = metrics.current;
-
-      // 현재 바텀시트의 최상단 Y 좌표를 가져와 touchStart에 저장합니다.
-      touchStart.sheetY = sheetRef.current!.getBoundingClientRect().y;
-      // 터치한 위치의 Y 좌표를 touchStart에 저장합니다.
-      touchStart.touchY = e.touches[0].clientY;
-    };
-
-    // 드래그(터치)를 유지한 채로 이동할 때 불려지는 함수
-    const handleTouchMove = (e: TouchEvent) => {
-      // metrics 객체로부터 touchStart와 touchMove 정보를 가져옵니다.
-      const { touchStart, touchMove } = metrics.current;
-      // 현재 터치 위치를 가져옵니다.
-      const currentTouch = e.touches[0];
-
-      // 이전 프레임의 터치 위치가 없을 경우, 터치 시작 위치를 초기값으로 설정합니다.
-      if (touchMove.prevTouchY === undefined || touchMove.prevTouchY === 0) {
-        touchMove.prevTouchY = touchStart.touchY;
-      }
-
-      // 이전 터치 위치와 현재 터치 위치를 비교하여 이동 방향을 결정합니다.
-      touchMove.movingDirection = touchMove.prevTouchY < currentTouch.clientY ? 'down' : 'up';
-
-      // 바텀시트를 움직일 수 있을 경우
-      if (canUserMoveSheet()) {
-        // 브라우저 기본 동작 방지
-        e.preventDefault();
-
-        // 손가락이 움직인 거리 = 현재 터치 위치 - 터치 시작 위치
-        const offset = currentTouch.clientY - touchStart.touchY;
-        // 바텀시트의 다음 위치를 계산: 시작 위치 + 이동 거리
-        let nextY = touchStart.sheetY + offset;
-
-        // 바텀시트의 높이는 최소 MIN_Y와 최대 MAX_Y 사이로 제한합니다.
-        if (nextY < MIN_Y) {
-          nextY = MIN_Y;
-        }
-        if (nextY > MAX_Y) {
-          nextY = MAX_Y;
-        }
-
-        // 바텀시트의 실제 위치를 변경하는 부분
-        // nextY는 화면 기준 Y 좌표이며, translateY는 기준점이 0이므로
-        // 바닥 위치(MAX_Y)에서 상대 이동거리만큼 빼서 translateY로 적용
-        // 즉: translateY는 시트를 "아래로 얼마나 이동할지"를 지정하는 값이므로
-        // 화면 상의 위치 Y (nextY) - 최대 Y (MAX_Y) = 실제 이동 거리
-        sheetRef.current!.style.transform = `translateY(${nextY - MAX_Y}px)`;
+      // 드래그 닫기 허용 조건:
+      // 1. 헤더에서 터치: 항상 허용 (스크롤 위치 무관)
+      // 2. 콘텐츠에서 터치: 스크롤이 맨 위에 있을 때만 허용
+      let canDragToClose = false;
+      if (isHeaderTouch) {
+        canDragToClose = true; // 헤더에서는 항상 허용
       } else {
-        // 컨텐츠를 스크롤하는 동안에는 body가 스크롤 되는 것을 막는다.
-        document.body.style.overflowY = 'hidden';
-      }
-    };
-
-    // 드래그(터치) 종료 시 불려지는 함수
-    const handleTouchEnd = () => {
-      // 콘텐츠가 스크롤 가능하도록 다시 body의 스크롤을 복구
-      document.body.style.overflowY = 'auto';
-
-      // 사용자가 손가락을 위로 뗐는지, 아래로 뗐는지 방향 정보 가져오기
-      const { movingDirection } = metrics.current.touchMove;
-
-      // 드래그(터치)가 끝난 후 바텀시트의 최상단 모서리 Y 좌표를 가져옵니다.
-      const currentY = sheetRef.current!.getBoundingClientRect().y;
-
-      // 바텀시트가 최대로 올라간 상태가 아니라면, 드래그 방향에 따라 바텀시트를 올리거나 내립니다.
-      if (currentY !== MIN_Y) {
-        // 아래로 스크롤 하는 경우 바텀시트가 가장 작은 크기로 축소됩니다.(원래 크기)
-        if (movingDirection === 'down') {
-          sheetRef.current!.style.transform = 'translateY(0)';
-        } else if (movingDirection === 'up') {
-          // 위로 스크롤 하는 경우 바텀시트가 최대로 올라갑니다.
-          sheetRef.current!.style.transform = `translateY(${MIN_Y - MAX_Y}px)`;
-        }
+        // 콘텐츠에서는 스크롤 위치 확인
+        canDragToClose = !contentRef.current || contentRef.current.scrollTop === 0;
       }
 
-      // 드래그(터치)에 사용된 내부 상태값 초기화
-      metrics.current = {
-        touchStart: {
-          sheetY: 0,
-          touchY: 0,
-        },
-        touchMove: {
-          prevTouchY: 0,
-          movingDirection: 'none',
-        },
-        isContentAreaTouched: false,
+      dragData.current = {
+        isDragging: true,
+        startY: touch.clientY,
+        currentY: touch.clientY,
+        sheetHeight: rect.height,
+        canDragToClose,
       };
-    };
 
-    // sheet 요소 참조를 가져와 이벤트 리스너를 등록합니다.
-    const sheetEl = sheetRef.current;
-    // sheetEl이 존재하지 않으면 이벤트 리스너를 등록하지 않습니다. (예: 컴포넌트가 마운트되지 않은 경우)
-    if (!sheetEl) return;
+      // 드래그 중 CSS transition 제거
+      sheetRef.current.style.transition = 'none';
+    },
+    [isOpen, sheetRef, contentRef],
+  );
 
-    // 바텀시트에 터치 이벤트 리스너 등록
-    sheetEl.addEventListener('touchstart', handleTouchStart); // 터치 시작 시 로직 실행
-    sheetEl.addEventListener('touchmove', handleTouchMove); // 터치 이동 중 로직 실행
-    sheetEl.addEventListener('touchend', handleTouchEnd); // 터치 종료 시 로직 실행
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!dragData.current.isDragging || !sheetRef.current) return;
 
-    // 컴포넌트 언마운트 시 또는 리렌더링 시 이전 이벤트 리스너 정리(clean-up)
-    return () => {
-      sheetEl.removeEventListener('touchstart', handleTouchStart);
-      sheetEl.removeEventListener('touchmove', handleTouchMove);
-      sheetEl.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, []);
+      const touch = e.touches[0];
+      const deltaY = touch.clientY - dragData.current.startY;
 
-  // 콘텐츠 영역에서 터치 시작 여부 추적
+      // 아래쪽으로만 드래그 허용 (위로는 차단)
+      if (deltaY < 0) return;
+
+      // 헤더에서 시작했거나 스크롤이 맨 위에 있을 때만 바텀시트 드래그 허용
+      if (!dragData.current.canDragToClose) return;
+
+      dragData.current.currentY = touch.clientY;
+
+      // 드래그에 따라 바텀시트 위치 변경
+      sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+
+      // 브라우저 기본 동작 방지 (스크롤 등)
+      e.preventDefault();
+    },
+    [sheetRef],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    if (!dragData.current.isDragging || !sheetRef.current) return;
+
+    const deltaY = dragData.current.currentY - dragData.current.startY;
+    const threshold = dragData.current.sheetHeight * 0.3; // 30% 이상 드래그하면 닫기
+
+    // CSS transition 복원
+    sheetRef.current.style.transition = '';
+
+    // 헤더에서 시작했거나 스크롤이 맨 위에 있고 충분히 드래그했을 때만 닫기
+    if (dragData.current.canDragToClose && deltaY > threshold) {
+      // 충분히 드래그했으면 닫기
+      // ✅ 중요: 닫기 전에 transform 초기화
+      sheetRef.current.style.transform = '';
+      onClose();
+    } else {
+      // 아니면 원래 위치로 복원
+      sheetRef.current.style.transform = '';
+    }
+
+    // 드래그 상태 초기화
+    dragData.current.isDragging = false;
+  }, [onClose, sheetRef]);
+
   useEffect(() => {
-    const handleTouchStart = () => {
-      metrics.current.isContentAreaTouched = true;
-    };
-    contentRef.current?.addEventListener('touchstart', handleTouchStart);
-  }, []);
+    const sheet = sheetRef.current;
+    if (!sheet || !isOpen) return;
 
-  // 바텀시트 wrapper와 content 영역 ref 반환
-  return { sheetRef, contentRef };
+    // 터치 이벤트 등록
+    sheet.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      // 이벤트 정리
+      sheet.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+
+      // ✅ cleanup 시에도 transform 초기화
+      if (sheet) {
+        sheet.style.transform = '';
+        sheet.style.transition = '';
+      }
+    };
+  }, [isOpen, handleTouchStart, handleTouchMove, handleTouchEnd, sheetRef]);
+
+  return {
+    dragHandlers: {
+      // React 이벤트로도 지원 (추가 호환성)
+      onTouchStart: (e: React.TouchEvent) => {
+        handleTouchStart(e.nativeEvent);
+      },
+    },
+  };
 }
