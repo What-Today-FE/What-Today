@@ -1,50 +1,33 @@
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Button, ChevronIcon } from '@what-today/design-system';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+
+import MypageSidebar from '@/components/MypageSidebar';
 
 export default function MyPageLayout() {
   const location = useLocation();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const tabs = [
-    { name: '내 정보', path: '/mypage/edit-profile' },
-    { name: '예약 내역', path: '/mypage/reservations-list' },
-    { name: '내 체험 관리', path: '/mypage/manage-activities' },
-    { name: '예약 현황', path: '/mypage/reservations-status' },
-  ];
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   return (
-    <div className='flex h-full w-full flex-col md:flex-row'>
-      {/* 사이드 탭 - PC/Tablet */}
-      <div className='hidden w-64 border-r bg-gray-50 md:block'>
-        <div className='p-4 text-lg font-bold'>마이페이지</div>
-        <nav className='flex flex-col'>
-          {tabs.map((tab) => (
-            <Link
-              key={tab.path}
-              className={`p-4 hover:bg-gray-100 ${location.pathname === tab.path ? 'font-bold text-blue-600' : ''}`}
-              to={tab.path}
-            >
-              {tab.name}
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      {/* 모바일 탭 메뉴 */}
-      <div className='flex overflow-x-auto border-b md:hidden'>
-        {tabs.map((tab) => (
-          <Link
-            key={tab.path}
-            className={`flex-1 p-3 text-center ${
-              location.pathname === tab.path ? 'border-b-2 border-blue-500 font-bold' : ''
-            }`}
-            to={tab.path}
-          >
-            {tab.name}
-          </Link>
-        ))}
-      </div>
-
+    <div className='flex h-full w-full flex-col md:flex-row md:gap-30'>
+      {/* 모바일: 오버레이 배경 */}
+      {isSidebarOpen && (
+        <div className='fixed inset-0 z-50 bg-black/30 md:hidden' onClick={() => setSidebarOpen(false)} />
+      )}
+      <MypageSidebar
+        isOpen={isSidebarOpen}
+        onClick={() => setSidebarOpen((prev) => !prev)}
+        onLogoutClick={() => alert('hi')}
+      />
       {/* Outlet으로 상세 화면 표시 */}
       <div className='flex-1 p-4'>
+        <Button className='w-fit p-0 md:hidden' size='xs' variant='none' onClick={() => setSidebarOpen(true)}>
+          <ChevronIcon className='h-16' direction='left' />
+        </Button>
         <Outlet />
       </div>
     </div>
