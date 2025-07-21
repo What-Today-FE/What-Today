@@ -38,7 +38,7 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
   return (
     <div
       ref={contentRef}
-      className={twMerge('px-4 pb-4', className)}
+      className={twMerge('px-16 pb-16', className)}
       style={{
         height: contentHeight ? `${contentHeight}px` : 'auto',
         overflowY: isScrollable ? 'auto' : 'visible',
