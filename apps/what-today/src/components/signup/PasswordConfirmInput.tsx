@@ -1,7 +1,7 @@
 import { EyeIcon, EyeOffIcon, Input } from '@what-today/design-system';
 import { memo, useState } from 'react';
 
-import type InputProps from '@/schemas/InputProps';
+import type InputProps from '@/types/InputProps';
 
 function PasswordConfirmInput({ value, onChange }: InputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);

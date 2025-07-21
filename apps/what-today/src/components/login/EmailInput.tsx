@@ -1,7 +1,7 @@
 import { Input } from '@what-today/design-system';
 import { memo } from 'react';
 
-import type InputProps from '@/schemas/InputProps';
+import type InputProps from '@/types/InputProps';
 
 function EmailInput({ value, onChange }: InputProps) {
   return (
