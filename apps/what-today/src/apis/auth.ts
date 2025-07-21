@@ -5,3 +5,26 @@ import axiosInstance from './axiosInstance';
  * @returns accessToken + user
  */
 export const login = (email: string, password: string) => axiosInstance.post('auth/login', { email, password });
+
+/**
+ * @description 카카오 로그인 (code → accessToken, refreshToken 반환)
+ * @returns accessToken, refreshToken + user
+ */
+export const signInWithKakao = (token: string) => {
+  return axiosInstance.post('oauth/sign-in/kakao', {
+    redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URL,
+    token,
+  });
+};
+
+/**
+ * @description 카카오 로그인 (code → accessToken, refreshToken 반환)
+ * @returns accessToken, refreshToken + user
+ */
+export const signUpWithKakao = (code: string) => {
+  return axiosInstance.post('oauth/sign-up/kakao', {
+    nickname: '임시닉네임',
+    redirectUri: `${import.meta.env.VITE_KAKAO_REDIRECT_URL}/signup`,
+    token: code,
+  });
+};
