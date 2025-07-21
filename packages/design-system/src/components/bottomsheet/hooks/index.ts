@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+const HEADER_HEIGHT = 24;
+
 /**
  * @hook useBodyScrollLock
  * @description 바텀시트가 열릴 때 배경 페이지의 스크롤을 방지하는 훅입니다.
@@ -84,8 +86,8 @@ export function useDynamicHeight(
     const viewportHeight = window.innerHeight;
     const maxAllowedHeight = viewportHeight * maxHeight;
 
-    // 헤더 높이 고려 (대략 64px)
-    const headerHeight = 24;
+    // 헤더 높이 고려
+    const headerHeight = HEADER_HEIGHT;
     const availableHeight = maxAllowedHeight - headerHeight;
 
     if (contentScrollHeight <= availableHeight) {
