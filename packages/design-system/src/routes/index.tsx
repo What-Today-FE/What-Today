@@ -3,14 +3,14 @@ import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
+import ExperienceImageUploadDoc from '@pages/ExperienceImageUploadDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
-import MypageSidebarDoc from '@pages/MypageSidebarDoc';
-import NotificationCardDoc from '@pages/NotificationCardDoc';
 import NoResultDoc from '@pages/NoResultDoc';
+import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
@@ -116,6 +116,10 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+        path: 'ExperienceImageUpload',
+        element: <ExperienceImageUploadDoc />,
       },
     ],
   },
