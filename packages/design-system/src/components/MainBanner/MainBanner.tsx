@@ -26,7 +26,7 @@ export default function MainBanner() {
             dragConstraints={{ left: 0, right: 0 }}
             exit={{ opacity: 0, x: -100 }}
             initial={{ opacity: 0, x: 100 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.2 }}
             onDragEnd={(e, info) => {
               if (info.offset.x < -50) {
                 setCurrentSlide((prev) => (prev + 1) % bannerCount);
