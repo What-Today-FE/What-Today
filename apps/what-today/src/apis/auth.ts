@@ -1,3 +1,5 @@
+import { generateTemporaryNickname } from '@/utils/generateTemporaryNickname';
+
 import axiosInstance from './axiosInstance';
 
 /**
@@ -23,7 +25,7 @@ export const signInWithKakao = (token: string) => {
  */
 export const signUpWithKakao = (code: string) => {
   return axiosInstance.post('oauth/sign-up/kakao', {
-    nickname: '임시닉네임',
+    nickname: generateTemporaryNickname(),
     redirectUri: `${import.meta.env.VITE_KAKAO_REDIRECT_URL}/signup`,
     token: code,
   });
