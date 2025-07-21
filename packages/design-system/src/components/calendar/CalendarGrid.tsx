@@ -1,12 +1,26 @@
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
+import { twMerge } from 'tailwind-merge';
+
+import { useCalendarContext } from './CalendarContext';
 
 interface CalendarGridProps {
   /**
-   * 현재 표시 중인 월 (Dayjs 객체)
+   * 요일 이름 포맷 (`long`: 'Mon', 'Tue', ..., `short`: 'M', 'T', ...)
    */
-  currentMonth: Dayjs;
+  weekdayType: 'long' | 'short';
+  /**
+   * 요일 칼럼에 적용될 클래스
+   */
+  weekdayClass?: string;
+  /**
+   * 주간 행 구분선 여부
+   */
+  divider: boolean;
+  /**
+   * 날짜 셀 렌더 함수
+   */
+  children: (day: Dayjs) => React.ReactNode;
 }
 // dayjs 확장 및 로케일 설정
 dayjs.extend(localeData);
@@ -15,21 +29,34 @@ dayjs.locale('en');
 /**
  * CalendarGrid 컴포넌트
  *
- * - 전달받은 currentMonth를 기준으로 달력 형태의 날짜 그리드를 구성합니다.
- * - 주 단위 배열로 분할하여 렌더링하며, 해당 월이 아닌 날짜는 흐리게 표시합니다.
+ * - 주간 요일 표시와 날짜 셀을 그리드 형태로 렌더링합니다.
+ * - `CalendarContext`로부터 현재 월(`currentMonth`)을 받아 해당 월의 달력을 구성합니다.
+ * - 자식으로 렌더링할 각 날짜 셀을 `children(day: Dayjs)` 함수 형태로 받습니다.
  *
  * @component
- * @param {CalendarGridProps} props
- * @returns {JSX.Element}
+ * @param {CalendarGridProps} props - 달력 격자 설정
+ * @returns {JSX.Element} 달력 그리드 UI
  *
  * @example
  * ```tsx
- * <CalendarGrid currentMonth={dayjs()} />
+ * <CalendarGrid
+ *   weekdayType="short"
+ *   divider={true}
+ *   children={(day) => <DayCell day={day} />}
+ * />
  * ```
  */
-export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
-  const Weekdays = dayjs.weekdays();
-  const oneLetterWeekdays = Weekdays.map((day) => day.charAt(0));
+export default function CalendarGrid({ weekdayType, weekdayClass, divider, children }: CalendarGridProps) {
+  const { currentMonth } = useCalendarContext();
+  const weekdays = {
+    long: dayjs.weekdaysShort(),
+    short: dayjs.weekdaysShort().map((d) => d[0]),
+  };
+
+  const weekdayColorMap: Record<string, string> = {
+    0: 'text-red-500',
+    6: 'text-blue-500',
+  };
 
   const startDate = dayjs(currentMonth).startOf('month').startOf('week');
   const endDate = dayjs(currentMonth).endOf('month').endOf('week');
@@ -48,25 +75,24 @@ export default function CalendarGrid({ currentMonth }: CalendarGridProps) {
 
   return (
     <div className='w-full'>
-      <div className='grid grid-cols-7 border-b border-gray-100 pb-12'>
-        {oneLetterWeekdays.map((day, idx) => (
-          <div key={idx} className='flex justify-center p-12 text-sm font-bold text-gray-900 md:text-lg'>
-            {day}
-          </div>
-        ))}
+      <div className='grid grid-cols-7 border-b border-gray-100'>
+        {weekdays[weekdayType].map((day, idx) => {
+          const textColor = weekdayColorMap[idx] ?? 'text-gray-950';
+          return (
+            <div
+              key={day}
+              className={twMerge('flex justify-center p-12 text-lg font-semibold', textColor, weekdayClass)}
+            >
+              {day}
+            </div>
+          );
+        })}
       </div>
-      <div className='divide-y divide-solid divide-gray-50'>
+      <div className={divider ? 'divide-y divide-solid divide-gray-50' : ''}>
         {weeks.map((week, idx) => (
           <div key={idx} className='grid grid-cols-7'>
             {week.map((day) => {
-              const isOtherMonth = day.month() !== currentMonth.month();
-              const baseClass = 'flex h-104 items-start justify-center p-12 text-xs font-medium md:h-124 md:text-lg';
-              const textColorClass = isOtherMonth ? 'text-gray-300' : 'text-gray-800';
-              return (
-                <div key={day.format('MM/DD')} className={`${baseClass} ${textColorClass}`}>
-                  {day.date()}
-                </div>
-              );
+              return children(day);
             })}
           </div>
         ))}

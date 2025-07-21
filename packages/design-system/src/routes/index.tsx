@@ -9,6 +9,7 @@ import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
 import MypageSidebarDoc from '@pages/MypageSidebarDoc';
+import NotificationCardDoc from '@pages/NotificationCardDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
@@ -17,6 +18,7 @@ import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
 import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: 'ProfileImageInput',
         element: <ProfileImageInputDoc />,
+      },
+      {
+        path: 'NotificationCard',
+        element: <NotificationCardDoc />,
       },
       {
         path: 'NoResult',
@@ -68,16 +74,16 @@ const router = createBrowserRouter([
         element: <ExperienceCardDoc />,
       },
       {
+        path: 'Toast',
+        element: <ToastDoc />,
+      },
+      {
         path: 'Textarea',
         element: <TextareaDoc />,
       },
       {
         path: 'ReservationCard',
         element: <ReservationCardDoc />,
-      },
-      {
-        path: 'MypageSidebar',
-        element: <MypageSidebarDoc />,
       },
       {
         path: 'Popover',
