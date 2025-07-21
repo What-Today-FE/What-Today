@@ -11,7 +11,7 @@ export default function Footer() {
             <ImageLogo className='size-36' />
             <TextLogo className='size-80 text-sky-500' />
           </a>
-          <h2 className='text-lg font-bold text-gray-700 md:text-xl'>WhatToday는</h2>
+          <h2 className='text-lg font-bold text-gray-700 md:text-xl'>오늘뭐해는</h2>
           <p className='text-md leading-relaxed text-gray-500 md:text-lg'>
             무의미한 일상 속에서 <br className='sm:hidden' />
             작은 설렘을 주는 플랫폼이에요 🎈
