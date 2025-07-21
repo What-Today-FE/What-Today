@@ -1,10 +1,7 @@
 import { Input } from '@what-today/design-system';
 import { memo } from 'react';
 
-interface InputProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+import type InputProps from '@/schemas/InputProps';
 
 function NicknameInput({ value, onChange }: InputProps) {
   return (
