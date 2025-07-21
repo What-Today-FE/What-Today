@@ -39,6 +39,12 @@ export default function LoginPage() {
     }
   };
 
+  const handleKakaoLogin = () => {
+    const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code`;
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
     <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
       <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
@@ -78,6 +84,7 @@ export default function LoginPage() {
               loading={isLoginLoading}
               size='xl'
               variant='outline'
+              onClick={handleKakaoLogin}
             >
               <KaKaoIcon className='size-18' />
               카카오 로그인
