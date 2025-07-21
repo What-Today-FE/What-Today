@@ -15,13 +15,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
   /** handleLogin
    * @description 로그인 요청을 보내고, 성공 시 토큰과 사용자 정보를 전역 상태로 저장합니다.
    * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
@@ -54,36 +47,43 @@ export default function LoginPage() {
           <TextLogo className='h-fit w-130 md:w-180' />
         </div>
 
-        <div className='flex w-full flex-col gap-12'>
-          <EmailInput value={email} onChange={handleEmailChange} />
-          <PasswordInput value={password} onChange={handlePasswordChange} />
-        </div>
-
-        <div className='flex w-full flex-col gap-12'>
-          <Button
-            className='h-fit w-full rounded-xl py-10 font-normal'
-            loading={isLoginLoading}
-            size='xl'
-            onClick={handleLogin}
-          >
-            로그인
-          </Button>
-          <div className='flex w-full items-center text-gray-300'>
-            <div className='h-1 flex-1 bg-gray-300' />
-            <p className='text-md px-12'>or</p>
-            <div className='h-1 flex-1 bg-gray-300' />
+        <form
+          className='flex w-full flex-col items-center justify-center gap-32'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
+          <div className='flex w-full flex-col gap-12'>
+            <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
+            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button
-            className='h-fit w-full rounded-xl py-10 font-normal'
-            loading={isLoginLoading}
-            size='xl'
-            variant='outline'
-            onClick={handleLogin}
-          >
-            <KaKaoIcon className='size-18' />
-            카카오 로그인
-          </Button>
-        </div>
+
+          <div className='flex w-full flex-col gap-12'>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isLoginLoading}
+              size='xl'
+              type='submit'
+            >
+              로그인
+            </Button>
+            <div className='flex w-full items-center text-gray-300'>
+              <div className='h-1 flex-1 bg-gray-300' />
+              <p className='text-md px-12'>or</p>
+              <div className='h-1 flex-1 bg-gray-300' />
+            </div>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isLoginLoading}
+              size='xl'
+              variant='outline'
+            >
+              <KaKaoIcon className='size-18' />
+              카카오 로그인
+            </Button>
+          </div>
+        </form>
 
         <div className='flex items-center gap-12 text-lg text-gray-500'>
           <p>회원이 아니신가요?</p>

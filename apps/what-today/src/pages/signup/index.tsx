@@ -18,20 +18,11 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-  const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordConfirm(e.target.value);
-  };
-
-  const signup = async () => {
+  /** handleSignup
+   * @description 회원가입 요청을 보내고, 성공시 로그인 페이지로 리다이렉트합니다.
+   * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
+   */
+  const handleSignup = async () => {
     try {
       setIsSignupLoading(true);
       await axiosInstance.post('users', {
@@ -65,38 +56,45 @@ export default function SignupPage() {
           <TextLogo className='h-fit w-130 md:w-180' />
         </div>
 
-        <div className='flex w-full flex-col gap-12'>
-          <EmailInput value={email} onChange={handleEmailChange} />
-          <NicknameInput value={nickname} onChange={handleNicknameChange} />
-          <PasswordInput value={password} onChange={handlePasswordChange} />
-          <PasswordConfirmInput value={passwordConfirm} onChange={handlePasswordConfirmChange} />
-        </div>
-
-        <div className='flex w-full flex-col gap-12'>
-          <Button
-            className='h-fit w-full rounded-xl py-10 font-normal'
-            loading={isSignupLoading}
-            size='xl'
-            onClick={signup}
-          >
-            회원가입
-          </Button>
-          <div className='flex w-full items-center text-gray-300'>
-            <div className='h-1 flex-1 bg-gray-300' />
-            <p className='text-md px-12'>SNS 계정으로 회원가입하기</p>
-            <div className='h-1 flex-1 bg-gray-300' />
+        <form
+          className='flex w-full flex-col items-center justify-center gap-32'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignup();
+          }}
+        >
+          <div className='flex w-full flex-col gap-12'>
+            <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
+            <NicknameInput value={nickname} onChange={(e) => setNickname(e.target.value)} />
+            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+            <PasswordConfirmInput value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} />
           </div>
-          <Button
-            className='h-fit w-full rounded-xl py-10 font-normal'
-            loading={isSignupLoading}
-            size='xl'
-            variant='outline'
-            onClick={signup}
-          >
-            <KaKaoIcon className='size-18' />
-            카카오 회원가입
-          </Button>
-        </div>
+
+          <div className='flex w-full flex-col gap-12'>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isSignupLoading}
+              size='xl'
+              type='submit'
+            >
+              회원가입
+            </Button>
+            <div className='flex w-full items-center text-gray-300'>
+              <div className='h-1 flex-1 bg-gray-300' />
+              <p className='text-md px-12'>SNS 계정으로 회원가입하기</p>
+              <div className='h-1 flex-1 bg-gray-300' />
+            </div>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isSignupLoading}
+              size='xl'
+              variant='outline'
+            >
+              <KaKaoIcon className='size-18' />
+              카카오 회원가입
+            </Button>
+          </div>
+        </form>
 
         <div className='flex items-center gap-12 text-lg text-gray-500'>
           <p>회원이신가요?</p>
