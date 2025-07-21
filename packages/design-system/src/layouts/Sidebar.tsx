@@ -28,6 +28,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='MainCard' to='/docs/MainCard' />
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
             <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
+            <SidebarNavItem label='ProfileImageInput' to='/docs/ProfileImageInput' />
             <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
             <SidebarNavItem label='Toast' to='/docs/Toast' />
           </ul>

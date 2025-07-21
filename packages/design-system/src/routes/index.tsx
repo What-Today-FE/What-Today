@@ -8,10 +8,12 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainCardDoc from '@pages/MainCardDoc';
-import NoResultDoc from '@pages/NoResultDoc';
+import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
+import NoResultDoc from '@pages/NoResultDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
+import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
 import SelectDoc from '@pages/SelectDoc';
@@ -34,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'ProfileImageInput',
+        element: <ProfileImageInputDoc />,
       },
       {
         path: 'NotificationCard',

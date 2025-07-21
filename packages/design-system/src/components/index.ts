@@ -9,6 +9,7 @@ export { default as NoResult } from './NoResult';
 export { default as NotificationCard } from './NotificationCard';
 export { default as OwnerBadge } from './OwnerBadge';
 export { default as Pagination } from './Pagination';
+export { default as ProfileImageInput } from './ProfileImageInput';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
 export { default as ReservationCard } from './ReservationCard';
 export * from './select';
