@@ -11,6 +11,7 @@ function PasswordConfirmInput({ value, onChange }: InputProps) {
       <Input.Label>비밀번호</Input.Label>
       <Input.Wrapper>
         <Input.Field
+          autoComplete='off'
           placeholder='비밀번호를 한 번 더 입력해 주세요'
           type={isPasswordVisible ? 'text' : 'password'}
           value={value}
