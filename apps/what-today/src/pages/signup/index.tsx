@@ -48,6 +48,12 @@ export default function SignupPage() {
     }
   };
 
+  const handleKakaoSignup = () => {
+    const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUrl)}/signup&response_type=code`;
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
     <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
       <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
@@ -89,6 +95,7 @@ export default function SignupPage() {
               loading={isSignupLoading}
               size='xl'
               variant='outline'
+              onClick={handleKakaoSignup}
             >
               <KaKaoIcon className='size-18' />
               카카오 회원가입
