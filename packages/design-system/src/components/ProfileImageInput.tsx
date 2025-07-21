@@ -1,12 +1,39 @@
 import Button from '@components/button';
 import { DeleteIcon } from '@components/icons';
 import { ProfileLogo } from '@components/logos';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ProfileImageInputProps {
   src: string;
   onChange: (value: string) => void;
 }
+
+/** useImageToBase64
+ * 이 훅은 내부에서 반환하는 `convert` 함수를 통해 이미지 URL(blob 또는 일반 URL)을 base64 문자열로 변환합니다.
+ * `convert` 함수는 내부에서 fetch → blob → FileReader를 통해 base64 문자열로 변환합니다.
+ *
+ * @example
+ * const { convert } = useImageToBase64();
+ * const base64 = await convert('https://example.com/image.png');
+ */
+export const useImageToBase64 = () => {
+  /** convert
+   * @param {string} imageUrl - 변환할 이미지의 URL (blob URL, 외부 이미지 URL 등)
+   */
+  const convert = useCallback(async (imageUrl: string): Promise<string> => {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }, []);
+
+  return { convert };
+};
 
 /** DeleteButton
  * 삭제(X) 버튼 컴포넌트입니다. 클릭 시 prop으로 받은 onDelete 핸들러를 호출합니다.
@@ -68,15 +95,8 @@ export default function ProfileImageInput({ src, onChange }: ProfileImageInputPr
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      updateImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    reader.onerror = () => {
-      alert('파일을 읽는 중 오류가 발생했습니다.');
-    };
+    const previewUrl = URL.createObjectURL(file);
+    updateImage(previewUrl);
   };
 
   const handleDelete = () => {
@@ -87,6 +107,14 @@ export default function ProfileImageInput({ src, onChange }: ProfileImageInputPr
   const handleReset = () => {
     setPreviewUrl('');
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   return (
     <div className='flex flex-col items-center gap-16'>
