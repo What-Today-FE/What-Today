@@ -40,7 +40,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-30 py-50 md:py-80'>
+    <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
       <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
         <div className='flex flex-col items-center gap-12'>
           <ImageLogo className='size-100 md:size-140' />
