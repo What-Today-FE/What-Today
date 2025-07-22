@@ -109,6 +109,10 @@ export default function ProfileImageInput({ src, onChange }: ProfileImageInputPr
   };
 
   useEffect(() => {
+    setPreviewUrl(src);
+  }, [src]);
+
+  useEffect(() => {
     return () => {
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
