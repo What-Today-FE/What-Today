@@ -45,9 +45,11 @@ export default function ManageActivitiesPage() {
       );
     });
   } else {
-    <div className='flex justify-center p-40'>
-      <NoResult dataName='등록한 체험이' />
-    </div>;
+    content = (
+      <div className='flex justify-center p-40'>
+        <NoResult dataName='등록한 체험이' />
+      </div>
+    );
   }
 
   return (
