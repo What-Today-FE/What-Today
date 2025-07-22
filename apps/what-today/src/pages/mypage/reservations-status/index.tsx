@@ -1,5 +1,4 @@
-import { Select } from '@what-today/design-system';
-import type { ReservationStatus } from 'node_modules/@what-today/design-system/dist/types/calendar/DayCell';
+import { type ReservationStatus, Select } from '@what-today/design-system';
 import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
 
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
