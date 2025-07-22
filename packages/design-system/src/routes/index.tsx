@@ -21,6 +21,7 @@ import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import FooterDoc from '@/pages/FooterDoc';
+import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
       {
         path: 'Carousel',
         element: <CarouselDoc />,
+      },
+      {
+        path: 'MainCard',
+        element: <MainCardDoc />,
       },
     ],
   },
