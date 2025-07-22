@@ -49,8 +49,26 @@ export default function SignupPage() {
   };
 
   const handleKakaoSignup = () => {
+    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
     const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUrl)}/signup&response_type=code`;
+    const signupRedirectUrl = `${redirectUrl}/signup`;
+
+    if (!clientId || !redirectUrl) {
+      toast({
+        title: '설정 오류',
+        description: '카카오 회원가입 설정이 올바르지 않습니다.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: signupRedirectUrl,
+      response_type: 'code',
+    });
+
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
     window.location.href = kakaoAuthUrl;
   };
 
