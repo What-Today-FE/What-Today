@@ -12,15 +12,15 @@ export const login = (email: string, password: string) => axiosInstance.post('au
  * @description 카카오 로그인 (code → accessToken, refreshToken 반환)
  * @returns accessToken, refreshToken + user
  */
-export const signInWithKakao = (token: string) => {
+export const signInWithKakao = (code: string) => {
   return axiosInstance.post('oauth/sign-in/kakao', {
     redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URL,
-    token,
+    token: code,
   });
 };
 
 /**
- * @description 카카오 로그인 (code → accessToken, refreshToken 반환)
+ * @description 카카오 회원가입 (카카오 로그인 + 초기 nickName 포함)
  * @returns accessToken, refreshToken + user
  */
 export const signUpWithKakao = (code: string) => {
