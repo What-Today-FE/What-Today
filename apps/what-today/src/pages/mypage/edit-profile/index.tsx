@@ -2,9 +2,9 @@ import { Button, ChevronIcon, ProfileImageInput } from '@what-today/design-syste
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import NicknameInput from '@/components/signup/NicknameInput';
-import PasswordConfirmInput from '@/components/signup/PasswordConfirmInput';
-import PasswordInput from '@/components/signup/PasswordInput';
+import NicknameInput from '@/components/auth/NicknameInput';
+import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
+import PasswordInput from '@/components/auth/PasswordInput';
 import { useWhatTodayStore } from '@/stores';
 
 export default function EditProfilePage() {
