@@ -9,6 +9,7 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
+import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
@@ -20,6 +21,7 @@ import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
 import FooterDoc from '@/pages/FooterDoc';
 import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -115,7 +117,6 @@ const router = createBrowserRouter([
         element: <CalendarDoc />,
       },
       {
-
         path: 'MainBanner',
         element: <MainBannerDoc />,
       },
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
       {
         path: 'MainCard',
         element: <MainCardDoc />,
+      },
+      {
+        path: 'MainSearchInput',
+        element: <MainSearchInputDoc />,
       },
     ],
   },
