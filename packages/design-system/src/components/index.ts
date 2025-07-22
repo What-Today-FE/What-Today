@@ -1,6 +1,7 @@
 export { default as Button } from './button';
 export * from './calendar';
 export { default as ExperienceCard } from './ExperienceCard';
+export { default as Footer } from './Footer';
 export * from './icons';
 export * from './input';
 export * from './logos';
@@ -9,6 +10,7 @@ export { default as NoResult } from './NoResult';
 export { default as NotificationCard } from './NotificationCard';
 export { default as OwnerBadge } from './OwnerBadge';
 export { default as Pagination } from './Pagination';
+export { default as ProfileImageInput } from './ProfileImageInput';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
 export { default as ReservationCard } from './ReservationCard';
 export * from './select';
