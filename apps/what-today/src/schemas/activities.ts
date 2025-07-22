@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+/**
+ * To server
+ * @description 기본 체험 데이터 유효성을 검사하는 스키마
+ */
 export const activitySchema = z.object({
   id: z.number().int().positive(),
   userId: z.number().int().positive(),
