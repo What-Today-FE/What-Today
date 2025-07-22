@@ -1,5 +1,5 @@
 import { useToast } from '@what-today/design-system';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { signInWithKakao, signUpWithKakao } from '@/apis/auth';
@@ -33,12 +33,14 @@ export const useKakaoOAuth = ({ mode, onErrorRedirect }: UseKakaoOAuthOptions) =
   const { fetchMyProfile } = useAuth();
   const { setAccessToken, setRefreshToken } = useWhatTodayStore();
   const { toast } = useToast();
+  const requestSentRef = useRef(false);
 
-  useEffect(() => {
-    const code = searchParams.get('code');
-    if (!code) return;
+  const sendAuthRequest = useCallback(
+    async (code: string) => {
+      // 이미 요청을 보냈다면 중복 실행 방지
+      if (requestSentRef.current) return;
+      requestSentRef.current = true;
 
-    const sendAuthRequest = async () => {
       try {
         const response = mode === 'login' ? await signInWithKakao(code) : await signUpWithKakao(code);
 
@@ -59,8 +61,14 @@ export const useKakaoOAuth = ({ mode, onErrorRedirect }: UseKakaoOAuthOptions) =
           console.error('인증 오류 발생:', error);
         }
       }
-    };
+    },
+    [mode, onErrorRedirect, setAccessToken, setRefreshToken, fetchMyProfile, navigate, toast],
+  );
 
-    sendAuthRequest();
-  }, []);
+  useEffect(() => {
+    const code = searchParams.get('code');
+    if (!code) return;
+
+    sendAuthRequest(code);
+  }, [searchParams, sendAuthRequest]);
 };
