@@ -18,6 +18,7 @@ export default function ReservationCalendar({ reservationsByDate, onChange }: Re
             const reservations = reservationsByDate[key];
             return (
               <Calendar.DayCell
+                key={key}
                 dateClass='size-28 flex md:m-6'
                 day={day}
                 dayCellClass='h-104 justify-start md:h-124'

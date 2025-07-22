@@ -7,6 +7,8 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+
+
 import MainCardDoc from '@pages/MainCardDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
@@ -15,13 +17,20 @@ import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
+
+
 import SelectDoc from '@pages/SelectDoc';
+
 import TextareaDoc from '@pages/TextareaDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
+
+import FooterDoc from '@/pages/FooterDoc';
+
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
+
 
 const router = createBrowserRouter([
   {
@@ -59,10 +68,6 @@ const router = createBrowserRouter([
       {
         path: 'button',
         element: <ButtonDoc />,
-      },
-      {
-        path: 'MainCard',
-        element: <MainCardDoc />,
       },
       {
         path: 'RadioGroup',
@@ -115,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+        path: 'Footer',
+        element: <FooterDoc />,
       },
     ],
   },
