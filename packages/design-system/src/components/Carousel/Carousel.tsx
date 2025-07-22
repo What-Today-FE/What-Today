@@ -1,45 +1,106 @@
-import { useState } from 'react';
+import { motion } from 'motion/react';
+import { useEffect, useState } from 'react'; // useEffect 추가
 
-import DesktopCarousel from './DesktopCarousel';
-import MobileCarousel from './MobileCarousel';
+import MainCard from '../MainCard';
 import NavigationButton from './NavigationButton';
-import type { CarouselProps, Props } from './types';
 
-/**
- * Carousel 컴포넌트
- *
- * - 데스크탑과 태블릿에서는 좌우 버튼으로 페이지네이션되는 캐러셀을 보여줍니다.
- * - 모바일에서는 수평 스크롤 가능한 캐러셀을 보여줍니다.
- *
- * @template T - Carousel에 렌더링할 아이템 타입 (기본값: CarouselProps)
- * @param {Props<T>} props - Carousel에 필요한 props
- * @param {T[]} props.items - 전체 아이템 배열
- * @param {number} props.itemsPerPage - 한 페이지당 표시할 아이템 개수
- *
- * @returns {JSX.Element} Carousel UI
- */
+interface CardItem {
+  id: number;
+  title: string;
+  price: number;
+  rating: number;
+  reviewCount: number;
+  bannerImageUrl: string;
+}
 
-export default function Carousel<T extends CarouselProps = CarouselProps>({ items, itemsPerPage }: Props<T>) {
-  const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
+interface Props {
+  items: CardItem[];
+  itemsPerPage?: number; // optional로 변경
+}
+
+export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 }: Props) {
+  const [page, setPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
+
+  // 👉 화면 너비에 따라 itemsPerPage 자동 조절
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768)
+        return; // 모바일은 그대로
+      else if (width < 1024)
+        setItemsPerPage(2); // 태블릿
+      else setItemsPerPage(4); // 데스크탑
+    };
+
+    handleResize(); // mount 시 실행
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const totalPages = Math.ceil(items.length / itemsPerPage);
+  const itemWidthPercent = 100 / itemsPerPage;
 
-  const paginate = (dir: number) => {
-    const nextPage = page + dir;
-    if (nextPage >= 0 && nextPage < totalPages) {
-      setPage([nextPage, dir]);
-    }
-  };
-
-  const startIdx = page * itemsPerPage;
-  const currentItems = items.slice(startIdx, startIdx + itemsPerPage);
+  const handlePrev = () => page > 0 && setPage((prev) => prev - 1);
+  const handleNext = () => page < totalPages - 1 && setPage((prev) => prev + 1);
 
   return (
-    <div className='relative mx-auto w-full overflow-visible'>
+    <div className='relative w-full overflow-visible'>
       <div className='relative mx-auto flex max-w-6xl items-center justify-center'>
-        <NavigationButton direction='left' disabled={page === 0} onClick={() => paginate(-1)} />
-        <DesktopCarousel direction={direction} items={currentItems} itemsPerPage={itemsPerPage} page={page} />
-        <MobileCarousel items={items} itemsPerPage={itemsPerPage} />
-        <NavigationButton direction='right' disabled={page === totalPages - 1} onClick={() => paginate(1)} />
+        {/* 왼쪽 버튼 */}
+        <NavigationButton direction='left' disabled={page === 0} onClick={handlePrev} />
+
+        {/* 데스크탑/태블릿 캐러셀 */}
+        <div className='relative hidden w-full overflow-hidden md:block'>
+          <motion.div
+            animate={{ x: `-${page * 100}%` }}
+            className='flex'
+            transition={{ duration: 0.5, ease: [0.45, 0.05, 0.55, 0.95] }}
+          >
+            {items.map((item) => (
+              <div key={item.id} className='shrink-0' style={{ width: `${itemWidthPercent}%` }}>
+                <MainCard
+                  bannerImageUrl={item.bannerImageUrl}
+                  price={item.price}
+                  rating={item.rating}
+                  reviewCount={item.reviewCount}
+                  title={item.title}
+                >
+                  <MainCard.Image className='rounded-t-3xl object-cover' />
+                  <MainCard.Content />
+                </MainCard>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* 모바일 캐러셀 */}
+        <div
+          className='flex w-full gap-4 overflow-x-auto px-4 md:hidden'
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+          {items.map((item) => (
+            <MainCard
+              key={item.id}
+              bannerImageUrl={item.bannerImageUrl}
+              className='w-[265px] shrink-0'
+              price={item.price}
+              rating={item.rating}
+              reviewCount={item.reviewCount}
+              title={item.title}
+            >
+              <MainCard.Image className='h-[260px] rounded-t-3xl object-cover brightness-90 contrast-125' />
+              <MainCard.Content />
+            </MainCard>
+          ))}
+        </div>
+
+        {/* 오른쪽 버튼 */}
+        <NavigationButton direction='right' disabled={page === totalPages - 1} onClick={handleNext} />
       </div>
     </div>
   );

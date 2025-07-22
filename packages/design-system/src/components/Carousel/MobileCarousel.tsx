@@ -18,7 +18,7 @@ export default function MobileCarousel({ items }: Props<CarouselProps>) {
           reviewCount={item.reviewCount}
           title={item.title}
         >
-          <MainCard.Image className='h-260 rounded-t-3xl object-cover brightness-90 contrast-125' />
+          <MainCard.Image className='rounded-t-3xl object-cover brightness-90 contrast-125' />
           <MainCard.Content />
         </MainCard>
       ))}

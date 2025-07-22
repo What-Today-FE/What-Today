@@ -25,7 +25,7 @@ interface Props {
  * - 방향에 따라 왼쪽 또는 오른쪽 버튼을 렌더링합니다.
  */
 export default function NavigationButton({ direction, onClick, disabled }: Props) {
-  const marginClass = direction === 'left' ? '-mr-20' : '-ml-20';
+  const marginClass = direction === 'left' ? '-mr-28' : '-ml-28';
 
   return (
     <button
