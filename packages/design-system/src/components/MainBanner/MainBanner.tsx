@@ -52,7 +52,7 @@ export default function MainBanner() {
           }}
         >
           {extended.map((banner, i) => (
-            <div key={i} className='relative h-full w-full flex-shrink-0'>
+            <div key={`${banner.id}-${i}`} className='relative h-full w-full flex-shrink-0'>
               <img
                 alt={banner.title}
                 className='h-full w-full object-cover'
