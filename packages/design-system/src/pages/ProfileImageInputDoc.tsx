@@ -35,6 +35,13 @@ export default function ProfileImageInputDoc() {
     }
   };
 
+  const handleReset = () => {
+    setProfileImage('');
+    setProfileImage2(
+      'https://daedamo.com/new/data/file/freestory/3024527036_YWOtZIUe_00fa46b6409a7f3a3a71d3a7d32b047cebce3813.jpg',
+    );
+  };
+
   return (
     <>
       <DocTemplate
@@ -84,6 +91,11 @@ blob 방식은 브라우저 메모리를 사용하기 때문에 빠르고 가볍
 
       <p className='mt-24 text-lg text-gray-800'>3-3. blob을 base64로 변환하기</p>
       <Button onClick={handleConvertImagesToBase64}>base64로 변환</Button>
+
+      <p className='mt-24 text-lg text-gray-800'>3-4. Reset</p>
+      <Button className='bg-amber-300' onClick={handleReset}>
+        Reset
+      </Button>
 
       {/* Playground는 편집 가능한 코드 블록입니다. */}
       <div className='mt-24'>

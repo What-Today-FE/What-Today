@@ -43,6 +43,10 @@ const router = createBrowserRouter([
         element: <ProfileImageInputDoc />,
       },
       {
+        path: 'MainCard',
+        element: <MainCardDoc />,
+      },
+      {
         path: 'NotificationCard',
         element: <NotificationCardDoc />,
       },

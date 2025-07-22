@@ -3,8 +3,8 @@ import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/de
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import EmailInput from '@/components/login/EmailInput';
-import PasswordInput from '@/components/login/PasswordInput';
+import EmailInput from '@/components/auth/EmailInput';
+import PasswordInput from '@/components/auth/PasswordInput';
 
 export default function LoginPage() {
   const navigate = useNavigate();
