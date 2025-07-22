@@ -10,10 +10,8 @@ import LogoDoc from '@pages/LogoDoc';
 
 
 import MainCardDoc from '@pages/MainCardDoc';
-import MypageSidebarDoc from '@pages/MypageSidebarDoc';
-import NotificationCardDoc from '@pages/NotificationCardDoc';
 import NoResultDoc from '@pages/NoResultDoc';
-
+import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';

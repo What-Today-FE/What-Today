@@ -4,6 +4,8 @@ import App from '@/App';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import MyPageLayout from '@/layouts/Mypage';
 import ActivityDetailPage from '@/pages/activities';
+import KakaoCallback from '@/pages/kakao-callback';
+import KakaoCallbackSignup from '@/pages/kakao-callback-signup';
 import LoginPage from '@/pages/login';
 import MainPage from '@/pages/main';
 import EditProfilePage from '@/pages/mypage/edit-profile';
@@ -21,6 +23,8 @@ export const router = createBrowserRouter([
     children: [
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
+      { path: 'oauth/kakao', element: <KakaoCallback /> },
+      { path: 'oauth/kakao/signup', element: <KakaoCallbackSignup /> },
 
       {
         element: <DefaultLayout />,

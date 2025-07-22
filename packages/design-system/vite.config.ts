@@ -33,4 +33,8 @@ export default defineConfig({
       { find: '@routes', replacement: path.resolve(__dirname, 'src/routes') },
     ],
   },
+  server: {
+    port: 5555,
+    open: true,
+  },
 });

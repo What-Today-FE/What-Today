@@ -39,6 +39,29 @@ export default function LoginPage() {
     }
   };
 
+  const handleKakaoLogin = () => {
+    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
+    const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
+
+    if (!clientId || !redirectUrl) {
+      toast({
+        title: '설정 오류',
+        description: '카카오 회원가입 설정이 올바르지 않습니다.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUrl,
+      response_type: 'code',
+    });
+
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
     <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
       <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
@@ -78,6 +101,7 @@ export default function LoginPage() {
               loading={isLoginLoading}
               size='xl'
               variant='outline'
+              onClick={handleKakaoLogin}
             >
               <KaKaoIcon className='size-18' />
               카카오 로그인
