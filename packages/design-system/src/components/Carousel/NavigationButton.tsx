@@ -29,7 +29,7 @@ export default function NavigationButton({ direction, onClick, disabled }: Props
 
   return (
     <button
-      className={`z-10 ${marginClass} hidden size-40 items-center justify-center rounded-full bg-white text-xl hover:bg-gray-100 disabled:opacity-30 md:flex`}
+      className={`z-10 ${marginClass} hidden size-40 items-center justify-center rounded-full bg-white text-xl hover:bg-gray-100 disabled:opacity-0 md:flex`}
       disabled={disabled}
       onClick={onClick}
     >
