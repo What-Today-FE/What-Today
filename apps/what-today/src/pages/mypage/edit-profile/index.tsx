@@ -10,7 +10,7 @@ import { useWhatTodayStore } from '@/stores';
 export default function EditProfilePage() {
   const navigate = useNavigate();
   const { user } = useWhatTodayStore();
-  const [isEditProfileLoading, setIsEditProfileLoading] = useState(false);
+  const [isEditProfileLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<string>(user?.profileImageUrl ?? '');
   const [nickname, setNickname] = useState(user?.nickname ?? '');
   const [password, setPassword] = useState('');
