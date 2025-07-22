@@ -8,11 +8,13 @@ import {
   DeleteIcon,
   DotIcon,
   EditIcon,
+  ErrorIcon,
   ExitIcon,
   EyeIcon,
   EyeOffIcon,
   FoodIcon,
   GithubIcon,
+  InfoIcon,
   KaKaoIcon,
   ListIcon,
   LocationIcon,
@@ -24,6 +26,7 @@ import {
   SpinIcon,
   SportIcon,
   StarIcon,
+  SuccessIcon,
   TourIcon,
   TriangleIcon,
   UserIcon,
@@ -71,6 +74,9 @@ const colorIcons = [
   { name: 'MinusIcon', component: MinusIcon, props: { color: 'var(--color-gray-900)' } },
   { name: 'SpinIcon', component: SpinIcon, props: { color: 'var(--color-red-500)' } },
   { name: 'ExitIcon', component: ExitIcon, props: { color: 'var(--color-primary-500)' } },
+  { name: 'SuccessIcon', component: SuccessIcon },
+  { name: 'InfoIcon', component: InfoIcon },
+  { name: 'ErrorIcon', component: ErrorIcon },
 ];
 
 const ColorIconPropsCode = `<LocationIcon className="size-50" color="var(--color-blue-500)" />`;
@@ -107,6 +113,9 @@ const iconScope = {
   LocationIcon,
   SpinIcon,
   ExitIcon,
+  ErrorIcon,
+  SuccessIcon,
+  InfoIcon,
 };
 
 export default function IconDoc() {

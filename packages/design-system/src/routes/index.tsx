@@ -8,17 +8,19 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
-import MainCardDoc from '@pages/MainCardDoc';
-import MypageSidebarDoc from '@pages/MypageSidebarDoc';
 import NoResultDoc from '@pages/NoResultDoc';
+import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
+import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
 import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
+import FooterDoc from '@/pages/FooterDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
@@ -34,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'ProfileImageInput',
+        element: <ProfileImageInputDoc />,
+      },
+      {
+        path: 'NotificationCard',
+        element: <NotificationCardDoc />,
       },
       {
         path: 'NoResult',
@@ -52,10 +62,6 @@ const router = createBrowserRouter([
         element: <ButtonDoc />,
       },
       {
-        path: 'MainCard',
-        element: <MainCardDoc />,
-      },
-      {
         path: 'RadioGroup',
         element: <RadioGroupDoc />,
       },
@@ -64,16 +70,16 @@ const router = createBrowserRouter([
         element: <ExperienceCardDoc />,
       },
       {
+        path: 'Toast',
+        element: <ToastDoc />,
+      },
+      {
         path: 'Textarea',
         element: <TextareaDoc />,
       },
       {
         path: 'ReservationCard',
         element: <ReservationCardDoc />,
-      },
-      {
-        path: 'MypageSidebar',
-        element: <MypageSidebarDoc />,
       },
       {
         path: 'Popover',
@@ -106,6 +112,10 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+        path: 'Footer',
+        element: <FooterDoc />,
       },
       {
         path: 'Carousel',

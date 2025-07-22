@@ -1,3 +1,13 @@
-export { default as Calendar } from '@/components/calendar/Calendar';
-export { default as CalendarGrid } from '@/components/calendar/CalendarGrid';
-export { default as CalendarHeader } from '@/components/calendar/CalendarHeader';
+import CalendarGrid from './CalendarGrid';
+import CalendarHeader from './CalendarHeader';
+import CalendarRoot from './CalendarRoot';
+import type { ReservationStatus } from './DayCell';
+import DayCell from './DayCell';
+
+export const Calendar = {
+  Root: CalendarRoot,
+  Header: CalendarHeader,
+  Grid: CalendarGrid,
+  DayCell: DayCell,
+};
+export type { ReservationStatus };

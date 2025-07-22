@@ -1,74 +1,135 @@
+import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import axiosInstance from '@/apis/axiosInstance';
+import EmailInput from '@/components/signup/EmailInput';
+import NicknameInput from '@/components/signup/NicknameInput';
+import PasswordConfirmInput from '@/components/signup/PasswordConfirmInput';
+import PasswordInput from '@/components/signup/PasswordInput';
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [isSignupLoading, setIsSignupLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
-  const signup = async () => {
+  /** handleSignup
+   * @description 회원가입 요청을 보내고, 성공시 로그인 페이지로 리다이렉트합니다.
+   * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
+   */
+  const handleSignup = async () => {
     try {
+      setIsSignupLoading(true);
       await axiosInstance.post('users', {
         email,
         nickname,
         password,
       });
-      alert('🎉 회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
+      toast({
+        title: '회원가입 성공',
+        description: '환영합니다! 로그인하고 다양한 체험에 참여해보세요! 🎉',
+        type: 'success',
+      });
       navigate('/login');
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-        alert(error.message);
-      } else {
-        console.error(error);
-      }
+      const message = error instanceof Error ? error.message : '회원가입에 실패했습니다.';
+      toast({
+        title: '회원가입 오류',
+        description: message,
+        type: 'error',
+      });
+    } finally {
+      setIsSignupLoading(false);
     }
   };
 
+  const handleKakaoSignup = () => {
+    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
+    const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
+    const signupRedirectUrl = `${redirectUrl}/signup`;
+
+    if (!clientId || !redirectUrl) {
+      toast({
+        title: '설정 오류',
+        description: '카카오 회원가입 설정이 올바르지 않습니다.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: signupRedirectUrl,
+      response_type: 'code',
+    });
+
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
-    <div className='m-24 flex w-500 flex-col gap-16'>
-      <h1>여기는 회원가입 페이지 입니다</h1>
-      <p>유효성 검사를 제외하고 기능만 구현하였습니다. (비밀번호 확인도 제외)</p>
-      <input
-        className='rounded-md border'
-        placeholder='이메일'
-        type='text'
-        value={email}
-        onChange={handleEmailChange}
-      />
-      <input
-        className='rounded-md border'
-        placeholder='닉네임'
-        type='text'
-        value={nickname}
-        onChange={handleNicknameChange}
-      />
-      <input
-        className='rounded-md border'
-        placeholder='비밀번호'
-        type='password'
-        value={password}
-        onChange={handlePasswordChange}
-      />
-      <button className='bg-primary-500 cursor-pointer rounded-md px-10 py-5 text-white' onClick={signup}>
-        회원가입
-      </button>
-      <Link to='/login'>
-        <button className='text-primary-500 cursor-pointer rounded-md px-10 py-5'>로그인 페이지로 이동</button>
-      </Link>
+    <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
+      <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
+        <div className='flex flex-col items-center gap-12'>
+          <ImageLogo className='size-100 md:size-140' />
+          <TextLogo className='h-fit w-130 md:w-180' />
+        </div>
+
+        <form
+          className='flex w-full flex-col items-center justify-center gap-32'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignup();
+          }}
+        >
+          <div className='flex w-full flex-col gap-12'>
+            <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
+            <NicknameInput value={nickname} onChange={(e) => setNickname(e.target.value)} />
+            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+            <PasswordConfirmInput value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} />
+          </div>
+
+          <div className='flex w-full flex-col gap-12'>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isSignupLoading}
+              size='xl'
+              type='submit'
+            >
+              회원가입
+            </Button>
+            <div className='flex w-full items-center text-gray-300'>
+              <div className='h-1 flex-1 bg-gray-300' />
+              <p className='text-md px-12'>SNS 계정으로 회원가입하기</p>
+              <div className='h-1 flex-1 bg-gray-300' />
+            </div>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isSignupLoading}
+              size='xl'
+              variant='outline'
+              onClick={handleKakaoSignup}
+            >
+              <KaKaoIcon className='size-18' />
+              카카오 회원가입
+            </Button>
+          </div>
+        </form>
+
+        <div className='flex items-center gap-12 text-lg text-gray-500'>
+          <p>회원이신가요?</p>
+          <Link to='/login'>
+            <Button className='m-0 h-fit w-fit p-0 text-lg font-normal underline' variant='none'>
+              로그인하기
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
