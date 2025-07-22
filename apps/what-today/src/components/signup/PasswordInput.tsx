@@ -12,7 +12,7 @@ function PasswordInput({ value, onChange }: InputProps) {
       <Input.Wrapper>
         <Input.Field
           autoComplete='off'
-          placeholder='8자 이상 입력해 주세요'
+          placeholder='비밀번호를 입력해 주세요'
           type={isPasswordVisible ? 'text' : 'password'}
           value={value}
           onChange={onChange}
