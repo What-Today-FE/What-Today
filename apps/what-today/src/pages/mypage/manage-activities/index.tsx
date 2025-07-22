@@ -39,14 +39,14 @@ const data = {
 export default function ManageActivitiesPage() {
   return (
     <div className='flex flex-col gap-13 md:gap-30'>
-      <div className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
+      <header className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
         <div className='flex flex-col gap-10'>
-          <div className='text-xl font-bold text-gray-950'>내 체험 관리</div>
-          <div className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</div>
+          <h1 className='text-xl font-bold text-gray-950'>내 체험 관리</h1>
+          <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
         </div>
         <Button className='w-full md:w-138'>체험 등록하기</Button>
-      </div>
-      <div className='flex flex-col gap-30 xl:gap-24'>
+      </header>
+      <section aria-label='체험 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {data.activities.map(({ id, title, price, bannerImageUrl, rating, reviewCount }) => {
           return (
             <ExperienceCard
@@ -61,7 +61,7 @@ export default function ManageActivitiesPage() {
             />
           );
         })}
-      </div>
+      </section>
     </div>
   );
 }
