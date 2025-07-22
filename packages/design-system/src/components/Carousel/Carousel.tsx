@@ -1,39 +1,23 @@
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react'; // useEffect 추가
+import { useEffect, useState } from 'react';
 
 import MainCard from '../MainCard';
 import NavigationButton from './NavigationButton';
+import type { CarouselProps, Props } from './types';
 
-interface CardItem {
-  id: number;
-  title: string;
-  price: number;
-  rating: number;
-  reviewCount: number;
-  bannerImageUrl: string;
-}
-
-interface Props {
-  items: CardItem[];
-  itemsPerPage?: number; // optional로 변경
-}
-
-export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 }: Props) {
+export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 }: Props<CarouselProps>) {
   const [page, setPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
 
-  // 👉 화면 너비에 따라 itemsPerPage 자동 조절
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width < 768)
-        return; // 모바일은 그대로
-      else if (width < 1024)
-        setItemsPerPage(2); // 태블릿
-      else setItemsPerPage(4); // 데스크탑
+      if (width < 768) return;
+      else if (width < 1024) setItemsPerPage(2);
+      else setItemsPerPage(4);
     };
 
-    handleResize(); // mount 시 실행
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
