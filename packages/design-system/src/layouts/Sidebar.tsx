@@ -27,10 +27,16 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='UserBadge' to='/docs/UserBadge' />
             <SidebarNavItem label='MainCard' to='/docs/MainCard' />
             <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
+            <SidebarNavItem label='Footer' to='/docs/Footer' />
             <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
+            <SidebarNavItem label='ProfileImageInput' to='/docs/ProfileImageInput' />
             <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
             <SidebarNavItem label='Toast' to='/docs/Toast' />
+
             <SidebarNavItem label='MainBanner' to='/docs/MainBanner' />
+
+            <SidebarNavItem label='Carousel' to='/docs/Carousel' />
+
           </ul>
         </nav>
       </aside>
