@@ -27,14 +27,12 @@ export default function MainBannerDoc() {
       />
 
       <DocCode
-        code={`
-        import { dummyBanners } from '@what-today/design-system'; 더미테이터는 예시입니다.
-        
+        code={`import { MainBanner } from '@what-today/design-system';
+          
 
-
-        return
-        <MainBanner />
-        `}
+      export default function Example() {
+        return <MainBanner />;
+      }`}
       />
 
       <div className='mt-24'>
