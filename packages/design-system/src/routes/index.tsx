@@ -1,4 +1,5 @@
 import Sidebar from '@layouts/Sidebar';
+import BottomSheetDoc from '@pages/BottomSheetDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import CarouselDoc from '@pages/CarouselDoc';
@@ -20,6 +21,7 @@ import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
 import FooterDoc from '@/pages/FooterDoc';
 import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -133,6 +135,10 @@ const router = createBrowserRouter([
       {
         path: 'MainCard',
         element: <MainCardDoc />,
+      },
+      {
+        path: 'BottomSheet',
+        element: <BottomSheetDoc />,
       },
     ],
   },
