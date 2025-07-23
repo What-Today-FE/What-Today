@@ -10,6 +10,8 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import { useWhatTodayStore } from '@/stores';
+
 interface MypageSidebarProps {
   /**
    * 사용자 프로필 이미지 URL
@@ -48,6 +50,7 @@ interface MypageSidebarProps {
  */
 export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, isOpen }: MypageSidebarProps) {
   const location = useLocation();
+  const { user } = useWhatTodayStore();
   /**
    * 사이드바에 표시할 고정 메뉴 항목 목록
    * 각 항목은 라벨, 아이콘 컴포넌트, 이동 경로로 구성됩니다.
@@ -63,7 +66,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
     <nav
       className={twMerge(
         // 공통 스타일
-        'fixed z-50 w-180 rounded-xl border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition duration-300 md:static md:h-474 xl:w-280',
+        'fixed z-50 max-w-200 min-w-200 rounded-xl border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition duration-300 md:static md:h-474 xl:w-280',
         // 모바일에서 Drawer 위치
         isOpen ? 'h-474 translate-x-0' : 'bg-primary-100 border-primary-100 h-50 -translate-x-full',
         'md:translate-x-0',
@@ -78,8 +81,12 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
           'md:flex',
         )}
       >
-        {profileImgUrl ? (
-          <img alt='프로필 이미지' className='bg-primary-100 size-120 rounded-full' src={profileImgUrl} />
+        {user?.profileImageUrl ? (
+          <img
+            alt='프로필 이미지'
+            className='bg-white-100 size-120 rounded-full border border-gray-50 object-cover'
+            src={user?.profileImageUrl ?? ''}
+          />
         ) : (
           <ProfileLogo className='rounded-full' size={120} />
         )}
