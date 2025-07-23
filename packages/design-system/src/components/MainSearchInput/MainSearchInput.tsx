@@ -1,30 +1,17 @@
 import { useRef, useState } from 'react';
 
-import Button from './button';
-import { SearchIcon } from './icons';
+import Button from '../button';
+import { SearchIcon } from '../icons';
+import type { SearchInputProps } from './types';
 
-interface SearchInputProps {
-  onSearch: (keyword: string) => void;
-}
-
-export interface Activity {
-  id: number;
-  title: string;
-  price: number;
-  rating: number;
-  reviewCount: number;
-  bannerImageUrl: string;
-  category: string;
-}
-
-export default function SearchInput({ onSearch }: SearchInputProps) {
+export default function SearchInput({ onClick }: SearchInputProps) {
   const [keyword, setKeyword] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
     const trimmed = keyword.trim();
     if (!trimmed) return;
-    onSearch(trimmed);
+    onClick(trimmed);
     setKeyword('');
   };
 
@@ -34,7 +21,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
     }
   };
   const handleFocusInput = () => {
-    inputRef.current?.focus(); //  input에 포커스 줌
+    inputRef.current?.focus(); // 아이콘 클릭시 input에 포커스
   };
 
   return (

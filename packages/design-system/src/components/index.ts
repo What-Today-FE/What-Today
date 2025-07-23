@@ -10,7 +10,7 @@ export { default as MainBanner } from './MainBanner/MainBanner';
 export { default as MainCardContent } from './MainCard/Content';
 export { default as MainCardImage } from './MainCard/Image';
 export { default as MainCard } from './MainCard/MainCardRoot';
-export { default as MainSearchInput } from './MainSearchInput';
+export { default as MainSearchInput } from './MainSearchInput/MainSearchInput';
 export { default as NoResult } from './NoResult';
 export { default as NotificationCard } from './NotificationCard';
 export { default as OwnerBadge } from './OwnerBadge';
