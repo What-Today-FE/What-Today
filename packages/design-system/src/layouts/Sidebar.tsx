@@ -32,11 +32,8 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='ProfileImageInput' to='/docs/ProfileImageInput' />
             <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
             <SidebarNavItem label='Toast' to='/docs/Toast' />
-
             <SidebarNavItem label='MainBanner' to='/docs/MainBanner' />
-
             <SidebarNavItem label='Carousel' to='/docs/Carousel' />
-
           </ul>
         </nav>
       </aside>

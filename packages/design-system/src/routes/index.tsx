@@ -119,7 +119,6 @@ const router = createBrowserRouter([
         element: <CalendarDoc />,
       },
       {
-
         path: 'MainBanner',
         element: <MainBannerDoc />,
       },

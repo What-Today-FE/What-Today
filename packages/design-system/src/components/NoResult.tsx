@@ -4,7 +4,7 @@ import { EmptyLogo } from '@components/logos';
 interface NoResultProps {
   dataName?: string;
   buttonMessage?: string;
-  onRedirect: () => void;
+  onRedirect?: () => void;
 }
 
 /** NoResult
@@ -28,9 +28,11 @@ export default function NoResult({ dataName = '데이터가', buttonMessage = '�
     <div className='flex w-fit flex-col items-center gap-24 md:gap-32'>
       <EmptyLogo className='size-100 md:size-140' />
       <p className='text-lg text-gray-800'>앗, 아직 {dataName} 없습니다.</p>
-      <Button className='w-full font-normal' size='xs' variant='outline' onClick={onRedirect}>
-        {buttonMessage}
-      </Button>
+      {onRedirect && (
+        <Button className='w-full font-normal' size='xs' variant='outline' onClick={onRedirect}>
+          {buttonMessage}
+        </Button>
+      )}
     </div>
   );
 }
