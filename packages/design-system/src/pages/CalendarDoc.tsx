@@ -45,6 +45,9 @@ import {
 ### CalendarRoot
 | Prop         | Type           | Required | Description                      |
 |--------------|----------------|----------|----------------------------------|
+| children    | React.ReactNode         | Yes       | 캘린더 하위 컴포넌트들                  |
+| initialDate    | string         | No       | 선택된 날짜의 초기값                  |
+| onDateChange    | (date: string) => void         | No       | 날짜 선택 시 상위로 선택된 날짜(ISO 문자열)를 알려주는 콜백                  |
 | className    | string         | No       | 외부 스타일 지정                  |
 
 ### CalendarHeader
@@ -74,7 +77,7 @@ import {
       {/* 실제 컴포넌트를 아래에 작성해주세요 */}
       {/* 예시 코드 */}
       <h3 className='mb-8 text-base font-semibold text-gray-600'>기본 캘린더</h3>
-      <Calendar.Root>
+      <Calendar.Root onDateChange={(date) => alert(date)}>
         <Calendar.Header />
         <Calendar.Grid divider={false} weekdayType='short'>
           {(day) => <Calendar.DayCell day={day} reservableDates={new Set(['2025-07-18', '2025-07-25'])} />}
@@ -90,9 +93,11 @@ import {
       />
 
       <h3 className='mb-8 text-base font-semibold text-gray-600'>커스텀 캘린더</h3>
+
       <Calendar.Root
         className='gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
         initialDate='2025-07-20'
+        onDateChange={(date) => alert(date)}
       >
         <Calendar.Header headerClass='py-6' titleClass='md:text-xl' />
         <Calendar.Grid divider weekdayClass='text-sm font-bold md:text-lg' weekdayType='long'>

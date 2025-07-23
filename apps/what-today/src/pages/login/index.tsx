@@ -1,129 +1,123 @@
 import useAuth from '@hooks/useAuth';
+import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import axiosInstance from '@/apis/axiosInstance';
-import { useWhatTodayStore } from '@/stores';
+import EmailInput from '@/components/auth/EmailInput';
+import PasswordInput from '@/components/auth/PasswordInput';
 
 export default function LoginPage() {
-  const { user, isLoggedIn, setUser } = useWhatTodayStore();
-  const { loginUser, logoutUser, fetchMyProfile } = useAuth();
+  const navigate = useNavigate();
+  const { loginUser, fetchMyProfile } = useAuth();
+  const { toast } = useToast();
 
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
   /** handleLogin
    * @description 로그인 요청을 보내고, 성공 시 토큰과 사용자 정보를 전역 상태로 저장합니다.
-   * @throws 에러 발생 시 메시지를 alert로 출력합니다.
+   * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
    */
   const handleLogin = async () => {
     try {
+      setIsLoginLoading(true);
       await loginUser(email, password);
       await fetchMyProfile();
       setEmail('');
       setPassword('');
+      navigate('/');
     } catch (error) {
-      alert(error instanceof Error ? error.message : '로그인에 실패했습니다.');
+      const message = error instanceof Error ? error.message : '로그인에 실패했습니다.';
+      toast({
+        title: '로그인 오류',
+        description: message,
+        type: 'error',
+      });
+    } finally {
+      setIsLoginLoading(false);
     }
   };
 
-  // * 로그인이 필요한 api 요청 테스트용 (삭제 예정)
-  const testProtectedApiCall = async () => {
-    try {
-      const response = await axiosInstance.get('users/me');
-      setUser(response.data);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
-    }
-  };
+  const handleKakaoLogin = () => {
+    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
+    const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
 
-  // * 로그인이 필요없는 api 요청 테스트용 (삭제 예정)
-  const testPublicApiCall = async () => {
-    try {
-      const response = await axiosInstance.get('activities', { params: { method: 'offset' } });
-      console.log(response.data);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
+    if (!clientId || !redirectUrl) {
+      toast({
+        title: '설정 오류',
+        description: '카카오 회원가입 설정이 올바르지 않습니다.',
+        type: 'error',
+      });
+      return;
     }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUrl,
+      response_type: 'code',
+    });
+
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+    window.location.href = kakaoAuthUrl;
   };
 
   return (
-    <div className='m-24 flex w-500 flex-col gap-16'>
-      <h1>여기는 로그인 페이지 입니다</h1>
+    <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
+      <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
+        <div className='flex flex-col items-center gap-12'>
+          <ImageLogo className='size-100 md:size-140' />
+          <TextLogo className='h-fit w-130 md:w-180' />
+        </div>
 
-      <div>
-        {isLoggedIn ? (
-          <p className='text-green-500'>로그인에 성공했습니다.</p>
-        ) : (
-          <p className='text-gray-300'>로그인이 필요합니다.</p>
-        )}
-        {user && (
-          <p>
-            👤 닉네임: <strong>{user.nickname}</strong> / ID: <strong>{user.id}</strong>
-          </p>
-        )}
+        <form
+          className='flex w-full flex-col items-center justify-center gap-32'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
+          <div className='flex w-full flex-col gap-12'>
+            <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
+            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+
+          <div className='flex w-full flex-col gap-12'>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isLoginLoading}
+              size='xl'
+              type='submit'
+            >
+              로그인
+            </Button>
+            <div className='flex w-full items-center text-gray-300'>
+              <div className='h-1 flex-1 bg-gray-300' />
+              <p className='text-md px-12'>or</p>
+              <div className='h-1 flex-1 bg-gray-300' />
+            </div>
+            <Button
+              className='h-fit w-full rounded-xl py-10 font-normal'
+              loading={isLoginLoading}
+              size='xl'
+              variant='outline'
+              onClick={handleKakaoLogin}
+            >
+              <KaKaoIcon className='size-18' />
+              카카오 로그인
+            </Button>
+          </div>
+        </form>
+
+        <div className='flex items-center gap-12 text-lg text-gray-500'>
+          <p>회원이 아니신가요?</p>
+          <Link to='/signup'>
+            <Button className='m-0 h-fit w-fit p-0 text-lg font-normal underline' variant='none'>
+              회원가입하기
+            </Button>
+          </Link>
+        </div>
       </div>
-
-      <input
-        className='rounded-md border'
-        placeholder='이메일'
-        type='text'
-        value={email}
-        onChange={handleEmailChange}
-      />
-      <input
-        className='rounded-md border'
-        placeholder='비밀번호'
-        type='password'
-        value={password}
-        onChange={handlePasswordChange}
-      />
-
-      <button className='bg-primary-500 cursor-pointer rounded-md px-10 py-5 text-white' onClick={handleLogin}>
-        로그인
-      </button>
-      <button className='cursor-pointer rounded-md bg-red-400 px-10 py-5 text-white' onClick={logoutUser}>
-        로그아웃
-      </button>
-
-      <button
-        className='bg-primary-100 text-primary-500 cursor-pointer rounded-md px-10 py-5'
-        onClick={testProtectedApiCall}
-      >
-        내 정보 가져오기 - 로그인이 필요한 api 요청 테스트
-      </button>
-      <button
-        className='cursor-pointer rounded-md bg-purple-200 px-10 py-5 text-purple-500'
-        onClick={testPublicApiCall}
-      >
-        체험 리스트 목록 가져오기 - 로그인이 필요없는 api 요청 테스트
-      </button>
-
-      <Link to='/signup'>
-        <button className='text-primary-500 cursor-pointer rounded-md px-10 py-5 hover:underline'>
-          회원가입 페이지로 이동
-        </button>
-      </Link>
-      <Link to='/mypage'>
-        <button className='text-primary-500 cursor-pointer rounded-md px-10 py-5 hover:underline'>
-          마이 페이지로 이동 - 로그인이 이후 접근 가능
-        </button>
-      </Link>
     </div>
   );
 }
