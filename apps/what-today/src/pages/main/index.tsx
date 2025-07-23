@@ -1,9 +1,9 @@
-import { Button } from '@what-today/design-system';
 import { MainCard } from '@what-today/design-system';
 import { MainBanner } from '@what-today/design-system';
 import { Carousel } from '@what-today/design-system';
 import { Pagination } from '@what-today/design-system';
 import { RadioGroup } from '@what-today/design-system';
+import { MainSearchInput } from '@what-today/design-system';
 import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -203,80 +203,82 @@ export default function MainPage() {
 
   return (
     <>
-      <Button variant='fill' onClick={() => navigate('/activities/5083')}>
+      {/* <Button variant='fill' onClick={() => navigate('/activities/5083')}>
         상세페이지 버튼
-      </Button>
+      </Button> */}
 
       <div className='to-primary-500/40 absolute top-0 left-0 z-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
 
-      <div className='relative z-10 flex h-2100 flex-col gap-60'>
-        <div>
+      <div className='relative z-10 flex h-2100 flex-col gap-40'>
+        <div className='flex flex-col gap-60'>
           <MainBanner />
-        </div>
-        <div className='flex flex-col gap-20'>
-          <h2 className='flex justify-center text-2xl font-bold'>무엇을 체험하고 싶으신가요?</h2>
-          <input className='boder-gray-50 w-full rounded-2xl border-1 p-20' type='text' />
-        </div>
-        <div className='flex flex-col gap-30'>
-          <h2 className='text-2xl font-bold'>인기 체험</h2>
-          <Carousel items={dummyData} itemsPerPage={itemsPerPage} />
+          <div className='flex flex-col gap-20 px-30'>
+            <h2 className='flex justify-center text-2xl font-bold'>무엇을 체험하고 싶으신가요?</h2>
+            <MainSearchInput onClick={handleSearch} />
+          </div>
         </div>
 
-        <div className='flex flex-col gap-10'>
-          <RadioGroup
-            radioGroupClassName='gap-6'
-            selectedValue={selectedCategory1}
-            title='모든 체험'
-            titleClassName='text-lg font-semibold mb-2'
-            onSelect={setSelectedCategory1}
-          >
-            <div className='flex gap-12'>
-              <RadioGroup.Radio className='flex gap-8' value='Art'>
-                <ArtIcon />
-                문화 예술
-              </RadioGroup.Radio>
-              <RadioGroup.Radio value='Food'>
-                <FoodIcon />
-                음식
-              </RadioGroup.Radio>
-              <RadioGroup.Radio value='Sport'>
-                <SportIcon />
-                스포츠
-              </RadioGroup.Radio>
-              <RadioGroup.Radio value='Wellbeing'>
-                <WellbeingIcon />
-                웰빙
-              </RadioGroup.Radio>
-              <RadioGroup.Radio value='Bus'>
-                <BusIcon />
-                버스
-              </RadioGroup.Radio>
-              <RadioGroup.Radio value='Tour'>
-                <TourIcon />
-                여행
-              </RadioGroup.Radio>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className='grid grid-cols-2 gap-[20px] md:grid-cols-2 lg:grid-cols-4'>
-          {pagedItems.map((item) => (
-            <MainCard
-              key={item.id}
-              bannerImageUrl={item.bannerImageUrl}
-              className=''
-              price={item.price}
-              rating={item.rating}
-              reviewCount={item.reviewCount}
-              title={item.title}
+        <div className='flex flex-col gap-60'>
+          <div className='flex flex-col gap-20'>
+            <h2 className='text-2xl font-bold'>🔥 인기 체험</h2>
+            <Carousel items={dummyData} itemsPerPage={itemsPerPage} />
+          </div>
+          <div className='flex flex-col gap-20'>
+            <RadioGroup
+              radioGroupClassName='gap-6'
+              selectedValue={selectedCategory1}
+              title='🛼 모든 체험'
+              titleClassName='text-2xl font-semibold mb-2'
+              onSelect={setSelectedCategory1}
             >
-              <MainCard.Image className='rounded-t-3xl object-cover brightness-90 contrast-125' />
-              <MainCard.Content />
-            </MainCard>
-          ))}
-        </div>
-        <div>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+              <div className='flex gap-12'>
+                <RadioGroup.Radio className='flex gap-8' value='Art'>
+                  <ArtIcon />
+                  문화 예술
+                </RadioGroup.Radio>
+                <RadioGroup.Radio value='Food'>
+                  <FoodIcon />
+                  음식
+                </RadioGroup.Radio>
+                <RadioGroup.Radio value='Sport'>
+                  <SportIcon />
+                  스포츠
+                </RadioGroup.Radio>
+                <RadioGroup.Radio value='Wellbeing'>
+                  <WellbeingIcon />
+                  웰빙
+                </RadioGroup.Radio>
+                <RadioGroup.Radio value='Bus'>
+                  <BusIcon />
+                  버스
+                </RadioGroup.Radio>
+                <RadioGroup.Radio value='Tour'>
+                  <TourIcon />
+                  여행
+                </RadioGroup.Radio>
+              </div>
+            </RadioGroup>
+
+            <div className='grid grid-cols-2 gap-y-30 md:grid-cols-2 lg:grid-cols-4'>
+              {pagedItems.map((item) => (
+                <MainCard
+                  key={item.id}
+                  bannerImageUrl={item.bannerImageUrl}
+                  className=''
+                  price={item.price}
+                  rating={item.rating}
+                  reviewCount={item.reviewCount}
+                  title={item.title}
+                >
+                  <MainCard.Image />
+                  <MainCard.Content />
+                </MainCard>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          </div>
         </div>
       </div>
     </>
