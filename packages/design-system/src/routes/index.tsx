@@ -1,12 +1,14 @@
 import Sidebar from '@layouts/Sidebar';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
+import CarouselDoc from '@pages/CarouselDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import MainBannerDoc from '@pages/MainBannerDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
@@ -18,8 +20,8 @@ import SelectDoc from '@pages/SelectDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-
 import FooterDoc from '@/pages/FooterDoc';
+import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: 'ProfileImageInput',
         element: <ProfileImageInputDoc />,
+      },
+      {
+        path: 'MainCard',
+        element: <MainCardDoc />,
       },
       {
         path: 'NotificationCard',
@@ -113,8 +119,20 @@ const router = createBrowserRouter([
         element: <CalendarDoc />,
       },
       {
+        path: 'MainBanner',
+        element: <MainBannerDoc />,
+      },
+      {
         path: 'Footer',
         element: <FooterDoc />,
+      },
+      {
+        path: 'Carousel',
+        element: <CarouselDoc />,
+      },
+      {
+        path: 'MainCard',
+        element: <MainCardDoc />,
       },
     ],
   },
