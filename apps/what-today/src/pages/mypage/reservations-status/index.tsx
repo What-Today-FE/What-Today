@@ -18,6 +18,7 @@ export default function ReservationsStatusPage() {
     year: dayjs().format('YYYY'),
     month: dayjs().format('MM'),
   });
+  console.log(selectedDate); // 임시 설정
 
   const handleValueChange = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
     setSelectedActivity(value);
