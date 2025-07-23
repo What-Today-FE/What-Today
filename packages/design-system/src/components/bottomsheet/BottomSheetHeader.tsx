@@ -20,7 +20,7 @@ import type { BottomSheetHeaderProps } from './types';
 export function BottomSheetHeader({ className }: BottomSheetHeaderProps) {
   return (
     <div className={twMerge('relative h-24 rounded-t-2xl pt-12 pb-4', className)} data-bottomsheet-header='true'>
-      <div className='mx-auto h-4 w-40 rounded bg-gray-300' />
+      <div className='mx-auto h-4 w-40 rounded bg-gray-300 xl:hidden' />
     </div>
   );
 }
