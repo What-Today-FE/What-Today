@@ -1,5 +1,4 @@
-import { Calendar } from '@what-today/design-system';
-import type { ReservationStatus } from 'node_modules/@what-today/design-system/dist/types/calendar/DayCell';
+import { Calendar, type ReservationStatus } from '@what-today/design-system';
 interface ReservationCalendarProps {
   /**
    * 날짜별 예약 상태 데이터
