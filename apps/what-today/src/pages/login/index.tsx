@@ -3,8 +3,8 @@ import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/de
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import EmailInput from '@/components/login/EmailInput';
-import PasswordInput from '@/components/login/PasswordInput';
+import EmailInput from '@/components/auth/EmailInput';
+import PasswordInput from '@/components/auth/PasswordInput';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -37,6 +37,29 @@ export default function LoginPage() {
     } finally {
       setIsLoginLoading(false);
     }
+  };
+
+  const handleKakaoLogin = () => {
+    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
+    const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
+
+    if (!clientId || !redirectUrl) {
+      toast({
+        title: '설정 오류',
+        description: '카카오 회원가입 설정이 올바르지 않습니다.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUrl,
+      response_type: 'code',
+    });
+
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+    window.location.href = kakaoAuthUrl;
   };
 
   return (
@@ -78,6 +101,7 @@ export default function LoginPage() {
               loading={isLoginLoading}
               size='xl'
               variant='outline'
+              onClick={handleKakaoLogin}
             >
               <KaKaoIcon className='size-18' />
               카카오 로그인

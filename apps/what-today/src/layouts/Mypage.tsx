@@ -1,12 +1,26 @@
-import { Button, ChevronIcon } from '@what-today/design-system';
+import { Button, ChevronIcon, useToast } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import MypageSidebar from '@/components/MypageSidebar';
+import useAuth from '@/hooks/useAuth';
 
 export default function MyPageLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const { logoutUser } = useAuth();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    logoutUser();
+    toast({
+      title: '로그아웃 성공',
+      description: '다음에 또 만나요! 👋🏻',
+      type: 'success',
+    });
+    navigate('/login');
+  };
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -21,7 +35,7 @@ export default function MyPageLayout() {
       <MypageSidebar
         isOpen={isSidebarOpen}
         onClick={() => setSidebarOpen((prev) => !prev)}
-        onLogoutClick={() => alert('hi')}
+        onLogoutClick={handleLogout}
       />
       {/* Outlet으로 상세 화면 표시 */}
       <div className='flex-1 p-4'>

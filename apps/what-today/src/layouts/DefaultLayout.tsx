@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
+import { Footer } from '@what-today/design-system';
 
 import Header from '@/components/Header';
 
@@ -11,7 +12,6 @@ export default function DefaultLayout() {
       <header className='w-full max-w-7xl px-[5vw]'>
         <Header />
       </header>
-      {/* @Taeil08 Footer 추가하실 때 min-h만 수정 부탁드려요! */}
       <main
         className={`min-h-[90vh] w-full ${
           isActivityDetailPage
@@ -21,9 +21,7 @@ export default function DefaultLayout() {
       >
         <Outlet />
       </main>
-      <div className='w-full border-t-1 border-gray-50'>
-        <footer className='w-full max-w-7xl px-[5vw]'>{/* <Footer /> */}</footer>
-      </div>
+      <Footer />
     </div>
   );
 }
