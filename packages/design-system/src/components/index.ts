@@ -1,3 +1,4 @@
+export { BottomSheet } from './bottomsheet';
 export { default as Button } from './button';
 export * from './calendar';
 export { default as ExperienceCard } from './ExperienceCard';
