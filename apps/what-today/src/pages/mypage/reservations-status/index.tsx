@@ -9,7 +9,8 @@ import type { ActivityReservationResponse, myActivitiesResponse } from '@/schema
 export default function ReservationsStatusPage() {
   const [activitiesData, setActivitiesData] = useState<myActivitiesResponse | null>(null);
   const [reservation, setReservation] = useState<ActivityReservationResponse>([]);
-  const [loading, setLoading] = useState(true);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [reservationLoading, setReservationLoading] = useState(true);
 
   const [selectedActivity, setSelectedActivity] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -42,7 +43,7 @@ export default function ReservationsStatusPage() {
     } catch (err) {
       console.error('내 체험 조회 실패:', err);
     }
-    setLoading(false);
+    setActivitiesLoading(false);
   };
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function ReservationsStatusPage() {
       } catch (err) {
         console.error('월별 예약현황 조회 실패:', err);
       }
-      setLoading(false);
+      setReservationLoading(false);
     };
     fetchReservation();
   }, [selectedActivity, viewingMonth]);
@@ -72,7 +73,7 @@ export default function ReservationsStatusPage() {
   }, {});
 
   let content;
-  if (loading) {
+  if (activitiesLoading || reservationLoading) {
     content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
   } else if (activitiesData && activitiesData.activities.length > 0) {
     content = (
