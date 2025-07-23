@@ -30,3 +30,40 @@ export const signUpWithKakao = (code: string) => {
     token: code,
   });
 };
+
+/**
+ * @description 내 정보 수정 PATCH
+ * @returns 변경된 user
+ */
+export const patchMyProfile = (
+  nickname?: string,
+  profileImageUrl?: string | null | undefined,
+  newPassword?: string,
+) => {
+  const safeNickname = nickname?.trim();
+  const safeImageUrl = profileImageUrl === null ? null : profileImageUrl?.trim() || undefined;
+  const safePassword = newPassword?.trim();
+
+  const body = {
+    ...(safeNickname && { nickname: safeNickname }),
+    profileImageUrl: safeImageUrl === '' ? null : safeImageUrl,
+    ...(safePassword && { newPassword: safePassword }),
+  };
+
+  return axiosInstance.patch('users/me', body);
+};
+
+/**
+ * @description 프로필 이미지 url 생성
+ * @returns 프로필 이미지 url (string)
+ */
+export const postProfileImageUrl = (profileImageUrl: File) => {
+  const formData = new FormData();
+  formData.append('image', profileImageUrl);
+
+  return axiosInstance.post('users/me/image', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
