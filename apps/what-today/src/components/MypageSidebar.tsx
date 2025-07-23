@@ -10,8 +10,6 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
-import { useWhatTodayStore } from '@/stores';
-
 interface MypageSidebarProps {
   /**
    * 사용자 프로필 이미지 URL
@@ -50,7 +48,7 @@ interface MypageSidebarProps {
  */
 export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, isOpen }: MypageSidebarProps) {
   const location = useLocation();
-  const { user } = useWhatTodayStore();
+
   /**
    * 사이드바에 표시할 고정 메뉴 항목 목록
    * 각 항목은 라벨, 아이콘 컴포넌트, 이동 경로로 구성됩니다.
@@ -81,11 +79,11 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
           'md:flex',
         )}
       >
-        {user?.profileImageUrl ? (
+        {profileImgUrl ? (
           <img
             alt='프로필 이미지'
             className='bg-white-100 size-120 rounded-full border border-gray-50 object-cover'
-            src={user?.profileImageUrl ?? ''}
+            src={profileImgUrl}
           />
         ) : (
           <ProfileLogo className='rounded-full' size={120} />
