@@ -23,7 +23,7 @@ function SelectItem({ value, children, className }: BaseProps & { value: string 
 
   return (
     <div
-      className={twMerge('hover:bg-primary-100 rounded-xl p-10 break-words', className)}
+      className={twMerge('hover:bg-primary-100 cursor-pointer rounded-xl p-10 break-words', className)}
       role='option'
       tabIndex={0}
       onClick={() => handleClickItem(value, children)}
