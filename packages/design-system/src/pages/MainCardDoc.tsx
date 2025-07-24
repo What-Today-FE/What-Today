@@ -1,6 +1,6 @@
+import { MainCard } from '@/components/MainCard';
 import Playground from '@/layouts/Playground';
 
-import MainCard from '../components/MainCard';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
@@ -75,7 +75,7 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
       <h3 className='text-2xl'>커스텀 MainCard 예시 입니다.</h3>
 
       <div>
-        <MainCard
+        <MainCard.Root
           bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
           className='w-[265px]'
           price={200000}
@@ -91,7 +91,7 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
             ratingClassName='text-emerald-300 font-semibold'
             titleClassName='text-white font-extrabold tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.7)]'
           />
-        </MainCard>
+        </MainCard.Root>
       </div>
 
       <DocCode

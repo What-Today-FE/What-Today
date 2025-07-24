@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { CalendarContext } from './CalendarContext';
@@ -23,6 +23,10 @@ interface CalendarRootProps {
    * 날짜 선택 시 상위로 선택된 날짜(ISO 문자열)를 알려주는 콜백
    */
   onDateChange?: (date: string) => void;
+  /**
+   * 월 변경 시 상위로 선택된 년도, 월(ISO 문자열)을 알려주는 콜백
+   */
+  onMonthChange?: (year: string, month: string) => void;
   /**
    * CalendarRoot 커스텀 가능
    */
@@ -48,7 +52,13 @@ interface CalendarRootProps {
  * </CalendarRoot>
  * ```
  */
-export default function CalendarRoot({ children, initialDate, onDateChange, className }: CalendarRootProps) {
+export default function CalendarRoot({
+  children,
+  initialDate,
+  onDateChange,
+  onMonthChange,
+  className,
+}: CalendarRootProps) {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
   const [selectedDate, setSelectedDate] = useState<string>(initialDate || '');
 
@@ -56,6 +66,14 @@ export default function CalendarRoot({ children, initialDate, onDateChange, clas
     setSelectedDate(date);
     onDateChange?.(date);
   };
+
+  useEffect(() => {
+    if (onMonthChange) {
+      const year = currentMonth.format('YYYY');
+      const month = currentMonth.format('MM');
+      onMonthChange(year, month);
+    }
+  }, [currentMonth, onMonthChange]);
 
   return (
     <CalendarContext.Provider value={{ selectedDate, onSelectDate: handleSelectDate, currentMonth, setCurrentMonth }}>

@@ -10,14 +10,31 @@ const EMPTY_SIZE = { width: 0, height: 0 };
 
 export interface PopoverRootProps extends BaseProp {
   direction?: Position; // Popover가 뜰 위치 (ex. Trigger 기준 => 'bottom' / 뷰포트 기준 => 'fixed-top-center')
+  open?: boolean; // 외부에서 제어할 수 있는 open
+  onOpenChange?: (open: boolean) => void; // 외부 상태 변경 감지
 }
 
 /**
  * @component PopoverRoot
  * @description Popover의 위치, 크기, 외부 클릭, Esc 키 등 다양한 상호작용 로직을 포함한 루트 컴포넌트입니다.
  */
-function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootProps) {
-  const [open, setOpen] = useState(false); // Popover 열고 닫힘 상태
+function PopoverRoot({ children, direction = 'bottom', className, open: openProp, onOpenChange }: PopoverRootProps) {
+  // Popover의 열고 닫힘 상태 (controlled / uncontrolled 지원)
+  const isControlled = openProp !== undefined;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = isControlled ? openProp : uncontrolledOpen;
+  // controlled와 uncontrolled을 구분한 setOpen 함수 정의
+  const internalSetOpen = useCallback(
+    (value: boolean) => {
+      if (isControlled) {
+        onOpenChange?.(value); // 외부 콜백만 호출
+      } else {
+        setUncontrolledOpen(value); // 내부 상태 갱신
+      }
+    },
+    [isControlled, onOpenChange],
+  );
+
   const [contentCoords, setContentCoords] = useState<Coords>(EMPTY_COORDS); // Popover.Content의 좌표
   const [triggerWidth, setTriggerWidth] = useState<number | null>(null); // Popover.Trigger의 크기
   const [contentSize, setContentSize] = useState(EMPTY_SIZE); // Popover.Content의 크기
@@ -113,7 +130,7 @@ function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootP
 
     // esc 키를 누르면 Popover 닫힘
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') internalSetOpen(false);
     };
 
     // Popover 외부 영역을 누르면 Popover 닫힘 (Popover에서는 스크롤 방지 제외)
@@ -125,7 +142,7 @@ function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootP
         triggerRef.current &&
         !triggerRef.current.contains(target) // Popover.Trigger 외부 영역 클릭
       ) {
-        setOpen(false);
+        internalSetOpen(false);
       }
     };
 
@@ -144,13 +161,14 @@ function PopoverRoot({ children, direction = 'bottom', className }: PopoverRootP
     <PopoverContext.Provider
       value={{
         open,
-        setOpen,
+        setOpen: internalSetOpen,
         triggerRef,
         handleContentRef,
         contentCoords,
         contentSize,
         direction,
         triggerWidth,
+        isControlled,
       }}
     >
       <div className={twMerge('relative', className)}>{children}</div>

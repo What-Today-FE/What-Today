@@ -1,3 +1,6 @@
+import { useState } from 'react';
+
+import { Button } from '@/components';
 import { Popover } from '@/components/popover';
 import Playground from '@/layouts/Playground';
 
@@ -13,6 +16,8 @@ const code = `
 `;
 
 export default function PopoverDoc() {
+  const [open, setOpen] = useState(false);
+
   return (
     <>
       <DocTemplate
@@ -57,6 +62,8 @@ Slot을 사용하기 위해서는 asChild로 명시적으로 활성화해주어�
 | children     | \`ReactNode\`                    | \`Trigger\`, \`Content\` 등의 하위 요소를 포함해야 합니다. |
 | direction    | \`'top', 'bottom', 'left', 'right', 'fixed-top-left', 'fixed-top-center' , 'fixed-top-right' , 'fixed-center-left' , 'fixed-center-center' , 'fixed-center-right' , 'fixed-bottom-left' , 'fixed-bottom-center' , 'fixed-bottom-right'\` | 콘텐츠가 나타날 방향으로, 기본값은 \`bottom\`입니다. \`fixed-\`가 붙으면 현재 뷰포트 기준(절대적), 없으면 Trigger 기준(상대적)으로 위치합니다.           |
 | className    | \`string?\`                      | 스타일 확장용 className으로, Popover의 전체적인 크기를 조정합니다. (ex. Popover가 w-300이라면 Trigger의 크기도 w-300이며, Content의 matchTriggerWidth=true시 Content도 w-300입니다.)               |
+| open          | \`boolean?\`                                                                                                                                           | Controlled 모드로 사용할 때 Popover의 열림 상태를 외부에서 제어합니다.                                                                                                       |
+| onOpenChange  | \`(open: boolean) => void\`                                                                                                                            | Controlled 모드일 때 Popover의 열림 상태가 변경될 경우 호출되는 콜백입니다.                                                                                                   |
 
 ---
 
@@ -111,6 +118,15 @@ Slot을 사용하기 위해서는 asChild로 명시적으로 활성화해주어�
           </Popover.Root>
         ))}
       </div>
+
+      {/* Controlled Popover */}
+      <Popover.Root className='w-300' direction='bottom' open={open} onOpenChange={setOpen}>
+        <Popover.Trigger className='rounded bg-gray-100 px-4 py-2'>
+          외부에서 Popover의 상태를 관리해보세요.
+        </Popover.Trigger>
+        <Popover.Content className='rounded bg-white p-4 shadow'>Controlled Popover</Popover.Content>
+      </Popover.Root>
+      <Button onClick={() => setOpen((prev) => !prev)}>Popover Toggle</Button>
 
       {/* Playground */}
       <div className='mt-24'>
