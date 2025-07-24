@@ -81,7 +81,8 @@ export default function ButtonDoc() {
         />
         <DocCode
           code={`<Button
-  className='hover:text-primary-500 active:text-primary-500 w-full hover:bg-[#E5F3FF] hover:ring-1 hover:ring-blue-300 hover:ring-offset-0 active:bg-blue-200'
+  className='hover:text-primary-500 active:text-primary-500 w-full hover:bg-[#E5F3FF] 
+  hover:ring-1 hover:ring-blue-300 hover:ring-offset-0 active:bg-blue-200'
   size='lg'
   variant='outline'
 >
@@ -186,6 +187,14 @@ export default function ButtonDoc() {
                     {/* 아이콘만 */}
                     <Button size={size} variant={variant}>
                       <WellbeingIcon />
+                    </Button>
+                    {/* 로딩 + 아이콘*/}
+                    <Button loading size={size} variant={variant}>
+                      <WellbeingIcon />
+                    </Button>
+                    {/* 로딩 + 아이콘 + 텍스트 */}
+                    <Button loading size={size} variant={variant}>
+                      <WellbeingIcon /> 로딩 중...
                     </Button>
                   </div>
                 </div>
