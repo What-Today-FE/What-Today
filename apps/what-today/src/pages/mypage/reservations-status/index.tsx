@@ -1,89 +1,120 @@
-import { type ReservationStatus, Select } from '@what-today/design-system';
+import { NoResult, type ReservationStatus, Select } from '@what-today/design-system';
+import dayjs from 'dayjs';
 import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
 
+import { getMonthlyReservations, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
-// 실제 api response와 동일한 임시 데이터
-const data = [
-  {
-    date: '2025-07-20',
-    reservations: {
-      completed: 0,
-      confirmed: 1,
-      pending: 0,
-    },
-  },
-  {
-    date: '2025-07-21',
-    reservations: {
-      completed: 1,
-      confirmed: 0,
-      pending: 2,
-    },
-  },
-  {
-    date: '2025-07-29',
-    reservations: {
-      completed: 1,
-      confirmed: 3,
-      pending: 7,
-    },
-  },
-];
-const reservationMap = data.reduce<Record<string, Record<ReservationStatus, number>>>((acc, cur) => {
-  acc[cur.date] = cur.reservations;
-  return acc;
-}, {});
-const data2 = {
-  activities: [
-    {
-      id: 5083,
-      userId: 2124,
-      title: '바람과 함께하는 한강 요가',
-      description: '맑은 공기와 잔잔한 물결 위에서 내 몸과 마음을 정화해보세요.',
-      category: '스포츠',
-      price: 8000,
-      address: '서울특별시 영등포구 여의도 한강공원',
-      bannerImageUrl:
-        'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/activity_registration_image/e.png',
-      rating: 0,
-      reviewCount: 0,
-      createdAt: '2025-07-08T14:07:28.448Z',
-      updatedAt: '2025-07-08T14:29:06.601Z',
-    },
-    {
-      id: 5082,
-      userId: 2124,
-      title: '내 손으로 만드는 나만의 도자기',
-      description: '흙을 만지며 마음을 다듬는 시간. 초보자도 쉽게 따라 할 수 있어요!',
-      category: '문화 · 예술',
-      price: 25000,
-      address: '서울특별시 종로구 인사동길 12',
-      bannerImageUrl:
-        'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/activity_registration_image/c.png',
-      rating: 0,
-      reviewCount: 0,
-      createdAt: '2025-07-08T14:03:45.530Z',
-      updatedAt: '2025-07-08T14:14:23.715Z',
-    },
-  ],
-  totalCount: 2,
-  cursorId: null,
-};
+import type { ActivityReservationResponse, myActivitiesResponse } from '@/schemas/myActivities';
+
 export default function ReservationsStatusPage() {
-  const [selectedValue, setSelectedValue] = useState<{ value: string; label: ReactNode } | null>(null);
+  const [activitiesData, setActivitiesData] = useState<myActivitiesResponse | null>(null);
+  const [reservation, setReservation] = useState<ActivityReservationResponse>([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [reservationLoading, setReservationLoading] = useState(true);
+
+  const [selectedActivity, setSelectedActivity] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
+  const [viewingMonth, setViewingMonth] = useState<{ year: string; month: string }>({
+    year: dayjs().format('YYYY'),
+    month: dayjs().format('MM'),
+  });
+  console.log(selectedDate); // 임시 설정
+
   const handleValueChange = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
-    setSelectedValue(value);
+    setSelectedActivity(value);
   };
+
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
   };
 
+  const handleMonthChange = (year: string, month: string) => {
+    if (viewingMonth.year === year && viewingMonth.month === month) return; // 동일하면 무시
+    setViewingMonth({ year, month });
+  };
+
+  const fetchMyActivities = async () => {
+    try {
+      const result = await getMyActivities({ size: 10 });
+      setActivitiesData(result);
+      if (result.activities.length > 0) {
+        const firstActivity = result.activities[0];
+        setSelectedActivity({ value: String(firstActivity.id), label: firstActivity.title });
+      }
+    } catch (err) {
+      console.error('내 체험 조회 실패:', err);
+    }
+    setActivitiesLoading(false);
+  };
+
   useEffect(() => {
-    // 이후 API 호출 예정
-    if (!selectedDate) return;
-    if (!selectedValue) return;
-  }, [selectedDate, selectedValue]);
+    fetchMyActivities();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedActivity) return;
+    const fetchReservation = async () => {
+      try {
+        const result = await getMonthlyReservations(Number(selectedActivity.value), {
+          year: viewingMonth.year,
+          month: viewingMonth.month,
+        });
+        setReservation(result);
+      } catch (err) {
+        console.error('월별 예약현황 조회 실패:', err);
+      }
+      setReservationLoading(false);
+    };
+    fetchReservation();
+  }, [selectedActivity, viewingMonth]);
+
+  const reservationMap = reservation.reduce<Record<string, Record<ReservationStatus, number>>>((acc, cur) => {
+    acc[cur.date] = cur.reservations;
+    return acc;
+  }, {});
+
+  let content;
+  if (activitiesLoading || reservationLoading) {
+    content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
+  } else if (activitiesData && activitiesData.activities.length > 0) {
+    content = (
+      <div className='flex flex-col md:gap-24 xl:gap-30'>
+        <section aria-label='체험 선택하기' className='max-w-640'>
+          <Select.Root value={selectedActivity} onChangeValue={handleValueChange}>
+            <Select.Trigger className='h-54 max-w-640'>
+              <Select.Value placeholder='내 체험 선택하기' />
+            </Select.Trigger>
+            <Select.Content>
+              <Select.Group>
+                <Select.Label>내 체험 목록</Select.Label>
+                {activitiesData &&
+                  activitiesData.activities.map(({ id, title }) => {
+                    return (
+                      <Select.Item key={id} value={String(id)}>
+                        {title}
+                      </Select.Item>
+                    );
+                  })}
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
+        </section>
+        <section aria-label='예약 캘린더'>
+          <ReservationCalendar
+            reservationsByDate={reservationMap}
+            onChange={handleDateChange}
+            onMonthChange={handleMonthChange}
+          />
+        </section>
+      </div>
+    );
+  } else {
+    content = (
+      <div className='flex justify-center p-40'>
+        <NoResult dataName='등록한 체험이' />
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
@@ -91,28 +122,7 @@ export default function ReservationsStatusPage() {
         <h1 className='text-xl font-bold text-gray-950'>예약 현황</h1>
         <p className='text-md font-medium text-gray-500'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
       </header>
-      <section aria-label='체험 선택하기'>
-        <Select.Root value={selectedValue} onChangeValue={handleValueChange}>
-          <Select.Trigger className='h-54 max-w-640'>
-            <Select.Value placeholder='내 체험 선택하기' />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Group>
-              <Select.Label>내 체험 목록</Select.Label>
-              {data2.activities.map(({ id, title }) => {
-                return (
-                  <Select.Item key={id} value={title}>
-                    {title}
-                  </Select.Item>
-                );
-              })}
-            </Select.Group>
-          </Select.Content>
-        </Select.Root>
-      </section>
-      <section aria-label='예약 캘린더'>
-        <ReservationCalendar reservationsByDate={reservationMap} onChange={handleDateChange} />
-      </section>
+      {content}
     </div>
   );
 }

@@ -8,6 +8,8 @@ export type SelectItem = {
 export interface SelectContextType {
   handleClickItem: (value: string, label: ReactNode) => void;
   selectedItem: SelectItem | null;
+  open?: boolean;
+  setOpen?: (v: boolean) => void;
 }
 
 export interface BaseProps {

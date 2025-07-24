@@ -2,6 +2,7 @@ import { ChevronIcon } from '@components/icons';
 import { Popover } from '@components/popover';
 import { twMerge } from 'tailwind-merge';
 
+import { useSelectContext } from './context';
 import type { BaseProps } from './types';
 
 /**
@@ -20,6 +21,7 @@ import type { BaseProps } from './types';
  * ```
  */
 function SelectTrigger({ className, children }: BaseProps) {
+  const { open, setOpen } = useSelectContext();
   return (
     <Popover.Trigger asChild>
       <div
@@ -29,6 +31,7 @@ function SelectTrigger({ className, children }: BaseProps) {
         )}
         role='button'
         tabIndex={0}
+        onClick={() => setOpen?.(!open)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();

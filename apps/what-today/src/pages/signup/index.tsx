@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import axiosInstance from '@/apis/axiosInstance';
-import EmailInput from '@/components/signup/EmailInput';
-import NicknameInput from '@/components/signup/NicknameInput';
-import PasswordConfirmInput from '@/components/signup/PasswordConfirmInput';
-import PasswordInput from '@/components/signup/PasswordInput';
+import EmailInput from '@/components/auth/EmailInput';
+import NicknameInput from '@/components/auth/NicknameInput';
+import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
+import PasswordInput from '@/components/auth/PasswordInput';
 
 export default function SignupPage() {
   const navigate = useNavigate();
