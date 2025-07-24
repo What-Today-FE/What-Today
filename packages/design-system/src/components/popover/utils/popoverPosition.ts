@@ -80,6 +80,21 @@ export function getPopoverPosition(rect: DOMRect, position: Position, contentSiz
         top: viewportHeight - contentSize.height,
         left: viewportWidth - contentSize.width,
       };
+    case 'corner-bottom-left':
+      return {
+        top: rect.bottom + scrollY,
+        left: rect.left + scrollX - contentSize.width,
+      };
+    case 'bottom-right':
+      return {
+        top: rect.bottom + scrollY,
+        left: rect.right + scrollX - contentSize.width,
+      };
+    case 'bottom-center':
+      return {
+        top: rect.bottom + scrollY,
+        left: (window.innerWidth - contentSize.width) / 2,
+      };
     default:
       return {
         top: rect.bottom + scrollY,

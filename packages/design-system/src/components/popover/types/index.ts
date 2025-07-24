@@ -18,7 +18,10 @@ export type Position =
   | 'fixed-center-right'
   | 'fixed-bottom-left'
   | 'fixed-bottom-center'
-  | 'fixed-bottom-right';
+  | 'fixed-bottom-right'
+  | 'corner-bottom-left'
+  | 'bottom-right'
+  | 'bottom-center';
 
 /**
  * @description Popover.Content의 크기 (px 단위)
