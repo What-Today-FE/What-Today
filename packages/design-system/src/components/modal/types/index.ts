@@ -71,3 +71,33 @@ export interface ModalCloseButtonProps {
   /** 추가 CSS 클래스명 */
   className?: string;
 }
+
+/**
+ * @description Modal.ConfirmButton 컴포넌트의 Props
+ *
+ * **주요 액션 버튼 (거의 필수)**
+ * - 확인, 저장, 삭제, 작성하기 등의 주요 액션을 담당
+ * - 대부분의 모달에서 필수적으로 사용됨
+ */
+export interface ModalConfirmButtonProps {
+  /** 버튼에 표시될 텍스트 */
+  children: React.ReactNode;
+  /** 추가 CSS 클래스명 */
+  className?: string;
+  /** 버튼 클릭 시 추가로 실행될 함수 (onConfirm보다 먼저 실행됨) */
+  onClick?: () => void;
+}
+
+/**
+ * @description Modal.CancelButton 컴포넌트의 Props
+ *
+ * **선택적 버튼**
+ * - 취소, 닫기 등의 보조 액션을 담당
+ * - 필요에 따라 선택적으로 사용
+ */
+export interface ModalCancelButtonProps {
+  /** 버튼에 표시될 텍스트 */
+  children: React.ReactNode;
+  /** 추가 CSS 클래스명 */
+  className?: string;
+}
