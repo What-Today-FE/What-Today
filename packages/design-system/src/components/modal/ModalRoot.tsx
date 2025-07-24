@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
+import { useClickOutside } from './hooks/useClickOutside';
 import { useEscToClose } from './hooks/useEscToClose';
 import { useLockBodyScroll } from './hooks/useLockBodyScroll';
 import { ModalContext } from './ModalContext';
@@ -43,28 +44,9 @@ import type { ModalRootProps } from './types';
 function ModalRoot({ children, open, onClose, onConfirm }: ModalRootProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // 모달이 열려 있을 때 body 스크롤 잠금
   useLockBodyScroll(open);
-
-  // ESC 키로 모달 닫기
   useEscToClose(open, onClose);
-
-  // 외부 클릭으로 모달 닫기
-  useEffect(() => {
-    if (!open) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-
-      // 모달 내용 영역 밖을 클릭했을 때만 모달 닫기
-      if (modalRef.current && !modalRef.current.contains(target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [open, onClose]);
+  useClickOutside(modalRef, open, onClose);
 
   return <ModalContext.Provider value={{ open, onClose, onConfirm, modalRef }}>{children}</ModalContext.Provider>;
 }
