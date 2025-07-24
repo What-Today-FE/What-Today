@@ -1,3 +1,3 @@
-export interface SearchInputProps {
+export interface MainSearchInputProps {
   onClick: (keyword: string) => void;
 }

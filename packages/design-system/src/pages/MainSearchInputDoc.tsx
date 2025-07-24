@@ -4,7 +4,7 @@ import MainSearchInput from '../components/MainSearchInput/MainSearchInput';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground에서 사용할 예시 코드 */
-const code = `<MainSearchInput/> `;
+const code = `<MainSearchInput onClick={}/> `;
 
 export default function MainSearchInputDoc() {
   return (
@@ -16,7 +16,7 @@ export default function MainSearchInputDoc() {
 사용자가 입력한 검색어를 기반으로 동작하는 검색 입력창입니다.  
 - 왼쪽에는 고정된 **돋보기 아이콘**이 있고  
 - 오른쪽에는 **"검색하기" 버튼**이 배치되어 있습니다.  
-- Enter 키 입력 또는 버튼 클릭 시 \`onSearch\` 콜백이 실행됩니다.
+- Enter 키 입력 또는 버튼 클릭 시 \`onClick\` 콜백이 실행됩니다.
 - 검색 후 input은 자동으로 비워집니다.
 `}
         propsDescription={`
@@ -33,7 +33,7 @@ export default function MainSearchInputDoc() {
         code={`import MainSearchInput from '@what-today/design-system'
           
           <MainSearchInput
-          onClick={handleSubmit}
+          onClick={}
           />
 `}
       />
