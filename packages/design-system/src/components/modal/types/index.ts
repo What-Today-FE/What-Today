@@ -25,3 +25,13 @@ export interface ModalRootProps {
   /** 확인 버튼 클릭 시 호출되는 함수 (선택적) */
   onConfirm?: () => void;
 }
+
+/**
+ * @description Modal.Content 컴포넌트의 Props
+ */
+export interface ModalContentProps {
+  /** Modal Content 내부에 렌더링될 컴포넌트들 */
+  children: React.ReactNode;
+  /** 추가 CSS 클래스명 */
+  className?: string;
+}
