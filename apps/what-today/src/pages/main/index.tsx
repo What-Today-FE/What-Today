@@ -8,7 +8,6 @@ import { MainSearchInput } from '@what-today/design-system';
 import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from '@what-today/design-system';
 import { Select } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const dummyData = [
   {
@@ -205,7 +204,6 @@ export default function MainPage() {
 
   const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
   const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const navigate = useNavigate();
 
   return (
     <>
