@@ -11,6 +11,7 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
+import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
@@ -24,7 +25,6 @@ import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-
 import FooterDoc from '@/pages/FooterDoc';
 import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
@@ -136,8 +136,8 @@ const router = createBrowserRouter([
         element: <CarouselDoc />,
       },
       {
-        path: 'MainCard',
-        element: <MainCardDoc />,
+        path: 'MainSearchInput',
+        element: <MainSearchInputDoc />,
       },
       {
         path: 'BottomSheet',
