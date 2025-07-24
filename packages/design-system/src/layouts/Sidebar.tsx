@@ -32,11 +32,10 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='ProfileImageInput' to='/docs/ProfileImageInput' />
             <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
             <SidebarNavItem label='Toast' to='/docs/Toast' />
+            <SidebarNavItem label='ExperienceImageUpload' to='/docs/ExperienceImageUpload' />
             <SidebarNavItem label='MainBanner' to='/docs/MainBanner' />
             <SidebarNavItem label='Carousel' to='/docs/Carousel' />
-
             <SidebarNavItem label='MainSearchInput' to='/docs/MainSearchInput' />
-
             <SidebarNavItem label='BottomSheet' to='/docs/BottomSheet' />
             <SidebarNavItem label='DatePicker' to='/docs/DatePicker' />
             <SidebarNavItem label='Modal' to='/docs/Modal' />

@@ -6,10 +6,12 @@ import CarouselDoc from '@pages/CarouselDoc';
 import DatePickerDoc from '@pages/DatePickerDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
+import ExperienceImageUploadDoc from '@pages/ExperienceImageUploadDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
+import MainCardDoc from '@pages/MainCardDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
 import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
@@ -127,6 +129,11 @@ const router = createBrowserRouter([
       {
         path: 'Calendar',
         element: <CalendarDoc />,
+      },
+      {
+
+        path: 'ExperienceImageUpload',
+        element: <ExperienceImageUploadDoc />,
       },
       {
         path: 'MainBanner',
