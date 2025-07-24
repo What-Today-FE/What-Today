@@ -11,7 +11,6 @@ export * from './logos';
 export { default as MainBanner } from './MainBanner/MainBanner';
 export * from './MainCard';
 export { default as MainSearchInput } from './MainSearchInput/MainSearchInput';
-export { default as MainCard } from './MainCard/MainCardRoot';
 export * from './modal';
 export { default as NoResult } from './NoResult';
 export { default as NotificationCard } from './NotificationCard';
