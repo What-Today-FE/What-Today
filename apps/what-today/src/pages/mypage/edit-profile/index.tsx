@@ -8,6 +8,13 @@ import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
 import PasswordInput from '@/components/auth/PasswordInput';
 import { useWhatTodayStore } from '@/stores';
 
+/**
+ * @description 주어진 이미지 URL을 fetch하여 Blob으로 변환한 뒤 File 객체로 반환합니다.
+ *
+ * @param {string} url - 변환할 이미지의 URL
+ * @param {string} [filename='image.jpg'] - 생성될 File 객체의 파일명 (기본값: 'image.jpg')
+ * @returns {Promise<File>} - Blob을 감싼 File 객체
+ */
 const stringToFile = async (url: string, filename = 'image.jpg'): Promise<File> => {
   const res = await fetch(url);
   const blob = await res.blob();
@@ -25,10 +32,16 @@ export default function EditProfilePage() {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
+  /**
+   * @description 뒤로가기 버튼으로 리다이렉트할 페이지입니다.
+   */
   const handleNavigateToMypage = () => {
     navigate('/mypage');
   };
 
+  /**
+   * @description 취소 버튼을 누르거나, 내 정보 수정에 성공할 때 사용할 폼 초기화 함수입니다.
+   */
   const resetForm = (userData = user) => {
     setNickname(userData?.nickname ?? '');
     setPassword('');
@@ -36,11 +49,17 @@ export default function EditProfilePage() {
     setProfileImage(userData?.profileImageUrl ?? '');
   };
 
+  /**
+   * @description 취소 버튼을 눌렀을 때 입력된 폼을 초기화 합니다.
+   */
   const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     resetForm();
   };
 
+  /**
+   * @description 프로필 사진 or 닉네임 or 비밀번호를 수정하는 API를 요청합니다. 실패시 에러 토스트 메시지를 보여줍니다.
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
