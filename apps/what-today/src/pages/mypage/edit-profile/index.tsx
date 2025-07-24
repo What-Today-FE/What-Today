@@ -6,6 +6,7 @@ import { patchMyProfile, postProfileImageUrl } from '@/apis/auth';
 import NicknameInput from '@/components/auth/NicknameInput';
 import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
 import PasswordInput from '@/components/auth/PasswordInput';
+import useAuth from '@/hooks/useAuth';
 import { useWhatTodayStore } from '@/stores';
 
 /**
@@ -25,6 +26,8 @@ const stringToFile = async (url: string, filename = 'image.jpg'): Promise<File> 
 export default function EditProfilePage() {
   const navigate = useNavigate();
   const { user, setUser } = useWhatTodayStore();
+  const { logoutUser } = useAuth();
+
   const { toast } = useToast();
   const [isEditProfileLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<string>(user?.profileImageUrl ?? '');
@@ -47,6 +50,19 @@ export default function EditProfilePage() {
     setPassword('');
     setPasswordConfirm('');
     setProfileImage(userData?.profileImageUrl ?? '');
+  };
+
+  /**
+   * @description 비밀번호가 수정된 경우에만 로그아웃 후 재로그인을 유도합니다.
+   */
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+    toast({
+      title: '내 정보 변경 성공',
+      description: '비밀번호가 변경되었습니다. 다시 로그인해 주세요.',
+      type: 'success',
+    });
   };
 
   /**
@@ -79,8 +95,19 @@ export default function EditProfilePage() {
       }
 
       const response = await patchMyProfile(nickname, uploadedImageUrl, password);
+
+      toast({
+        title: '내 정보 변경 성공',
+        description: '프로필이 성공적으로 업데이트되었습니다.',
+        type: 'success',
+      });
       setUser(response.data);
       resetForm(response.data);
+
+      // 비밀번호가 수정되었다면 로그아웃 후 로그인 페이지로 이동 (재로그인 유도)
+      if (password.length > 0) {
+        handleLogout();
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : '프로필 수정에 실패했습니다.';
       toast({
