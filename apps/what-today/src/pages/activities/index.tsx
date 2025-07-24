@@ -5,6 +5,7 @@ import { twJoin } from 'tailwind-merge';
 
 import { fetchActivityDetail } from '@/apis/activityDetail';
 import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
+import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
@@ -66,12 +67,13 @@ export default function ActivityDetailPage() {
               </section>
             </div>
             <div className='sticky top-16 flex h-fit flex-col gap-38'>
-              <section className='flex h-120 flex-col items-center justify-center rounded-xl bg-purple-100 text-xl font-bold'>
-                <p className='text-md'>{activity.category}</p>
-                <p className='text-2xl font-bold'>{activity.title}</p>
-                <p className='text-md'>{`${activity.rating} (${activity.reviewCount})`}</p>
-                <p className='text-md'>{activity.address}</p>
-              </section>
+              <ActivitiesInformation
+                address={activity.address}
+                category={activity.category}
+                rating={activity.rating}
+                reviewCount={activity.reviewCount}
+                title={activity.title}
+              />
               <section className='flex h-856 items-center justify-center rounded-xl bg-pink-100 text-xl font-bold'>
                 6. 예약 선택(내부 컴포넌트 높이에 맞출 예정)
               </section>
@@ -87,12 +89,13 @@ export default function ActivityDetailPage() {
               />
             </section>
             <div className='rounded-3xl border-t border-gray-200' />
-            <section className='flex h-140 flex-col items-center justify-center rounded-xl bg-purple-100 text-xl font-bold'>
-              <p className='text-md'>{activity.category}</p>
-              <p className='text-2xl font-bold'>{activity.title}</p>
-              <p className='text-md'>{`${activity.rating} (${activity.reviewCount})`}</p>
-              <p className='text-md'>{activity.address}</p>
-            </section>
+            <ActivitiesInformation
+              address={activity.address}
+              category={activity.category}
+              rating={activity.rating}
+              reviewCount={activity.reviewCount}
+              title={activity.title}
+            />
             <div className='rounded-3xl border-t border-gray-200' />
             <ActivitiesDescription description={activity.description} />
             <div className='rounded-3xl border-t border-gray-200' />
