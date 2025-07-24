@@ -1,6 +1,7 @@
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import Button from '../button';
 import { DeleteIcon, PlusIcon } from '../icons';
 import type { InputProps } from './types';
 
@@ -93,17 +94,17 @@ export default function BannerInput({
             className={twMerge('h-full w-full rounded-2xl object-cover', imgClassName)}
             src={preview}
           />
-          <button
+          <Button
             className={twMerge(
-              'bg-opacity-40 absolute -top-8 -right-8 flex cursor-pointer items-center justify-center rounded-full bg-black p-8 text-white',
+              'bg-opacity-40 size-sm absolute -top-7 -right-7 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-5',
               deleteButtonClassName,
             )}
-            type='button'
+            size='xs'
+            variant='none'
             onClick={handleDelete}
           >
-            <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='white' />
-          </button>
-          <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='red' />
+            <DeleteIcon className={twMerge('size-10', deleteIconClassName)} color='white' />
+          </Button>
         </div>
       ))}
     </div>

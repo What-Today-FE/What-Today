@@ -38,6 +38,8 @@ export default function IntroduceInput({
     const newFiles = validFiles.slice(0, MAX_IMAGES - previews.length);
     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
     setPreviews((prev) => [...prev, ...newPreviews]);
+
+    e.target.value = '';
   };
 
   useEffect(() => {
@@ -97,14 +99,14 @@ export default function IntroduceInput({
           <Button
             aria-label={`${index + 1}번째 이미지 삭제`}
             className={twMerge(
-              'bg-opacity-40 size-sm absolute -top-8 -right-8 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-0',
+              'bg-opacity-40 size-sm absolute -top-7 -right-7 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-5',
               deleteButtonClassName,
             )}
             size='xs'
             variant='none'
             onClick={() => handleDelete(index)}
           >
-            <DeleteIcon className={twMerge('size-15', deleteIconClassName)} color='white' />
+            <DeleteIcon className={twMerge('size-10', deleteIconClassName)} color='white' />
           </Button>
         </div>
       ))}
