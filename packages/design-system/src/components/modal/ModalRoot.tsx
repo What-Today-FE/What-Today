@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 
+import { useLockBodyScroll } from './hooks/useLockBodyScroll';
 import { ModalContext } from './ModalContext';
 import type { ModalRootProps } from './types';
 
@@ -41,17 +42,8 @@ import type { ModalRootProps } from './types';
 function ModalRoot({ children, open, onClose, onConfirm }: ModalRootProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // 배경 스크롤 방지
-  useEffect(() => {
-    if (open) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [open]);
+  // 모달이 열려 있을 때 body 스크롤 잠금
+  useLockBodyScroll(open);
 
   // ESC 키로 모달 닫기
   useEffect(() => {
