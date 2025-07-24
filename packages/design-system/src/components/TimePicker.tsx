@@ -1,5 +1,5 @@
 import { Select, type SelectItem } from '@components/select';
-import { type Dispatch, type SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction, useMemo } from 'react';
 
 interface TimePickerProps {
   /**
@@ -28,13 +28,13 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
    */
   const setTime = (item: SelectItem) => {
     if (item?.value.includes('hour')) {
-      const hour = item.value.slice(-2);
+      const hour = item.value.split('-')[1];
       onChange((prev) => ({
         hour,
         minute: prev?.minute ?? '00',
       }));
     } else if (item?.value.includes('minute')) {
-      const minute = item.value.slice(-2);
+      const minute = item.value.split('-')[1];
       onChange((prev) => ({
         hour: prev?.hour ?? '00',
         minute,
@@ -42,9 +42,16 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
     }
   };
 
+  const selectedItem: SelectItem | null = useMemo(() => {
+    if (!value) return null;
+    if (value.hour && !value.minute) return { value: `hour-${value.hour}`, label: value.hour };
+    if (!value.hour && value.minute) return { value: `minute-${value.minute}`, label: value.minute };
+    return null;
+  }, [value]);
+
   return (
     <div>
-      <Select.Root className='w-120' value={null} onChangeValue={setTime}>
+      <Select.Root className='w-120' value={selectedItem} onChangeValue={setTime}>
         <Select.Trigger className='flex items-center gap-6 rounded-xl border bg-white px-20 py-10'>
           {value?.hour ? <span>{value?.hour}</span> : <span className='text-gray-300'>시</span>} :
           {value?.minute ? <span>{value.minute}</span> : <span className='text-gray-300'>분</span>}
