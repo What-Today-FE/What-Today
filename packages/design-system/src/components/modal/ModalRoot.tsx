@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 
+import { useEscToClose } from './hooks/useEscToClose';
 import { useLockBodyScroll } from './hooks/useLockBodyScroll';
 import { ModalContext } from './ModalContext';
 import type { ModalRootProps } from './types';
@@ -46,16 +47,7 @@ function ModalRoot({ children, open, onClose, onConfirm }: ModalRootProps) {
   useLockBodyScroll(open);
 
   // ESC 키로 모달 닫기
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, onClose]);
+  useEscToClose(open, onClose);
 
   // 외부 클릭으로 모달 닫기
   useEffect(() => {
