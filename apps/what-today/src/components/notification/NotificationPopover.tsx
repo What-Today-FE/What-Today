@@ -30,7 +30,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
         </Button>
       </Popover.Trigger>
       <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
-        <h1 className='my-8 ml-auto px-16 font-bold'>알림 6개</h1>
+        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 6개</h1>
 
         <div className='max-h-400 w-300 divide-y divide-gray-50 overflow-y-scroll'>
           {/* 더미데이터 */}
