@@ -64,7 +64,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
     <nav
       className={twMerge(
         // 공통 스타일
-        'fixed z-50 max-w-200 min-w-200 rounded-xl border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition duration-300 md:static md:h-474 xl:w-280',
+        'fixed z-50 max-w-200 min-w-200 rounded-xl border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition duration-300 md:static md:h-fit xl:w-280',
         // 모바일에서 Drawer 위치
         isOpen ? 'h-474 translate-x-0' : 'bg-primary-100 border-primary-100 h-50 -translate-x-full',
         'md:translate-x-0',
