@@ -1,10 +1,10 @@
-import KakaoMap from '@components/map';
 import { Button } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
 
 import { fetchActivityDetail } from '@/apis/activityDetail';
+import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
 
@@ -61,11 +61,7 @@ export default function ActivityDetailPage() {
                 <p className='text-lg'>{activity.description}</p>
               </section>
               <div className='rounded-3xl border-t border-gray-100' />
-              <section className='flex h-511 flex-col items-center justify-center rounded-xl bg-green-100 text-xl font-bold'>
-                <div className='text-2xl font-bold'>오시는 길</div>
-                <div className='text-md font-semibold'>{activity.address}</div>
-                <KakaoMap address={activity.address} />
-              </section>
+              <ActivitiesMap address={activity.address} />
               <div className='rounded-3xl border-b border-gray-100' />
               <section className='flex h-830 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold'>
                 4. 후기(평점, 후기 박스 포함) api 수정 후 반영 예정
@@ -105,11 +101,7 @@ export default function ActivityDetailPage() {
               <p className='text-lg'>{activity.description}</p>
             </section>
             <div className='rounded-3xl border-t border-gray-200' />
-            <section className='flex h-415 flex-col items-center justify-center rounded-xl bg-green-100 text-xl font-bold'>
-              <div className='text-2xl font-bold'>오시는 길</div>
-              <div className='text-md font-semibold'>{activity.address}</div>
-              <KakaoMap address={activity.address} />
-            </section>
+            <ActivitiesMap address={activity.address} className='h-415' />
             <div className='rounded-3xl border-t border-gray-200' />
             <section className='flex h-830 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold'>
               4. 후기(평점, 후기 박스 포함) api 수정 후 반영 예정
