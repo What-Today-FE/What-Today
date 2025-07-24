@@ -16,6 +16,7 @@ export { default as ProfileImageInput } from './ProfileImageInput';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
 export { default as ReservationCard } from './ReservationCard';
 export * from './select';
+export { default as StarRating } from './StarRating';
 export { Toaster, useToast } from './Toast';
 export { default as UserBadge } from './UserBadge';
 export * from '@/components/dropdown/index';
