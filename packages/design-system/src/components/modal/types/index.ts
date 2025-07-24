@@ -35,3 +35,31 @@ export interface ModalContentProps {
   /** 추가 CSS 클래스명 */
   className?: string;
 }
+
+/**
+ * @description Modal.Actions 컴포넌트의 Props
+ *
+ * **권장 사용법:**
+ * - ConfirmButton은 거의 필수적으로 사용 (확인, 저장, 삭제 등의 주요 액션)
+ * - CancelButton은 선택적으로 사용 (취소가 필요한 경우에만)
+ *
+ * @example
+ * ```tsx
+ * // 권장: ConfirmButton 필수 사용
+ * <Modal.Actions>
+ *   <Modal.CancelButton>취소</Modal.CancelButton>
+ *   <Modal.ConfirmButton>확인</Modal.ConfirmButton>
+ * </Modal.Actions>
+ *
+ * // 가능: ConfirmButton만 사용
+ * <Modal.Actions>
+ *   <Modal.ConfirmButton>확인</Modal.ConfirmButton>
+ * </Modal.Actions>
+ * ```
+ */
+export interface ModalActionsProps {
+  /** Actions 영역에 렌더링될 버튼들 */
+  children: React.ReactNode;
+  /** 추가 CSS 클래스명 */
+  className?: string;
+}
