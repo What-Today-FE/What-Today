@@ -7,6 +7,7 @@ import { fetchActivityDetail } from '@/apis/activityDetail';
 import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
 import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
+import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
 
@@ -62,9 +63,7 @@ export default function ActivityDetailPage() {
               <div className='rounded-3xl border-t border-gray-100' />
               <ActivitiesMap address={activity.address} />
               <div className='rounded-3xl border-b border-gray-100' />
-              <section className='flex h-830 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold'>
-                4. 후기(평점, 후기 박스 포함) api 수정 후 반영 예정
-              </section>
+              <ReviewSection />
             </div>
             <div className='sticky top-16 flex h-fit flex-col gap-38'>
               <ActivitiesInformation
@@ -101,9 +100,7 @@ export default function ActivityDetailPage() {
             <div className='rounded-3xl border-t border-gray-200' />
             <ActivitiesMap address={activity.address} className='h-415' />
             <div className='rounded-3xl border-t border-gray-200' />
-            <section className='flex h-830 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold'>
-              4. 후기(평점, 후기 박스 포함) api 수정 후 반영 예정
-            </section>
+            <ReviewSection />
           </div>
         )}
       </main>
