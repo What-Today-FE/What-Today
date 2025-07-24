@@ -68,7 +68,8 @@ blob 방식은 브라우저 메모리를 사용하기 때문에 빠르고 가볍
         propsDescription={`
 | 이름 | 타입 | 설명 |
 |------|------|------|
-| src | \`string\` | 초기 프로필 이미지 URL (서버에서 내려온 값) |
+| src | \`string\` | 선택된 프로필 이미지 URL |
+| initial | \`string\` | 초기 프로필 이미지 URL (서버에서 내려온 값) |
 | onChange | \`(value: string) => void\` | 이미지가 변경되었을 때 호출되는 콜백 함수 |
 `}
         title='ProfileImageInput'

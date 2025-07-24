@@ -7,6 +7,7 @@ export * from './icons';
 export * from './input';
 export * from './logos';
 export { default as MainCard } from './MainCard/MainCardRoot';
+export * from './modal';
 export { default as NoResult } from './NoResult';
 export { default as NotificationCard } from './NotificationCard';
 export { default as OwnerBadge } from './OwnerBadge';

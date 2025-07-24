@@ -10,6 +10,7 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
+import ModalDoc from '@pages/ModalDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
@@ -140,6 +141,10 @@ const router = createBrowserRouter([
       {
         path: 'BottomSheet',
         element: <BottomSheetDoc />,
+      },
+      {
+        path: 'Modal',
+        element: <ModalDoc />,
       },
       {
         path: 'StarRating',
