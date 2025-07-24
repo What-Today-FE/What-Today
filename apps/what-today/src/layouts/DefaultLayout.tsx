@@ -1,5 +1,7 @@
 import { Footer } from '@what-today/design-system';
+
 import { Outlet, useLocation } from 'react-router-dom';
+
 
 import Header from '@/components/Header';
 
@@ -21,7 +23,9 @@ export default function DefaultLayout() {
       >
         <Outlet />
       </main>
+
       <Footer />
+
     </div>
   );
 }

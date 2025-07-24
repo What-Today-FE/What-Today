@@ -1,4 +1,4 @@
-import MainCard from '../MainCard';
+import { MainCard } from '../MainCard';
 import type { CarouselProps, Props } from './types';
 
 export default function MobileCarousel({ items }: Props<CarouselProps>) {
@@ -9,7 +9,7 @@ export default function MobileCarousel({ items }: Props<CarouselProps>) {
     >
       <style>{`div::-webkit-scrollbar { display: none; }`}</style>
       {items.map((item) => (
-        <MainCard
+        <MainCard.Root
           key={item.id}
           bannerImageUrl={item.bannerImageUrl}
           className='w-265 shrink-0'
@@ -20,7 +20,7 @@ export default function MobileCarousel({ items }: Props<CarouselProps>) {
         >
           <MainCard.Image className='rounded-t-3xl object-cover brightness-90 contrast-125' />
           <MainCard.Content />
-        </MainCard>
+        </MainCard.Root>
       ))}
     </div>
   );

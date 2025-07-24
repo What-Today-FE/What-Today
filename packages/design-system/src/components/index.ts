@@ -1,13 +1,16 @@
 export { BottomSheet } from './bottomsheet';
 export { default as Button } from './button';
 export * from './calendar';
+export { default as Carousel } from './Carousel/Carousel';
 export { default as DatePicker } from './DatePicker';
 export { default as ExperienceCard } from './ExperienceCard';
 export { default as Footer } from './Footer';
 export * from './icons';
 export * from './input';
 export * from './logos';
-export { default as MainCard } from './MainCard/MainCardRoot';
+export { default as MainBanner } from './MainBanner/MainBanner';
+export * from './MainCard';
+export { default as MainSearchInput } from './MainSearchInput/MainSearchInput';
 export * from './modal';
 export { default as NoResult } from './NoResult';
 export { default as NotificationCard } from './NotificationCard';
