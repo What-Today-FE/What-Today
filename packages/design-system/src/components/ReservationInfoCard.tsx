@@ -4,13 +4,41 @@ import Button from '@/components/button';
 import UserBadge from '@/components/UserBadge';
 type Status = 'declined' | 'pending' | 'confirmed';
 interface ReservationInfoCardProps {
+  /**
+   * 예약한 사용자의 닉네임
+   */
   nickname: string;
+  /**
+   * 예약 인원 수
+   */
   headCount: number;
+  /**
+   * 호스트 본인의 예약 처리 상태
+   */
   ownerStatus: Status;
+  /**
+   * 신청자의 예약 상태
+   */
   userStatus: Status;
+  /**
+   * 예약 승인 버튼 클릭 시 실행될 콜백 함수
+   */
   onApprove?: () => void;
+  /**
+   * 예약 거절 버튼 클릭 시 실행될 콜백 함수
+   */
   onReject?: () => void;
 }
+
+/**
+ * 예약 정보 카드 컴포넌트
+ *
+ * 닉네임과 인원 정보를 표시하고, 방장의 상태가 'pending'일 경우
+ * 승인/거절 버튼을 보여주며, 그 외에는 유저 상태 뱃지를 출력합니다.
+ *
+ * @param {ReservationInfoCardProps} props
+ * @returns {JSX.Element}
+ */
 export default function ReservationInfoCard({
   nickname,
   headCount,
