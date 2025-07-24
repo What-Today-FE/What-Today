@@ -49,7 +49,7 @@ function SelectRoot({ children, onChangeValue, value, className }: RootProps) {
     if (value?.value !== selectedItem?.value) {
       setSelectedItem(value);
     }
-  }, [selectedItem?.value, value]);
+  }, [value]);
 
   return (
     <SelectContext.Provider value={{ handleClickItem, selectedItem, open, setOpen }}>
