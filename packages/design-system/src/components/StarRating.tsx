@@ -31,21 +31,23 @@ export default function StarRating({ value, onChange, max = 5, className }: Star
   const [hoverValue, setHoverValue] = useState<number | null>(null);
 
   return (
-    <div className={twMerge('flex items-center', className)} onMouseLeave={() => setHoverValue(null)}>
+    <div
+      aria-label={`별점 선택 (최대 ${max}점)`}
+      className={twMerge('flex items-center', className)}
+      role='radiogroup'
+      onMouseLeave={() => setHoverValue(null)}
+    >
       {Array.from({ length: max }, (_, index) => {
         const starValue = index + 1;
         const isLast = index === max - 1;
 
-        // hover 상태일 때는 hoverValue를 우선적으로 고려
         let isFilled = false;
         let isHover = false;
 
         if (hoverValue !== null) {
-          // hover 중일 때: hoverValue 기준으로 표시
           isHover = starValue <= hoverValue;
-          isFilled = false; // hover 중에는 filled 대신 hover 상태로 표시
+          isFilled = false;
         } else {
-          // hover가 아닐 때: 기존 value 기준으로 표시
           isFilled = starValue <= value;
           isHover = false;
         }
@@ -53,7 +55,11 @@ export default function StarRating({ value, onChange, max = 5, className }: Star
         return (
           <Button
             key={index}
+            aria-checked={starValue <= value}
+            aria-label={`${starValue}점`}
             className={twMerge('h-fit w-fit p-0', className)}
+            role='radio'
+            tabIndex={starValue === 1 ? 0 : -1}
             variant='none'
             onClick={() => onChange(starValue)}
             onMouseEnter={() => setHoverValue(starValue)}
