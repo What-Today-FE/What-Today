@@ -23,6 +23,7 @@ import ReservationCardDoc from '@pages/ReservationCardDoc';
 import SelectDoc from '@pages/SelectDoc';
 import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import TimePickerDoc from '@pages/TimePickerDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import FooterDoc from '@/pages/FooterDoc';
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'TimePicker',
+        element: <TimePickerDoc />,
       },
       {
         path: 'ProfileImageInput',
