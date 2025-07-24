@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface ProfileImageInputProps {
   src: string;
+  initial?: string;
   onChange: (value: string) => void;
 }
 
@@ -64,11 +65,12 @@ export function DeleteButton({ onDelete }: { onDelete: () => void }) {
  * - 기본 이미지 상태에서는 삭제 버튼이 숨겨지고 "프로필 이미지 변경" 문구가 나타납니다.
  *
  * @component
- * @param {string} src - 초기 프로필 이미지 URL (서버에서 내려온 값)
+ * @param {string} src - 선택된 프로필 이미지 URL
+ * @param {string} initial - 초기 프로필 이미지 URL (서버에서 내려온 값)
  * @param {(value: string) => void} onChange - 이미지가 변경되었을 때 호출되는 콜백 함수. base64 string 또는 URL을 인자로 받습니다.
  */
-export default function ProfileImageInput({ src, onChange }: ProfileImageInputProps) {
-  const [initialSrc] = useState(src);
+export default function ProfileImageInput({ src, initial = src, onChange }: ProfileImageInputProps) {
+  const [initialSrc, setInitialSrc] = useState(initial);
   const [previewUrl, setPreviewUrl] = useState<string>(src);
 
   const isDefaultImage = previewUrl === '';
@@ -100,17 +102,27 @@ export default function ProfileImageInput({ src, onChange }: ProfileImageInputPr
   };
 
   const handleDelete = () => {
-    if (initialSrc) setPreviewUrl(initialSrc);
-    else setPreviewUrl('');
+    if (initialSrc) {
+      setPreviewUrl(initialSrc);
+      onChange(initialSrc);
+    } else {
+      setPreviewUrl('');
+      onChange('');
+    }
   };
 
   const handleReset = () => {
     setPreviewUrl('');
+    onChange('');
   };
 
   useEffect(() => {
     setPreviewUrl(src);
   }, [src]);
+
+  useEffect(() => {
+    setInitialSrc(initial);
+  }, [initial]);
 
   useEffect(() => {
     return () => {
