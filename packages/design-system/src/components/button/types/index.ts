@@ -11,10 +11,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
   /**
    * 버튼 크기를 선택합니다.
-   * - 'xl', 'lg', 'md', 'sm', 'xs'
+   * - 'xl', 'lg', 'md', 'sm', 'xs', 'none'
    * @default 'md'
    */
-  size?: 'xl' | 'lg' | 'md' | 'sm' | 'xs';
+  size?: 'xl' | 'lg' | 'md' | 'sm' | 'xs' | 'none';
 
   /**
    * 버튼 내부에 표시될 콘텐츠입니다.

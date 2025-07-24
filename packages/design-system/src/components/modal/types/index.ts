@@ -63,3 +63,11 @@ export interface ModalActionsProps {
   /** 추가 CSS 클래스명 */
   className?: string;
 }
+
+/**
+ * @description Modal.CloseButton 컴포넌트의 Props
+ */
+export interface ModalCloseButtonProps {
+  /** 추가 CSS 클래스명 */
+  className?: string;
+}
