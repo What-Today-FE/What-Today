@@ -34,8 +34,21 @@ export default function StarRating({ value, onChange, max = 5, className }: Star
     <div className={twMerge('flex items-center', className)} onMouseLeave={() => setHoverValue(null)}>
       {Array.from({ length: max }, (_, index) => {
         const starValue = index + 1;
-        const isFilled = hoverValue !== null ? starValue <= hoverValue : starValue <= value;
         const isLast = index === max - 1;
+
+        // hover 상태일 때는 hoverValue를 우선적으로 고려
+        let isFilled = false;
+        let isHover = false;
+
+        if (hoverValue !== null) {
+          // hover 중일 때: hoverValue 기준으로 표시
+          isHover = starValue <= hoverValue;
+          isFilled = false; // hover 중에는 filled 대신 hover 상태로 표시
+        } else {
+          // hover가 아닐 때: 기존 value 기준으로 표시
+          isFilled = starValue <= value;
+          isHover = false;
+        }
 
         return (
           <Button
@@ -45,7 +58,7 @@ export default function StarRating({ value, onChange, max = 5, className }: Star
             onClick={() => onChange(starValue)}
             onMouseEnter={() => setHoverValue(starValue)}
           >
-            <StarIcon className={twMerge('size-42', !isLast && 'mr-12')} filled={isFilled} />
+            <StarIcon className={twMerge('size-42', !isLast && 'mr-12')} filled={isFilled} hover={isHover} />
           </Button>
         );
       })}
