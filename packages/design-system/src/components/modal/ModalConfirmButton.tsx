@@ -51,11 +51,10 @@ import type { ModalConfirmButtonProps } from './types';
  * ```
  */
 function ModalConfirmButton({ children, className, onClick }: ModalConfirmButtonProps) {
-  const { onConfirm, onClose } = useModalContext();
+  const { onClose } = useModalContext();
 
   const handleClick = () => {
     onClick?.();
-    onConfirm?.();
     onClose();
   };
 

@@ -22,8 +22,6 @@ export interface ModalRootProps {
   open: boolean;
   /** 모달을 닫을 때 호출되는 함수 */
   onClose: () => void;
-  /** 확인 버튼 클릭 시 호출되는 함수 (선택적) */
-  onConfirm?: () => void;
 }
 
 /**

@@ -41,14 +41,14 @@ import type { ModalRootProps } from './types';
  * }
  * ```
  */
-function ModalRoot({ children, open, onClose, onConfirm }: ModalRootProps) {
+function ModalRoot({ children, open, onClose }: ModalRootProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useLockBodyScroll(open);
   useEscToClose(open, onClose);
   useClickOutside(modalRef, open, onClose);
 
-  return <ModalContext.Provider value={{ open, onClose, onConfirm, modalRef }}>{children}</ModalContext.Provider>;
+  return <ModalContext.Provider value={{ open, onClose, modalRef }}>{children}</ModalContext.Provider>;
 }
 
 export const Root = ModalRoot;
