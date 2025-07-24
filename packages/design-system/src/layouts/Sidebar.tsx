@@ -38,6 +38,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='DatePicker' to='/docs/DatePicker' />
             <SidebarNavItem label='Modal' to='/docs/Modal' />
             <SidebarNavItem label='StarRating' to='/docs/StarRating' />
+            <SidebarNavItem label='TimePicker' to='/docs/TimePicker' />
           </ul>
         </nav>
       </aside>
