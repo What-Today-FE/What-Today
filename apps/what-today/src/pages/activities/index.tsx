@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
 
 import { fetchActivityDetail } from '@/apis/activityDetail';
+import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
@@ -56,10 +57,7 @@ export default function ActivityDetailPage() {
                   src={activity.bannerImageUrl}
                 />
               </section>
-              <section className='flex h-300 flex-col items-center justify-center rounded-xl bg-yellow-100 text-xl font-bold'>
-                <div className='text-2xl font-bold'>체험 설명</div>
-                <p className='text-lg'>{activity.description}</p>
-              </section>
+              <ActivitiesDescription description={activity.description} />
               <div className='rounded-3xl border-t border-gray-100' />
               <ActivitiesMap address={activity.address} />
               <div className='rounded-3xl border-b border-gray-100' />
@@ -96,10 +94,7 @@ export default function ActivityDetailPage() {
               <p className='text-md'>{activity.address}</p>
             </section>
             <div className='rounded-3xl border-t border-gray-200' />
-            <section className='flex h-280 flex-col items-center justify-center rounded-xl bg-yellow-100 text-xl font-bold'>
-              <div className='text-2xl font-bold'>체험 설명</div>
-              <p className='text-lg'>{activity.description}</p>
-            </section>
+            <ActivitiesDescription description={activity.description} />
             <div className='rounded-3xl border-t border-gray-200' />
             <ActivitiesMap address={activity.address} className='h-415' />
             <div className='rounded-3xl border-t border-gray-200' />
