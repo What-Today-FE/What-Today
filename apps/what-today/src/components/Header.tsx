@@ -9,7 +9,7 @@ export default function Header() {
   const { user, isLoggedIn } = useWhatTodayStore();
 
   return (
-    <header className='relative z-50 flex w-full justify-between py-16'>
+    <div className='relative z-50 flex w-full justify-between py-16'>
       <Link className='flex items-center gap-8' to='/'>
         <ImageLogo className='size-24' />
         <TextLogo className='hidden h-fit w-65 sm:block' />
@@ -60,6 +60,6 @@ export default function Header() {
           </Link>
         </div>
       )}
-    </header>
+    </div>
   );
 }
