@@ -8,7 +8,7 @@ function PasswordConfirmInput({ value, onChange }: InputProps) {
 
   return (
     <Input.Root className='w-full'>
-      <Input.Label>비밀번호</Input.Label>
+      <Input.Label>비밀번호 확인</Input.Label>
       <Input.Wrapper>
         <Input.Field
           autoComplete='off'

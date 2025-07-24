@@ -78,7 +78,7 @@ function PopoverContent({
           visibility: contentSize.width ? 'visible' : 'hidden', // Popover.Content의 위치가 계산되기 전에는 화면에 보이지 않도록
         }}
       >
-        <div className='cursor-pointer'>{children}</div>
+        {children}
       </div>
     </Portal>
     // Trigger도 Overlay 위쪽으로 올라와야 하면 아래 내용 사용 + 상대적 popoverPostion 수정 (relative div가 바뀜)

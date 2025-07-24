@@ -28,12 +28,16 @@ export interface PopoverTriggerProps extends BaseProp {
  * ```
  */
 function PopoverTrigger({ children, className, asChild = false }: PopoverTriggerProps) {
-  const { triggerRef, open, setOpen } = usePopoverContext();
+  const { isControlled, triggerRef, open, setOpen } = usePopoverContext();
   // Trigger도 Overlay 위쪽으로 올라와야 하면 아래 overlayClass 사용
   // const zIndex = open && 'z-[910]';
   // const overlayClass = twMerge('relative w-full', zIndex);
 
-  const handleClick = () => setOpen(!open);
+  const handleClick = () => {
+    if (!isControlled) {
+      setOpen(!open);
+    }
+  };
 
   // asChild가 true면 Slot을 사용, false면 button 사용
   if (asChild) {
@@ -55,7 +59,7 @@ function PopoverTrigger({ children, className, asChild = false }: PopoverTrigger
 
   return (
     <div ref={triggerRef} className='relative w-full'>
-      <button className={twMerge('w-full cursor-pointer', className)} onClick={() => setOpen(!open)}>
+      <button className={twMerge('w-full cursor-pointer', className)} onClick={handleClick}>
         {children}
       </button>
     </div>

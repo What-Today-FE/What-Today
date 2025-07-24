@@ -24,7 +24,7 @@ function LoadingButton({ className, children }: { className: string; children: R
   return (
     <span className='inline-flex items-center gap-6'>
       <SpinIcon className={className} />
-      <span>{children}</span>
+      <span className='inline-flex items-center gap-6'>{children}</span>
     </span>
   );
 }

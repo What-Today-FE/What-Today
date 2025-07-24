@@ -18,7 +18,10 @@ export type Position =
   | 'fixed-center-right'
   | 'fixed-bottom-left'
   | 'fixed-bottom-center'
-  | 'fixed-bottom-right';
+  | 'fixed-bottom-right'
+  | 'corner-bottom-left'
+  | 'bottom-right'
+  | 'bottom-center';
 
 /**
  * @description Popover.Content의 크기 (px 단위)
@@ -50,6 +53,8 @@ export interface PopoverContextType {
   direction: Position;
   /** Trigger 요소의 너비 값 */
   triggerWidth: number | null;
+  /** Controlled 여부 */
+  isControlled: boolean;
 }
 
 /**
