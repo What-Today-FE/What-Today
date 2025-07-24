@@ -17,10 +17,20 @@ import { useWhatTodayStore } from '@/stores';
  * @returns {Promise<File>} - Blob을 감싼 File 객체
  */
 const stringToFile = async (url: string, filename = 'image.jpg'): Promise<File> => {
-  const res = await fetch(url);
-  const blob = await res.blob();
-  const contentType = blob.type || 'image/jpeg';
-  return new File([blob], filename, { type: contentType });
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`이미지 다운로드 실패: ${res.status} ${res.statusText}`);
+    }
+    const blob = await res.blob();
+    if (blob.size === 0) {
+      throw new Error('빈 이미지 파일입니다.');
+    }
+    const contentType = blob.type || 'image/jpeg';
+    return new File([blob], filename, { type: contentType });
+  } catch (error) {
+    throw new Error('이미지 변환 중 오류가 발생했습니다.');
+  }
 };
 
 export default function EditProfilePage() {
