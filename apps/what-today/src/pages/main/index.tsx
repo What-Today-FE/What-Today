@@ -227,7 +227,7 @@ export default function MainPage() {
         <div className='flex flex-col gap-60'>
           <div className='flex flex-col gap-20'>
             <h2 className='text-2xl font-bold text-gray-950'>🔥 인기 체험</h2>
-            <div className='-mx-10 flex'>
+            <div className='-mx-15 flex'>
               <Carousel items={dummyData} itemsPerPage={itemsPerPage} />
             </div>
           </div>
