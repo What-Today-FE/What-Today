@@ -41,12 +41,13 @@ export const patchMyProfile = (
   newPassword?: string,
 ) => {
   const safeNickname = nickname?.trim();
-  const safeImageUrl = profileImageUrl === null ? null : profileImageUrl?.trim() || undefined;
   const safePassword = newPassword?.trim();
 
   const body = {
     ...(safeNickname && { nickname: safeNickname }),
-    profileImageUrl: safeImageUrl === '' ? null : safeImageUrl,
+    ...(profileImageUrl !== undefined && {
+      profileImageUrl: profileImageUrl === null ? null : profileImageUrl?.trim() || null,
+    }),
     ...(safePassword && { newPassword: safePassword }),
   };
 
@@ -55,11 +56,13 @@ export const patchMyProfile = (
 
 /**
  * @description 프로필 이미지 url 생성
+ *
+ * @param profileImageFile 업로드할 프로필 이미지 파일
  * @returns 프로필 이미지 url (string)
  */
-export const postProfileImageUrl = (profileImageUrl: File) => {
+export const postProfileImageUrl = (profileImageFile: File) => {
   const formData = new FormData();
-  formData.append('image', profileImageUrl);
+  formData.append('image', profileImageFile);
 
   return axiosInstance.post('users/me/image', formData, {
     headers: {
