@@ -13,7 +13,7 @@ export default function DefaultLayout() {
       <main className='min-h-[90vh] w-full max-w-6xl px-[5vw] xl:max-w-5xl'>
         <Outlet />
       </main>
-      <footer className='w-full max-w-7xl px-[5vw]'>
+      <footer className='w-full'>
         <Footer />
       </footer>
     </div>

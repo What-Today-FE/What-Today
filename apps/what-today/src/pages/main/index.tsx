@@ -1,3 +1,4 @@
+import type { SelectItem } from '@what-today/design-system';
 import { MainCard } from '@what-today/design-system';
 import { MainBanner } from '@what-today/design-system';
 import { Carousel } from '@what-today/design-system';
@@ -5,6 +6,7 @@ import { Pagination } from '@what-today/design-system';
 import { RadioGroup } from '@what-today/design-system';
 import { MainSearchInput } from '@what-today/design-system';
 import { ArtIcon, BusIcon, FoodIcon, SportIcon, TourIcon, WellbeingIcon } from '@what-today/design-system';
+import { Select } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -157,11 +159,12 @@ const dummyData = [
 
 export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [windowWidth, setWindowWidth] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [searchResult, setSearchResult] = useState(dummyData);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedCategory1, setSelectedCategory1] = useState<string | number>('');
+  const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
+
   // ✅ 검색
   const handleSearch = (keyword: string) => {
     const result = dummyData
@@ -170,23 +173,26 @@ export default function MainPage() {
     setSearchResult(result);
     setCurrentPage(1);
     setSortOrder('asc'); // 검색 시 정렬 초기화
+    setSelectedValue(null);
   };
 
   // ✅ 디바이스별 perPage 계산
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      setWindowWidth(width);
-      if (width < 768)
+
+      if (width < 790) {
         setItemsPerPage(6); // 모바일
-      else if (width < 1024)
+      } else if (width < 1024) {
         setItemsPerPage(4); // 태블릿
-      else setItemsPerPage(8); // 데스크탑
+      } else {
+        setItemsPerPage(8); // 데스크탑
+      }
     };
 
-    handleResize();
+    handleResize(); // 컴포넌트 마운트 시 한 번 실행
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize); // 클린업 함수
   }, []);
 
   // ✅ 정렬 변경 시 페이지 초기화
@@ -209,7 +215,7 @@ export default function MainPage() {
 
       <div className='to-primary-500/40 absolute top-0 left-0 z-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
 
-      <div className='relative z-10 flex h-2100 flex-col gap-40'>
+      <div className='relative z-10 mt-40 flex h-2100 flex-col gap-40'>
         <div className='flex flex-col gap-60'>
           <MainBanner />
           <div className='flex flex-col gap-20 px-30'>
@@ -220,48 +226,77 @@ export default function MainPage() {
 
         <div className='flex flex-col gap-60'>
           <div className='flex flex-col gap-20'>
-            <h2 className='text-2xl font-bold'>🔥 인기 체험</h2>
-            <Carousel items={dummyData} itemsPerPage={itemsPerPage} />
+            <h2 className='text-2xl font-bold text-gray-950'>🔥 인기 체험</h2>
+            <div className='-mx-10 flex'>
+              <Carousel items={dummyData} itemsPerPage={itemsPerPage} />
+            </div>
           </div>
-          <div className='flex flex-col gap-20'>
-            <RadioGroup
-              radioGroupClassName='gap-6'
-              selectedValue={selectedCategory1}
-              title='🛼 모든 체험'
-              titleClassName='text-2xl font-semibold mb-2'
-              onSelect={setSelectedCategory1}
-            >
-              <div className='flex gap-12'>
-                <RadioGroup.Radio className='flex gap-8' value='Art'>
-                  <ArtIcon />
-                  문화 예술
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='Food'>
-                  <FoodIcon />
-                  음식
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='Sport'>
-                  <SportIcon />
-                  스포츠
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='Wellbeing'>
-                  <WellbeingIcon />
-                  웰빙
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='Bus'>
-                  <BusIcon />
-                  버스
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='Tour'>
-                  <TourIcon />
-                  여행
-                </RadioGroup.Radio>
-              </div>
-            </RadioGroup>
 
-            <div className='grid grid-cols-2 gap-y-30 md:grid-cols-2 lg:grid-cols-4'>
+          <div className='flex flex-col gap-30'>
+            <h2 className='mb-2 flex items-center gap-12 text-2xl font-semibold text-gray-950'>🛼 모든 체험</h2>
+
+            <div className='flex flex-wrap items-center justify-between gap-20'>
+              <RadioGroup
+                radioGroupClassName='flex flex-wrap gap-12 min-w-0 max-w-full'
+                selectedValue={selectedCategory1}
+                onSelect={setSelectedCategory1}
+              >
+                {/* 라디오 버튼 묶음 */}
+                <div className='flex max-w-full min-w-0 flex-wrap gap-12'>
+                  <RadioGroup.Radio className='flex gap-8' value='Art'>
+                    <ArtIcon />
+                    문화 예술
+                  </RadioGroup.Radio>
+                  <RadioGroup.Radio value='Food'>
+                    <FoodIcon />
+                    음식
+                  </RadioGroup.Radio>
+                  <RadioGroup.Radio value='Sport'>
+                    <SportIcon />
+                    스포츠
+                  </RadioGroup.Radio>
+                  <RadioGroup.Radio value='Wellbeing'>
+                    <WellbeingIcon />
+                    웰빙
+                  </RadioGroup.Radio>
+                  <RadioGroup.Radio value='Bus'>
+                    <BusIcon />
+                    버스
+                  </RadioGroup.Radio>
+                  <RadioGroup.Radio value='Tour'>
+                    <TourIcon />
+                    여행
+                  </RadioGroup.Radio>
+                </div>
+              </RadioGroup>
+
+              {/* Select 컴포넌트 */}
+              <div className='shrink-0'>
+                <Select.Root
+                  value={selectedValue}
+                  onChangeValue={(item) => {
+                    setSelectedValue(item);
+                    if (item) {
+                      setSortOrder(item.value as 'asc' | 'desc');
+                    }
+                  }}
+                >
+                  <Select.Trigger className='flex min-w-fit gap-6 border-none bg-white px-15 py-10 text-xl'>
+                    <Select.Value className='text-gray-950' placeholder='가격' />
+                  </Select.Trigger>
+                  <Select.Content>
+                    <Select.Group className='text-lg whitespace-nowrap'>
+                      <Select.Item value='desc'> 높은순</Select.Item>
+                      <Select.Item value='asc'> 낮은순</Select.Item>
+                    </Select.Group>
+                  </Select.Content>
+                </Select.Root>
+              </div>
+            </div>
+
+            <div className='grid grid-cols-2 gap-10 md:grid-cols-2 lg:grid-cols-4'>
               {pagedItems.map((item) => (
-                <MainCard
+                <MainCard.Root
                   key={item.id}
                   bannerImageUrl={item.bannerImageUrl}
                   className=''
@@ -270,9 +305,9 @@ export default function MainPage() {
                   reviewCount={item.reviewCount}
                   title={item.title}
                 >
-                  <MainCard.Image />
+                  <MainCard.Image className='' />
                   <MainCard.Content />
-                </MainCard>
+                </MainCard.Root>
               ))}
             </div>
           </div>
