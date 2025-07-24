@@ -69,9 +69,9 @@ export const reservationResponseSchema = z.object({
   reviewSubmitted: z.boolean(),
   totalPrice: z.number(),
   headCount: z.number(),
-  date: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD 형식이어야 합니다'), // 체험 날짜 (YYYY-MM-DD)
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, 'HH:MM 형식이어야 합니다'), // 시작 시간 (HH:MM)
+  endTime: z.string().regex(/^\d{2}:\d{2}$/, 'HH:MM 형식이어야 합니다'), // 종료 시간 (HH:MM)
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
