@@ -35,6 +35,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='MainBanner' to='/docs/MainBanner' />
             <SidebarNavItem label='Carousel' to='/docs/Carousel' />
             <SidebarNavItem label='BottomSheet' to='/docs/BottomSheet' />
+            <SidebarNavItem label='StarRating' to='/docs/StarRating' />
           </ul>
         </nav>
       </aside>

@@ -18,6 +18,7 @@ import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
 import SelectDoc from '@pages/SelectDoc';
+import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
@@ -139,6 +140,10 @@ const router = createBrowserRouter([
       {
         path: 'BottomSheet',
         element: <BottomSheetDoc />,
+      },
+      {
+        path: 'StarRating',
+        element: <StarRatingDoc />,
       },
     ],
   },
