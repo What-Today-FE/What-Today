@@ -14,7 +14,7 @@ export default function Header() {
   const isMobile = screenSize === 'sm';
 
   return (
-    <header className='relative z-50 flex w-full justify-between py-16'>
+    <div className='relative z-50 flex w-full justify-between py-16'>
       <Link className='flex items-center gap-8' to='/'>
         <ImageLogo className='size-24' />
         <TextLogo className='hidden h-fit w-65 sm:block' />
@@ -26,9 +26,13 @@ export default function Header() {
 
           <div className='mx-12 h-16 w-px bg-gray-100' />
 
-          <Link className='flex items-center gap-8 hover:opacity-60' to='/mypage'>
+          <Link className='flex items-center gap-8 hover:opacity-60' to='/mypage/edit-profile'>
             {user?.profileImageUrl ? (
-              <img alt='프로필 이미지' className='size-24 rounded-full object-cover' src={user.profileImageUrl} />
+              <img
+                alt='프로필 이미지'
+                className='size-24 rounded-full border border-gray-50 object-cover'
+                src={user.profileImageUrl}
+              />
             ) : (
               <ProfileLogo className='size-24' />
             )}
@@ -47,6 +51,6 @@ export default function Header() {
           </Link>
         </div>
       )}
-    </header>
+    </div>
   );
 }
