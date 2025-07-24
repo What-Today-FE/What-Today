@@ -32,7 +32,7 @@ function ModalCloseButton({ className }: ModalCloseButtonProps) {
   const { onClose } = useModalContext();
 
   return (
-    <Button className={twMerge('absolute top-30 right-30', className)} size='none' variant='none' onClick={onClose}>
+    <Button className={twMerge('absolute top-30 right-30 h-fit w-fit p-0', className)} variant='none' onClick={onClose}>
       <DeleteIcon color='black' />
     </Button>
   );

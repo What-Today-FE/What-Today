@@ -18,7 +18,6 @@ const BUTTON_SIZE = {
   md: 'w-232 h-37 px-10 py-10 text-md rounded-lg',
   sm: 'w-138 h-47 px-40 py-14 text-lg rounded-[14px]',
   xs: 'w-120 h-41 px-40 py-12 text-md font-bold rounded-xl',
-  none: '',
 };
 
 function LoadingButton({ className, children }: { className: string; children: React.ReactNode }) {
