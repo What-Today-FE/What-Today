@@ -53,6 +53,8 @@ export interface PopoverContextType {
   direction: Position;
   /** Trigger 요소의 너비 값 */
   triggerWidth: number | null;
+  /** Controlled 여부 */
+  isControlled: boolean;
 }
 
 /**
