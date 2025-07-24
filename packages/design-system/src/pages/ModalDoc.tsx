@@ -12,6 +12,95 @@ const code = `
 // useState 때문에 render가 안되는 것 같아서 playgound말고 DocCode에 설명하겠습니다
 `;
 
+const test1code = `
+<Modal.Root open={isBasicOpen} onClose={() => setIsBasicOpen(false)}>
+  <Modal.Content>
+    <Modal.CloseButton />
+    <h2 className='mb-4 text-xl font-semibold'>알림</h2>
+    <p className='mb-6 text-gray-600'>
+      이것은 기본 모달 예시입니다. X 버튼, ESC 키, 배경 클릭으로 닫을 수 있습니다.
+    </p>
+    <Modal.Actions>
+      <Modal.CancelButton>닫기</Modal.CancelButton>
+    </Modal.Actions>
+  </Modal.Content>
+</Modal.Root>`;
+
+const test2code = `
+<Modal.Root open={isConfirmOpen} onClose={() => setIsConfirmOpen(false)}>
+  <Modal.Content>
+    <div className='text-center'>
+      <h2 className='mb-4 text-lg font-semibold'>정말로 삭제하시겠습니까?</h2>
+      <p className='mb-6 text-gray-600'>이 작업은 되돌릴 수 없습니다.</p>
+    </div>
+    <Modal.Actions>
+      <Modal.CancelButton>취소</Modal.CancelButton>
+      <Modal.ConfirmButton onClick={() => alert('삭제되었습니다!')}>삭제</Modal.ConfirmButton>
+    </Modal.Actions>
+  </Modal.Content>
+</Modal.Root>`;
+
+const saveCode = `
+<Modal.Root open={isSaveOpen} onClose={() => setIsSaveOpen(false)}>
+  <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
+    <WarningLogo className='md:size-110 lg:size-150' size={88} />
+    <p className='text-2lg font-bold'>저장되지 않았습니다.</p>
+    <p className='text-2lg font-bold'>정말 뒤로 가시겠습니까?</p>
+    <Modal.Actions>
+      <Modal.CancelButton>아니요</Modal.CancelButton>
+      <Modal.ConfirmButton onClick={() => alert('체험이 삭제되었습니다!')}>네</Modal.ConfirmButton>
+    </Modal.Actions>
+  </Modal.Content>
+</Modal.Root>`;
+
+const deleteCode = `
+<Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
+  <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
+    <div className='flex flex-col items-center gap-6 text-center'>
+      <WarningLogo className='md:size-110 lg:size-150' size={88} />
+      <p className='text-2lg font-bold'>체험을 삭제하시겠습니까?</p>
+    </div>
+    <Modal.Actions>
+      <Modal.CancelButton>아니요</Modal.CancelButton>
+      <Modal.ConfirmButton onClick={() => alert('체험이 삭제되었습니다!')}>네</Modal.ConfirmButton>
+    </Modal.Actions>
+  </Modal.Content>
+</Modal.Root>`;
+
+const reviewCode = `
+<Modal.Root open={isReviewOpen} onClose={() => setIsReviewOpen(false)}>
+  <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
+    <Modal.CloseButton />
+    <h2 className='mt-22 text-lg font-bold'>함께 배우면 즐거운 스트릿 댄스</h2>
+    <p className='text-md text-gray-500'>2023. 02. 14/ 11:00 ~ 12:30 (10명)</p>
+    <div className='flex flex-row items-center gap-16'>
+      <StarIcon filled className='size-42' /> <StarIcon filled className='size-42' />{' '}
+      <StarIcon filled className='size-42' /> <StarIcon className='size-42' />{' '}
+      <StarIcon className='size-42' />
+    </div>
+    <Input.Root error='입력되지 않았습니다.' size='xs'>
+      <Input.Label className='mt-24 mb-16 self-start text-left font-bold'>
+        소중한 경험을 들려주세요
+      </Input.Label>
+      <Input.Wrapper>
+        <Input.Textarea
+          ref={textareaRef}
+          className='h-180'
+          maxLength={100}
+          placeholder='크기 조정이 불가능한 textarea입니다.'
+          value={value}
+          onChange={handleChange}
+        />
+      </Input.Wrapper>
+      <Input.ErrorMessage />
+      <Input.TextCounter length={value.length} maxLength={100} />
+    </Input.Root>
+    <Modal.Actions>
+      <Modal.ConfirmButton onClick={() => alert('리뷰가 작성되었습니다!')}>작성하기</Modal.ConfirmButton>
+    </Modal.Actions>
+  </Modal.Content>
+</Modal.Root>`;
+
 export default function ModalDoc() {
   const [isBasicOpen, setIsBasicOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -98,42 +187,55 @@ export default function ModalDoc() {
         <div className='space-y-4'>
           <h3 className='text-lg font-semibold'>기본 사용법</h3>
 
-          <div className='space-x-4'>
-            <button
-              className='rounded bg-blue-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
-              onClick={() => setIsBasicOpen(true)}
-            >
-              기본 모달 열기
-            </button>
+          <button
+            className='rounded bg-blue-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
+            onClick={() => setIsBasicOpen(true)}
+          >
+            기본 모달 열기
+          </button>
 
-            <button
-              className='rounded bg-red-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
-              onClick={() => setIsConfirmOpen(true)}
-            >
-              확인 모달 열기
-            </button>
+          {/* 기본 모달 코드 블록 */}
+          <DocCode code={test1code} />
 
-            <button
-              className='rounded bg-green-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
-              onClick={() => setIsDeleteOpen(true)}
-            >
-              삭제/취소 모달 열기
-            </button>
+          <button
+            className='rounded bg-red-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
+            onClick={() => setIsConfirmOpen(true)}
+          >
+            확인 모달 열기
+          </button>
 
-            <button
-              className='rounded bg-orange-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
-              onClick={() => setIsSaveOpen(true)}
-            >
-              임시 저장 모달 열기
-            </button>
+          {/* 확인 모달 코드 블록 */}
+          <DocCode code={test2code} />
 
-            <button
-              className='rounded bg-purple-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
-              onClick={() => setIsReviewOpen(true)}
-            >
-              리뷰 모달
-            </button>
-          </div>
+          <button
+            className='rounded bg-green-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
+            onClick={() => setIsDeleteOpen(true)}
+          >
+            삭제/취소 모달 열기
+          </button>
+
+          {/* 삭제/취소 모달 코드 블록 */}
+          <DocCode code={deleteCode} />
+
+          <button
+            className='rounded bg-orange-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
+            onClick={() => setIsSaveOpen(true)}
+          >
+            임시 저장 모달 열기
+          </button>
+
+          {/* 임시 저장 모달 코드 블록 */}
+          <DocCode code={saveCode} />
+
+          <button
+            className='rounded bg-purple-500 px-4 py-2 text-white hover:brightness-90 active:brightness-75'
+            onClick={() => setIsReviewOpen(true)}
+          >
+            리뷰 모달
+          </button>
+
+          {/* 리뷰 모달 코드 블록 */}
+          <DocCode code={reviewCode} />
 
           {/* 기본 모달 */}
           <Modal.Root open={isBasicOpen} onClose={() => setIsBasicOpen(false)}>
@@ -225,9 +327,6 @@ export default function ModalDoc() {
           </Modal.Root>
         </div>
       </div>
-
-      {/* 코드 블록 */}
-      <DocCode code={code} />
 
       {/* 편집 가능한 Playground */}
       <div className='mt-24'>
