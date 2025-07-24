@@ -232,7 +232,7 @@ export default function MainPage() {
             </div>
           </div>
 
-          <div className='flex flex-col gap-30'>
+          <div className='flex flex-col gap-20'>
             <h2 className='mb-2 flex items-center gap-12 text-2xl font-semibold text-gray-950'>🛼 모든 체험</h2>
 
             <div className='flex flex-wrap items-center justify-between gap-20'>
