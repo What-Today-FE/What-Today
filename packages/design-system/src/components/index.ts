@@ -1,6 +1,7 @@
 export { BottomSheet } from './bottomsheet';
 export { default as Button } from './button';
 export * from './calendar';
+export { default as DatePicker } from './DatePicker';
 export { default as ExperienceCard } from './ExperienceCard';
 export { default as Footer } from './Footer';
 export * from './icons';

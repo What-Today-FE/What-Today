@@ -3,6 +3,7 @@ import BottomSheetDoc from '@pages/BottomSheetDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import CarouselDoc from '@pages/CarouselDoc';
+import DatePickerDoc from '@pages/DatePickerDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
 import IconDoc from '@pages/IconDoc';
@@ -139,6 +140,10 @@ const router = createBrowserRouter([
       {
         path: 'BottomSheet',
         element: <BottomSheetDoc />,
+      },
+      {
+        path: 'DatePicker',
+        element: <DatePickerDoc />,
       },
     ],
   },
