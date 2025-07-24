@@ -4,41 +4,13 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
 
-import axiosInstance from '@/apis/axiosInstance';
+import { fetchActivityDetail } from '@/apis/activityDetail';
 import { useResponsive } from '@/hooks/useResponsive';
-
-type SubImage = {
-  id: number;
-  imageUrl: string;
-};
-
-type Schedule = {
-  id: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-};
-
-type ActivityDetail = {
-  id: number;
-  userId: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  address: string;
-  bannerImageUrl: string;
-  rating: number;
-  reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
-  subImages: SubImage[];
-  schedules: Schedule[];
-};
+import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
 
 export default function ActivityDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [activity, setActivity] = useState<ActivityDetail | null>(null);
+  const [activity, setActivity] = useState<ActivityWithSubImagesAndSchedules | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,8 +26,8 @@ export default function ActivityDetailPage() {
 
     const fetchActivity = async () => {
       try {
-        const res = await axiosInstance.get(`/activities/${id}`);
-        setActivity(res.data);
+        const data = await fetchActivityDetail(id);
+        setActivity(data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '활동 정보를 불러오는 중 오류가 발생했습니다.';
         setError(errorMessage);
@@ -78,7 +50,6 @@ export default function ActivityDetailPage() {
           <div className='grid grid-cols-[1fr_410px] gap-40'>
             <div className='flex flex-col gap-40'>
               <section className='flex h-400 items-center justify-center rounded-xl bg-red-100 text-xl font-bold'>
-                {/* 1. 체험 이미지 */}
                 <img
                   alt={activity.title}
                   className='h-full w-full rounded-xl object-cover'
@@ -86,13 +57,11 @@ export default function ActivityDetailPage() {
                 />
               </section>
               <section className='flex h-300 flex-col items-center justify-center rounded-xl bg-yellow-100 text-xl font-bold'>
-                {/* 2. 체험 설명 */}
                 <div className='text-2xl font-bold'>체험 설명</div>
                 <p className='text-lg'>{activity.description}</p>
               </section>
               <div className='rounded-3xl border-t border-gray-100' />
               <section className='flex h-511 flex-col items-center justify-center rounded-xl bg-green-100 text-xl font-bold'>
-                {/* 3. 오시는 길 */}
                 <div className='text-2xl font-bold'>오시는 길</div>
                 <div className='text-md font-semibold'>{activity.address}</div>
                 <KakaoMap address={activity.address} />
@@ -104,7 +73,6 @@ export default function ActivityDetailPage() {
             </div>
             <div className='sticky top-16 flex h-fit flex-col gap-38'>
               <section className='flex h-120 flex-col items-center justify-center rounded-xl bg-purple-100 text-xl font-bold'>
-                {/* 5. 체험 정보 박스 */}
                 <p className='text-md'>{activity.category}</p>
                 <p className='text-2xl font-bold'>{activity.title}</p>
                 <p className='text-md'>{`${activity.rating} (${activity.reviewCount})`}</p>
@@ -118,7 +86,6 @@ export default function ActivityDetailPage() {
         ) : (
           <div className={twJoin('flex flex-col gap-30', bottomOffset)}>
             <section className='flex h-400 items-center justify-center rounded-xl bg-red-100 text-xl font-bold'>
-              {/* 1. 체험 이미지 */}
               <img
                 alt={activity.title}
                 className='h-full w-full rounded-xl object-cover'
@@ -127,7 +94,6 @@ export default function ActivityDetailPage() {
             </section>
             <div className='rounded-3xl border-t border-gray-200' />
             <section className='flex h-140 flex-col items-center justify-center rounded-xl bg-purple-100 text-xl font-bold'>
-              {/* 5. 체험 정보 박스 */}
               <p className='text-md'>{activity.category}</p>
               <p className='text-2xl font-bold'>{activity.title}</p>
               <p className='text-md'>{`${activity.rating} (${activity.reviewCount})`}</p>
@@ -135,13 +101,11 @@ export default function ActivityDetailPage() {
             </section>
             <div className='rounded-3xl border-t border-gray-200' />
             <section className='flex h-280 flex-col items-center justify-center rounded-xl bg-yellow-100 text-xl font-bold'>
-              {/* 2. 체험 설명 */}
               <div className='text-2xl font-bold'>체험 설명</div>
               <p className='text-lg'>{activity.description}</p>
             </section>
             <div className='rounded-3xl border-t border-gray-200' />
             <section className='flex h-415 flex-col items-center justify-center rounded-xl bg-green-100 text-xl font-bold'>
-              {/* 3. 오시는 길 */}
               <div className='text-2xl font-bold'>오시는 길</div>
               <div className='text-md font-semibold'>{activity.address}</div>
               <KakaoMap address={activity.address} />
@@ -156,7 +120,6 @@ export default function ActivityDetailPage() {
 
       {!isDesktop && (
         <div className='fixed bottom-0 left-0 z-50 w-full border-t border-[#E6E6E6] bg-white px-48 pt-18 pb-18 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'>
-          {/* 금액 + 날짜 선택 묶음 */}
           <div className='mb-12 flex items-center justify-between'>
             <p className='text-2lg font-bold'>
               ₩ {activity.price.toLocaleString()} <span className='text-lg font-normal'>/ 1명</span>
@@ -171,8 +134,6 @@ export default function ActivityDetailPage() {
               날짜 선택하기
             </button>
           </div>
-
-          {/* 예약하기 버튼 */}
           <Button disabled className='w-full' size='lg' variant='fill'>
             예약하기
           </Button>
