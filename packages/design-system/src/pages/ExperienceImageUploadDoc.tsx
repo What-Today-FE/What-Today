@@ -43,7 +43,7 @@ export default function ExperienceImageUploadDoc() {
         return(
 
       <div>
-      <h3>매인 베너 입니다.<h/3>
+      <h3>매인 베너 입니다.</h3>
         <BannerInput />
       </div>
 

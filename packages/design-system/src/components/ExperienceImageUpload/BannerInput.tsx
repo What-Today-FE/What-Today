@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from 'react';
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { DeleteIcon, PlusIcon } from '../icons';
@@ -24,27 +24,48 @@ export default function BannerInput({
   counterClassName,
   plusIconColor,
 }: InputProps) {
-  const [bannerImage, setBannerImage] = useState<string | null>(null);
-
+  const [previews, setPreviews] = useState<string[]>([]);
+  const previousUrlRef = useRef<string | null>(null);
+  const MAX_IMAGES = 1;
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // 이전 URL이 있다면 해제
+      if (previousUrlRef.current) {
+        URL.revokeObjectURL(previousUrlRef.current);
+      }
+
       const previewUrl = URL.createObjectURL(file);
-      setBannerImage(previewUrl);
+      setPreviews([previewUrl]);
+      previousUrlRef.current = previewUrl;
     }
   };
 
   const handleDelete = () => {
-    setBannerImage(null);
+    // URL 해제
+    if (previousUrlRef.current) {
+      URL.revokeObjectURL(previousUrlRef.current);
+      previousUrlRef.current = null;
+    }
+    setPreviews([]);
   };
 
-  const isUploaded = !!bannerImage;
+  // 컴포넌트 언마운트 시 URL 정리
+  useEffect(() => {
+    return () => {
+      if (previousUrlRef.current) {
+        URL.revokeObjectURL(previousUrlRef.current);
+      }
+    };
+  }, []);
+
+  const isUploaded = previews.length >= MAX_IMAGES;
 
   return (
     <div className={twMerge('mt-4 flex gap-14', wrapperClassName)}>
       <label
         className={twMerge(
-          'flex aspect-square w-[80px] flex-col items-center justify-center rounded-2xl bg-gray-100 md:w-[128px]',
+          'flex aspect-square w-80 flex-col items-center justify-center rounded-2xl bg-gray-100 md:w-128',
           isUploaded ? 'pointer-events-none opacity-40' : 'cursor-pointer',
           labelClassName,
         )}
@@ -52,7 +73,7 @@ export default function BannerInput({
       >
         <PlusIcon className={twMerge('size-15', plusIconClassName)} color={plusIconColor ?? '#9FA0A7'} />
         <span className={twMerge('mt-1 text-xs text-gray-400', counterClassName)}>
-          {isUploaded ? '1 / 1' : '0 / 1'}
+          {previews.length} / {MAX_IMAGES}
         </span>
       </label>
 
@@ -65,12 +86,12 @@ export default function BannerInput({
         onChange={handleFileChange}
       />
 
-      {bannerImage && (
-        <div className={twMerge('relative aspect-square w-[80px] md:w-[128px]', previewClassName)}>
+      {previews.map((preview, idx) => (
+        <div key={idx} className={twMerge('relative aspect-square w-80 md:w-128', previewClassName)}>
           <img
             alt='배너 미리보기'
             className={twMerge('h-full w-full rounded-2xl object-cover', imgClassName)}
-            src={bannerImage}
+            src={preview}
           />
           <button
             className={twMerge(
@@ -82,8 +103,9 @@ export default function BannerInput({
           >
             <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='white' />
           </button>
+          <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='red' />
         </div>
-      )}
+      ))}
     </div>
   );
 }

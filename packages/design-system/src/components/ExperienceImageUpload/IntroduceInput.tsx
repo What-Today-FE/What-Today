@@ -1,6 +1,7 @@
-import { type ChangeEvent, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import Button from '../button';
 import { DeleteIcon, PlusIcon } from '../icons';
 import type { InputProps } from './types';
 
@@ -29,12 +30,26 @@ export default function IntroduceInput({
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
-    const newFiles = files.slice(0, MAX_IMAGES - previews.length);
+    const validFiles = files.filter((file) => {
+      const isValidType = file.type.startsWith('image/');
+      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB 제한
+      return isValidType && isValidSize;
+    });
+    const newFiles = validFiles.slice(0, MAX_IMAGES - previews.length);
     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
 
+  useEffect(() => {
+    return () => {
+      // 컴포넌트 언마운트 시 모든 URL 정리
+      previews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, []);
+
   const handleDelete = (index: number) => {
+    const urlToRevoke = previews[index];
+    URL.revokeObjectURL(urlToRevoke);
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -45,7 +60,7 @@ export default function IntroduceInput({
       {/* 업로드 버튼 */}
       <label
         className={twMerge(
-          'flex aspect-square w-[80px] cursor-pointer flex-col items-center justify-center rounded-2xl bg-gray-100 md:w-[128px]',
+          'flex aspect-square w-80 cursor-pointer flex-col items-center justify-center rounded-2xl bg-gray-100 md:w-128',
           isMaxReached ? 'pointer-events-none opacity-40' : '',
           labelClassName,
         )}
@@ -72,26 +87,25 @@ export default function IntroduceInput({
       {previews.map((src, index) => (
         <div
           key={index}
-          className={twMerge(
-            'relative aspect-square w-[80px] cursor-pointer rounded-2xl md:w-[128px]',
-            previewClassName,
-          )}
+          className={twMerge('relative aspect-square w-80 cursor-pointer rounded-2xl md:w-128', previewClassName)}
         >
           <img
-            alt={`미리보기 ${index + 1}`}
+            alt={`업로드된 소개 이미지 ${index + 1}`}
             className={twMerge('h-full w-full rounded-2xl object-cover', imgClassName)}
             src={src}
           />
-          <button
+          <Button
+            aria-label={`${index + 1}번째 이미지 삭제`}
             className={twMerge(
-              'bg-opacity-40 absolute -top-8 -right-8 flex cursor-pointer items-center justify-center rounded-full bg-black p-8 text-white',
+              'bg-opacity-40 size-sm absolute -top-8 -right-8 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-0',
               deleteButtonClassName,
             )}
-            type='button'
+            size='xs'
+            variant='none'
             onClick={() => handleDelete(index)}
           >
-            <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='white' />
-          </button>
+            <DeleteIcon className={twMerge('size-15', deleteIconClassName)} color='white' />
+          </Button>
         </div>
       ))}
     </div>
