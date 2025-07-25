@@ -12,7 +12,7 @@ export default function DatePicker() {
   const today = dayjs().format('YYYY-MM-DD');
 
   return (
-    <div className='relative mt-200 mb-400 flex w-full flex-col gap-12 md:flex-row'>
+    <div className='relative flex w-full flex-col gap-12 md:flex-row'>
       <div className='relative w-full'>
         <input
           readOnly

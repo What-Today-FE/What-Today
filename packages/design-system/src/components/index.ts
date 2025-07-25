@@ -4,6 +4,7 @@ export * from './calendar';
 export { default as Carousel } from './Carousel/Carousel';
 export { default as DatePicker } from './DatePicker';
 export { default as ExperienceCard } from './ExperienceCard';
+export { BannerInput, IntroduceInput } from './ExperienceImageUpload';
 export { default as Footer } from './Footer';
 export * from './icons';
 export * from './input';
