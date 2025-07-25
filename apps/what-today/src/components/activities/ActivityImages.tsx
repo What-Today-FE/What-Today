@@ -32,7 +32,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
       className={`grid h-400 gap-16 overflow-hidden rounded-xl ${subImageCount === 0 ? 'grid-cols-1' : 'grid-cols-2'}`}
     >
       {/* 왼쪽 배너 이미지 */}
-      <div className='h-full w-full'>
+      <div className='h-full w-full rounded-xl border border-gray-200'>
         <img
           alt='배너 이미지'
           className='h-full w-full rounded-xl object-cover'
@@ -51,7 +51,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
             return (
               <div
                 key={img.id}
-                className={`h-full w-full overflow-hidden rounded-xl ${isLastImageInThreeSet ? 'col-span-2' : ''}`}
+                className={`h-full w-full overflow-hidden rounded-xl border border-gray-200 ${isLastImageInThreeSet ? 'col-span-2' : ''}`}
               >
                 <img
                   alt='서브 이미지'
