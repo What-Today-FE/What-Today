@@ -4,6 +4,7 @@ import App from '@/App';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import MyPageLayout from '@/layouts/Mypage';
 import ActivityDetailPage from '@/pages/activities';
+import CreateExperience from '@/pages/experiences/iindex';
 import KakaoCallback from '@/pages/kakao-callback';
 import KakaoCallbackSignup from '@/pages/kakao-callback-signup';
 import LoginPage from '@/pages/login';
@@ -31,6 +32,8 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <MainPage /> },
           { path: 'activities/:id', element: <ActivityDetailPage /> },
+
+          { path: 'experiences/create', element: <CreateExperience /> },
 
           {
             path: 'mypage',

@@ -60,7 +60,7 @@ export default function ManageActivitiesPage() {
           <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
         </div>
         {/* 추후 체험등록 페이지로 수정 예정 */}
-        <Button className='w-full md:w-138' onClick={() => navigate('/')}>
+        <Button className='w-full md:w-138' onClick={() => navigate('/experiences/create')}>
           체험 등록하기
         </Button>
       </header>
