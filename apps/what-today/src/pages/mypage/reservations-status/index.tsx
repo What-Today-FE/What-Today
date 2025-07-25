@@ -11,8 +11,8 @@ export default function ReservationsStatusPage() {
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [activityList, setActivityList] = useState<myActivitiesResponse | null>(null);
   const [monthlyReservation, setMonthlyReservation] = useState<monthlyScheduleResponse>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
   const [monthlyLoading, setMonthlyLoading] = useState(true);
-  const [dailyLoading, setDailyLoading] = useState(true);
 
   const [selectedActivity, setSelectedActivity] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -46,7 +46,7 @@ export default function ReservationsStatusPage() {
     } catch (err) {
       console.error('내 체험 조회 실패:', err);
     }
-    setMonthlyLoading(false);
+    setActivityLoading(false);
   };
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function ReservationsStatusPage() {
       } catch (err) {
         console.error('월별 예약현황 조회 실패:', err);
       }
-      setDailyLoading(false);
+      setMonthlyLoading(false);
     };
     fetchMonthlySchedule();
   }, [selectedActivity, viewingMonth]);
@@ -76,7 +76,7 @@ export default function ReservationsStatusPage() {
   }, {});
 
   let content;
-  if (monthlyLoading || dailyLoading) {
+  if (activityLoading || monthlyLoading) {
     content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
   } else if (activityList && activityList.activities.length > 0) {
     content = (

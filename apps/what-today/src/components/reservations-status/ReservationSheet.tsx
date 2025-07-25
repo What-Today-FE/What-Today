@@ -1,4 +1,5 @@
 import { Button, Select } from '@what-today/design-system';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,7 +36,7 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
   return (
     <div className='flex flex-col gap-20 bg-white'>
       <section className='flex flex-col gap-12'>
-        <h3 className='text-xl font-bold'>25년 7월 24일</h3>
+        <h3 className='text-xl font-bold'>{dayjs(selectedDate).format('YY년 M월 D일')}</h3>
         <div className='flex text-lg'>
           {Tabs.map((tab) => {
             const selectedStyle =

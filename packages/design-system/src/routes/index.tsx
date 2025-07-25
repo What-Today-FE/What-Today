@@ -103,10 +103,6 @@ const router = createBrowserRouter([
         element: <PopoverDoc />,
       },
       {
-        path: 'Popover',
-        element: <PopoverDoc />,
-      },
-      {
         path: 'ReservationInfoCard',
         element: <ReservationInfoCardDoc />,
       },

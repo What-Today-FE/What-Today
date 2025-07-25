@@ -71,7 +71,7 @@ export const monthlyScheduleResponseSchema = z.array(
  * @description 내 체험 날짜별 예약 정보(신청, 승인, 거절)가 있는 스케줄 조회 요청 시 사용하는 쿼리 파라미터의 유효성을 검사하는 스키마
  */
 export const dailyScheduleParamSchema = z.object({
-  date: z.string(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'YYYY-MM-DD 형식이어야 합니다.' }),
 });
 
 /**
