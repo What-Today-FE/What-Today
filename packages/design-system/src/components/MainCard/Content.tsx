@@ -38,7 +38,7 @@ export default function MainCardContent({
             {title}
           </h3>
           <div className='flex items-center gap-2 text-sm text-gray-700'>
-            <StarIcon filled className='size-20 lg:size-15' color='#FFC23D' />
+            <StarIcon filled className='size-20 lg:size-15' color={iconColor} />
             <span className={twMerge('text-gray-950', ratingClassName)}>{rating}</span>
             <div className='text-gray-400'>({reviewCount.toLocaleString()})</div>
           </div>

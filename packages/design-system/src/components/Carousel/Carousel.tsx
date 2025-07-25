@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
-import MainCard from '../MainCard';
+import { MainCard } from '../MainCard';
 import NavigationButton from './NavigationButton';
 import type { CarouselProps, Props } from './types';
 
@@ -41,9 +41,13 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
             className='flex'
             transition={{ duration: 0.5, ease: [0.45, 0.05, 0.55, 0.95] }}
           >
-            {items.map((item) => (
-              <div key={item.id} className='shrink-0' style={{ width: `${itemWidthPercent}%` }}>
-                <MainCard
+            {items.map((item, idx) => (
+              <div
+                key={item.id}
+                className={`box-border shrink-0 ${idx % itemsPerPage !== itemsPerPage - 1 ? 'pr-10' : ''}`}
+                style={{ width: `${itemWidthPercent}%` }}
+              >
+                <MainCard.Root
                   bannerImageUrl={item.bannerImageUrl}
                   price={item.price}
                   rating={item.rating}
@@ -52,7 +56,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
                 >
                   <MainCard.Image className='rounded-t-3xl object-cover' />
                   <MainCard.Content />
-                </MainCard>
+                </MainCard.Root>
               </div>
             ))}
           </motion.div>
@@ -60,7 +64,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
 
         {/* 모바일 캐러셀 */}
         <div
-          className='flex w-full gap-4 overflow-x-auto px-4 md:hidden'
+          className='flex w-full gap-6 overflow-x-auto px-4 md:hidden'
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
@@ -68,7 +72,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
         >
           <style>{`div::-webkit-scrollbar { display: none; }`}</style>
           {items.map((item) => (
-            <MainCard
+            <MainCard.Root
               key={item.id}
               bannerImageUrl={item.bannerImageUrl}
               className='w-[265px] shrink-0'
@@ -79,7 +83,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
             >
               <MainCard.Image className='h-[260px] rounded-t-3xl object-cover brightness-90 contrast-125' />
               <MainCard.Content />
-            </MainCard>
+            </MainCard.Root>
           ))}
         </div>
 

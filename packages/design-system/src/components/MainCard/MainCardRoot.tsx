@@ -17,7 +17,7 @@ export default function MainCardRoot({
       <div className=''>
         <div
           className={twMerge(
-            'relative mx-4 flex flex-shrink-0 cursor-pointer flex-col transition-transform duration-300 md:mx-12',
+            'relative flex flex-shrink-0 cursor-pointer flex-col transition-transform duration-300',
             className,
           )}
         >

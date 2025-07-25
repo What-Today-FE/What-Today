@@ -21,6 +21,7 @@ export default function DefaultLayout() {
       >
         <Outlet />
       </main>
+
       <Footer />
     </div>
   );

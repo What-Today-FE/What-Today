@@ -3,13 +3,17 @@ import BottomSheetDoc from '@pages/BottomSheetDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
 import CarouselDoc from '@pages/CarouselDoc';
+import DatePickerDoc from '@pages/DatePickerDoc';
 import DropdownDoc from '@pages/DropdownDoc';
 import ExperienceCardDoc from '@pages/ExperienceCardDoc';
+import ExperienceImageUploadDoc from '@pages/ExperienceImageUploadDoc';
 import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
+import MainSearchInputDoc from '@pages/MainSearchInputDoc';
+import ModalDoc from '@pages/ModalDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
@@ -17,7 +21,9 @@ import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
+import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
+import TimePickerDoc from '@pages/TimePickerDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
@@ -39,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'TimePicker',
+        element: <TimePickerDoc />,
       },
       {
         path: 'ProfileImageInput',
@@ -125,6 +135,10 @@ const router = createBrowserRouter([
         element: <CalendarDoc />,
       },
       {
+        path: 'ExperienceImageUpload',
+        element: <ExperienceImageUploadDoc />,
+      },
+      {
         path: 'MainBanner',
         element: <MainBannerDoc />,
       },
@@ -137,12 +151,24 @@ const router = createBrowserRouter([
         element: <CarouselDoc />,
       },
       {
-        path: 'MainCard',
-        element: <MainCardDoc />,
+        path: 'MainSearchInput',
+        element: <MainSearchInputDoc />,
       },
       {
         path: 'BottomSheet',
         element: <BottomSheetDoc />,
+      },
+      {
+        path: 'DatePicker',
+        element: <DatePickerDoc />,
+      },
+      {
+        path: 'Modal',
+        element: <ModalDoc />,
+      },
+      {
+        path: 'StarRating',
+        element: <StarRatingDoc />,
       },
     ],
   },

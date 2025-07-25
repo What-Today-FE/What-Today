@@ -36,11 +36,13 @@ export interface RootProps {
  */
 function SelectRoot({ children, onChangeValue, value, className }: RootProps) {
   const [selectedItem, setSelectedItem] = useState<SelectItem | null>(value ?? null);
+  const [open, setOpen] = useState(false);
 
   // Select 내부에서는 값을 {value, label}로 관리 + 외부에서는 value만 관리. 외부에서도 default value로 {value, label} 형태가 필요하면 이 부분을 수정할 예정.
   const handleClickItem = (value: string, label: ReactNode) => {
     onChangeValue?.({ value, label });
     setSelectedItem({ value, label });
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -50,8 +52,8 @@ function SelectRoot({ children, onChangeValue, value, className }: RootProps) {
   }, [value]);
 
   return (
-    <SelectContext.Provider value={{ handleClickItem, selectedItem }}>
-      <Popover.Root className={className} direction='bottom'>
+    <SelectContext.Provider value={{ handleClickItem, selectedItem, open, setOpen }}>
+      <Popover.Root className={className} direction='bottom' open={open} onOpenChange={setOpen}>
         {children}
       </Popover.Root>
     </SelectContext.Provider>
