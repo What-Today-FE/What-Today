@@ -1,3 +1,5 @@
+import { useImageErrorHandler } from '@/hooks/useImageErrorHandler';
+
 interface ActivityImagesProps {
   bannerImageUrl: string;
   subImages: { id: number; imageUrl: string }[];
@@ -5,6 +7,7 @@ interface ActivityImagesProps {
 
 export default function ActivityImages({ bannerImageUrl, subImages }: ActivityImagesProps) {
   const subImageCount = subImages.length;
+  const handleImageError = useImageErrorHandler();
 
   // 서브 이미지 개수에 따른 레이아웃 클래스 결정
   const getRightGridClass = () => {
@@ -22,12 +25,6 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
       default:
         return 'grid grid-cols-2 grid-rows-2 gap-8';
     }
-  };
-
-  // 이미지 오류 시 기본 이미지로 대체
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = '/default-image.webp';
   };
 
   return (
