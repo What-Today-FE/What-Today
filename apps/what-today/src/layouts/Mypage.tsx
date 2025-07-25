@@ -1,6 +1,7 @@
 import { Button, ChevronIcon, useToast } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { twMerge } from 'tailwind-merge';
 
 import MypageSidebar from '@/components/MypageSidebar';
 import useAuth from '@/hooks/useAuth';
@@ -40,11 +41,16 @@ export default function MyPageLayout() {
         onClick={() => setSidebarOpen((prev) => !prev)}
         onLogoutClick={handleLogout}
       />
+      <Button
+        className={twMerge('fixed top-68 left-4 z-60 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
+        size='xs'
+        variant='none'
+        onClick={() => setSidebarOpen(true)}
+      >
+        <ChevronIcon className='h-16' color='var(--color-gray-600)' direction='right' />
+      </Button>
       {/* Outlet으로 상세 화면 표시 */}
       <div className='flex-1 p-4'>
-        <Button className='w-fit p-0 md:hidden' size='xs' variant='none' onClick={() => setSidebarOpen(true)}>
-          <ChevronIcon className='h-16' direction='left' />
-        </Button>
         <Outlet />
       </div>
     </div>

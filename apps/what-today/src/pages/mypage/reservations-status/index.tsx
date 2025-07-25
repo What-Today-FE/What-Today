@@ -1,12 +1,14 @@
-import { NoResult, type ReservationStatus, Select } from '@what-today/design-system';
+import { Button, ChevronIcon, NoResult, type ReservationStatus, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
 import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { getMonthlyReservations, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
 import type { ActivityReservationResponse, myActivitiesResponse } from '@/schemas/myActivities';
 
 export default function ReservationsStatusPage() {
+  const navigate = useNavigate();
   const [activitiesData, setActivitiesData] = useState<myActivitiesResponse | null>(null);
   const [reservation, setReservation] = useState<ActivityReservationResponse>([]);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
@@ -22,6 +24,9 @@ export default function ReservationsStatusPage() {
 
   const handleValueChange = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
     setSelectedActivity(value);
+  };
+  const handleNavigateToMypage = () => {
+    navigate('/mypage');
   };
 
   const handleDateChange = (date: string) => {
@@ -119,8 +124,13 @@ export default function ReservationsStatusPage() {
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
       <header className='mb-18 flex flex-col gap-10 p-1 md:mb-0'>
-        <h1 className='text-xl font-bold text-gray-950'>예약 현황</h1>
-        <p className='text-md font-medium text-gray-500'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
+          <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>
+            <ChevronIcon color='var(--color-gray-300)' direction='left' />
+          </Button>
+          <h1 className='text-xl font-bold text-gray-950'>예약 현황</h1>
+        </div>
+        <p className='text-md pt-10 font-medium text-gray-500'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
       </header>
       {content}
     </div>
