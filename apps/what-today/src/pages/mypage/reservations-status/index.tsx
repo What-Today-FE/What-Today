@@ -1,16 +1,18 @@
-import { NoResult, type ReservationStatus, Select } from '@what-today/design-system';
+import { BottomSheet, NoResult, type ReservationStatus, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
 import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
 
-import { getMonthlyReservations, getMyActivities } from '@/apis/myActivities';
+import { getMonthlySchedule, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
-import type { ActivityReservationResponse, myActivitiesResponse } from '@/schemas/myActivities';
+import ReservationSheet from '@/components/reservations-status/ReservationSheet';
+import type { monthlyScheduleResponse, myActivitiesResponse } from '@/schemas/myActivities';
 
 export default function ReservationsStatusPage() {
-  const [activitiesData, setActivitiesData] = useState<myActivitiesResponse | null>(null);
-  const [reservation, setReservation] = useState<ActivityReservationResponse>([]);
-  const [activitiesLoading, setActivitiesLoading] = useState(true);
-  const [reservationLoading, setReservationLoading] = useState(true);
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const [activityList, setActivityList] = useState<myActivitiesResponse | null>(null);
+  const [monthlyReservation, setMonthlyReservation] = useState<monthlyScheduleResponse>([]);
+  const [monthlyLoading, setMonthlyLoading] = useState(true);
+  const [dailyLoading, setDailyLoading] = useState(true);
 
   const [selectedActivity, setSelectedActivity] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -18,7 +20,6 @@ export default function ReservationsStatusPage() {
     year: dayjs().format('YYYY'),
     month: dayjs().format('MM'),
   });
-  console.log(selectedDate); // 임시 설정
 
   const handleValueChange = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
     setSelectedActivity(value);
@@ -26,6 +27,7 @@ export default function ReservationsStatusPage() {
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
+    setBottomSheetOpen(true);
   };
 
   const handleMonthChange = (year: string, month: string) => {
@@ -36,7 +38,7 @@ export default function ReservationsStatusPage() {
   const fetchMyActivities = async () => {
     try {
       const result = await getMyActivities({ size: 10 });
-      setActivitiesData(result);
+      setActivityList(result);
       if (result.activities.length > 0) {
         const firstActivity = result.activities[0];
         setSelectedActivity({ value: String(firstActivity.id), label: firstActivity.title });
@@ -44,7 +46,7 @@ export default function ReservationsStatusPage() {
     } catch (err) {
       console.error('내 체험 조회 실패:', err);
     }
-    setActivitiesLoading(false);
+    setMonthlyLoading(false);
   };
 
   useEffect(() => {
@@ -53,30 +55,30 @@ export default function ReservationsStatusPage() {
 
   useEffect(() => {
     if (!selectedActivity) return;
-    const fetchReservation = async () => {
+    const fetchMonthlySchedule = async () => {
       try {
-        const result = await getMonthlyReservations(Number(selectedActivity.value), {
+        const result = await getMonthlySchedule(Number(selectedActivity.value), {
           year: viewingMonth.year,
           month: viewingMonth.month,
         });
-        setReservation(result);
+        setMonthlyReservation(result);
       } catch (err) {
         console.error('월별 예약현황 조회 실패:', err);
       }
-      setReservationLoading(false);
+      setDailyLoading(false);
     };
-    fetchReservation();
+    fetchMonthlySchedule();
   }, [selectedActivity, viewingMonth]);
 
-  const reservationMap = reservation.reduce<Record<string, Record<ReservationStatus, number>>>((acc, cur) => {
+  const reservationMap = monthlyReservation.reduce<Record<string, Record<ReservationStatus, number>>>((acc, cur) => {
     acc[cur.date] = cur.reservations;
     return acc;
   }, {});
 
   let content;
-  if (activitiesLoading || reservationLoading) {
+  if (monthlyLoading || dailyLoading) {
     content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
-  } else if (activitiesData && activitiesData.activities.length > 0) {
+  } else if (activityList && activityList.activities.length > 0) {
     content = (
       <div className='flex flex-col md:gap-24 xl:gap-30'>
         <section aria-label='체험 선택하기' className='max-w-640'>
@@ -87,8 +89,8 @@ export default function ReservationsStatusPage() {
             <Select.Content>
               <Select.Group>
                 <Select.Label>내 체험 목록</Select.Label>
-                {activitiesData &&
-                  activitiesData.activities.map(({ id, title }) => {
+                {activityList &&
+                  activityList.activities.map(({ id, title }) => {
                     return (
                       <Select.Item key={id} value={String(id)}>
                         {title}
@@ -118,6 +120,13 @@ export default function ReservationsStatusPage() {
 
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
+      <BottomSheet.Root isOpen={bottomSheetOpen} onClose={() => setBottomSheetOpen(false)}>
+        <BottomSheet.Content className='px-24 py-6'>
+          {selectedActivity && selectedDate && (
+            <ReservationSheet activityId={Number(selectedActivity?.value)} selectedDate={selectedDate} />
+          )}
+        </BottomSheet.Content>
+      </BottomSheet.Root>
       <header className='mb-18 flex flex-col gap-10 p-1 md:mb-0'>
         <h1 className='text-xl font-bold text-gray-950'>예약 현황</h1>
         <p className='text-md font-medium text-gray-500'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
