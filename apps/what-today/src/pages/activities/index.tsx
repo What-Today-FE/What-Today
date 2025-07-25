@@ -1,4 +1,3 @@
-import { Button } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
@@ -9,6 +8,7 @@ import ActivitiesInformation from '@/components/activities/ActivitiesInformation
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import ActivityImages from '@/components/activities/ActivityImages';
 import Divider from '@/components/activities/Divider';
+import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
@@ -96,25 +96,13 @@ export default function ActivityDetailPage() {
       </main>
 
       {!isDesktop && (
-        <div className='fixed bottom-0 left-0 z-50 w-full border-t border-[#E6E6E6] bg-white px-48 pt-18 pb-18 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'>
-          <div className='mb-12 flex items-center justify-between'>
-            <p className='text-2lg font-bold'>
-              ₩ {activity.price.toLocaleString()} <span className='text-lg font-normal'>/ 1명</span>
-            </p>
-            <button
-              className='text-primary-500 px-0 text-lg font-bold underline'
-              onClick={() => {
-                if (isMobile) alert('모바일 바텀시트 클릭');
-                else if (isTablet) alert('태블릿 바텀시트 클릭');
-              }}
-            >
-              날짜 선택하기
-            </button>
-          </div>
-          <Button disabled className='w-full' size='lg' variant='fill'>
-            예약하기
-          </Button>
-        </div>
+        <ReservationBottomBar
+          price={activity.price}
+          onSelectDate={() => {
+            if (isMobile) alert('모바일 바텀시트 클릭');
+            else if (isTablet) alert('태블릿 바텀시트 클릭');
+          }}
+        />
       )}
     </>
   );
