@@ -8,6 +8,7 @@ import ActivitiesDescription from '@/components/activities/ActivitiesDescription
 import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import ActivityImages from '@/components/activities/ActivityImages';
+import Divider from '@/components/activities/Divider';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
@@ -55,9 +56,9 @@ export default function ActivityDetailPage() {
             <div className='flex flex-col gap-40'>
               <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
               <ActivitiesDescription description={activity.description} />
-              <div className='rounded-3xl border-t border-gray-100' />
+              <Divider />
               <ActivitiesMap address={activity.address} />
-              <div className='rounded-3xl border-b border-gray-100' />
+              <Divider />
               <ReviewSection />
             </div>
             <div className='sticky top-16 flex h-fit flex-col gap-38'>
@@ -76,7 +77,7 @@ export default function ActivityDetailPage() {
         ) : (
           <div className={twJoin('flex flex-col gap-30', bottomOffset)}>
             <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
-            <div className='rounded-3xl border-t border-gray-200' />
+            <Divider className='border-gray-200' />
             <ActivitiesInformation
               address={activity.address}
               category={activity.category}
@@ -84,11 +85,11 @@ export default function ActivityDetailPage() {
               reviewCount={activity.reviewCount}
               title={activity.title}
             />
-            <div className='rounded-3xl border-t border-gray-200' />
+            <Divider className='border-t border-gray-200' />
             <ActivitiesDescription description={activity.description} />
-            <div className='rounded-3xl border-t border-gray-200' />
+            <Divider className='border-t border-gray-200' />
             <ActivitiesMap address={activity.address} className='h-415' />
-            <div className='rounded-3xl border-t border-gray-200' />
+            <Divider className='border-t border-gray-200' />
             <ReviewSection />
           </div>
         )}
