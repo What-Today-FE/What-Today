@@ -1,6 +1,6 @@
 import { Button, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { getDailySchedule } from '@/apis/myActivities';
@@ -20,18 +20,21 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
   const [dailyReservation, setDailyReservation] = useState<dailyScheduleResponse>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchDailySchedule = async (selectedDate: string) => {
-    try {
-      const result = await getDailySchedule(activityId, { date: selectedDate });
-      setDailyReservation(result);
-    } catch (err) {
-      console.error('내 체험 조회 실패:', err);
-    }
-    setLoading(false);
-  };
+  const fetchDailySchedule = useCallback(
+    async (selectedDate: string) => {
+      try {
+        const result = await getDailySchedule(activityId, { date: selectedDate });
+        setDailyReservation(result);
+      } catch (err) {
+        console.error('내 체험 조회 실패:', err);
+      }
+      setLoading(false);
+    },
+    [activityId],
+  );
   useEffect(() => {
     fetchDailySchedule(selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate, fetchDailySchedule]);
 
   return (
     <div className='flex flex-col gap-20 bg-white'>

@@ -99,7 +99,7 @@ export const timeSlotReservationParamSchema = z.object({
   cursorId: z.number().int().positive().optional(),
   size: z.number().int().positive().max(50).default(10).optional(),
   scheduleId: z.number().int().positive(),
-  status: z.string(),
+  status: z.enum(['pending', 'confirmed', 'declined']),
 });
 
 /**
