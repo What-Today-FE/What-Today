@@ -6,7 +6,7 @@ interface ActivitiesDescriptionProps {
 }
 
 /**
- * @description 체험 상세 페이지에서 오시는 길을 보여주는 섹션 내용 컴포넌트입니다.
+ * @description 체험 상세 페이지에서 체험 설명을 보여주는 섹션 컴포넌트입니다.
  */
 export default function ActivitiesDescription({ description, className }: ActivitiesDescriptionProps) {
   return (
