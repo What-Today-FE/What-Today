@@ -65,7 +65,7 @@ export default function ManageActivitiesPage() {
           </Button>
           <h1 className='text-xl font-bold text-gray-950'>내 체험 관리</h1>
         </div>
-        <div className='md:items-between flex flex-col justify-between gap-10 pt-10 md:flex-row'>
+        <div className='flex flex-col justify-between gap-10 pt-10 md:flex-row'>
           <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
           <Button className='w-full md:w-138' onClick={() => navigate('/')}>
             체험 등록하기
