@@ -11,11 +11,11 @@ import type { InputFieldProps } from './type';
  * @example
  * <Input.Field value={value} onChange={onChange} placeholder="이메일 입력" />
  */
-function InputField({ value, onChange, ref, type = 'text', className, ...props }: InputFieldProps) {
+function InputField({ value, onChange, type = 'text', className, ...props }: InputFieldProps) {
   const { error, id, setIsFocused, disabled } = useInputContext();
   return (
     <input
-      ref={ref}
+      {...props}
       aria-describedby={error ? `${id}-error` : undefined}
       aria-invalid={!!error}
       className={twMerge('flex-1 placeholder:text-gray-400 focus:outline-none', className)}
