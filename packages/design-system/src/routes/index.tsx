@@ -11,7 +11,6 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
-import MainCardDoc from '@pages/MainCardDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
 import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
@@ -22,15 +21,16 @@ import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
-import SelectDoc from '@pages/SelectDoc';
 import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import TimePickerDoc from '@pages/TimePickerDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
 import FooterDoc from '@/pages/FooterDoc';
 import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
+import ReservationInfoCardDoc from '@/pages/ReservationInfoCardDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
@@ -103,8 +103,8 @@ const router = createBrowserRouter([
         element: <PopoverDoc />,
       },
       {
-        path: 'Select',
-        element: <SelectDoc />,
+        path: 'ReservationInfoCard',
+        element: <ReservationInfoCardDoc />,
       },
       {
         path: 'Input',
@@ -131,7 +131,6 @@ const router = createBrowserRouter([
         element: <CalendarDoc />,
       },
       {
-
         path: 'ExperienceImageUpload',
         element: <ExperienceImageUploadDoc />,
       },
