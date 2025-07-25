@@ -1,5 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, ChevronIcon, ProfileImageInput, useToast } from '@what-today/design-system';
 import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { patchMyProfile, postProfileImageUrl } from '@/apis/auth';
@@ -7,6 +9,7 @@ import NicknameInput from '@/components/auth/NicknameInput';
 import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
 import PasswordInput from '@/components/auth/PasswordInput';
 import useAuth from '@/hooks/useAuth';
+import { type UpdateMyProfileFormValues, updateMyProfileSchema } from '@/schemas/auth';
 import { useWhatTodayStore } from '@/stores';
 
 /**
@@ -34,32 +37,37 @@ const stringToFile = async (url: string, filename = 'image.jpg'): Promise<File> 
 };
 
 export default function EditProfilePage() {
-  const navigate = useNavigate();
   const { user, setUser } = useWhatTodayStore();
-  const { logoutUser } = useAuth();
 
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+    watch,
+    reset,
+  } = useForm<UpdateMyProfileFormValues>({
+    resolver: zodResolver(updateMyProfileSchema),
+    mode: 'onChange',
+    defaultValues: {
+      nickname: user?.nickname ?? '',
+      profileImageUrl: user?.profileImageUrl ?? '',
+      password: '',
+      passwordConfirm: '',
+    },
+  });
+
+  const navigate = useNavigate();
+  const { logoutUser } = useAuth();
   const { toast } = useToast();
   const [isEditProfileLoading] = useState(false);
-  const [profileImage, setProfileImage] = useState<string>(user?.profileImageUrl ?? '');
-  const [nickname, setNickname] = useState(user?.nickname ?? '');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const watchedPassword = watch('password');
 
   /**
    * @description 뒤로가기 버튼으로 리다이렉트할 페이지입니다.
    */
   const handleNavigateToMypage = () => {
     navigate('/mypage');
-  };
-
-  /**
-   * @description 취소 버튼을 누르거나, 내 정보 수정에 성공할 때 사용할 폼 초기화 함수입니다.
-   */
-  const resetForm = (userData = user) => {
-    setNickname(userData?.nickname ?? '');
-    setPassword('');
-    setPasswordConfirm('');
-    setProfileImage(userData?.profileImageUrl ?? '');
   };
 
   /**
@@ -80,31 +88,31 @@ export default function EditProfilePage() {
    */
   const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    resetForm();
+    reset();
   };
 
   /**
    * @description 프로필 사진 or 닉네임 or 비밀번호를 수정하는 API를 요청합니다. 실패시 에러 토스트 메시지를 보여줍니다.
    */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: UpdateMyProfileFormValues) => {
     try {
+      const profileImageUrl = data.profileImageUrl ?? '';
       let uploadedImageUrl: string | null | undefined = undefined;
-      const isBlobUrl = profileImage.startsWith('blob:');
-      const isReset = profileImage === '';
-      const isOriginalImage = profileImage === user?.profileImageUrl;
+      const isBlobUrl = profileImageUrl.startsWith('blob:');
+      const isReset = profileImageUrl === '';
+      const isOriginalImage = profileImageUrl === user?.profileImageUrl;
 
       if (isBlobUrl) {
-        const file = await stringToFile(profileImage, 'profile.jpg');
+        const file = await stringToFile(profileImageUrl, 'profile.jpg');
         const imageUploadRes = await postProfileImageUrl(file);
         uploadedImageUrl = imageUploadRes.data.profileImageUrl;
       } else if (isReset) {
         uploadedImageUrl = null;
       } else if (!isOriginalImage) {
-        uploadedImageUrl = profileImage;
+        uploadedImageUrl = profileImageUrl;
       }
 
-      const response = await patchMyProfile(nickname, uploadedImageUrl, password);
+      const response = await patchMyProfile(data.nickname, uploadedImageUrl, data.password);
 
       toast({
         title: '내 정보 변경 성공',
@@ -112,10 +120,10 @@ export default function EditProfilePage() {
         type: 'success',
       });
       setUser(response.data);
-      resetForm(response.data);
+      reset(response.data);
 
       // 비밀번호가 수정되었다면 로그아웃 후 로그인 페이지로 이동 (재로그인 유도)
-      if (password.length > 0) {
+      if (data.password) {
         handleLogout();
       }
     } catch (error) {
@@ -139,18 +147,24 @@ export default function EditProfilePage() {
       <form
         className='flex w-full flex-col items-center justify-center gap-32'
         onReset={handleReset}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className='flex w-full flex-col gap-12'>
-          <ProfileImageInput
-            initial={user?.profileImageUrl ?? ''}
-            src={profileImage}
-            onChange={(value) => setProfileImage(value)}
+          <Controller
+            control={control}
+            name='profileImageUrl'
+            render={({ field }) => (
+              <ProfileImageInput
+                initial={user?.profileImageUrl ?? ''}
+                src={field.value ?? ''}
+                onChange={(val) => field.onChange(val)}
+              />
+            )}
           />
-          <NicknameInput value={nickname} onChange={(e) => setNickname(e.target.value)} />
-          <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
-          {password.length > 0 && (
-            <PasswordConfirmInput value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} />
+          <NicknameInput {...register('nickname')} error={errors.nickname?.message} />
+          <PasswordInput {...register('password')} error={errors.password?.message} />
+          {watchedPassword && (
+            <PasswordConfirmInput {...register('passwordConfirm')} error={errors.passwordConfirm?.message} />
           )}
         </div>
 
@@ -166,6 +180,7 @@ export default function EditProfilePage() {
           </Button>
           <Button
             className='h-fit w-auto rounded-xl py-10 font-normal'
+            disabled={isSubmitting || !isValid}
             loading={isEditProfileLoading}
             size='xl'
             type='submit'
