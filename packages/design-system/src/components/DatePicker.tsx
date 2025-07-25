@@ -16,7 +16,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
   const today = dayjs().format('YYYY-MM-DD');
 
   return (
-    <div className='relative mt-200 mb-400 flex flex-col gap-12 md:flex-row'>
+    <div className='relative flex flex-col gap-12 md:flex-row'>
       <div className='relative w-full'>
         <Input.Root className='w-full'>
           <Input.Label className='font-bold'>날짜</Input.Label>
