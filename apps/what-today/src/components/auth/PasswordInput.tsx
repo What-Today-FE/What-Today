@@ -3,19 +3,18 @@ import { memo, useState } from 'react';
 
 import type InputProps from '@/types/InputProps';
 
-function PasswordInput({ value, onChange }: InputProps) {
+function PasswordInput({ error, ...props }: InputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   return (
-    <Input.Root className='w-full'>
+    <Input.Root className='w-full' error={error}>
       <Input.Label>비밀번호</Input.Label>
       <Input.Wrapper>
         <Input.Field
+          {...props}
           autoComplete='off'
           placeholder='비밀번호를 입력해 주세요'
           type={isPasswordVisible ? 'text' : 'password'}
-          value={value}
-          onChange={onChange}
         />
         <span className='cursor-pointer' onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
           <Input.Icon>{isPasswordVisible ? <EyeIcon /> : <EyeOffIcon className='size-17.5' />}</Input.Icon>
