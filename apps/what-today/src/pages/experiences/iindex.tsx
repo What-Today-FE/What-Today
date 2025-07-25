@@ -13,7 +13,10 @@ export default function CreateExperience() {
   const [selectedValue, setSelectedValue] = useState<{ value: string; label: React.ReactNode } | null>(null);
   const [text, setText] = useState('');
   const [price, setPrice] = useState('');
-  const [selectedTime, setSelectedTime] = useState<{ hour: string; minute: string } | null>(null);
+  const [startTime, setStartTime] = useState<{ hour: string; minute: string } | null>(null);
+  const [endTime, setEndTime] = useState<{ hour: string; minute: string } | null>(null);
+
+  console.log(selectedValue);
   return (
     <div className='mt-40'>
       <div className='flex flex-col gap-40'>
@@ -37,30 +40,30 @@ export default function CreateExperience() {
             value={selectedValue}
             onChangeValue={(value) => setSelectedValue(value)}
           >
-            <Select.Title>카테고리</Select.Title>
+            <Select.Title className='font-normal'>카테고리</Select.Title>
             <Select.Trigger className='py-15'>
-              <Select.Value placeholder='카테고리를 선택해 주세요' />
+              <Select.Value className='flex' placeholder='카테고리를 선택해 주세요' />
             </Select.Trigger>
-            <Select.Content>
+            <Select.Content className='flex items-center'>
               <Select.Group>
                 <Select.Label>카테고리</Select.Label>
-                <Select.Item className='flex gap-10' value='문화 · 예술'>
-                  <ArtIcon /> 문화예술
+                <Select.Item className='flex items-center gap-10' value='문화·예술'>
+                  <ArtIcon className='size-15' /> 문화예술
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='음식'>
-                  <FoodIcon /> 음식
+                <Select.Item className='flex items-center gap-10' value='음식'>
+                  <FoodIcon className='size-15' /> 음식
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='스포츠'>
-                  <SportIcon /> 스포츠
+                <Select.Item className='flex items-center gap-10' value='스포츠'>
+                  <SportIcon className='size-15' /> 스포츠
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='웰빙'>
-                  <WellbeingIcon /> 웰빙
+                <Select.Item className='flex items-center gap-10' value='웰빙'>
+                  <WellbeingIcon className='size-15' /> 웰빙
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='버스'>
-                  <BusIcon /> 버스
+                <Select.Item className='flex items-center gap-10' value='버스'>
+                  <BusIcon className='size-15' /> 버스
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='여행'>
-                  <TourIcon /> 여행
+                <Select.Item className='flex items-center gap-10' value='여행'>
+                  <TourIcon className='size-15' /> 여행
                 </Select.Item>
               </Select.Group>
             </Select.Content>
@@ -72,7 +75,7 @@ export default function CreateExperience() {
             <Input.Wrapper>
               <Input.Textarea
                 autoHeight
-                className='h-200'
+                className='min-h-200'
                 placeholder='체험에 대한 설명을 입력해 주세요.'
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -99,6 +102,7 @@ export default function CreateExperience() {
             <Input.ErrorMessage />
           </Input.Root>
         </div>
+
         <div className='flex flex-col items-center gap-20 md:flex-row'>
           <div className='w-full'>
             <DatePicker />
@@ -106,11 +110,11 @@ export default function CreateExperience() {
           <div className='flex justify-between gap-20'>
             <div className='flex items-center gap-10'>
               <div>
-                <TimePicker value={selectedTime} onChange={setSelectedTime} />
+                <TimePicker value={startTime} onChange={setStartTime} />
               </div>
               <div>-</div>
               <div>
-                <TimePicker value={selectedTime} onChange={setSelectedTime} />
+                <TimePicker value={endTime} onChange={setEndTime} />
               </div>
             </div>
             <div>
