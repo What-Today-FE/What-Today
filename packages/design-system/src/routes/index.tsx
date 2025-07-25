@@ -11,8 +11,8 @@ import IconDoc from '@pages/IconDoc';
 import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
-import MainCardDoc from '@pages/MainCardDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
+import MainCardDoc from '@pages/MainCardDoc';
 import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
 import NoResultDoc from '@pages/NoResultDoc';
@@ -28,8 +28,8 @@ import TextareaDoc from '@pages/TextareaDoc';
 import TimePickerDoc from '@pages/TimePickerDoc';
 import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
 import FooterDoc from '@/pages/FooterDoc';
-import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
@@ -131,7 +131,6 @@ const router = createBrowserRouter([
         element: <CalendarDoc />,
       },
       {
-
         path: 'ExperienceImageUpload',
         element: <ExperienceImageUploadDoc />,
       },
