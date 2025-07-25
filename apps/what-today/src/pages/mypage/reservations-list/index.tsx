@@ -29,6 +29,7 @@ export default function ReservationsListPage() {
   }, [selectedStatus]);
 
   const renderGroupedReservations = (items: Reservation[]) => {
+    // 날짜별로 예약들을 그룹핑합니다. (예: '2025-07-25': [예약1, 예약2])
     const grouped = items.reduce<Record<string, Reservation[]>>((acc, cur) => {
       const date = cur.date;
       if (!acc[date]) acc[date] = [];
@@ -36,57 +37,65 @@ export default function ReservationsListPage() {
       return acc;
     }, {});
 
-    return Object.entries(grouped)
-      .sort(([a], [b]) => (a < b ? 1 : -1))
-      .map(([date, group], index) => (
-        <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
-          <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
-          <ul>
-            {group.map((res) => (
-              <li key={res.id}>
-                <ReservationCard
-                  bannerImageUrl={res.activity.bannerImageUrl}
-                  endTime={res.endTime}
-                  headCount={res.headCount}
-                  startTime={res.startTime}
-                  status={res.status}
-                  title={res.activity.title}
-                  totalPrice={res.totalPrice}
-                />
-                {(res.status === 'confirmed' || (res.status === 'completed' && !res.reviewSubmitted)) && (
-                  <div className='mt-12 flex gap-12'>
-                    {res.status === 'confirmed' && (
-                      <>
-                        <Button
-                          className='text-md w-full font-medium text-gray-600'
-                          size='md'
-                          variant='outline'
-                          onClick={() => {}}
-                        >
-                          예약 변경
-                        </Button>
-                        <Button
-                          className='text-md w-full bg-gray-50 font-medium text-gray-600'
-                          size='md'
-                          variant='fill'
-                          onClick={() => {}}
-                        >
-                          예약 취소
-                        </Button>
-                      </>
-                    )}
-                    {res.status === 'completed' && !res.reviewSubmitted && (
-                      <Button className='text-md font-medium text-white' size='md' variant='fill' onClick={() => {}}>
-                        후기 작성
+    // 날짜 기준으로 내림차순 정렬 (최근 날짜가 먼저)
+    const sortedByDateDesc = Object.entries(grouped).sort(([dateA], [dateB]) => {
+      const shouldSwap = dateA < dateB;
+      return shouldSwap ? 1 : -1;
+    });
+
+    return sortedByDateDesc.map(([date, group], index) => (
+      <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
+        {/* 날짜 헤더 */}
+        <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
+        <ul>
+          {group.map((res) => (
+            <li key={res.id}>
+              {/* 예약 카드 */}
+              <ReservationCard
+                bannerImageUrl={res.activity.bannerImageUrl}
+                endTime={res.endTime}
+                headCount={res.headCount}
+                startTime={res.startTime}
+                status={res.status}
+                title={res.activity.title}
+                totalPrice={res.totalPrice}
+              />
+
+              {/* 상태에 따른 하단 버튼 렌더링 */}
+              {(res.status === 'confirmed' || (res.status === 'completed' && !res.reviewSubmitted)) && (
+                <div className='mt-12 flex gap-12'>
+                  {res.status === 'confirmed' && (
+                    <>
+                      <Button
+                        className='text-md w-full font-medium text-gray-600'
+                        size='md'
+                        variant='outline'
+                        onClick={() => {}}
+                      >
+                        예약 변경
                       </Button>
-                    )}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ));
+                      <Button
+                        className='text-md w-full bg-gray-50 font-medium text-gray-600'
+                        size='md'
+                        variant='fill'
+                        onClick={() => {}}
+                      >
+                        예약 취소
+                      </Button>
+                    </>
+                  )}
+                  {res.status === 'completed' && !res.reviewSubmitted && (
+                    <Button className='text-md font-medium text-white' size='md' variant='fill' onClick={() => {}}>
+                      후기 작성
+                    </Button>
+                  )}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ));
   };
 
   let content;
