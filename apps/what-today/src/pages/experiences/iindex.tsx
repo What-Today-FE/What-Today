@@ -4,6 +4,8 @@ import { ArtIcon, BusIcon, FoodIcon, PlusIcon, SportIcon, TourIcon, WellbeingIco
 import { DatePicker } from '@what-today/design-system';
 import { TimePicker } from '@what-today/design-system';
 import { Button } from '@what-today/design-system';
+import { BannerInput } from '@what-today/design-system';
+import { IntroduceInput } from '@what-today/design-system';
 import { useState } from 'react';
 
 export default function CreateExperience() {
@@ -16,10 +18,11 @@ export default function CreateExperience() {
     <div className='mt-40'>
       <div className='flex flex-col gap-40'>
         <div>
-          <Input.Root className='w-full'>
+          <Input.Root className='w-full gap-10'>
             <Input.Label>제목</Input.Label>
             <Input.Wrapper>
               <Input.Field
+                className='py-5'
                 placeholder='제목을 입력해 주세요'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -29,29 +32,34 @@ export default function CreateExperience() {
           </Input.Root>
         </div>
         <div>
-          <Select.Root value={selectedValue} onChangeValue={(value) => setSelectedValue(value)}>
-            <Select.Trigger className='w-300 rounded-2xl border bg-white px-15 py-10'>
+          <Select.Root
+            className='flex flex-col gap-10'
+            value={selectedValue}
+            onChangeValue={(value) => setSelectedValue(value)}
+          >
+            <Select.Title>카테고리</Select.Title>
+            <Select.Trigger className='py-15'>
               <Select.Value placeholder='카테고리를 선택해 주세요' />
             </Select.Trigger>
             <Select.Content>
               <Select.Group>
                 <Select.Label>카테고리</Select.Label>
-                <Select.Item className='flex gap-10' value='apple'>
+                <Select.Item className='flex gap-10' value='문화 · 예술'>
                   <ArtIcon /> 문화예술
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='banana'>
+                <Select.Item className='flex gap-10' value='음식'>
                   <FoodIcon /> 음식
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='banana'>
+                <Select.Item className='flex gap-10' value='스포츠'>
                   <SportIcon /> 스포츠
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='banana'>
+                <Select.Item className='flex gap-10' value='웰빙'>
                   <WellbeingIcon /> 웰빙
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='banana'>
+                <Select.Item className='flex gap-10' value='버스'>
                   <BusIcon /> 버스
                 </Select.Item>
-                <Select.Item className='flex gap-10' value='banana'>
+                <Select.Item className='flex gap-10' value='여행'>
                   <TourIcon /> 여행
                 </Select.Item>
               </Select.Group>
@@ -59,13 +67,13 @@ export default function CreateExperience() {
           </Select.Root>
         </div>
         <div>
-          <Input.Root className='w-full' size='md'>
+          <Input.Root className='flex w-full gap-10' size='md'>
             <Input.Label>입력 폼에서 사용</Input.Label>
             <Input.Wrapper>
               <Input.Textarea
                 autoHeight
-                className='h-50'
-                placeholder='크기 조정이 가능한 textarea입니다.'
+                className='h-200'
+                placeholder='체험에 대한 설명을 입력해 주세요.'
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
@@ -74,7 +82,7 @@ export default function CreateExperience() {
           </Input.Root>
         </div>
         <div>
-          <Input.Root className='w-full'>
+          <Input.Root className='flex w-full gap-10'>
             <Input.Label>가격</Input.Label>
             <Input.Wrapper>
               <Input.Field placeholder='가격을 입력해주세요' value={price} onChange={(e) => setPrice(e.target.value)} />
@@ -83,7 +91,7 @@ export default function CreateExperience() {
           </Input.Root>
         </div>
         <div>
-          <Input.Root className='w-full'>
+          <Input.Root className='flex w-full gap-10'>
             <Input.Label>주소</Input.Label>
             <Input.Wrapper>
               <Input.Field placeholder='주소를 입력해주세요' />
@@ -91,22 +99,38 @@ export default function CreateExperience() {
             <Input.ErrorMessage />
           </Input.Root>
         </div>
-        <div className='flex items-center gap-20'>
-          <div className=''>
+        <div className='flex flex-col items-center gap-20 md:flex-row'>
+          <div className='w-full'>
             <DatePicker />
           </div>
-          <div className=''>
-            <TimePicker value={selectedTime} onChange={setSelectedTime} />
+          <div className='flex justify-between gap-20'>
+            <div className='flex items-center gap-10'>
+              <div>
+                <TimePicker value={selectedTime} onChange={setSelectedTime} />
+              </div>
+              <div>-</div>
+              <div>
+                <TimePicker value={selectedTime} onChange={setSelectedTime} />
+              </div>
+            </div>
+            <div>
+              <Button
+                className='flex h-fit w-fit cursor-pointer items-center rounded-full bg-blue-400 p-10'
+                size='xs'
+                variant='none'
+              >
+                <PlusIcon className='size-20' color='white' />
+              </Button>
+            </div>
           </div>
-          <Button
-            className='flex h-fit w-fit cursor-pointer items-center rounded-full bg-sky-400 p-10'
-            size='xs'
-            variant='none'
-          >
-            <PlusIcon className='size-20' color='black' />
-          </Button>
         </div>
-        <div />
+        <div>
+          <BannerInput />
+        </div>
+        <div>
+          <IntroduceInput />
+        </div>
+
         <div className='flex justify-center'>
           <Button className='w-138' size='sm' variant='fill'>
             등록하기
