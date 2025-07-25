@@ -1,8 +1,8 @@
 import { twMerge } from 'tailwind-merge';
 
 import Button from '@/components/button';
+import type { ManageableReservationStatus } from '@/components/calendar';
 import UserBadge from '@/components/UserBadge';
-type Status = 'declined' | 'pending' | 'confirmed';
 interface ReservationInfoCardProps {
   /**
    * 예약한 사용자의 닉네임
@@ -15,11 +15,11 @@ interface ReservationInfoCardProps {
   /**
    * 호스트 본인의 예약 처리 상태
    */
-  ownerStatus: Status;
+  ownerStatus: ManageableReservationStatus;
   /**
    * 신청자의 예약 상태
    */
-  userStatus: Status;
+  userStatus: ManageableReservationStatus;
   /**
    * 예약 승인 버튼 클릭 시 실행될 콜백 함수
    */
