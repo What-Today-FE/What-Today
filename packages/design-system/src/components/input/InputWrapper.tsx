@@ -14,9 +14,9 @@ function InputWrapper({ className, children }: InputSubComponentProps) {
 
   const BASE_CLASSNAME = twJoin(
     'flex items-center gap-8 rounded-xl border px-20 py-10 bg-white',
-    error ? 'border-red-500' : 'border-gray-100',
     isFocused && 'border-gray-400',
     disabled && 'cursor-not-allowed',
+    error ? 'border-red-500' : 'border-gray-100',
   );
 
   return <div className={twMerge(BASE_CLASSNAME, className)}>{children}</div>;
