@@ -62,10 +62,14 @@ export default function ReservationInfoCard({
       </dl>
       {ownerStatus === 'pending' ? (
         <div className='flex flex-col gap-8' role='group'>
-          <Button className={twMerge(ActionButton, 'border border-gray-50')} variant='none' onClick={onApprove}>
+          <Button
+            className={twMerge(ActionButton, 'border border-gray-50')}
+            variant='none'
+            onClick={onApprove || (() => {})}
+          >
             승인하기
           </Button>
-          <Button className={twMerge(ActionButton, 'bg-gray-50')} variant='none' onClick={onReject}>
+          <Button className={twMerge(ActionButton, 'bg-gray-50')} variant='none' onClick={onReject || (() => {})}>
             거절하기
           </Button>
         </div>
