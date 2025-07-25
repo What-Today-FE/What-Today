@@ -130,14 +130,14 @@ export default function EditProfilePage() {
 
   return (
     <div className='flex flex-col gap-12 text-gray-900'>
-      <div className='flex items-center gap-4'>
+      <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
         <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>
           <ChevronIcon color='var(--color-gray-300)' direction='left' />
         </Button>
         <h1 className='text-xl font-bold'>내 정보</h1>
       </div>
       <form
-        className='flex w-full flex-col items-center justify-center gap-32'
+        className='flex w-full flex-col items-center justify-center gap-32 pt-20'
         onReset={handleReset}
         onSubmit={handleSubmit}
       >

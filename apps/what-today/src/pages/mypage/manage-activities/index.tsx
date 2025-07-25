@@ -1,4 +1,4 @@
-import { Button, ExperienceCard, NoResult } from '@what-today/design-system';
+import { Button, ChevronIcon, ExperienceCard, NoResult } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,10 @@ export default function ManageActivitiesPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<myActivitiesResponse | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const handleNavigateToMypage = () => {
+    navigate('/mypage');
+  };
 
   const fetchMyActivities = async () => {
     try {
@@ -54,15 +58,19 @@ export default function ManageActivitiesPage() {
 
   return (
     <div className='flex flex-col gap-13 md:gap-30'>
-      <header className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
-        <div className='flex flex-col gap-10'>
+      <header className='flex flex-col gap-10'>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
+          <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>
+            <ChevronIcon color='var(--color-gray-300)' direction='left' />
+          </Button>
           <h1 className='text-xl font-bold text-gray-950'>내 체험 관리</h1>
-          <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
         </div>
-        {/* 추후 체험등록 페이지로 수정 예정 */}
-        <Button className='w-full md:w-138' onClick={() => navigate('/')}>
-          체험 등록하기
-        </Button>
+        <div className='md:items-between flex flex-col justify-between gap-10 pt-10 md:flex-row'>
+          <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
+          <Button className='w-full md:w-138' onClick={() => navigate('/')}>
+            체험 등록하기
+          </Button>
+        </div>
       </header>
       <section aria-label='체험 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
