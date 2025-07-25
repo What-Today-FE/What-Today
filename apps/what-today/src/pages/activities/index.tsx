@@ -7,6 +7,7 @@ import { fetchActivityDetail } from '@/apis/activityDetail';
 import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
 import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
+import ActivityImages from '@/components/activities/ActivityImages';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
@@ -52,13 +53,7 @@ export default function ActivityDetailPage() {
         {isDesktop ? (
           <div className='grid grid-cols-[1fr_410px] gap-40'>
             <div className='flex flex-col gap-40'>
-              <section className='flex h-400 items-center justify-center rounded-xl bg-red-100 text-xl font-bold'>
-                <img
-                  alt={activity.title}
-                  className='h-full w-full rounded-xl object-cover'
-                  src={activity.bannerImageUrl}
-                />
-              </section>
+              <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
               <ActivitiesDescription description={activity.description} />
               <div className='rounded-3xl border-t border-gray-100' />
               <ActivitiesMap address={activity.address} />
@@ -80,13 +75,7 @@ export default function ActivityDetailPage() {
           </div>
         ) : (
           <div className={twJoin('flex flex-col gap-30', bottomOffset)}>
-            <section className='flex h-400 items-center justify-center rounded-xl bg-red-100 text-xl font-bold'>
-              <img
-                alt={activity.title}
-                className='h-full w-full rounded-xl object-cover'
-                src={activity.bannerImageUrl}
-              />
-            </section>
+            <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
             <div className='rounded-3xl border-t border-gray-200' />
             <ActivitiesInformation
               address={activity.address}
