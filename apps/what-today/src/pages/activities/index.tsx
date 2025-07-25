@@ -19,10 +19,7 @@ export default function ActivityDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const screenSize = useResponsive();
-  const isMobile = screenSize === 'sm';
-  const isTablet = screenSize === 'md';
-  const isDesktop = screenSize === 'lg';
+  const { isMobile, isTablet, isDesktop } = useResponsive();
 
   const bottomOffset = !isDesktop ? 'pb-140' : 'pb-0';
 
