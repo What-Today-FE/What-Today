@@ -1,31 +1,46 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import useAuth from '@hooks/useAuth';
 import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
 import EmailInput from '@/components/auth/EmailInput';
 import PasswordInput from '@/components/auth/PasswordInput';
+import { type SignInFormValues, signInSchema } from '@/schemas/auth';
 
 export default function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema),
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
   const navigate = useNavigate();
   const { loginUser, fetchMyProfile } = useAuth();
   const { toast } = useToast();
 
   const [isLoginLoading, setIsLoginLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   /** handleLogin
    * @description 로그인 요청을 보내고, 성공 시 토큰과 사용자 정보를 전역 상태로 저장합니다.
    * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
    */
-  const handleLogin = async () => {
+  const onSubmit = async (data: SignInFormValues) => {
     try {
       setIsLoginLoading(true);
-      await loginUser(email, password);
+      await loginUser({
+        email: data.email,
+        password: data.password,
+      });
       await fetchMyProfile();
-      setEmail('');
-      setPassword('');
       navigate('/');
     } catch (error) {
       const message = error instanceof Error ? error.message : '로그인에 실패했습니다.';
@@ -65,36 +80,31 @@ export default function LoginPage() {
   return (
     <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
       <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
-        <div className='flex flex-col items-center gap-12'>
+        <Link className='flex flex-col items-center gap-12' to='/'>
           <ImageLogo className='size-100 md:size-140' />
           <TextLogo className='h-fit w-130 md:w-180' />
-        </div>
+        </Link>
 
-        <form
-          className='flex w-full flex-col items-center justify-center gap-32'
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-        >
+        <form className='flex w-full flex-col items-center justify-center gap-32' onSubmit={handleSubmit(onSubmit)}>
           <div className='flex w-full flex-col gap-12'>
-            <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
-            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+            <EmailInput {...register('email')} error={errors.email?.message} />
+            <PasswordInput {...register('password')} error={errors.password?.message} />
           </div>
 
           <div className='flex w-full flex-col gap-12'>
             <Button
               className='h-fit w-full rounded-xl py-10 font-normal'
+              disabled={isSubmitting || !isValid}
               loading={isLoginLoading}
               size='xl'
               type='submit'
             >
               로그인
             </Button>
-            <div className='flex w-full items-center text-gray-300'>
-              <div className='h-1 flex-1 bg-gray-300' />
+            <div className='flex w-full items-center text-gray-400'>
+              <div className='h-1 flex-1 bg-gray-100' />
               <p className='text-md px-12'>or</p>
-              <div className='h-1 flex-1 bg-gray-300' />
+              <div className='h-1 flex-1 bg-gray-100' />
             </div>
             <Button
               className='h-fit w-full rounded-xl py-10 font-normal'
@@ -112,7 +122,10 @@ export default function LoginPage() {
         <div className='flex items-center gap-12 text-lg text-gray-500'>
           <p>회원이 아니신가요?</p>
           <Link to='/signup'>
-            <Button className='m-0 h-fit w-fit p-0 text-lg font-normal underline' variant='none'>
+            <Button
+              className='text-primary-500 m-0 h-fit w-fit p-0 text-lg font-normal underline underline-offset-3'
+              variant='none'
+            >
               회원가입하기
             </Button>
           </Link>

@@ -1,5 +1,6 @@
 import { login } from '@/apis/auth';
 import { getMyProfile } from '@/apis/user';
+import type { SignInFormValues } from '@/schemas/auth';
 import { useWhatTodayStore } from '@/stores';
 
 /** useAuth
@@ -16,7 +17,8 @@ export default function useAuth() {
    * @param password - 사용자 비밀번호
    * @throws 로그인 실패 시 예외를 발생시킵니다.
    */
-  const loginUser = async (email: string, password: string) => {
+  const loginUser = async (input: SignInFormValues) => {
+    const { email, password } = input;
     const { data } = await login(email, password);
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
