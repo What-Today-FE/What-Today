@@ -2,8 +2,8 @@ import type { Dayjs } from 'dayjs';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 import OwnerBadge from '../OwnerBadge';
+import type { CalendarReservationStatus } from '.';
 import { useCalendarContext } from './CalendarContext';
-export type ReservationStatus = 'completed' | 'confirmed' | 'pending';
 interface DayCellProps {
   /**
    * 렌더링할 날짜 객체
@@ -16,7 +16,7 @@ interface DayCellProps {
   /**
    * 날짜별 예약 상태
    */
-  reservations?: Record<ReservationStatus, number>;
+  reservations?: Record<CalendarReservationStatus, number>;
   /**
    * 셀 전체에 적용할 클래스
    */

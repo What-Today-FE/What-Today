@@ -1,11 +1,11 @@
-import { Calendar, type ReservationStatus } from '@what-today/design-system';
+import { Calendar, type CalendarReservationStatus } from '@what-today/design-system';
 interface ReservationCalendarProps {
   /**
    * 날짜별 예약 상태 데이터
    * - 키: 'YYYY-MM-DD' 형식 문자열
    * - 값: 예약 상태별 숫자 객체
    */
-  reservationsByDate: Record<string, Record<ReservationStatus, number>>;
+  reservationsByDate: Record<string, Record<CalendarReservationStatus, number>>;
   /**
    * 날짜 선택 시 상위로 선택된 날짜(ISO 문자열)를 알려주는 콜백
    */
@@ -15,7 +15,6 @@ interface ReservationCalendarProps {
    */
   onMonthChange?: (year: string, month: string) => void;
 }
-
 /**
  * ReservationCalendar 컴포넌트
  *
