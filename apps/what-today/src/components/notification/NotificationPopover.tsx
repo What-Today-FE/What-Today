@@ -1,8 +1,10 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { BellIcon, Button, DotIcon, NotificationCard, Popover } from '@what-today/design-system';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { BellIcon, Button, DotIcon, NotificationCard, Popover, useToast } from '@what-today/design-system';
+import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { deleteMyNotifications } from '@/apis/myNotifications';
 import { getMyNotifications } from '@/apis/myNotifications';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import type { NotificationsResponse } from '@/schemas/myNotifications';
@@ -15,6 +17,8 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const fetchNotifications = async ({ cursorId }: { cursorId: number | null }): Promise<NotificationsResponse> => {
     const params = {
@@ -48,6 +52,26 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
       return lastPage.cursorId;
     },
     staleTime: 30 * 1000,
+  });
+
+  const deleteNotification = useMutation({
+    mutationFn: deleteMyNotifications,
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message ?? '알 수 없는 오류가 발생했습니다.';
+      toast({
+        title: '내 알림 삭제 오류',
+        description: message,
+        type: 'error',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      toast({
+        title: '내 알림 삭제 성공',
+        description: '알림 삭제에 성공했습니다.',
+        type: 'success',
+      });
+    },
   });
 
   const observerRef = useIntersectionObserver(
@@ -92,12 +116,12 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
                     navigate('/mypage/reservations-list');
                     setOpen((prev) => !prev);
                   }}
-                  onDelete={() => alert(`삭제 API 요청: ${notification.id}`)}
+                  onDelete={() => deleteNotification.mutate(notification.id)}
                 />
               )),
             )}
           </div>
-          {!isLoading && !data?.pages.length && (
+          {!isLoading && data?.pages.every((page) => page.notifications.length === 0) && (
             <p className='text-md my-70 text-center text-gray-400'>알림이 없습니다.</p>
           )}
           <div ref={observerRef} className='h-6 w-full' />
