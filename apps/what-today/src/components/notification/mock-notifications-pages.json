@@ -1,0 +1,290 @@
+[
+  {
+    "cursorId": 10,
+    "totalCount": 30,
+    "notifications": [
+      {
+        "id": 1,
+        "teamId": "1-team",
+        "userId": 2001,
+        "content": "더미 알림 내용 1번입니다.",
+        "createdAt": "2025-07-26T07:23:08.902264Z",
+        "updatedAt": "2025-07-26T07:23:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 2,
+        "teamId": "2-team",
+        "userId": 2002,
+        "content": "더미 알림 내용 2번입니다.",
+        "createdAt": "2025-07-26T07:22:08.902264Z",
+        "updatedAt": "2025-07-26T07:22:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 3,
+        "teamId": "3-team",
+        "userId": 2003,
+        "content": "더미 알림 내용 3번입니다.",
+        "createdAt": "2025-07-26T07:21:08.902264Z",
+        "updatedAt": "2025-07-26T07:21:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 4,
+        "teamId": "4-team",
+        "userId": 2004,
+        "content": "더미 알림 내용 4번입니다.",
+        "createdAt": "2025-07-26T07:20:08.902264Z",
+        "updatedAt": "2025-07-26T07:20:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 5,
+        "teamId": "5-team",
+        "userId": 2005,
+        "content": "더미 알림 내용 5번입니다.",
+        "createdAt": "2025-07-26T07:19:08.902264Z",
+        "updatedAt": "2025-07-26T07:19:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 6,
+        "teamId": "6-team",
+        "userId": 2006,
+        "content": "더미 알림 내용 6번입니다.",
+        "createdAt": "2025-07-26T07:18:08.902264Z",
+        "updatedAt": "2025-07-26T07:18:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 7,
+        "teamId": "7-team",
+        "userId": 2007,
+        "content": "더미 알림 내용 7번입니다.",
+        "createdAt": "2025-07-26T07:17:08.902264Z",
+        "updatedAt": "2025-07-26T07:17:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 8,
+        "teamId": "8-team",
+        "userId": 2008,
+        "content": "더미 알림 내용 8번입니다.",
+        "createdAt": "2025-07-26T07:16:08.902264Z",
+        "updatedAt": "2025-07-26T07:16:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 9,
+        "teamId": "9-team",
+        "userId": 2009,
+        "content": "더미 알림 내용 9번입니다.",
+        "createdAt": "2025-07-26T07:15:08.902264Z",
+        "updatedAt": "2025-07-26T07:15:08.902264Z",
+        "deletedAt": null
+      },
+      {
+        "id": 10,
+        "teamId": "10-team",
+        "userId": 2010,
+        "content": "더미 알림 내용 10번입니다.",
+        "createdAt": "2025-07-26T07:14:08.902264Z",
+        "updatedAt": "2025-07-26T07:14:08.902264Z",
+        "deletedAt": null
+      }
+    ]
+  },
+  {
+    "cursorId": 20,
+    "totalCount": 30,
+    "notifications": [
+      {
+        "id": 11,
+        "teamId": "11-team",
+        "userId": 2011,
+        "content": "더미 알림 내용 11번입니다.",
+        "createdAt": "2025-07-26T07:13:08.902313Z",
+        "updatedAt": "2025-07-26T07:13:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 12,
+        "teamId": "12-team",
+        "userId": 2012,
+        "content": "더미 알림 내용 12번입니다.",
+        "createdAt": "2025-07-26T07:12:08.902313Z",
+        "updatedAt": "2025-07-26T07:12:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 13,
+        "teamId": "13-team",
+        "userId": 2013,
+        "content": "더미 알림 내용 13번입니다.",
+        "createdAt": "2025-07-26T07:11:08.902313Z",
+        "updatedAt": "2025-07-26T07:11:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 14,
+        "teamId": "14-team",
+        "userId": 2014,
+        "content": "더미 알림 내용 14번입니다.",
+        "createdAt": "2025-07-26T07:10:08.902313Z",
+        "updatedAt": "2025-07-26T07:10:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 15,
+        "teamId": "15-team",
+        "userId": 2015,
+        "content": "더미 알림 내용 15번입니다.",
+        "createdAt": "2025-07-26T07:09:08.902313Z",
+        "updatedAt": "2025-07-26T07:09:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 16,
+        "teamId": "16-team",
+        "userId": 2016,
+        "content": "더미 알림 내용 16번입니다.",
+        "createdAt": "2025-07-26T07:08:08.902313Z",
+        "updatedAt": "2025-07-26T07:08:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 17,
+        "teamId": "17-team",
+        "userId": 2017,
+        "content": "더미 알림 내용 17번입니다.",
+        "createdAt": "2025-07-26T07:07:08.902313Z",
+        "updatedAt": "2025-07-26T07:07:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 18,
+        "teamId": "18-team",
+        "userId": 2018,
+        "content": "더미 알림 내용 18번입니다.",
+        "createdAt": "2025-07-26T07:06:08.902313Z",
+        "updatedAt": "2025-07-26T07:06:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 19,
+        "teamId": "19-team",
+        "userId": 2019,
+        "content": "더미 알림 내용 19번입니다.",
+        "createdAt": "2025-07-26T07:05:08.902313Z",
+        "updatedAt": "2025-07-26T07:05:08.902313Z",
+        "deletedAt": null
+      },
+      {
+        "id": 20,
+        "teamId": "20-team",
+        "userId": 2020,
+        "content": "더미 알림 내용 20번입니다.",
+        "createdAt": "2025-07-26T07:04:08.902313Z",
+        "updatedAt": "2025-07-26T07:04:08.902313Z",
+        "deletedAt": null
+      }
+    ]
+  },
+  {
+    "cursorId": null,
+    "totalCount": 30,
+    "notifications": [
+      {
+        "id": 21,
+        "teamId": "21-team",
+        "userId": 2021,
+        "content": "더미 알림 내용 21번입니다.",
+        "createdAt": "2025-07-26T07:03:08.902348Z",
+        "updatedAt": "2025-07-26T07:03:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 22,
+        "teamId": "22-team",
+        "userId": 2022,
+        "content": "더미 알림 내용 22번입니다.",
+        "createdAt": "2025-07-26T07:02:08.902348Z",
+        "updatedAt": "2025-07-26T07:02:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 23,
+        "teamId": "23-team",
+        "userId": 2023,
+        "content": "더미 알림 내용 23번입니다.",
+        "createdAt": "2025-07-26T07:01:08.902348Z",
+        "updatedAt": "2025-07-26T07:01:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 24,
+        "teamId": "24-team",
+        "userId": 2024,
+        "content": "더미 알림 내용 24번입니다.",
+        "createdAt": "2025-07-26T07:00:08.902348Z",
+        "updatedAt": "2025-07-26T07:00:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 25,
+        "teamId": "25-team",
+        "userId": 2025,
+        "content": "더미 알림 내용 25번입니다.",
+        "createdAt": "2025-07-26T06:59:08.902348Z",
+        "updatedAt": "2025-07-26T06:59:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 26,
+        "teamId": "26-team",
+        "userId": 2026,
+        "content": "더미 알림 내용 26번입니다.",
+        "createdAt": "2025-07-26T06:58:08.902348Z",
+        "updatedAt": "2025-07-26T06:58:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 27,
+        "teamId": "27-team",
+        "userId": 2027,
+        "content": "더미 알림 내용 27번입니다.",
+        "createdAt": "2025-07-26T06:57:08.902348Z",
+        "updatedAt": "2025-07-26T06:57:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 28,
+        "teamId": "28-team",
+        "userId": 2028,
+        "content": "더미 알림 내용 28번입니다.",
+        "createdAt": "2025-07-26T06:56:08.902348Z",
+        "updatedAt": "2025-07-26T06:56:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 29,
+        "teamId": "29-team",
+        "userId": 2029,
+        "content": "더미 알림 내용 29번입니다.",
+        "createdAt": "2025-07-26T06:55:08.902348Z",
+        "updatedAt": "2025-07-26T06:55:08.902348Z",
+        "deletedAt": null
+      },
+      {
+        "id": 30,
+        "teamId": "30-team",
+        "userId": 2030,
+        "content": "더미 알림 내용 30번입니다.",
+        "createdAt": "2025-07-26T06:54:08.902348Z",
+        "updatedAt": "2025-07-26T06:54:08.902348Z",
+        "deletedAt": null
+      }
+    ]
+  }
+]
