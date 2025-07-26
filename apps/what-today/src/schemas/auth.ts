@@ -67,6 +67,17 @@ export type LoginResponse = z.infer<typeof loginResponseSchema>;
 
 /**
  * From server
+ * @description 토큰 재발급 응답
+ */
+export const tokenResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+});
+
+export type TokenResponse = z.infer<typeof tokenResponseSchema>;
+
+/**
+ * From server
  * @description 카카오 로그인 요청
  */
 export const kakaoSignInSchema = z.object({

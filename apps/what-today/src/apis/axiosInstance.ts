@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { tokenResponseSchema } from '@/schemas/auth';
 import { useWhatTodayStore } from '@/stores';
 
 /**
@@ -96,7 +97,7 @@ axiosInstance.interceptors.response.use(
               },
             },
           );
-          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          const { accessToken, refreshToken: newRefreshToken } = tokenResponseSchema.parse(response.data);
 
           useWhatTodayStore.getState().setAccessToken(accessToken);
           useWhatTodayStore.getState().setRefreshToken(newRefreshToken);
