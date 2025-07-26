@@ -3,6 +3,7 @@ import { Button, ChevronIcon, ProfileImageInput, useToast } from '@what-today/de
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import z from 'zod';
 
 import { patchMyProfile, postProfileImageUrl } from '@/apis/auth';
 import NicknameInput from '@/components/auth/NicknameInput';
@@ -105,7 +106,7 @@ export default function EditProfilePage() {
       if (isBlobUrl) {
         const file = await stringToFile(profileImageUrl, 'profile.jpg');
         const imageUploadRes = await postProfileImageUrl(file);
-        uploadedImageUrl = imageUploadRes.data.profileImageUrl;
+        uploadedImageUrl = imageUploadRes.profileImageUrl;
       } else if (isReset) {
         uploadedImageUrl = null;
       } else if (!isOriginalImage) {
@@ -127,7 +128,14 @@ export default function EditProfilePage() {
         handleLogout();
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : '프로필 수정에 실패했습니다.';
+      let message = '프로필 수정에 실패했습니다.';
+
+      if (error instanceof z.ZodError) {
+        message = error.errors[0]?.message ?? message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
       toast({
         title: '프로필 수정 실패',
         description: message,

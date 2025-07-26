@@ -44,8 +44,8 @@ export const useKakaoOAuth = ({ mode, onErrorRedirect }: UseKakaoOAuthOptions) =
       try {
         const response = mode === 'login' ? await signInWithKakao(code) : await signUpWithKakao(code);
 
-        setAccessToken(response.data.accessToken);
-        setRefreshToken(response.data.refreshToken);
+        setAccessToken(response.accessToken);
+        setRefreshToken(response.refreshToken);
         await fetchMyProfile();
         navigate('/');
       } catch (error) {

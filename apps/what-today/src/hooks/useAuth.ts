@@ -18,8 +18,7 @@ export default function useAuth() {
    * @throws 로그인 실패 시 예외를 발생시킵니다.
    */
   const loginUser = async (input: SignInFormValues) => {
-    const { email, password } = input;
-    const { data } = await login(email, password);
+    const data = await login(input);
     setAccessToken(data.accessToken);
     setRefreshToken(data.refreshToken);
   };

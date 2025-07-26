@@ -43,7 +43,6 @@ axiosInstance.interceptors.request.use((config) => {
     const token = useWhatTodayStore.getState().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('✔️ 엑세스 토큰을 추가했습니다!');
     }
   }
   return config;
