@@ -20,6 +20,15 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  /**
+   * @function fetchNotifications
+   * @description 무한 스크롤을 위한 알림 데이터를 요청합니다.
+   * - `cursorId`를 기반으로 다음 페이지의 알림 목록을 받아오며,
+   * - 빈 배열이나 cursorId가 null이면 더 이상 불러올 페이지가 없다고 판단합니다.
+   *
+   * @param {number | null} cursorId - 마지막으로 불러온 알림 ID (페이지네이션 기준값)
+   * @returns {Promise<NotificationsResponse>} 알림 목록, 커서 ID, 전체 알림 개수를 포함한 응답 객체
+   */
   const fetchNotifications = async ({ cursorId }: { cursorId: number | null }): Promise<NotificationsResponse> => {
     const params = {
       size: 10,
@@ -35,6 +44,17 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
     };
   };
 
+  /**
+   * @description 무한 스크롤 기반으로 알림 목록을 불러오는 React Query 훅입니다.
+   *
+   * @returns {
+   *   data: 알림 페이지 데이터 목록
+   *   fetchNextPage: 다음 페이지를 불러오는 함수
+   *   hasNextPage: 다음 페이지 유무
+   *   isFetchingNextPage: 다음 페이지 불러오는 중 여부
+   *   isLoading: 초기 로딩 여부
+   * }
+   */
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
     NotificationsResponse,
     Error
@@ -54,6 +74,12 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
     staleTime: 30 * 1000,
   });
 
+  /**
+   * @description 내 알림을 삭제하는 mutation 함수입니다.
+   *
+   * @onSuccess 삭제 성공 시 알림 목록 쿼리 무효화 및 성공 토스트 출력
+   * @onError 삭제 실패 시 에러 메시지를 파싱하여 에러 토스트 출력
+   */
   const deleteNotification = useMutation({
     mutationFn: deleteMyNotifications,
     onError: (error: AxiosError<{ message: string }>) => {
@@ -124,7 +150,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
           {!isLoading && data?.pages.every((page) => page.notifications.length === 0) && (
             <p className='text-md my-70 text-center text-gray-400'>알림이 없습니다.</p>
           )}
-          <div ref={observerRef} className='h-6 w-full' />
+          <div ref={observerRef} className='h-6 w-full' /> {/* 무한 스크롤 감지용 */}
         </div>
       </Popover.Content>
     </Popover.Root>
