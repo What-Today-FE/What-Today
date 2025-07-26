@@ -30,7 +30,7 @@ export default function Header() {
             {user?.profileImageUrl ? (
               <img
                 alt='프로필 이미지'
-                className='size-24 rounded-full border border-gray-50 object-cover'
+                className='size-24 rounded-full border border-gray-50 bg-white object-cover'
                 src={user.profileImageUrl}
               />
             ) : (
