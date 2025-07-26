@@ -37,6 +37,6 @@ export const getMyNotifications = async ({
  * @returns {Promise<AxiosResponse>} 삭제 요청에 대한 Axios 응답 객체
  */
 export const deleteMyNotifications = async (notificationId: number) => {
-  const response = axiosInstance.delete(`/my-notifications/${notificationId}`);
+  const response = await axiosInstance.delete(`/my-notifications/${notificationId}`);
   return response;
 };
