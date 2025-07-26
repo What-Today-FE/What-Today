@@ -7,6 +7,7 @@ import {
   postProfileImageUrlResponseSchema,
   type SignInFormValues,
   signInSchema,
+  userSchema,
 } from '@/schemas/auth';
 import { generateTemporaryNickname } from '@/utils/generateTemporaryNickname';
 
@@ -80,7 +81,9 @@ export const patchMyProfile = async (
     ...(safePassword && { newPassword: safePassword }),
   };
 
-  return await axiosInstance.patch('users/me', body);
+  const response = await axiosInstance.patch('users/me', body);
+
+  return userSchema.parse(response.data);
 };
 
 /**

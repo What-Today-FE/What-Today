@@ -120,8 +120,13 @@ export default function EditProfilePage() {
         description: '프로필이 성공적으로 업데이트되었습니다.',
         type: 'success',
       });
-      setUser(response.data);
-      reset(response.data);
+      setUser(response);
+      reset({
+        nickname: response.nickname,
+        profileImageUrl: response.profileImageUrl ?? '',
+        password: '',
+        passwordConfirm: '',
+      });
 
       // 비밀번호가 수정되었다면 로그아웃 후 로그인 페이지로 이동 (재로그인 유도)
       if (data.password) {
