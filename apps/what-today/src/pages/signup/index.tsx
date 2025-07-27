@@ -1,23 +1,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
-import axiosInstance from '@/apis/axiosInstance';
+import { signup } from '@/apis/auth';
 import EmailInput from '@/components/auth/EmailInput';
 import NicknameInput from '@/components/auth/NicknameInput';
 import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
 import PasswordInput from '@/components/auth/PasswordInput';
-import { type SignUpFormValues, signUpSchema } from '@/schemas/auth';
+import { signUpFormSchema, type SignUpFormValues } from '@/schemas/auth';
 
 export default function SignupPage() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  // const [isSignupLoading, setIsSignupLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpFormSchema),
     mode: 'onChange',
     defaultValues: {
       email: '',
@@ -27,38 +30,32 @@ export default function SignupPage() {
     },
   });
 
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [isSignupLoading, setIsSignupLoading] = useState(false);
-
   /** handleSignup
    * @description 회원가입 요청을 보내고, 성공시 로그인 페이지로 리다이렉트합니다.
    * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
    */
-  const onSubmit = async (data: SignUpFormValues) => {
-    try {
-      setIsSignupLoading(true);
-      await axiosInstance.post('users', {
-        email: data.email,
-        nickname: data.nickname,
-        password: data.password,
-      });
+  const { mutate: signupMutate, isPending } = useMutation({
+    mutationFn: ({ email, nickname, password }: SignUpFormValues) => signup(email, nickname, password),
+    onSuccess: () => {
       toast({
         title: '회원가입 성공',
         description: '환영합니다! 로그인하고 다양한 체험에 참여해보세요! 🎉',
         type: 'success',
       });
       navigate('/login');
-    } catch (error) {
+    },
+    onError: (error) => {
       const message = error instanceof Error ? error.message : '회원가입에 실패했습니다.';
       toast({
         title: '회원가입 오류',
         description: message,
         type: 'error',
       });
-    } finally {
-      setIsSignupLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: SignUpFormValues) => {
+    signupMutate(data);
   };
 
   const handleKakaoSignup = () => {
@@ -105,7 +102,7 @@ export default function SignupPage() {
             <Button
               className='h-fit w-full rounded-xl py-10 font-normal'
               disabled={isSubmitting || !isValid}
-              loading={isSignupLoading}
+              loading={isPending}
               size='xl'
               type='submit'
             >
@@ -118,7 +115,7 @@ export default function SignupPage() {
             </div>
             <Button
               className='h-fit w-full rounded-xl py-10 font-normal'
-              loading={isSignupLoading}
+              loading={isPending}
               size='xl'
               variant='outline'
               onClick={handleKakaoSignup}

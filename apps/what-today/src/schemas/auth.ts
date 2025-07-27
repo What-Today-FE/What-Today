@@ -19,7 +19,7 @@ export type User = z.infer<typeof userSchema>;
  * To server
  * @description 회원가입 요청
  */
-export const signUpSchema = z
+export const signUpFormSchema = z
   .object({
     email: z.string().min(1, { message: '이메일을 입력해 주세요.' }).email({ message: '이메일 형식이 아닙니다.' }),
     nickname: z
@@ -37,7 +37,7 @@ export const signUpSchema = z
     path: ['passwordConfirm'],
   });
 
-export type SignUpFormValues = z.infer<typeof signUpSchema>;
+export type SignUpFormValues = z.infer<typeof signUpFormSchema>;
 
 /**
  * To server

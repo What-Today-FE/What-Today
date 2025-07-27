@@ -7,6 +7,7 @@ import {
   postProfileImageUrlResponseSchema,
   type SignInFormValues,
   signInSchema,
+  type User,
   userSchema,
 } from '@/schemas/auth';
 import { generateTemporaryNickname } from '@/utils/generateTemporaryNickname';
@@ -21,6 +22,19 @@ export const login = async (input: SignInFormValues): Promise<LoginResponse> => 
   const validated = signInSchema.parse(input);
   const response = await axiosInstance.post('auth/login', validated);
   return loginResponseSchema.parse(response.data);
+};
+
+/**
+ * @description 회원가입 요청 API
+ * @returns accessToken + user
+ */
+export const signup = async (email: string, nickname: string, password: string): Promise<User> => {
+  const response = await axiosInstance.post('users', {
+    email,
+    nickname,
+    password,
+  });
+  return userSchema.parse(response.data);
 };
 
 /**
