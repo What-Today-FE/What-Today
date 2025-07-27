@@ -113,7 +113,9 @@ export default function Pagination({
     <div className='flex h-40 items-center justify-center gap-2'>
       {/* < 이전 */}
       <button
-        className={`px-3 text-lg text-black disabled:opacity-30 ${classNames?.prev ?? ''}`}
+        className={`px-3 text-lg text-gray-950 ${
+          currentPage === 1 || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'
+        } ${classNames?.prev ?? ''}`}
         disabled={currentPage === 1 || isLoading}
         onClick={() => onPageChange(currentPage - 1)}
       >
@@ -125,10 +127,10 @@ export default function Pagination({
         typeof page === 'number' ? (
           <button
             key={page}
-            className={`flex items-center justify-center border-b-2 px-10 text-lg ${
+            className={`flex cursor-pointer items-center justify-center border-b-2 px-10 text-lg ${
               currentPage === page
-                ? `border-blue-500 text-black ${classNames?.activePage ?? ''}`
-                : `border-transparent text-gray-300 hover:text-black ${classNames?.page ?? ''}`
+                ? `border-blue-500 text-gray-950 ${classNames?.activePage ?? ''}`
+                : `border-transparent text-gray-300 hover:text-gray-950 ${classNames?.page ?? ''}`
             }`}
             disabled={isLoading}
             onClick={() => onPageChange(page)}
@@ -147,7 +149,7 @@ export default function Pagination({
 
       {/* > 다음 */}
       <button
-        className={`px-3 text-lg disabled:opacity-30 ${classNames?.next ?? ''}`}
+        className={`px-3 text-lg disabled:opacity-30 ${currentPage === totalPages || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'} ${classNames?.next ?? ''}`}
         disabled={currentPage === totalPages || isLoading}
         onClick={() => onPageChange(currentPage + 1)}
       >
