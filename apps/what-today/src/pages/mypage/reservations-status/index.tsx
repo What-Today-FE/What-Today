@@ -1,4 +1,4 @@
-import { BottomSheet, NoResult, type ReservationStatus, Select } from '@what-today/design-system';
+import { BottomSheet, type CalendarReservationStatus, NoResult, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
 import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
 
@@ -70,10 +70,13 @@ export default function ReservationsStatusPage() {
     fetchMonthlySchedule();
   }, [selectedActivity, viewingMonth]);
 
-  const reservationMap = monthlyReservation.reduce<Record<string, Record<ReservationStatus, number>>>((acc, cur) => {
-    acc[cur.date] = cur.reservations;
-    return acc;
-  }, {});
+  const reservationMap = monthlyReservation.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
+    (acc, cur) => {
+      acc[cur.date] = cur.reservations;
+      return acc;
+    },
+    {},
+  );
 
   let content;
   if (activityLoading || monthlyLoading) {
@@ -120,7 +123,7 @@ export default function ReservationsStatusPage() {
 
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
-      <BottomSheet.Root isOpen={bottomSheetOpen} onClose={() => setBottomSheetOpen(false)}>
+      <BottomSheet.Root className='h-508' isOpen={bottomSheetOpen} onClose={() => setBottomSheetOpen(false)}>
         <BottomSheet.Content className='px-24 py-6'>
           {selectedActivity && selectedDate && (
             <ReservationSheet activityId={Number(selectedActivity?.value)} selectedDate={selectedDate} />

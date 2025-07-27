@@ -12,7 +12,7 @@ export const reservationSchema = z.object({
   teamId: z.string(),
   activityId: z.number().int().positive(),
   scheduleId: z.number().int().positive(),
-  status: z.string(),
+  status: z.enum(['pending', 'confirmed', 'declined']),
   reviewSubmitted: z.boolean(),
   totalPrice: z.number().int().nonnegative(),
   headCount: z.number().int().nonnegative(),

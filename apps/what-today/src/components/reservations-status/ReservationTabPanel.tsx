@@ -1,13 +1,31 @@
-import { ReservationInfoCard } from '@what-today/design-system';
+import { type ManageableReservationStatus, NoResult, ReservationInfoCard } from '@what-today/design-system';
 
-export default function ReservationTabPanel() {
+import type { reservation } from '@/schemas/myActivities';
+interface ReservationTabPanel {
+  reservationData: reservation[];
+  ownerStatus: ManageableReservationStatus;
+}
+export default function ReservationTabPanel({ reservationData, ownerStatus }: ReservationTabPanel) {
   return (
-    // 추후 api 연결하면 상태에 따라 card 변경 예정
     <div className='flex grow flex-col gap-12'>
       <h3 className='text-md font-bold'>예약 내역</h3>
-      <ReservationInfoCard headCount={7} nickname='김지현' ownerStatus='pending' userStatus='pending' />
-      <ReservationInfoCard headCount={7} nickname='김지현' ownerStatus='pending' userStatus='pending' />
-      <ReservationInfoCard headCount={7} nickname='김지현' ownerStatus='pending' userStatus='pending' />
+      {reservationData.length > 0 ? (
+        reservationData.map(({ id, nickname, headCount, status }) => {
+          return (
+            <ReservationInfoCard
+              key={id}
+              headCount={headCount}
+              nickname={nickname}
+              ownerStatus={ownerStatus}
+              userStatus={status}
+            />
+          );
+        })
+      ) : (
+        <div className='flex justify-center pt-20'>
+          <NoResult dataName='예약내역이' />
+        </div>
+      )}
     </div>
   );
 }
