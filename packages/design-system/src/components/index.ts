@@ -1,3 +1,4 @@
+export { default as AddressInput } from './AddressInput/AddressInput';
 export { BottomSheet } from './bottomsheet';
 export { default as Button } from './button';
 export * from './calendar';
