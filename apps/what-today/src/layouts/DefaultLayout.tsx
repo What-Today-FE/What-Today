@@ -2,10 +2,14 @@ import { Footer } from '@what-today/design-system';
 import { Outlet, useLocation } from 'react-router-dom';
 
 import Header from '@/components/Header';
+import { useResponsive } from '@/hooks/useResponsive';
 
 export default function DefaultLayout() {
   const location = useLocation();
+  const { isDesktop } = useResponsive();
   const isActivityDetailPage = location.pathname.startsWith('/activities/');
+
+  const footerMarginBottom = isActivityDetailPage && !isDesktop ? 'w-full mb-125' : 'w-full';
 
   return (
     <div className='flex w-full flex-col items-center gap-8 bg-white'>
@@ -22,7 +26,9 @@ export default function DefaultLayout() {
         <Outlet />
       </main>
 
-      <Footer />
+      <div className={footerMarginBottom}>
+        <Footer />
+      </div>
     </div>
   );
 }

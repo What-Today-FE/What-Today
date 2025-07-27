@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { twJoin } from 'tailwind-merge';
 
 import { fetchActivityDetail } from '@/apis/activityDetail';
 import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
@@ -20,8 +19,6 @@ export default function ActivityDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { isMobile, isTablet, isDesktop } = useResponsive();
-
-  const bottomOffset = !isDesktop ? 'pb-140' : 'pb-0';
 
   useEffect(() => {
     if (!id) return;
@@ -72,7 +69,7 @@ export default function ActivityDetailPage() {
             </div>
           </div>
         ) : (
-          <div className={twJoin('flex flex-col gap-30', bottomOffset)}>
+          <div className='flex flex-col gap-30'>
             <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
             <Divider className='border-gray-200' />
             <ActivitiesInformation
