@@ -149,7 +149,7 @@ export default function Pagination({
 
       {/* > 다음 */}
       <button
-        className={`px-3 text-lg disabled:opacity-30 ${currentPage === totalPages || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'} ${classNames?.next ?? ''}`}
+        className={`px-3 text-lg text-gray-950 ${currentPage === totalPages || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'} ${classNames?.next ?? ''}`}
         disabled={currentPage === totalPages || isLoading}
         onClick={() => onPageChange(currentPage + 1)}
       >
