@@ -1,15 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAuth from '@hooks/useAuth';
+import { useMutation } from '@tanstack/react-query';
 import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { login } from '@/apis/auth';
 import EmailInput from '@/components/auth/EmailInput';
 import PasswordInput from '@/components/auth/PasswordInput';
 import { type SignInFormValues, signInSchema } from '@/schemas/auth';
+import { useWhatTodayStore } from '@/stores';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const { fetchMyProfile } = useAuth();
+  const { toast } = useToast();
+  const { setAccessToken, setRefreshToken } = useWhatTodayStore();
   const {
     register,
     handleSubmit,
@@ -23,37 +29,35 @@ export default function LoginPage() {
     },
   });
 
-  const navigate = useNavigate();
-  const { loginUser, fetchMyProfile } = useAuth();
-  const { toast } = useToast();
-
-  const [isLoginLoading, setIsLoginLoading] = useState(false);
-
   /** handleLogin
    * @description 로그인 요청을 보내고, 성공 시 토큰과 사용자 정보를 전역 상태로 저장합니다.
    * @throws 에러 발생 시 메시지를 토스트 메시지로 출력합니다.
    */
-  const onSubmit = async (data: SignInFormValues) => {
-    try {
-      setIsLoginLoading(true);
-      await loginUser({
-        email: data.email,
-        password: data.password,
-      });
+  const { mutate: loginMutate, isPending } = useMutation({
+    mutationFn: login,
+    onSuccess: async (response) => {
+      setAccessToken(response.accessToken);
+      setRefreshToken(response.refreshToken);
       await fetchMyProfile();
       navigate('/');
-    } catch (error) {
+    },
+    onError: (error) => {
       const message = error instanceof Error ? error.message : '로그인에 실패했습니다.';
       toast({
         title: '로그인 오류',
         description: message,
         type: 'error',
       });
-    } finally {
-      setIsLoginLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: SignInFormValues) => {
+    loginMutate(data);
   };
 
+  /** handleKakaoLogin
+   * @description 카카오 로그인 리다이렉트를 합니다.
+   */
   const handleKakaoLogin = () => {
     const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
     const redirectUrl = import.meta.env.VITE_KAKAO_REDIRECT_URL ?? '';
@@ -95,7 +99,7 @@ export default function LoginPage() {
             <Button
               className='h-fit w-full rounded-xl py-10 font-normal'
               disabled={isSubmitting || !isValid}
-              loading={isLoginLoading}
+              loading={isPending}
               size='xl'
               type='submit'
             >
@@ -108,7 +112,7 @@ export default function LoginPage() {
             </div>
             <Button
               className='h-fit w-full rounded-xl py-10 font-normal'
-              loading={isLoginLoading}
+              loading={isPending}
               size='xl'
               variant='outline'
               onClick={handleKakaoLogin}
