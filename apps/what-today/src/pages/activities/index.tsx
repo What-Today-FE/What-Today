@@ -12,6 +12,13 @@ import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
 
+const mockImages = [
+  { id: 1, imageUrl: '/default-image.webp' },
+  { id: 2, imageUrl: '/default-image.webp' },
+  { id: 3, imageUrl: '/default-image.webp' },
+  { id: 4, imageUrl: '/default-image.webp' },
+];
+
 export default function ActivityDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [activity, setActivity] = useState<ActivityWithSubImagesAndSchedules | null>(null);
@@ -48,7 +55,8 @@ export default function ActivityDetailPage() {
         {isDesktop ? (
           <div className='grid grid-cols-[1fr_410px] gap-40'>
             <div className='flex flex-col gap-40'>
-              <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
+              {/* <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} /> */}
+              <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={mockImages} />
               <ActivitiesDescription description={activity.description} />
               <Divider />
               <ActivitiesMap address={activity.address} />
@@ -70,7 +78,8 @@ export default function ActivityDetailPage() {
           </div>
         ) : (
           <div className='flex flex-col gap-30'>
-            <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
+            {/* <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} /> */}
+            <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={mockImages} />
             <Divider className='border-gray-200' />
             <ActivitiesInformation
               address={activity.address}
