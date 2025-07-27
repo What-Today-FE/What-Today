@@ -26,5 +26,10 @@ export function useResponsive() {
     };
   }, []);
 
-  return screenSize;
+  return {
+    screenSize,
+    isMobile: screenSize === 'sm',
+    isTablet: screenSize === 'md',
+    isDesktop: screenSize === 'lg',
+  };
 }

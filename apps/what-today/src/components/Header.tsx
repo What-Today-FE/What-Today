@@ -10,8 +10,7 @@ import NotificationPopover from './notification/NotificationPopover';
 
 export default function Header() {
   const { user, isLoggedIn } = useWhatTodayStore();
-  const screenSize = useResponsive();
-  const isMobile = screenSize === 'sm';
+  const { isMobile } = useResponsive();
 
   return (
     <div className='relative z-50 flex w-full justify-between py-16'>
