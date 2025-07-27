@@ -52,6 +52,10 @@ export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
     const script = document.createElement('script');
     script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
     script.onload = handleOpen;
+    script.onerror = () => {
+      console.error('Daum 우편번호 스크립트 로딩에 실패했습니다.');
+      // 필요시 사용자에게 알림 또는 대체 방법 제공
+    };
     document.body.appendChild(script);
   } else {
     handleOpen();
