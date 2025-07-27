@@ -1,17 +1,14 @@
 import { useRef } from 'react';
 
 import { Input } from '../input';
-import { openDaumPostcode } from './openDaumPostcode';
-
-interface AddressInputProps {
-  onChange?: (value: string) => void;
-}
+import { OpenDaumPostcode } from './OpenDaumPostcode';
+import type { AddressInputProps } from './types';
 
 export default function AddressInput({ onChange }: AddressInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
-    openDaumPostcode((selectedAddress) => {
+    OpenDaumPostcode((selectedAddress) => {
       if (inputRef.current) {
         inputRef.current.value = selectedAddress; // DOM에 직접 값 설정
       }

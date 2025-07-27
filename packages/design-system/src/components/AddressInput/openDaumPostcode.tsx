@@ -1,3 +1,5 @@
+import type { DaumPostcodeData } from './types';
+
 /**
  * Daum 우편번호 검색 팝업을 열어 사용자가 주소를 선택할 수 있게 합니다.
  *
@@ -19,16 +21,17 @@
 declare global {
   interface Window {
     daum?: {
-      Postcode: new (options: { oncomplete: (data: any) => void }) => {
+      Postcode: new (options: { oncomplete: (data: DaumPostcodeData) => void }) => {
         open: () => void;
       };
     };
   }
 }
-export const openDaumPostcode = (onSelect: (address: string) => void) => {
+
+export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
   const handleOpen = () => {
     new window.daum!.Postcode({
-      oncomplete: (data: any) => {
+      oncomplete: (data: DaumPostcodeData) => {
         const roadAddr = data.roadAddress;
 
         let extraRoadAddr = '';
@@ -39,7 +42,7 @@ export const openDaumPostcode = (onSelect: (address: string) => void) => {
           extraRoadAddr += extraRoadAddr ? `, ${data.buildingName}` : data.buildingName;
         }
 
-        const fullAddr = roadAddr;
+        const fullAddr = roadAddr; // 필요 시 extraRoadAddr도 붙일 수 있음
         onSelect(fullAddr);
       },
     }).open();
