@@ -1,52 +1,76 @@
 import { BottomSheet, type CalendarReservationStatus, NoResult, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { getMonthlySchedule, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
 import ReservationSheet from '@/components/reservations-status/ReservationSheet';
 import type { monthlyScheduleResponse, myActivitiesResponse } from '@/schemas/myActivities';
 
+interface ReservationPageState {
+  activityList: myActivitiesResponse | null;
+  selectedActivityId: number | null;
+  calendar: {
+    year: string;
+    month: string;
+    reservations: monthlyScheduleResponse;
+  };
+  selectedDate: string | null;
+  isBottomSheetOpen: boolean;
+  isLoading: {
+    activities: boolean;
+    calendar: boolean;
+  };
+}
+
 export default function ReservationsStatusPage() {
-  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
-  const [activityList, setActivityList] = useState<myActivitiesResponse | null>(null);
-  const [monthlyReservation, setMonthlyReservation] = useState<monthlyScheduleResponse>([]);
-  const [activityLoading, setActivityLoading] = useState(true);
-  const [monthlyLoading, setMonthlyLoading] = useState(true);
-
-  const [selectedActivity, setSelectedActivity] = useState<{ value: string; label: ReactNode } | null>(null);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [viewingMonth, setViewingMonth] = useState<{ year: string; month: string }>({
-    year: dayjs().format('YYYY'),
-    month: dayjs().format('MM'),
+  const [state, setState] = useState<ReservationPageState>({
+    activityList: null,
+    selectedActivityId: null,
+    calendar: {
+      year: dayjs().format('YYYY'),
+      month: dayjs().format('MM'),
+      reservations: [],
+    },
+    selectedDate: null,
+    isBottomSheetOpen: false,
+    isLoading: {
+      activities: true,
+      calendar: true,
+    },
   });
-
-  const handleValueChange = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
-    setSelectedActivity(value);
-  };
-
-  const handleDateChange = (date: string) => {
-    setSelectedDate(date);
-    setBottomSheetOpen(true);
-  };
-
-  const handleMonthChange = (year: string, month: string) => {
-    if (viewingMonth.year === year && viewingMonth.month === month) return; // 동일하면 무시
-    setViewingMonth({ year, month });
-  };
 
   const fetchMyActivities = async () => {
     try {
       const result = await getMyActivities({ size: 10 });
-      setActivityList(result);
-      if (result.activities.length > 0) {
-        const firstActivity = result.activities[0];
-        setSelectedActivity({ value: String(firstActivity.id), label: firstActivity.title });
-      }
+      setState((prev) => ({
+        ...prev,
+        activityList: result,
+        selectedActivityId: result.activities[0].id,
+        isLoading: { ...prev.isLoading, activities: false },
+      }));
     } catch (err) {
       console.error('내 체험 조회 실패:', err);
+      setState((prev) => ({ ...prev, isLoading: { ...prev.isLoading, activities: false } }));
     }
-    setActivityLoading(false);
+  };
+
+  const fetchMonthlySchedule = async () => {
+    if (!state.selectedActivityId) return;
+    try {
+      const result = await getMonthlySchedule(state.selectedActivityId, {
+        year: state.calendar.year,
+        month: state.calendar.month,
+      });
+      setState((prev) => ({
+        ...prev,
+        calendar: { ...prev.calendar, reservations: result },
+        isLoading: { ...prev.isLoading, calendar: false },
+      }));
+    } catch (err) {
+      console.error('월별 예약현황 조회 실패:', err);
+      setState((prev) => ({ ...prev, isLoading: { ...prev.isLoading, calendar: false } }));
+    }
   };
 
   useEffect(() => {
@@ -54,23 +78,24 @@ export default function ReservationsStatusPage() {
   }, []);
 
   useEffect(() => {
-    if (!selectedActivity) return;
-    const fetchMonthlySchedule = async () => {
-      try {
-        const result = await getMonthlySchedule(Number(selectedActivity.value), {
-          year: viewingMonth.year,
-          month: viewingMonth.month,
-        });
-        setMonthlyReservation(result);
-      } catch (err) {
-        console.error('월별 예약현황 조회 실패:', err);
-      }
-      setMonthlyLoading(false);
-    };
     fetchMonthlySchedule();
-  }, [selectedActivity, viewingMonth]);
+  }, [state.selectedActivityId, state.calendar.year, state.calendar.month]);
 
-  const reservationMap = monthlyReservation.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
+  const handleActivityChange = (value: { value: string; label: ReactNode } | null) => {
+    const id = value ? Number(value.value) : null;
+    setState((prev) => ({ ...prev, selectedActivityId: id }));
+  };
+
+  const handleMonthChange = (year: string, month: string) => {
+    if (state.calendar.year === year && state.calendar.month === month) return;
+    setState((prev) => ({ ...prev, calendar: { ...prev.calendar, year, month } }));
+  };
+
+  const handleDateChange = (date: string) => {
+    setState((prev) => ({ ...prev, selectedDate: date, isBottomSheetOpen: true }));
+  };
+
+  const reservationMap = state.calendar.reservations.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
     (acc, cur) => {
       acc[cur.date] = cur.reservations;
       return acc;
@@ -78,22 +103,32 @@ export default function ReservationsStatusPage() {
     {},
   );
 
-  let content;
-  if (activityLoading || monthlyLoading) {
-    content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
-  } else if (activityList && activityList.activities.length > 0) {
-    content = (
+  let scheduleContent;
+  if (state.isLoading.activities || state.isLoading.calendar) {
+    scheduleContent = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
+  } else if (state.activityList && state.activityList.activities.length > 0) {
+    scheduleContent = (
       <div className='flex flex-col md:gap-24 xl:gap-30'>
         <section aria-label='체험 선택하기' className='max-w-640'>
-          <Select.Root value={selectedActivity} onChangeValue={handleValueChange}>
+          <Select.Root
+            value={
+              state.selectedActivityId
+                ? {
+                    value: String(state.selectedActivityId),
+                    label: state.activityList.activities.find((a) => a.id === state.selectedActivityId)?.title ?? '',
+                  }
+                : null
+            }
+            onChangeValue={handleActivityChange}
+          >
             <Select.Trigger className='h-54 max-w-640'>
               <Select.Value placeholder='내 체험 선택하기' />
             </Select.Trigger>
             <Select.Content>
               <Select.Group>
                 <Select.Label>내 체험 목록</Select.Label>
-                {activityList &&
-                  activityList.activities.map(({ id, title }) => {
+                {state.activityList &&
+                  state.activityList.activities.map(({ id, title }) => {
                     return (
                       <Select.Item key={id} value={String(id)}>
                         {title}
@@ -114,19 +149,22 @@ export default function ReservationsStatusPage() {
       </div>
     );
   } else {
-    content = (
+    scheduleContent = (
       <div className='flex justify-center p-40'>
         <NoResult dataName='등록한 체험이' />
       </div>
     );
   }
-
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
-      <BottomSheet.Root className='h-508' isOpen={bottomSheetOpen} onClose={() => setBottomSheetOpen(false)}>
+      <BottomSheet.Root
+        className='h-508'
+        isOpen={state.isBottomSheetOpen}
+        onClose={() => setState((s) => ({ ...s, isBottomSheetOpen: false }))}
+      >
         <BottomSheet.Content className='px-24 py-6'>
-          {selectedActivity && selectedDate && (
-            <ReservationSheet activityId={Number(selectedActivity?.value)} selectedDate={selectedDate} />
+          {state.selectedActivityId && state.selectedDate && (
+            <ReservationSheet activityId={Number(state.selectedActivityId)} selectedDate={state.selectedDate} />
           )}
         </BottomSheet.Content>
       </BottomSheet.Root>
@@ -134,7 +172,7 @@ export default function ReservationsStatusPage() {
         <h1 className='text-xl font-bold text-gray-950'>예약 현황</h1>
         <p className='text-md font-medium text-gray-500'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
       </header>
-      {content}
+      {scheduleContent}
     </div>
   );
 }
