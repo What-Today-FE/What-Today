@@ -48,32 +48,25 @@ export default function ReservationsListPage() {
         {/* 날짜 헤더 */}
         <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
         <ul>
-          {group.map((res) => (
-            <li key={res.id}>
-              {/* 예약 카드 */}
-              <ReservationCard
-                bannerImageUrl={res.activity.bannerImageUrl}
-                endTime={res.endTime}
-                headCount={res.headCount}
-                startTime={res.startTime}
-                status={res.status}
-                title={res.activity.title}
-                totalPrice={res.totalPrice}
-              />
+          {group.map((res) => {
+            const showCancelButton = res.status === 'confirmed';
+            const showReviewButton = res.status === 'completed' && res.reviewSubmitted === false;
 
-              {/* 상태에 따른 하단 버튼 렌더링 */}
-              {(res.status === 'confirmed' || (res.status === 'completed' && !res.reviewSubmitted)) && (
-                <div className='mt-12 flex gap-12'>
-                  {res.status === 'confirmed' && (
-                    <>
-                      <Button
-                        className='text-md w-full font-medium text-gray-600'
-                        size='md'
-                        variant='outline'
-                        onClick={() => {}}
-                      >
-                        예약 변경
-                      </Button>
+            return (
+              <li key={res.id}>
+                <ReservationCard
+                  bannerImageUrl={res.activity.bannerImageUrl}
+                  endTime={res.endTime}
+                  headCount={res.headCount}
+                  startTime={res.startTime}
+                  status={res.status}
+                  title={res.activity.title}
+                  totalPrice={res.totalPrice}
+                />
+
+                {(showCancelButton || showReviewButton) && (
+                  <div className='mt-12 flex gap-12'>
+                    {showCancelButton && (
                       <Button
                         className='text-md w-full bg-gray-50 font-medium text-gray-600'
                         size='md'
@@ -82,17 +75,22 @@ export default function ReservationsListPage() {
                       >
                         예약 취소
                       </Button>
-                    </>
-                  )}
-                  {res.status === 'completed' && !res.reviewSubmitted && (
-                    <Button className='text-md font-medium text-white' size='md' variant='fill' onClick={() => {}}>
-                      후기 작성
-                    </Button>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
+                    )}
+                    {showReviewButton && (
+                      <Button
+                        className='text-md w-full font-medium text-white'
+                        size='md'
+                        variant='fill'
+                        onClick={() => {}}
+                      >
+                        후기 작성
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
     ));
