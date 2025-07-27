@@ -5,6 +5,8 @@ interface ActivitiesReviewProps {
   review: ActivityReview;
 }
 
+const STARS = [1, 2, 3, 4, 5];
+
 /**
  * @description 후기 개별 카드 컴포넌트
  */
@@ -32,11 +34,9 @@ export default function ActivitiesReview({ review }: ActivitiesReviewProps) {
 }
 
 function RatingStars({ rating }: { rating: number }) {
-  const stars = [1, 2, 3, 4, 5];
-
   return (
     <div className='flex items-center gap-2'>
-      {stars.map((star) => (
+      {STARS.map((star) => (
         <StarIcon key={`star-${star}`} filled={star <= rating} />
       ))}
     </div>
