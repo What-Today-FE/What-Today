@@ -45,7 +45,7 @@ export default function ReservationsListPage() {
     if (!cancelTarget) return;
 
     try {
-      await cancelMyReservation(Number(cancelTarget.id), { status: 'canceled' });
+      await cancelMyReservation(cancelTarget.id, { status: 'canceled' });
       toast({
         title: '예약 취소 완료',
         description: `예약 '${cancelTarget.activity.title}'이(가) 취소되었습니다.`,
@@ -73,7 +73,7 @@ export default function ReservationsListPage() {
     };
 
     try {
-      await createReview(Number(reviewTarget.id), body);
+      await createReview(reviewTarget.id, body);
 
       toast({
         title: '후기 작성 완료',
