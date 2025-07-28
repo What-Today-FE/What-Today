@@ -1,12 +1,16 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Button, ChevronIcon, ProfileImageInput, useToast } from '@what-today/design-system';
-import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import z from 'zod';
 
 import { patchMyProfile, postProfileImageUrl } from '@/apis/auth';
 import NicknameInput from '@/components/auth/NicknameInput';
 import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
 import PasswordInput from '@/components/auth/PasswordInput';
 import useAuth from '@/hooks/useAuth';
+import { type UpdateMyProfileFormValues, updateMyProfileSchema } from '@/schemas/auth';
 import { useWhatTodayStore } from '@/stores';
 
 /**
@@ -33,33 +37,63 @@ const stringToFile = async (url: string, filename = 'image.jpg'): Promise<File> 
   }
 };
 
-export default function EditProfilePage() {
-  const navigate = useNavigate();
-  const { user, setUser } = useWhatTodayStore();
-  const { logoutUser } = useAuth();
+/** resolveProfileImageUrl
+ * @description 폼에서 넘어온 profileImageUrl을 기반으로 서버에 보낼 최종 이미지 URL을 반환
+ * @returns 업로드된 URL 문자열 | null (초기화) | undefined (변경 없음)
+ */
+async function resolveProfileImageUrl({
+  profileImageUrl,
+  originalImageUrl,
+}: {
+  profileImageUrl: string;
+  originalImageUrl?: string | null;
+}): Promise<string | null | undefined> {
+  if (profileImageUrl.startsWith('blob:')) {
+    const file = await stringToFile(profileImageUrl, 'profile.jpg');
+    const { profileImageUrl: uploadedUrl } = await postProfileImageUrl(file);
+    return uploadedUrl;
+  }
 
+  if (profileImageUrl === '') {
+    return null; // 이미지 초기화
+  }
+
+  if (profileImageUrl !== originalImageUrl) {
+    return profileImageUrl; // 새로운 이미지 URL
+  }
+
+  return undefined; // 변경 없음
+}
+
+export default function EditProfilePage() {
+  const { user, setUser } = useWhatTodayStore();
+  const navigate = useNavigate();
+  const { logoutUser } = useAuth();
   const { toast } = useToast();
-  const [isEditProfileLoading] = useState(false);
-  const [profileImage, setProfileImage] = useState<string>(user?.profileImageUrl ?? '');
-  const [nickname, setNickname] = useState(user?.nickname ?? '');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+    watch,
+    reset,
+  } = useForm<UpdateMyProfileFormValues>({
+    resolver: zodResolver(updateMyProfileSchema),
+    mode: 'onChange',
+    defaultValues: {
+      nickname: user?.nickname ?? '',
+      profileImageUrl: user?.profileImageUrl ?? '',
+      password: '',
+      passwordConfirm: '',
+    },
+  });
+  const watchedPassword = watch('password');
 
   /**
    * @description 뒤로가기 버튼으로 리다이렉트할 페이지입니다.
    */
   const handleNavigateToMypage = () => {
     navigate('/mypage');
-  };
-
-  /**
-   * @description 취소 버튼을 누르거나, 내 정보 수정에 성공할 때 사용할 폼 초기화 함수입니다.
-   */
-  const resetForm = (userData = user) => {
-    setNickname(userData?.nickname ?? '');
-    setPassword('');
-    setPasswordConfirm('');
-    setProfileImage(userData?.profileImageUrl ?? '');
   };
 
   /**
@@ -80,52 +114,63 @@ export default function EditProfilePage() {
    */
   const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    resetForm();
+    reset();
   };
 
   /**
    * @description 프로필 사진 or 닉네임 or 비밀번호를 수정하는 API를 요청합니다. 실패시 에러 토스트 메시지를 보여줍니다.
    */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      let uploadedImageUrl: string | null | undefined = undefined;
-      const isBlobUrl = profileImage.startsWith('blob:');
-      const isReset = profileImage === '';
-      const isOriginalImage = profileImage === user?.profileImageUrl;
+  const { mutate: updateProfileMutate, isPending } = useMutation({
+    mutationFn: async (data: UpdateMyProfileFormValues) => {
+      const uploadedImageUrl = await resolveProfileImageUrl({
+        profileImageUrl: data.profileImageUrl ?? '',
+        originalImageUrl: user?.profileImageUrl,
+      });
 
-      if (isBlobUrl) {
-        const file = await stringToFile(profileImage, 'profile.jpg');
-        const imageUploadRes = await postProfileImageUrl(file);
-        uploadedImageUrl = imageUploadRes.data.profileImageUrl;
-      } else if (isReset) {
-        uploadedImageUrl = null;
-      } else if (!isOriginalImage) {
-        uploadedImageUrl = profileImage;
-      }
+      const updatedUser = await patchMyProfile(data.nickname, uploadedImageUrl, data.password);
 
-      const response = await patchMyProfile(nickname, uploadedImageUrl, password);
-
+      return {
+        updatedUser,
+        passwordChanged: Boolean(data.password),
+      };
+    },
+    onSuccess: ({ updatedUser, passwordChanged }) => {
       toast({
         title: '내 정보 변경 성공',
         description: '프로필이 성공적으로 업데이트되었습니다.',
         type: 'success',
       });
-      setUser(response.data);
-      resetForm(response.data);
+      setUser(updatedUser);
+      reset({
+        nickname: updatedUser.nickname,
+        profileImageUrl: updatedUser.profileImageUrl ?? '',
+        password: '',
+        passwordConfirm: '',
+      });
 
-      // 비밀번호가 수정되었다면 로그아웃 후 로그인 페이지로 이동 (재로그인 유도)
-      if (password.length > 0) {
+      if (passwordChanged) {
         handleLogout();
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : '프로필 수정에 실패했습니다.';
+    },
+    onError: (error) => {
+      let message = '프로필 수정에 실패했습니다.';
+
+      if (error instanceof z.ZodError) {
+        message = error.errors[0]?.message ?? message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
       toast({
         title: '프로필 수정 실패',
         description: message,
         type: 'error',
       });
-    }
+    },
+  });
+
+  const onSubmit = (data: UpdateMyProfileFormValues) => {
+    updateProfileMutate(data);
   };
 
   return (
@@ -139,25 +184,31 @@ export default function EditProfilePage() {
       <form
         className='flex w-full flex-col items-center justify-center gap-32 pt-20'
         onReset={handleReset}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className='flex w-full flex-col gap-12'>
-          <ProfileImageInput
-            initial={user?.profileImageUrl ?? ''}
-            src={profileImage}
-            onChange={(value) => setProfileImage(value)}
+          <Controller
+            control={control}
+            name='profileImageUrl'
+            render={({ field }) => (
+              <ProfileImageInput
+                initial={user?.profileImageUrl ?? ''}
+                src={field.value ?? ''}
+                onChange={(val) => field.onChange(val)}
+              />
+            )}
           />
-          <NicknameInput value={nickname} onChange={(e) => setNickname(e.target.value)} />
-          <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
-          {password.length > 0 && (
-            <PasswordConfirmInput value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} />
+          <NicknameInput {...register('nickname')} error={errors.nickname?.message} />
+          <PasswordInput {...register('password')} error={errors.password?.message} />
+          {watchedPassword && (
+            <PasswordConfirmInput {...register('passwordConfirm')} error={errors.passwordConfirm?.message} />
           )}
         </div>
 
         <div className='flex w-full max-w-640 justify-center gap-12'>
           <Button
             className='h-fit w-auto rounded-xl py-10 font-normal'
-            loading={isEditProfileLoading}
+            loading={isPending}
             size='xl'
             type='reset'
             variant='outline'
@@ -166,7 +217,8 @@ export default function EditProfilePage() {
           </Button>
           <Button
             className='h-fit w-auto rounded-xl py-10 font-normal'
-            loading={isEditProfileLoading}
+            disabled={isSubmitting || !isValid}
+            loading={isPending}
             size='xl'
             type='submit'
           >

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { tokenResponseSchema } from '@/schemas/auth';
 import { useWhatTodayStore } from '@/stores';
 
 /**
@@ -43,7 +44,6 @@ axiosInstance.interceptors.request.use((config) => {
     const token = useWhatTodayStore.getState().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('✔️ 엑세스 토큰을 추가했습니다!');
     }
   }
   return config;
@@ -97,7 +97,7 @@ axiosInstance.interceptors.response.use(
               },
             },
           );
-          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          const { accessToken, refreshToken: newRefreshToken } = tokenResponseSchema.parse(response.data);
 
           useWhatTodayStore.getState().setAccessToken(accessToken);
           useWhatTodayStore.getState().setRefreshToken(newRefreshToken);
