@@ -140,7 +140,7 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
             <Select.Trigger className='h-54'>
               <Select.Value placeholder='예약 시간 선택하기' />
             </Select.Trigger>
-            <Select.Content>
+            <Select.Content className='z-1000'>
               <Select.Group>
                 <Select.Label>시간대별 예약</Select.Label>
                 {state.dailySchedule.map(({ scheduleId, startTime, endTime }) => {

@@ -4,15 +4,17 @@ import {
   type CalendarReservationStatus,
   ChevronIcon,
   NoResult,
+  Popover,
   Select,
 } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getMonthlySchedule, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
 import ReservationSheet from '@/components/reservations-status/ReservationSheet';
+import { useResponsive } from '@/hooks/useResponsive';
 import type { monthlyScheduleResponse, myActivitiesResponse } from '@/schemas/myActivities';
 
 interface ReservationPageState {
@@ -24,7 +26,13 @@ interface ReservationPageState {
     reservations: monthlyScheduleResponse;
   };
   selectedDate: string | null;
-  isBottomSheetOpen: boolean;
+  isReservationSheetOpen: boolean;
+  selectedDatePos: {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  };
   isLoading: {
     activities: boolean;
     calendar: boolean;
@@ -33,6 +41,15 @@ interface ReservationPageState {
 
 export default function ReservationsStatusPage() {
   const navigate = useNavigate();
+  const responsive = useResponsive();
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const iniDatePos = {
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0,
+  };
+
   const [state, setState] = useState<ReservationPageState>({
     activityList: null,
     selectedActivityId: null,
@@ -42,7 +59,8 @@ export default function ReservationsStatusPage() {
       reservations: [],
     },
     selectedDate: null,
-    isBottomSheetOpen: false,
+    isReservationSheetOpen: false,
+    selectedDatePos: iniDatePos,
     isLoading: {
       activities: true,
       calendar: true,
@@ -105,8 +123,48 @@ export default function ReservationsStatusPage() {
   };
 
   const handleDateChange = (date: string) => {
-    setState((prev) => ({ ...prev, selectedDate: date, isBottomSheetOpen: true }));
+    const el = document.querySelector(`.dt-${date}`) as HTMLElement | null;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const pos = {
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+        height: rect.height,
+      };
+      setState((prev) => ({ ...prev, selectedDate: date, isReservationSheetOpen: true, selectedDatePos: pos }));
+    } else
+      setState((prev) => ({ ...prev, selectedDate: date, isReservationSheetOpen: true, selectedDatePos: iniDatePos }));
   };
+
+  // 예약 페이지 Popup Position 구하기
+  // className 형태로 Return
+  const reservationPopupPosition: React.CSSProperties = useMemo(() => {
+    if (!state || !state.selectedDatePos || !calendarRef.current) return {};
+    const calendarRect = calendarRef.current.getBoundingClientRect();
+    const dateRect = state.selectedDatePos;
+    const space = 10; // 띄울 간격
+    let left = dateRect.left + dateRect.width + space;
+    let top = dateRect.top;
+
+    const popoverWidth = 340;
+    const popoverHeight = 537;
+
+    // 👉 우측 넘침 → 왼쪽으로
+    if (left + popoverWidth > calendarRect.left + calendarRect.width) {
+      left = dateRect.left - popoverWidth - space;
+    }
+
+    // 👉 하단 넘침 → 위쪽으로
+    if (top + popoverHeight > calendarRect.top + calendarRect.height) {
+      top = calendarRect.top + calendarRect.height - popoverHeight;
+    }
+
+    return {
+      left: left + window.scrollX,
+      top: top + window.scrollY,
+    };
+  }, [state]);
 
   const reservationMap = state.calendar.reservations.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
     (acc, cur) => {
@@ -152,7 +210,7 @@ export default function ReservationsStatusPage() {
             </Select.Content>
           </Select.Root>
         </section>
-        <section aria-label='예약 캘린더'>
+        <section ref={calendarRef} aria-label='예약 캘린더'>
           <ReservationCalendar
             reservationsByDate={reservationMap}
             onChange={handleDateChange}
@@ -171,9 +229,8 @@ export default function ReservationsStatusPage() {
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
       <BottomSheet.Root
-        className='h-508'
-        isOpen={state.isBottomSheetOpen}
-        onClose={() => setState((s) => ({ ...s, isBottomSheetOpen: false }))}
+        isOpen={state.isReservationSheetOpen && !responsive.isDesktop}
+        onClose={() => setState((s) => ({ ...s, isReservationSheetOpen: false }))}
       >
         <BottomSheet.Content className='px-24 py-6'>
           {state.selectedActivityId && state.selectedDate && (
@@ -181,6 +238,29 @@ export default function ReservationsStatusPage() {
           )}
         </BottomSheet.Content>
       </BottomSheet.Root>
+
+      {/* Popover Content */}
+      <div className={`fixed h-537 w-340 ${state.isReservationSheetOpen && responsive.isDesktop ? 'block' : 'hidden'}`}>
+        <Popover.Root open={state.isReservationSheetOpen && responsive.isDesktop}>
+          <Popover.Trigger>
+            <div />
+          </Popover.Trigger>
+          <Popover.Content
+            overlay
+            className='z-1000 rounded-xl bg-white p-24 shadow-xl'
+            overlayOpacity={100}
+            style={reservationPopupPosition}
+            onOverlayClick={() => {
+              setState((s) => ({ ...s, isReservationSheetOpen: false }));
+            }}
+          >
+            {state.selectedActivityId && state.selectedDate && (
+              <ReservationSheet activityId={Number(state.selectedActivityId)} selectedDate={state.selectedDate} />
+            )}
+          </Popover.Content>
+        </Popover.Root>
+      </div>
+
       <header className='mb-18 flex flex-col gap-10 p-1 md:mb-0'>
         <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
           <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>

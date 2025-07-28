@@ -64,7 +64,7 @@ export default function DayCell({ day, reservableDates, reservations, dayCellCla
     isSelected && 'bg-primary-500 text-white',
   );
   return (
-    <div className={twMerge(dayCellBaseClass, dayCellClass)} onClick={handleClick}>
+    <div className={twMerge(dayCellBaseClass, dayCellClass, `dt-${day.format('YYYY-MM-DD')}`)} onClick={handleClick}>
       <span className={twMerge(dateBaseClass, dateClass)}>{day.date()}</span>
       {(['pending', 'confirmed', 'completed'] as const).map((status) => {
         const count = reservations?.[status] ?? 0;
