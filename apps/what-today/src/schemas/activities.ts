@@ -19,4 +19,33 @@ export const activitySchema = z.object({
   updatedAt: z.string().datetime(),
 });
 
+/**
+ * @description 서브 이미지 항목 스키마
+ */
+export const subImageSchema = z.object({
+  id: z.number().int().positive(),
+  imageUrl: z.string().url(),
+});
+
+/**
+ * @description 스케줄 항목 스키마
+ */
+export const scheduleSchema = z.object({
+  id: z.number().int().positive(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'YYYY-MM-DD 형식이어야 합니다'),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, 'HH:MM 형식이어야 합니다'),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/, 'HH:MM 형식이어야 합니다'),
+});
+
+/**
+ * @description subImages와 schedules를 포함한 확장 스키마
+ */
+export const activityWithSubImagesAndSchedulesSchema = activitySchema.extend({
+  subImages: z.array(subImageSchema),
+  schedules: z.array(scheduleSchema),
+});
+
 export type Activity = z.infer<typeof activitySchema>;
+export type SubImage = z.infer<typeof subImageSchema>;
+export type Schedule = z.infer<typeof scheduleSchema>;
+export type ActivityWithSubImagesAndSchedules = z.infer<typeof activityWithSubImagesAndSchedulesSchema>;

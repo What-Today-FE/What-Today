@@ -1,4 +1,5 @@
 import Sidebar from '@layouts/Sidebar';
+import AddressInputDoc from '@pages/AddressInputDoc';
 import BottomSheetDoc from '@pages/BottomSheetDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
@@ -12,6 +13,7 @@ import InputDoc from '@pages/InputDoc';
 import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
+import MainCardDoc from '@pages/MainCardDoc';
 import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
 import NoResultDoc from '@pages/NoResultDoc';
@@ -28,7 +30,6 @@ import ToastDoc from '@pages/ToastDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import FooterDoc from '@/pages/FooterDoc';
-import MainCardDoc from '@/pages/MainCardDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import ReservationInfoCardDoc from '@/pages/ReservationInfoCardDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
@@ -165,6 +166,10 @@ const router = createBrowserRouter([
       {
         path: 'StarRating',
         element: <StarRatingDoc />,
+      },
+      {
+        path: 'AddressInput',
+        element: <AddressInputDoc />,
       },
     ],
   },
