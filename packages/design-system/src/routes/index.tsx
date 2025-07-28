@@ -1,4 +1,5 @@
 import Sidebar from '@layouts/Sidebar';
+import AddressInputDoc from '@pages/AddressInputDoc';
 import BottomSheetDoc from '@pages/BottomSheetDoc';
 import ButtonDoc from '@pages/ButtonDoc';
 import CalendarDoc from '@pages/CalendarDoc';
@@ -165,6 +166,10 @@ const router = createBrowserRouter([
       {
         path: 'StarRating',
         element: <StarRatingDoc />,
+      },
+      {
+        path: 'AddressInput',
+        element: <AddressInputDoc />,
       },
     ],
   },

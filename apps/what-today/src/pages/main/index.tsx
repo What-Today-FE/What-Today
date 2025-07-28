@@ -16,6 +16,7 @@ import {
   WellbeingIcon,
 } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import type { Activity } from '@/apis/activities';
 import { getActivities } from '@/apis/activities';
@@ -27,6 +28,7 @@ export default function MainPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
+  const navigate = useNavigate();
 
   //  반응형 카드 수 조정
   useEffect(() => {
@@ -90,7 +92,7 @@ export default function MainPage() {
         <div className='flex flex-col gap-20'>
           <h2 className='text-2xl font-bold text-gray-950'>🔥 인기 체험</h2>
           <div className='-mx-15 flex'>
-            <Carousel items={activities} itemsPerPage={itemsPerPage} />
+            <Carousel items={activities} itemsPerPage={itemsPerPage} onClick={(id) => navigate(`/activities/${id}`)} />
           </div>
         </div>
 
@@ -164,6 +166,7 @@ export default function MainPage() {
                 rating={item.rating}
                 reviewCount={item.reviewCount}
                 title={item.title}
+                onClick={() => navigate(`/activities/${item.id}`)}
               >
                 <MainCard.Image className='' />
                 <MainCard.Content />
