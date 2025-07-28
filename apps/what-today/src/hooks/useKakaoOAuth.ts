@@ -1,5 +1,6 @@
+import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@what-today/design-system';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { signInWithKakao, signUpWithKakao } from '@/apis/auth';
@@ -35,40 +36,36 @@ export const useKakaoOAuth = ({ mode, onErrorRedirect }: UseKakaoOAuthOptions) =
   const { toast } = useToast();
   const requestSentRef = useRef(false);
 
-  const sendAuthRequest = useCallback(
-    async (code: string) => {
-      // 이미 요청을 보냈다면 중복 실행 방지
-      if (requestSentRef.current) return;
-      requestSentRef.current = true;
-
-      try {
-        const response = mode === 'login' ? await signInWithKakao(code) : await signUpWithKakao(code);
-
-        setAccessToken(response.data.accessToken);
-        setRefreshToken(response.data.refreshToken);
-        await fetchMyProfile();
-        navigate('/');
-      } catch (error) {
-        const message = error instanceof Error ? error.message : '인증에 실패했습니다.';
-        if (message === '이미 등록된 사용자입니다.' && mode === 'signup') {
-          toast({
-            title: '회원가입 오류',
-            description: '이미 가입한 계정이 있습니다. 로그인해주세요!',
-            type: 'error',
-          });
-          navigate(onErrorRedirect || '/login');
-        } else {
-          console.error('인증 오류 발생:', error);
-        }
+  const { mutate: kakaoAuthMutate } = useMutation({
+    mutationFn: async (code: string) => {
+      return mode === 'login' ? await signInWithKakao(code) : await signUpWithKakao(code);
+    },
+    onSuccess: async (response) => {
+      setAccessToken(response.accessToken);
+      setRefreshToken(response.refreshToken);
+      await fetchMyProfile();
+      navigate('/');
+    },
+    onError: (error) => {
+      const message = error instanceof Error ? error.message : '인증에 실패했습니다.';
+      if (message === '이미 등록된 사용자입니다.' && mode === 'signup') {
+        toast({
+          title: '회원가입 오류',
+          description: '이미 가입한 계정이 있습니다. 로그인해주세요!',
+          type: 'error',
+        });
+        navigate(onErrorRedirect || '/login');
+      } else {
+        console.error('인증 오류 발생:', error);
       }
     },
-    [mode, onErrorRedirect, setAccessToken, setRefreshToken, fetchMyProfile, navigate, toast],
-  );
+  });
 
   useEffect(() => {
     const code = searchParams.get('code');
-    if (!code) return;
+    if (!code || requestSentRef.current) return;
 
-    sendAuthRequest(code);
-  }, [searchParams, sendAuthRequest]);
+    requestSentRef.current = true;
+    kakaoAuthMutate(code);
+  }, [searchParams, kakaoAuthMutate]);
 };
