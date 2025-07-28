@@ -18,35 +18,13 @@ const HEADER_HEIGHT = 24;
  */
 export function useBodyScrollLock(isLocked: boolean) {
   useEffect(() => {
-    if (isLocked) {
-      // 현재 스크롤 위치 저장 (iOS에서 위치 변화 방지)
-      const scrollY = window.scrollY;
+    if (!isLocked) return;
 
-      // body 스크롤 방지
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    } else {
-      // 스크롤 위치 복원
-      const scrollY = document.body.style.top;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
 
-      // 이전 스크롤 위치로 복원
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
-    }
-
-    // cleanup: 컴포넌트 언마운트 시 스크롤 복원
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
+      document.body.style.overflow = originalOverflow;
     };
   }, [isLocked]);
 }
