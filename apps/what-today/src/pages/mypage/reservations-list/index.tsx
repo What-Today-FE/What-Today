@@ -1,14 +1,27 @@
-import { Button, NoResult, RadioGroup, ReservationCard } from '@what-today/design-system';
+import { Button, Input, Modal, NoResult, RadioGroup, ReservationCard, StarRating } from '@what-today/design-system';
+import { WarningLogo } from '@what-today/design-system';
+import { useToast } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 
-import { fetchMyReservations } from '@/apis/myReservations';
+import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/myReservations';
 import type { Reservation } from '@/schemas/myReservations';
 
 export default function ReservationsListPage() {
+  const { toast } = useToast();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
+
+  const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
+  const isDeleteOpen = cancelTarget !== null;
+
+  const [reviewTarget, setReviewTarget] = useState<Reservation | null>(null);
+  const isReviewOpen = reviewTarget !== null;
+
+  const [reviewContent, setReviewContent] = useState('');
+  const [starRating, setStarRating] = useState(0);
+  const isReviewValid = starRating > 0 && reviewContent.trim().length > 0;
 
   const fetchReservations = async (status?: string) => {
     setLoading(true);
@@ -27,6 +40,62 @@ export default function ReservationsListPage() {
   useEffect(() => {
     fetchReservations(selectedStatus || undefined);
   }, [selectedStatus]);
+
+  const handleConfirmCancel = async () => {
+    if (!cancelTarget) return;
+
+    try {
+      await cancelMyReservation(cancelTarget.id, { status: 'canceled' });
+      toast({
+        title: '예약 취소 완료',
+        description: `예약 '${cancelTarget.activity.title}'이(가) 취소되었습니다.`,
+        type: 'success',
+      });
+      setCancelTarget(null);
+      fetchReservations(selectedStatus || undefined); // 목록 갱신
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : `예약 '${cancelTarget.activity.title}'이(가) 취소되지 않았습니다.`;
+      toast({
+        title: '예약 취소 실패',
+        description: message,
+        type: 'error',
+      });
+    }
+  };
+
+  const handleConfirmReview = async () => {
+    if (!reviewTarget) return;
+
+    const body = {
+      rating: starRating,
+      content: reviewContent,
+    };
+
+    try {
+      await createReview(reviewTarget.id, body);
+
+      toast({
+        title: '후기 작성 완료',
+        description: `'${reviewTarget.activity.title}'에 대한 후기가 등록되었습니다.`,
+        type: 'success',
+      });
+
+      setStarRating(0);
+      setReviewContent('');
+      setReviewTarget(null);
+
+      fetchReservations(selectedStatus || undefined); // 목록 새로고침
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '후기 작성에 실패했습니다. 다시 시도해주세요.';
+
+      toast({
+        title: '후기 작성 실패',
+        description: message,
+        type: 'error',
+      });
+    }
+  };
 
   const renderGroupedReservations = (items: Reservation[]) => {
     // 날짜별로 예약들을 그룹핑합니다. (예: '2025-07-25': [예약1, 예약2])
@@ -48,51 +117,53 @@ export default function ReservationsListPage() {
         {/* 날짜 헤더 */}
         <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
         <ul>
-          {group.map((res) => (
-            <li key={res.id}>
-              {/* 예약 카드 */}
-              <ReservationCard
-                bannerImageUrl={res.activity.bannerImageUrl}
-                endTime={res.endTime}
-                headCount={res.headCount}
-                startTime={res.startTime}
-                status={res.status}
-                title={res.activity.title}
-                totalPrice={res.totalPrice}
-              />
+          {group.map((res) => {
+            const showCancelButton = res.status === 'confirmed';
+            const showReviewButton = res.status === 'completed' && res.reviewSubmitted === false;
 
-              {/* 상태에 따른 하단 버튼 렌더링 */}
-              {(res.status === 'confirmed' || (res.status === 'completed' && !res.reviewSubmitted)) && (
-                <div className='mt-12 flex gap-12'>
-                  {res.status === 'confirmed' && (
-                    <>
-                      <Button
-                        className='text-md w-full font-medium text-gray-600'
-                        size='md'
-                        variant='outline'
-                        onClick={() => {}}
-                      >
-                        예약 변경
-                      </Button>
+            return (
+              <li key={res.id}>
+                <ReservationCard
+                  bannerImageUrl={res.activity.bannerImageUrl}
+                  endTime={res.endTime}
+                  headCount={res.headCount}
+                  startTime={res.startTime}
+                  status={res.status}
+                  title={res.activity.title}
+                  totalPrice={res.totalPrice}
+                />
+
+                {(showCancelButton || showReviewButton) && (
+                  <div className='mt-12 flex gap-12'>
+                    {showCancelButton && (
                       <Button
                         className='text-md w-full bg-gray-50 font-medium text-gray-600'
                         size='md'
                         variant='fill'
-                        onClick={() => {}}
+                        onClick={() => {
+                          setCancelTarget(res);
+                        }}
                       >
                         예약 취소
                       </Button>
-                    </>
-                  )}
-                  {res.status === 'completed' && !res.reviewSubmitted && (
-                    <Button className='text-md font-medium text-white' size='md' variant='fill' onClick={() => {}}>
-                      후기 작성
-                    </Button>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
+                    )}
+                    {showReviewButton && (
+                      <Button
+                        className='text-md w-full font-medium text-white'
+                        size='md'
+                        variant='fill'
+                        onClick={() => {
+                          setReviewTarget(res);
+                        }}
+                      >
+                        후기 작성
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
     ));
@@ -140,6 +211,58 @@ export default function ReservationsListPage() {
       <section aria-label='예약 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
       </section>
+
+      {/* 예약 취소 확인 모달 */}
+      <Modal.Root open={isDeleteOpen} onClose={() => setCancelTarget(null)}>
+        <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
+          <div className='flex flex-col items-center gap-6 text-center'>
+            <WarningLogo className='md:size-110 lg:size-150' size={88} />
+            <p className='text-2lg font-bold'>예약을 취소하시겠어요?</p>
+          </div>
+          <Modal.Actions>
+            <Modal.CancelButton>아니요</Modal.CancelButton>
+            <Modal.ConfirmButton onClick={handleConfirmCancel}>취소하기</Modal.ConfirmButton>
+          </Modal.Actions>
+        </Modal.Content>
+      </Modal.Root>
+
+      <Modal.Root open={isReviewOpen} onClose={() => setReviewTarget(null)}>
+        {reviewTarget && (
+          <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
+            <Modal.CloseButton />
+            <h2 className='mt-22 text-lg font-bold'>{reviewTarget.activity.title}</h2>
+            <p className='text-md text-gray-500'>
+              {reviewTarget.date}/ {reviewTarget.startTime} ~ {reviewTarget.endTime} ({reviewTarget.headCount}명)
+            </p>
+
+            {/* 별점 선택 영역 */}
+            <div className='flex flex-row items-center gap-16'>
+              <StarRating value={starRating} onChange={setStarRating} />
+            </div>
+
+            {/* 텍스트 입력 영역 */}
+            <Input.Root size='xs'>
+              <Input.Label className='mt-24 mb-16 self-start text-left font-bold'>소중한 경험을 들려주세요</Input.Label>
+              <Input.Wrapper className='shadow-sm'>
+                <Input.Textarea
+                  className='h-180'
+                  maxLength={100}
+                  placeholder='체험에서 느낀 경험을 자유롭게 남겨주세요.'
+                  value={reviewContent}
+                  onChange={(e) => setReviewContent(e.target.value)}
+                />
+              </Input.Wrapper>
+              <Input.TextCounter length={reviewContent.length} maxLength={100} />
+            </Input.Root>
+
+            <Modal.Actions>
+              <Modal.ConfirmButton disabled={!isReviewValid} onClick={handleConfirmReview}>
+                작성하기
+              </Modal.ConfirmButton>
+            </Modal.Actions>
+          </Modal.Content>
+        )}
+      </Modal.Root>
     </div>
   );
 }
