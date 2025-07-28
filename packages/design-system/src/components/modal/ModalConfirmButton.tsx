@@ -22,7 +22,8 @@ import type { ModalConfirmButtonProps } from './types';
  * @param {ModalConfirmButtonProps} props - ModalConfirmButton 컴포넌트의 Props
  * @param {ReactNode} props.children - 버튼에 표시될 텍스트
  * @param {string} [props.className] - 추가 CSS 클래스명
- * @param {() => void} [props.onClick] - 버튼 클릭 시 추가로 실행될 함수 (onConfirm보다 먼저 실행됨)
+ * @param {() => void} [props.onClick] - 버튼 클릭 시 추가로 실행될 함수
+ * @param {boolean} [props.disabled] - 버튼 비활성화 여부
  *
  * @example
  * ```tsx
