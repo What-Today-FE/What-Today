@@ -1,14 +1,19 @@
-import { Button, NoResult, RadioGroup, ReservationCard } from '@what-today/design-system';
+import { Button, Modal, NoResult, RadioGroup, ReservationCard } from '@what-today/design-system';
+import { WarningLogo } from '@what-today/design-system';
+import { useToast } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 
-import { fetchMyReservations } from '@/apis/myReservations';
+import { cancelMyReservation, fetchMyReservations } from '@/apis/myReservations';
 import type { Reservation } from '@/schemas/myReservations';
 
 export default function ReservationsListPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
+  const isDeleteOpen = cancelTarget !== null;
+  const { toast } = useToast();
 
   const fetchReservations = async (status?: string) => {
     setLoading(true);
@@ -27,6 +32,29 @@ export default function ReservationsListPage() {
   useEffect(() => {
     fetchReservations(selectedStatus || undefined);
   }, [selectedStatus]);
+
+  const handleConfirmCancel = async () => {
+    if (!cancelTarget) return;
+
+    try {
+      await cancelMyReservation(Number(cancelTarget.id), { status: 'canceled' });
+      toast({
+        title: '예약 취소 완료',
+        description: `예약 '${cancelTarget.activity.title}'이(가) 취소되었습니다.`,
+        type: 'success',
+      });
+      setCancelTarget(null);
+      fetchReservations(selectedStatus || undefined); // 목록 갱신
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : `예약 '${cancelTarget.activity.title}'이(가) 취소되지 않았습니다.`;
+      toast({
+        title: '예약 취소 실패',
+        description: message,
+        type: 'error',
+      });
+    }
+  };
 
   const renderGroupedReservations = (items: Reservation[]) => {
     // 날짜별로 예약들을 그룹핑합니다. (예: '2025-07-25': [예약1, 예약2])
@@ -71,7 +99,9 @@ export default function ReservationsListPage() {
                         className='text-md w-full bg-gray-50 font-medium text-gray-600'
                         size='md'
                         variant='fill'
-                        onClick={() => {}}
+                        onClick={() => {
+                          setCancelTarget(res);
+                        }}
                       >
                         예약 취소
                       </Button>
@@ -138,6 +168,20 @@ export default function ReservationsListPage() {
       <section aria-label='예약 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
       </section>
+
+      {/* 예약 취소 확인 모달 */}
+      <Modal.Root open={isDeleteOpen} onClose={() => setCancelTarget(null)}>
+        <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
+          <div className='flex flex-col items-center gap-6 text-center'>
+            <WarningLogo className='md:size-110 lg:size-150' size={88} />
+            <p className='text-2lg font-bold'>예약을 취소하시겠어요?</p>
+          </div>
+          <Modal.Actions>
+            <Modal.CancelButton>아니요</Modal.CancelButton>
+            <Modal.ConfirmButton onClick={handleConfirmCancel}>취소하기</Modal.ConfirmButton>
+          </Modal.Actions>
+        </Modal.Content>
+      </Modal.Root>
     </div>
   );
 }
