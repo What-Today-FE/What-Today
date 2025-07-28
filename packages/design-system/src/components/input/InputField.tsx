@@ -23,10 +23,15 @@ function InputField({ value, onChange, type = 'text', className, ...props }: Inp
       id={id}
       type={type}
       value={value}
-      onBlur={() => setIsFocused?.(false)}
+      onBlur={(e) => {
+        setIsFocused?.(false);
+        props.onBlur?.(e);
+      }}
       onChange={onChange}
-      onFocus={() => setIsFocused?.(true)}
-      {...props}
+      onFocus={(e) => {
+        setIsFocused?.(true);
+        props.onFocus?.(e);
+      }}
     />
   );
 }
