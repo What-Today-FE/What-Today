@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { twJoin, twMerge } from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 
 import { useInputContext } from './context';
 import type { InputSubComponentProps } from './type';
@@ -12,11 +12,23 @@ import type { InputSubComponentProps } from './type';
 function InputWrapper({ className, children }: InputSubComponentProps) {
   const { error, isFocused, disabled } = useInputContext();
 
-  const BASE_CLASSNAME = twJoin(
+  let borderClass = 'border-gray-100'; // 기본 테두리 스타일
+
+  if (error && isFocused) {
+    // 에러 발생 + 포커스 중
+    borderClass = 'border-red-700';
+  } else if (error) {
+    // 에러 발생
+    borderClass = 'border-red-500';
+  } else if (isFocused) {
+    // 포커스 중
+    borderClass = 'border-gray-400';
+  }
+
+  const BASE_CLASSNAME = twMerge(
     'flex items-center gap-8 rounded-xl border px-20 py-10 bg-white',
-    isFocused && 'border-gray-400',
     disabled && 'cursor-not-allowed',
-    error ? 'border-red-500' : 'border-gray-100',
+    borderClass,
   );
 
   return <div className={twMerge(BASE_CLASSNAME, className)}>{children}</div>;
