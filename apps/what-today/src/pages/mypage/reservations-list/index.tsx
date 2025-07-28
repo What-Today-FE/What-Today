@@ -213,7 +213,7 @@ export default function ReservationsListPage() {
             <WarningLogo className='md:size-110 lg:size-150' size={88} />
             <p className='text-2lg font-bold'>예약을 취소하시겠어요?</p>
           </div>
-          <Modal.Actions>
+          <Modal.Actions className='w-fit lg:w-full'>
             <Modal.CancelButton>아니요</Modal.CancelButton>
             <Modal.ConfirmButton onClick={() => cancelTarget && cancelReservation.mutate(cancelTarget.id)}>
               취소하기
