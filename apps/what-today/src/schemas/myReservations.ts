@@ -119,6 +119,16 @@ export const createReviewBodySchema = z.object({
   content: z.string().min(1, { message: '리뷰 내용을 입력해주세요.' }),
 });
 
+// 예약 요청 바디 스키마
+/**
+ * @description 체험 예약 요청 시 사용되는 요청 바디 스키마
+ * - POST /reservations
+ */
+export const createReservationBodySchema = z.object({
+  scheduleId: z.number(),
+  headCount: z.number(),
+});
+
 /* --------------------------------------------------------
  * Types
  * -------------------------------------------------------- */
@@ -143,3 +153,6 @@ export type ReviewResponse = z.infer<typeof reviewResponseSchema>;
 
 /** 공통 에러 응답 타입 */
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;
+
+/** 예약 생성 요청 바디 타입 */
+export type CreateReservationBodyDto = z.infer<typeof createReservationBodySchema>;

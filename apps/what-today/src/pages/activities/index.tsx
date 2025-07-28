@@ -6,18 +6,12 @@ import ActivitiesDescription from '@/components/activities/ActivitiesDescription
 import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import ActivityImages from '@/components/activities/ActivityImages';
+import ActivityReservation from '@/components/activities/ActivityReservation';
 import Divider from '@/components/activities/Divider';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
 import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
-
-const mockImages = [
-  { id: 1, imageUrl: '/default-image.webp' },
-  { id: 2, imageUrl: '/default-image.webp' },
-  { id: 3, imageUrl: '/default-image.webp' },
-  { id: 4, imageUrl: '/default-image.webp' },
-];
 
 export default function ActivityDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -55,8 +49,7 @@ export default function ActivityDetailPage() {
         {isDesktop ? (
           <div className='grid grid-cols-[1fr_410px] gap-40'>
             <div className='flex flex-col gap-40'>
-              {/* <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} /> */}
-              <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={mockImages} />
+              <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
               <ActivitiesDescription description={activity.description} />
               <Divider />
               <ActivitiesMap address={activity.address} />
@@ -71,15 +64,12 @@ export default function ActivityDetailPage() {
                 reviewCount={activity.reviewCount}
                 title={activity.title}
               />
-              <section className='flex h-856 items-center justify-center rounded-xl bg-pink-100 text-xl font-bold'>
-                6. 예약 선택(내부 컴포넌트 높이에 맞출 예정)
-              </section>
+              <ActivityReservation activityId={activity.id} price={activity.price} schedules={activity.schedules} />
             </div>
           </div>
         ) : (
           <div className='flex flex-col gap-30'>
-            {/* <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} /> */}
-            <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={mockImages} />
+            <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
             <Divider className='border-gray-200' />
             <ActivitiesInformation
               address={activity.address}
