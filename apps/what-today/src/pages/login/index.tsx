@@ -3,7 +3,7 @@ import useAuth from '@hooks/useAuth';
 import { useMutation } from '@tanstack/react-query';
 import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { login } from '@/apis/auth';
 import EmailInput from '@/components/auth/EmailInput';
@@ -13,9 +13,11 @@ import { useWhatTodayStore } from '@/stores';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { fetchMyProfile } = useAuth();
   const { toast } = useToast();
   const { setAccessToken, setRefreshToken } = useWhatTodayStore();
+  const from = location.state?.from?.pathname || '/';
   const {
     register,
     handleSubmit,
@@ -39,7 +41,7 @@ export default function LoginPage() {
       setAccessToken(response.accessToken);
       setRefreshToken(response.refreshToken);
       await fetchMyProfile();
-      navigate('/');
+      navigate(from, { replace: true });
     },
     onError: (error) => {
       const message = error instanceof Error ? error.message : '로그인에 실패했습니다.';
