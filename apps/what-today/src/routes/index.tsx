@@ -4,7 +4,7 @@ import App from '@/App';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import MyPageLayout from '@/layouts/Mypage';
 import ActivityDetailPage from '@/pages/activities';
-import CreateExperience from '@/pages/experiences/iindex';
+import CreateExperience from '@/pages/experiences';
 import KakaoCallback from '@/pages/kakao-callback';
 import KakaoCallbackSignup from '@/pages/kakao-callback-signup';
 import LoginPage from '@/pages/login';

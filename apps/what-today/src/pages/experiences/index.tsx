@@ -16,7 +16,6 @@ export default function CreateExperience() {
   const [startTime, setStartTime] = useState<{ hour: string; minute: string } | null>(null);
   const [endTime, setEndTime] = useState<{ hour: string; minute: string } | null>(null);
 
-  console.log(selectedValue);
   return (
     <div className='mt-40'>
       <div className='flex flex-col gap-40'>
