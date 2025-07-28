@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { fetchActivityDetail } from '@/apis/activityDetail';
+import { createReservation, fetchActivityDetail } from '@/apis/activityDetail';
 import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
 import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import ActivityImages from '@/components/activities/ActivityImages';
-import ActivityReservation from '@/components/activities/ActivityReservation';
 import Divider from '@/components/activities/Divider';
+import DesktopReservation from '@/components/activities/reservation/DesktopReservation';
+import TabletReservationSheet from '@/components/activities/reservation/TabletReservationSheet';
+import type { ReservationSummary } from '@/components/activities/reservation/types';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -19,7 +21,11 @@ export default function ActivityDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [isTabletSheetOpen, setIsTabletSheetOpen] = useState(false);
+
   const { isMobile, isTablet, isDesktop } = useResponsive();
+
+  const [reservationSummary, setReservationSummary] = useState<ReservationSummary | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -43,6 +49,29 @@ export default function ActivityDetailPage() {
   if (error) return <p>오류: {error}</p>;
   if (!activity) return <p>데이터 없음</p>;
 
+  const handleConfirmTabletReservation = (reservation: ReservationSummary) => {
+    setReservationSummary(reservation);
+    setIsTabletSheetOpen(false);
+  };
+
+  const handleSubmitReservation = async () => {
+    if (!reservationSummary) return;
+
+    try {
+      const reservation = await createReservation(Number(id), {
+        scheduleId: reservationSummary.scheduleId,
+        headCount: reservationSummary.headCount,
+      });
+      alert(`예약이 완료되었습니다! (예약 ID: ${reservation.id})`);
+      // 예약 완료 후 상태 초기화
+      setReservationSummary(null);
+    } catch (error) {
+      console.error('예약 중 오류 발생:', error);
+      const errorMessage = error instanceof Error ? error.message : '예약 중 오류가 발생했습니다.';
+      alert(`예약 실패: ${errorMessage}`);
+    }
+  };
+
   return (
     <>
       <main className='p-4'>
@@ -64,7 +93,7 @@ export default function ActivityDetailPage() {
                 reviewCount={activity.reviewCount}
                 title={activity.title}
               />
-              <ActivityReservation activityId={activity.id} price={activity.price} schedules={activity.schedules} />
+              <DesktopReservation activityId={activity.id} price={activity.price} schedules={activity.schedules} />
             </div>
           </div>
         ) : (
@@ -89,13 +118,35 @@ export default function ActivityDetailPage() {
       </main>
 
       {!isDesktop && (
-        <ReservationBottomBar
-          price={activity.price}
-          onSelectDate={() => {
-            if (isMobile) alert('모바일 바텀시트 클릭');
-            else if (isTablet) alert('태블릿 바텀시트 클릭');
-          }}
-        />
+        <>
+          <ReservationBottomBar
+            price={activity.price}
+            reservation={
+              reservationSummary
+                ? {
+                    date: reservationSummary.date,
+                    startTime: reservationSummary.startTime,
+                    endTime: reservationSummary.endTime,
+                    headCount: reservationSummary.headCount,
+                  }
+                : null
+            }
+            onReserve={handleSubmitReservation}
+            onSelectDate={() => {
+              if (isMobile) alert('모바일 바텀시트 클릭');
+              else if (isTablet) setIsTabletSheetOpen(true);
+            }}
+          />
+          {isTablet && (
+            <TabletReservationSheet
+              isOpen={isTabletSheetOpen}
+              price={activity.price}
+              schedules={activity.schedules}
+              onClose={() => setIsTabletSheetOpen(false)}
+              onConfirm={handleConfirmTabletReservation}
+            />
+          )}
+        </>
       )}
     </>
   );
