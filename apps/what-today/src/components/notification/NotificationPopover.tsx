@@ -1,6 +1,13 @@
-import { BellIcon, Button, DotIcon, NotificationCard, Popover } from '@what-today/design-system';
-import { useState } from 'react';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { BellIcon, Button, DotIcon, NotificationCard, Popover, useToast } from '@what-today/design-system';
+import type { AxiosError } from 'axios';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { deleteMyNotifications } from '@/apis/myNotifications';
+import { getMyNotifications } from '@/apis/myNotifications';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import type { NotificationsResponse } from '@/schemas/myNotifications';
 
 interface NotificationPopoverProps {
   isMobile: boolean;
@@ -9,10 +16,101 @@ interface NotificationPopoverProps {
 export default function NotificationPopover({ isMobile }: NotificationPopoverProps) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  /**
+   * @function fetchNotifications
+   * @description 무한 스크롤을 위한 알림 데이터를 요청합니다.
+   * - `cursorId`를 기반으로 다음 페이지의 알림 목록을 받아오며,
+   * - 빈 배열이나 cursorId가 null이면 더 이상 불러올 페이지가 없다고 판단합니다.
+   *
+   * @param {number | null} cursorId - 마지막으로 불러온 알림 ID (페이지네이션 기준값)
+   * @returns {Promise<NotificationsResponse>} 알림 목록, 커서 ID, 전체 알림 개수를 포함한 응답 객체
+   */
+  const fetchNotifications = async ({ cursorId }: { cursorId: number | null }): Promise<NotificationsResponse> => {
+    const params = {
+      size: 10,
+      cursorId: cursorId || null,
+    };
+
+    const response = await getMyNotifications(params);
+
+    return {
+      notifications: response.notifications || [],
+      cursorId: response.cursorId,
+      totalCount: response.totalCount,
+    };
+  };
+
+  /**
+   * @description 무한 스크롤 기반으로 알림 목록을 불러오는 React Query 훅입니다.
+   *
+   * @returns {
+   *   data: 알림 페이지 데이터 목록
+   *   fetchNextPage: 다음 페이지를 불러오는 함수
+   *   hasNextPage: 다음 페이지 유무
+   *   isFetchingNextPage: 다음 페이지 불러오는 중 여부
+   *   isLoading: 초기 로딩 여부
+   * }
+   */
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
+    NotificationsResponse,
+    Error
+  >({
+    queryKey: ['notifications'],
+    queryFn: ({ pageParam = null }) =>
+      fetchNotifications({
+        cursorId: pageParam as number | null,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: NotificationsResponse) => {
+      if (lastPage.cursorId === null || lastPage.notifications.length === 0) {
+        return undefined;
+      }
+      return lastPage.cursorId;
+    },
+    staleTime: 30 * 1000,
+  });
+
+  /**
+   * @description 내 알림을 삭제하는 mutation 함수입니다.
+   *
+   * @onSuccess 삭제 성공 시 알림 목록 쿼리 무효화 및 성공 토스트 출력
+   * @onError 삭제 실패 시 에러 메시지를 파싱하여 에러 토스트 출력
+   */
+  const deleteNotification = useMutation({
+    mutationFn: deleteMyNotifications,
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message ?? '알 수 없는 오류가 발생했습니다.';
+      toast({
+        title: '내 알림 삭제 오류',
+        description: message,
+        type: 'error',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      toast({
+        title: '내 알림 삭제 성공',
+        description: '알림 삭제에 성공했습니다.',
+        type: 'success',
+      });
+    },
+  });
+
+  const observerRef = useIntersectionObserver(
+    fetchNextPage,
+    isFetchingNextPage,
+    !hasNextPage,
+    scrollContainerRef.current,
+    open,
+  );
 
   return (
     <Popover.Root direction={isMobile ? 'bottom-center' : 'bottom-right'} open={open} onOpenChange={setOpen}>
-      <Popover.Trigger className='flex items-center'>
+      <Popover.Trigger asChild className='flex items-center'>
         <Button
           aria-describedby='notification-dot'
           aria-label='알림'
@@ -30,50 +128,29 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
         </Button>
       </Popover.Trigger>
       <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
-        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 6개</h1>
+        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount}개</h1>
 
-        <div className='max-h-400 w-300 divide-y divide-gray-50 overflow-y-scroll'>
-          {/* 더미데이터 */}
-          <NotificationCard
-            content='바람과 함께하는 한강 요가(2025-07-20 07:00~08:00) 예약이 승인되었습니다.'
-            onClickDetail={() => {
-              navigate('/mypage/reservations-list');
-              setOpen((prev) => !prev);
-            }}
-            onDelete={() => alert('삭제 API 요청')}
-          />
-          <NotificationCard
-            content='전통 다도 체험 클래스(2025-09-12 14:00~15:30) 예약이 승인되었습니다.'
-            onClickDetail={() => {
-              navigate('/mypage/reservations-list');
-              setOpen((prev) => !prev);
-            }}
-            onDelete={() => alert('삭제 API 요청')}
-          />
-          <NotificationCard
-            content='한강 야외 영화 상영회(2025-07-27 20:00~22:00) 예약이 거절되었습니다.'
-            onClickDetail={() => {
-              navigate('/mypage/reservations-list');
-              setOpen((prev) => !prev);
-            }}
-            onDelete={() => alert('삭제 API 요청')}
-          />
-          <NotificationCard
-            content='전통 다도 체험 클래스(2025-09-12 14:00~15:30) 예약이 승인되었습니다.'
-            onClickDetail={() => {
-              navigate('/mypage/reservations-list');
-              setOpen((prev) => !prev);
-            }}
-            onDelete={() => alert('삭제 API 요청')}
-          />
-          <NotificationCard
-            content='한강 야외 영화 상영회(2025-07-27 20:00~22:00) 예약이 거절되었습니다.'
-            onClickDetail={() => {
-              navigate('/mypage/reservations-list');
-              setOpen((prev) => !prev);
-            }}
-            onDelete={() => alert('삭제 API 요청')}
-          />
+        <div ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-scroll'>
+          {isLoading && <p className='text-md my-70 text-center text-gray-400'>Loading...</p>}
+          <div className='divide-y divide-gray-50'>
+            {data?.pages.map((page) =>
+              page.notifications.map((notification) => (
+                <NotificationCard
+                  key={notification.id}
+                  content={notification.content}
+                  onClickDetail={() => {
+                    navigate('/mypage/reservations-list');
+                    setOpen((prev) => !prev);
+                  }}
+                  onDelete={() => deleteNotification.mutate(notification.id)}
+                />
+              )),
+            )}
+          </div>
+          {!isLoading && data?.pages.every((page) => page.notifications.length === 0) && (
+            <p className='text-md my-70 text-center text-gray-400'>알림이 없습니다.</p>
+          )}
+          <div ref={observerRef} className='h-6 w-full' /> {/* 무한 스크롤 감지용 */}
         </div>
       </Popover.Content>
     </Popover.Root>
