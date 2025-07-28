@@ -16,13 +16,11 @@ import {
   WellbeingIcon,
 } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import type { Activity } from '@/apis/activities';
 import { getActivities } from '@/apis/activities';
 
 export default function MainPage() {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [searchResult, setSearchResult] = useState<Activity[]>([]);
@@ -92,7 +90,7 @@ export default function MainPage() {
         <div className='flex flex-col gap-20'>
           <h2 className='text-2xl font-bold text-gray-950'>🔥 인기 체험</h2>
           <div className='-mx-15 flex'>
-            <Carousel items={activities} itemsPerPage={itemsPerPage} onClick={(id) => navigate(`/activities/${id}`)} />
+            <Carousel items={activities} itemsPerPage={itemsPerPage} />
           </div>
         </div>
 
@@ -166,7 +164,6 @@ export default function MainPage() {
                 rating={item.rating}
                 reviewCount={item.reviewCount}
                 title={item.title}
-                onClick={() => navigate(`/activities/${item.id}`)}
               >
                 <MainCard.Image className='' />
                 <MainCard.Content />
