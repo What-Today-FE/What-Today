@@ -10,7 +10,7 @@ export interface Activity {
   rating: number;
   reviewCount: number;
   bannerImageUrl: string;
-  category: string; // ✅ 추가된 필드
+  category: string;
 }
 
 // ✅ 체험 리스트 조회 시 사용되는 파라미터 타입
@@ -20,7 +20,6 @@ export interface GetActivitiesParams {
   method?: 'offset';
 }
 
-// ✅ API 응답 타입 스키마 (category 포함)
 export const activityListSchema = z.array(
   z.object({
     id: z.number(),
@@ -43,6 +42,10 @@ export const getActivities = async (params?: Omit<GetActivitiesParams, 'method'>
       ...params,
     },
   });
+
+  if (!response.data?.activities || !Array.isArray(response.data.activities)) {
+    throw new Error('Invalid API response structure');
+  }
 
   return activityListSchema.parse(response.data.activities);
 };
