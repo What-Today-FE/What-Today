@@ -50,7 +50,7 @@ import type { ModalConfirmButtonProps } from './types';
  * </Modal.ConfirmButton>
  * ```
  */
-function ModalConfirmButton({ children, className, onClick }: ModalConfirmButtonProps) {
+function ModalConfirmButton({ children, className, onClick, disabled }: ModalConfirmButtonProps) {
   const { onClose } = useModalContext();
 
   const handleClick = () => {
@@ -59,7 +59,7 @@ function ModalConfirmButton({ children, className, onClick }: ModalConfirmButton
   };
 
   return (
-    <Button className={twMerge('w-full', className)} size='sm' variant='fill' onClick={handleClick}>
+    <Button className={twMerge('w-full', className)} disabled={disabled} size='sm' variant='fill' onClick={handleClick}>
       {children}
     </Button>
   );

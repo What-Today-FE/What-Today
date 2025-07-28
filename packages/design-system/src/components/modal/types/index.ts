@@ -84,6 +84,8 @@ export interface ModalConfirmButtonProps {
   className?: string;
   /** 버튼 클릭 시 추가로 실행될 함수 (onConfirm보다 먼저 실행됨) */
   onClick?: () => void;
+  /** 버튼 비활성화 여부 */
+  disabled?: boolean;
 }
 
 /**

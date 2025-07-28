@@ -1,19 +1,27 @@
-import { Button, Modal, NoResult, RadioGroup, ReservationCard } from '@what-today/design-system';
+import { Button, Input, Modal, NoResult, RadioGroup, ReservationCard, StarRating } from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
 import { useEffect, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 
-import { cancelMyReservation, fetchMyReservations } from '@/apis/myReservations';
+import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/myReservations';
 import type { Reservation } from '@/schemas/myReservations';
 
 export default function ReservationsListPage() {
+  const { toast } = useToast();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
+
   const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
   const isDeleteOpen = cancelTarget !== null;
-  const { toast } = useToast();
+
+  const [reviewTarget, setReviewTarget] = useState<Reservation | null>(null);
+  const isReviewOpen = reviewTarget !== null;
+
+  const [reviewContent, setReviewContent] = useState('');
+  const [starRating, setStarRating] = useState(0);
+  const isReviewValid = starRating > 0 && reviewContent.trim().length > 0;
 
   const fetchReservations = async (status?: string) => {
     setLoading(true);
@@ -50,6 +58,39 @@ export default function ReservationsListPage() {
         error instanceof Error ? error.message : `예약 '${cancelTarget.activity.title}'이(가) 취소되지 않았습니다.`;
       toast({
         title: '예약 취소 실패',
+        description: message,
+        type: 'error',
+      });
+    }
+  };
+
+  const handleConfirmReview = async () => {
+    if (!reviewTarget) return;
+
+    const body = {
+      rating: starRating,
+      content: reviewContent,
+    };
+
+    try {
+      await createReview(Number(reviewTarget.id), body);
+
+      toast({
+        title: '후기 작성 완료',
+        description: `'${reviewTarget.activity.title}'에 대한 후기가 등록되었습니다.`,
+        type: 'success',
+      });
+
+      setStarRating(0);
+      setReviewContent('');
+      setReviewTarget(null);
+
+      fetchReservations(selectedStatus || undefined); // 목록 새로고침
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '후기 작성에 실패했습니다. 다시 시도해주세요.';
+
+      toast({
+        title: '후기 작성 실패',
         description: message,
         type: 'error',
       });
@@ -111,7 +152,9 @@ export default function ReservationsListPage() {
                         className='text-md w-full font-medium text-white'
                         size='md'
                         variant='fill'
-                        onClick={() => {}}
+                        onClick={() => {
+                          setReviewTarget(res);
+                        }}
                       >
                         후기 작성
                       </Button>
@@ -181,6 +224,44 @@ export default function ReservationsListPage() {
             <Modal.ConfirmButton onClick={handleConfirmCancel}>취소하기</Modal.ConfirmButton>
           </Modal.Actions>
         </Modal.Content>
+      </Modal.Root>
+
+      <Modal.Root open={isReviewOpen} onClose={() => setReviewTarget(null)}>
+        {reviewTarget && (
+          <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
+            <Modal.CloseButton />
+            <h2 className='mt-22 text-lg font-bold'>{reviewTarget.activity.title}</h2>
+            <p className='text-md text-gray-500'>
+              {reviewTarget.date}/ {reviewTarget.startTime} ~ {reviewTarget.endTime} ({reviewTarget.headCount}명)
+            </p>
+
+            {/* 별점 선택 영역 */}
+            <div className='flex flex-row items-center gap-16'>
+              <StarRating value={starRating} onChange={setStarRating} />
+            </div>
+
+            {/* 텍스트 입력 영역 */}
+            <Input.Root size='xs'>
+              <Input.Label className='mt-24 mb-16 self-start text-left font-bold'>소중한 경험을 들려주세요</Input.Label>
+              <Input.Wrapper>
+                <Input.Textarea
+                  className='h-180'
+                  maxLength={100}
+                  placeholder='크기 조정이 불가능한 textarea입니다.'
+                  value={reviewContent}
+                  onChange={(e) => setReviewContent(e.target.value)}
+                />
+              </Input.Wrapper>
+              <Input.TextCounter length={reviewContent.length} maxLength={100} />
+            </Input.Root>
+
+            <Modal.Actions>
+              <Modal.ConfirmButton disabled={!isReviewValid} onClick={handleConfirmReview}>
+                작성하기
+              </Modal.ConfirmButton>
+            </Modal.Actions>
+          </Modal.Content>
+        )}
       </Modal.Root>
     </div>
   );
