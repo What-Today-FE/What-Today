@@ -143,3 +143,6 @@ export type ReviewResponse = z.infer<typeof reviewResponseSchema>;
 
 /** 공통 에러 응답 타입 */
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;
+
+/** 예약 상태 타입 */
+export type ReservationStatus = z.infer<typeof reservationStatusSchema>;

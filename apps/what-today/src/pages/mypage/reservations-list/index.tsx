@@ -1,16 +1,18 @@
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Input, Modal, NoResult, RadioGroup, ReservationCard, StarRating } from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 
 import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/myReservations';
-import type { Reservation } from '@/schemas/myReservations';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import type { MyReservationsResponse, Reservation, ReservationStatus } from '@/schemas/myReservations';
 
 export default function ReservationsListPage() {
   const { toast } = useToast();
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+
   const [selectedStatus, setSelectedStatus] = useState<string>('');
 
   const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
@@ -23,79 +25,75 @@ export default function ReservationsListPage() {
   const [starRating, setStarRating] = useState(0);
   const isReviewValid = starRating > 0 && reviewContent.trim().length > 0;
 
-  const fetchReservations = async (status?: string) => {
-    setLoading(true);
-    try {
-      const result = await fetchMyReservations({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
+    MyReservationsResponse,
+    Error
+  >({
+    queryKey: ['reservations', selectedStatus],
+    queryFn: ({ pageParam = null }) =>
+      fetchMyReservations({
+        cursorId: pageParam as number | null,
         size: 10,
-        status: status || undefined,
-      });
-      setReservations(result.reservations);
-    } catch (err) {
-      console.error('예약 목록 조회 실패:', err);
-    }
-    setLoading(false);
-  };
+        status: selectedStatus ? (selectedStatus as ReservationStatus) : null,
+      }),
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => lastPage.cursorId ?? undefined,
+    staleTime: 1000 * 30,
+  });
 
-  useEffect(() => {
-    fetchReservations(selectedStatus || undefined);
-  }, [selectedStatus]);
+  const reservations = data?.pages.flatMap((page) => page.reservations) ?? [];
 
-  const handleConfirmCancel = async () => {
-    if (!cancelTarget) return;
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useIntersectionObserver(
+    fetchNextPage,
+    isFetchingNextPage,
+    !hasNextPage,
+    scrollContainerRef.current,
+    selectedStatus,
+  );
 
-    try {
-      await cancelMyReservation(cancelTarget.id, { status: 'canceled' });
+  const cancelReservation = useMutation({
+    mutationFn: (id: number) => cancelMyReservation(id, { status: 'canceled' }),
+    onSuccess: () => {
       toast({
         title: '예약 취소 완료',
-        description: `예약 '${cancelTarget.activity.title}'이(가) 취소되었습니다.`,
+        description: '예약이 성공적으로 취소되었습니다.',
         type: 'success',
       });
       setCancelTarget(null);
-      fetchReservations(selectedStatus || undefined); // 목록 갱신
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : `예약 '${cancelTarget.activity.title}'이(가) 취소되지 않았습니다.`;
+      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+    },
+    onError: (error) => {
       toast({
         title: '예약 취소 실패',
-        description: message,
+        description: error instanceof Error ? error.message : '예약 취소 중 오류가 발생했습니다.',
         type: 'error',
       });
-    }
-  };
+    },
+  });
 
-  const handleConfirmReview = async () => {
-    if (!reviewTarget) return;
-
-    const body = {
-      rating: starRating,
-      content: reviewContent,
-    };
-
-    try {
-      await createReview(reviewTarget.id, body);
-
+  const submitReview = useMutation({
+    mutationFn: ({ id, rating, content }: { id: number; rating: number; content: string }) =>
+      createReview(id, { rating, content }),
+    onSuccess: () => {
       toast({
         title: '후기 작성 완료',
-        description: `'${reviewTarget.activity.title}'에 대한 후기가 등록되었습니다.`,
+        description: '소중한 후기가 등록되었습니다.',
         type: 'success',
       });
-
-      setStarRating(0);
-      setReviewContent('');
       setReviewTarget(null);
-
-      fetchReservations(selectedStatus || undefined); // 목록 새로고침
-    } catch (error) {
-      const message = error instanceof Error ? error.message : '후기 작성에 실패했습니다. 다시 시도해주세요.';
-
+      setReviewContent('');
+      setStarRating(0);
+      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+    },
+    onError: () => {
       toast({
         title: '후기 작성 실패',
-        description: message,
+        description: '후기 작성 중 문제가 발생했습니다.',
         type: 'error',
       });
-    }
-  };
+    },
+  });
 
   const renderGroupedReservations = (items: Reservation[]) => {
     // 날짜별로 예약들을 그룹핑합니다. (예: '2025-07-25': [예약1, 예약2])
@@ -114,12 +112,11 @@ export default function ReservationsListPage() {
 
     return sortedByDateDesc.map(([date, group], index) => (
       <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
-        {/* 날짜 헤더 */}
         <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
         <ul>
           {group.map((res) => {
             const showCancelButton = res.status === 'confirmed';
-            const showReviewButton = res.status === 'completed' && res.reviewSubmitted === false;
+            const showReviewButton = res.status === 'completed' && !res.reviewSubmitted;
 
             return (
               <li key={res.id}>
@@ -140,9 +137,7 @@ export default function ReservationsListPage() {
                         className='text-md w-full bg-gray-50 font-medium text-gray-600'
                         size='md'
                         variant='fill'
-                        onClick={() => {
-                          setCancelTarget(res);
-                        }}
+                        onClick={() => setCancelTarget(res)}
                       >
                         예약 취소
                       </Button>
@@ -152,9 +147,7 @@ export default function ReservationsListPage() {
                         className='text-md w-full font-medium text-white'
                         size='md'
                         variant='fill'
-                        onClick={() => {
-                          setReviewTarget(res);
-                        }}
+                        onClick={() => setReviewTarget(res)}
                       >
                         후기 작성
                       </Button>
@@ -170,7 +163,7 @@ export default function ReservationsListPage() {
   };
 
   let content;
-  if (loading) {
+  if (isLoading) {
     content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
   } else if (reservations.length > 0) {
     content = <div className='space-y-10'>{renderGroupedReservations(reservations)}</div>;
@@ -183,7 +176,7 @@ export default function ReservationsListPage() {
   }
 
   return (
-    <div className='flex flex-col gap-13 md:gap-20'>
+    <div ref={scrollContainerRef} className='flex flex-col gap-13 md:gap-20'>
       <header className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
         <div className='flex flex-col gap-10'>
           <h1 className='text-2lg font-bold text-gray-950'>예약내역</h1>
@@ -210,6 +203,7 @@ export default function ReservationsListPage() {
 
       <section aria-label='예약 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
+        <div ref={observerRef} />
       </section>
 
       {/* 예약 취소 확인 모달 */}
@@ -221,7 +215,9 @@ export default function ReservationsListPage() {
           </div>
           <Modal.Actions>
             <Modal.CancelButton>아니요</Modal.CancelButton>
-            <Modal.ConfirmButton onClick={handleConfirmCancel}>취소하기</Modal.ConfirmButton>
+            <Modal.ConfirmButton onClick={() => cancelTarget && cancelReservation.mutate(cancelTarget.id)}>
+              취소하기
+            </Modal.ConfirmButton>
           </Modal.Actions>
         </Modal.Content>
       </Modal.Root>
@@ -256,7 +252,17 @@ export default function ReservationsListPage() {
             </Input.Root>
 
             <Modal.Actions>
-              <Modal.ConfirmButton disabled={!isReviewValid} onClick={handleConfirmReview}>
+              <Modal.ConfirmButton
+                disabled={!isReviewValid}
+                onClick={() =>
+                  reviewTarget &&
+                  submitReview.mutate({
+                    id: reviewTarget.id,
+                    content: reviewContent,
+                    rating: starRating,
+                  })
+                }
+              >
                 작성하기
               </Modal.ConfirmButton>
             </Modal.Actions>
