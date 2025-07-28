@@ -1,11 +1,15 @@
 import { Button, Calendar } from '@what-today/design-system';
 import { MinusIcon, PlusIcon } from '@what-today/design-system';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { useMemo, useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 
 import { createReservation } from '@/apis/activityDetail';
 
 import Divider from './Divider';
+
+dayjs.extend(isSameOrAfter);
 
 interface ActivityReservationProps {
   activityId: number;
@@ -23,14 +27,23 @@ export default function ActivityReservation({ activityId, price, schedules }: Ac
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
   const [headCount, setHeadCount] = useState<number>(1);
 
+  const today = dayjs();
+
+  const validSchedules = useMemo(() => {
+    return schedules.filter((s) => {
+      const scheduleDateTime = dayjs(`${s.date}T${s.startTime}`);
+      return scheduleDateTime.isSameOrAfter(today);
+    });
+  }, [schedules, today]);
+
   const reservableDates = useMemo(() => {
-    return new Set(schedules.map((s) => s.date));
-  }, [schedules]);
+    return new Set(validSchedules.map((s) => s.date));
+  }, [validSchedules]);
 
   const availableTimes = useMemo(() => {
     if (!selectedDate) return [];
-    return schedules.filter((s) => s.date === selectedDate);
-  }, [selectedDate, schedules]);
+    return validSchedules.filter((s) => s.date === selectedDate);
+  }, [selectedDate, validSchedules]);
 
   const totalPrice = useMemo(() => headCount * price, [headCount, price]);
 
@@ -67,7 +80,19 @@ export default function ActivityReservation({ activityId, price, schedules }: Ac
           >
             <Calendar.Header />
             <Calendar.Grid divider={false} weekdayType='short'>
-              {(day) => <Calendar.DayCell day={day} reservableDates={reservableDates} />}
+              {(day) => {
+                const isReservable = reservableDates.has(day.format('YYYY-MM-DD'));
+                return (
+                  <Calendar.DayCell
+                    day={day}
+                    dayCellClass={
+                      !isReservable
+                        ? 'pointer-events-none opacity-30'
+                        : 'text-lg font-medium rounded-full size-42 flex justify-center items-center bg-primary-100'
+                    }
+                  />
+                );
+              }}
             </Calendar.Grid>
           </Calendar.Root>
         </div>
