@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
 import { Input } from '../input';
-import { OpenDaumPostcode } from './OpenDaumPostcode';
+import { OpenDaumPostcode } from './openDaumPostcode';
 import type { AddressInputProps } from './types';
 
 export default function AddressInput({ onChange }: AddressInputProps) {

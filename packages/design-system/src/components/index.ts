@@ -1,4 +1,4 @@
-export { default as AddressInput } from './addressInput/AddressInput';
+export { default as AddressInput } from './adress/AddressInput';
 export { BottomSheet } from './bottomsheet';
 export { default as Button } from './button';
 export * from './calendar';
