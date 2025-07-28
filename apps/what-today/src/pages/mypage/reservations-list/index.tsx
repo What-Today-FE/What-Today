@@ -243,11 +243,11 @@ export default function ReservationsListPage() {
             {/* 텍스트 입력 영역 */}
             <Input.Root size='xs'>
               <Input.Label className='mt-24 mb-16 self-start text-left font-bold'>소중한 경험을 들려주세요</Input.Label>
-              <Input.Wrapper>
+              <Input.Wrapper className='shadow-sm'>
                 <Input.Textarea
                   className='h-180'
                   maxLength={100}
-                  placeholder='크기 조정이 불가능한 textarea입니다.'
+                  placeholder='체험에서 느낀 경험을 자유롭게 남겨주세요.'
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
                 />
