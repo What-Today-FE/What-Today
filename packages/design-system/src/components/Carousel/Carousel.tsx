@@ -5,7 +5,7 @@ import { MainCard } from '../MainCard';
 import NavigationButton from './NavigationButton';
 import type { CarouselProps, Props } from './types';
 
-export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 }: Props<CarouselProps>) {
+export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4, onClick }: Props<CarouselProps>) {
   const [page, setPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
 
@@ -39,6 +39,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
           <motion.div
             animate={{ x: `-${page * 100}%` }}
             className='flex'
+            style={{ pointerEvents: 'auto' }}
             transition={{ duration: 0.5, ease: [0.45, 0.05, 0.55, 0.95] }}
           >
             {items.map((item, idx) => (
@@ -53,6 +54,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
                   rating={item.rating}
                   reviewCount={item.reviewCount}
                   title={item.title}
+                  onClick={() => onClick?.(item.id)}
                 >
                   <MainCard.Image className='rounded-t-3xl object-cover' />
                   <MainCard.Content />
@@ -80,6 +82,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4 
               rating={item.rating}
               reviewCount={item.reviewCount}
               title={item.title}
+              onClick={() => onClick?.(item.id)}
             >
               <MainCard.Image className='h-[260px] rounded-t-3xl object-cover brightness-90 contrast-125' />
               <MainCard.Content />
