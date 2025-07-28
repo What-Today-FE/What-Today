@@ -41,6 +41,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='Modal' to='/docs/Modal' />
             <SidebarNavItem label='StarRating' to='/docs/StarRating' />
             <SidebarNavItem label='TimePicker' to='/docs/TimePicker' />
+            <SidebarNavItem label='AddressInput' to='/docs/AddressInput' />
           </ul>
         </nav>
       </aside>
