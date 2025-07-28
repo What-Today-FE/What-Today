@@ -5,6 +5,10 @@ import type { ManageableReservationStatus } from '@/components/calendar';
 import UserBadge from '@/components/UserBadge';
 interface ReservationInfoCardProps {
   /**
+   * 예약 ID
+   */
+  reservationId: number;
+  /**
    * 예약한 사용자의 닉네임
    */
   nickname: string;
@@ -23,11 +27,11 @@ interface ReservationInfoCardProps {
   /**
    * 예약 승인 버튼 클릭 시 실행될 콜백 함수
    */
-  onApprove?: () => void;
+  onApprove?: (id: number) => void;
   /**
    * 예약 거절 버튼 클릭 시 실행될 콜백 함수
    */
-  onReject?: () => void;
+  onReject?: (id: number) => void;
 }
 
 /**
@@ -40,6 +44,7 @@ interface ReservationInfoCardProps {
  * @returns {JSX.Element}
  */
 export default function ReservationInfoCard({
+  reservationId,
   nickname,
   headCount,
   ownerStatus,
@@ -65,11 +70,15 @@ export default function ReservationInfoCard({
           <Button
             className={twMerge(ActionButton, 'border border-gray-50')}
             variant='none'
-            onClick={onApprove || (() => {})}
+            onClick={() => onApprove?.(reservationId)}
           >
             승인하기
           </Button>
-          <Button className={twMerge(ActionButton, 'bg-gray-50')} variant='none' onClick={onReject || (() => {})}>
+          <Button
+            className={twMerge(ActionButton, 'bg-gray-50')}
+            variant='none'
+            onClick={() => onReject?.(reservationId)}
+          >
             거절하기
           </Button>
         </div>

@@ -1,3 +1,5 @@
+import type { ManageableReservationStatus } from '@what-today/design-system';
+
 import {
   type dailyScheduleParam,
   type dailyScheduleResponse,
@@ -5,6 +7,8 @@ import {
   type monthlyScheduleParam,
   type monthlyScheduleResponse,
   monthlyScheduleResponseSchema,
+  type reservation,
+  reservationSchema,
   type timeSlotReservationParam,
   type timeSlotReservationResponse,
   timeSlotReservationResponseSchema,
@@ -41,3 +45,12 @@ export const getReservation = async (
   const response = await axiosInstance.get(`/my-activities/${activityId}/reservations`, { params });
   return timeSlotReservationResponseSchema.parse(response.data);
 };
+
+export async function patchReservationStatus(
+  activityId: number,
+  reservationId: number,
+  status: ManageableReservationStatus,
+): Promise<reservation> {
+  const response = await axiosInstance.patch(`/my-activities/${activityId}/reservations/${reservationId}`, { status });
+  return reservationSchema.parse(response.data);
+}

@@ -229,6 +229,7 @@ export default function ReservationsStatusPage() {
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
       <BottomSheet.Root
+        className='h-[80vh]'
         isOpen={state.isReservationSheetOpen && !responsive.isDesktop}
         onClose={() => setState((s) => ({ ...s, isReservationSheetOpen: false }))}
       >

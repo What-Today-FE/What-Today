@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { getDailySchedule, getReservation } from '@/apis/myActivities';
+import { getDailySchedule, getReservation, patchReservationStatus } from '@/apis/myActivities';
 import type { dailyScheduleResponse, timeSlotReservationResponse } from '@/schemas/myActivities';
 
 import ReservationTabPanel from './ReservationTabPanel';
@@ -44,7 +44,17 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
     { key: 'confirmed', label: '승인' },
     { key: 'declined', label: '거절' },
   ];
+  const calcCount = (reservations: timeSlotReservationResponse | null) => {
+    if (!reservations) return { pending: 0, confirmed: 0, declined: 0 };
 
+    return reservations.reservations.reduce(
+      (acc, cur) => {
+        acc[cur.status] = (acc[cur.status] ?? 0) + 1;
+        return acc;
+      },
+      { pending: 0, confirmed: 0, declined: 0 },
+    );
+  };
   const fetchDailySchedule = async () => {
     try {
       const result = await getDailySchedule(activityId, { date: selectedDate });
@@ -66,10 +76,14 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
         scheduleId: state.selectedScheduleId,
         status: state.selectedStatus,
       });
-      setState((prev) => ({ ...prev, reservations: result, isLoading: { ...prev.isLoading, reservations: false } }));
+      setState((prev) => ({
+        ...prev,
+        reservations: result,
+        isLoading: { ...prev.isLoading, reservation: false },
+      }));
     } catch (err) {
       console.error('스케줄별 예약현황 조회 실패:', err);
-      setState((prev) => ({ ...prev, isLoading: { ...prev.isLoading, reservations: false } }));
+      setState((prev) => ({ ...prev, isLoading: { ...prev.isLoading, reservation: false } }));
     }
   };
 
@@ -128,8 +142,20 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
     }));
   };
 
+  const handleApprove = async (id: number) => {
+    await patchReservationStatus(activityId, id, 'confirmed');
+    await fetchReservations();
+    await fetchDailySchedule(); // 숫자 갱신용
+  };
+
+  const handleReject = async (id: number) => {
+    await patchReservationStatus(activityId, id, 'declined');
+    await fetchReservations();
+    await fetchDailySchedule(); // 숫자 갱신용
+  };
+
   return (
-    <div className='flex flex-col gap-20 bg-white'>
+    <div className='flex h-full flex-col gap-20 bg-white'>
       <section className='flex flex-col gap-12'>
         <h3 className='text-xl font-bold'>{dayjs(selectedDate).format('YY년 M월 D일')}</h3>
       </section>
@@ -173,6 +199,8 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       <ReservationTabPanel
         ownerStatus={state.selectedStatus}
         reservationData={state.reservations?.reservations ?? []}
+        onApprove={handleApprove}
+        onReject={handleReject}
       />
     </div>
   );
