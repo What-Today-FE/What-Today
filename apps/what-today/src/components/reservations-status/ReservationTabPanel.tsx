@@ -1,4 +1,4 @@
-import { type ManageableReservationStatus, NoResult, ReservationInfoCard } from '@what-today/design-system';
+import { EmptyLogo, type ManageableReservationStatus, ReservationInfoCard } from '@what-today/design-system';
 
 import type { reservation } from '@/schemas/myActivities';
 interface ReservationTabPanel {
@@ -22,8 +22,9 @@ export default function ReservationTabPanel({ reservationData, ownerStatus }: Re
           );
         })
       ) : (
-        <div className='flex justify-center pt-20'>
-          <NoResult dataName='예약내역이' />
+        <div className='flex flex-col items-center justify-center gap-20 pt-40'>
+          <EmptyLogo size={80} />
+          내역이 없습니다.
         </div>
       )}
     </div>

@@ -162,7 +162,7 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
           return (
             <button
               key={key}
-              className={twMerge('w-full rounded-none border-b border-gray-100', selectedStyle)}
+              className={twMerge('w-full rounded-none border-b border-gray-100 py-6', selectedStyle)}
               onClick={() => handleTabChange(key)}
             >
               {label} {state.selectedCount[key]}
