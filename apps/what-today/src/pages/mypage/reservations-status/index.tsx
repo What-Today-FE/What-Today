@@ -1,11 +1,10 @@
 import { Button, type CalendarReservationStatus, ChevronIcon, NoResult, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getMonthlySchedule, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
-import { useResponsive } from '@/hooks/useResponsive';
 import type { monthlyScheduleResponse, myActivitiesResponse } from '@/schemas/myActivities';
 
 interface ReservationPageState {
@@ -32,7 +31,7 @@ interface ReservationPageState {
 
 export default function ReservationsStatusPage() {
   const navigate = useNavigate();
-  const responsive = useResponsive();
+  // const responsive = useResponsive();
   const calendarRef = useRef<HTMLDivElement>(null);
   const iniDatePos = {
     top: 0,
@@ -130,32 +129,32 @@ export default function ReservationsStatusPage() {
 
   // 예약 페이지 Popup Position 구하기
   // className 형태로 Return
-  const reservationPopupPosition: React.CSSProperties = useMemo(() => {
-    if (!state || !state.selectedDatePos || !calendarRef.current) return {};
-    const calendarRect = calendarRef.current.getBoundingClientRect();
-    const dateRect = state.selectedDatePos;
-    const space = 10; // 띄울 간격
-    let left = dateRect.left + dateRect.width + space;
-    let top = dateRect.top;
+  // const reservationPopupPosition: React.CSSProperties = useMemo(() => {
+  //   if (!state || !state.selectedDatePos || !calendarRef.current) return {};
+  //   const calendarRect = calendarRef.current.getBoundingClientRect();
+  //   const dateRect = state.selectedDatePos;
+  //   const space = 10; // 띄울 간격
+  //   let left = dateRect.left + dateRect.width + space;
+  //   let top = dateRect.top;
 
-    const popoverWidth = 340;
-    const popoverHeight = 537;
+  //   const popoverWidth = 340;
+  //   const popoverHeight = 537;
 
-    // 👉 우측 넘침 → 왼쪽으로
-    if (left + popoverWidth > calendarRect.left + calendarRect.width) {
-      left = dateRect.left - popoverWidth - space;
-    }
+  //   // 👉 우측 넘침 → 왼쪽으로
+  //   if (left + popoverWidth > calendarRect.left + calendarRect.width) {
+  //     left = dateRect.left - popoverWidth - space;
+  //   }
 
-    // 👉 하단 넘침 → 위쪽으로
-    if (top + popoverHeight > calendarRect.top + calendarRect.height) {
-      top = calendarRect.top + calendarRect.height - popoverHeight;
-    }
+  //   // 👉 하단 넘침 → 위쪽으로
+  //   if (top + popoverHeight > calendarRect.top + calendarRect.height) {
+  //     top = calendarRect.top + calendarRect.height - popoverHeight;
+  //   }
 
-    return {
-      left: left + window.scrollX,
-      top: top + window.scrollY,
-    };
-  }, [state]);
+  //   return {
+  //     left: left + window.scrollX,
+  //     top: top + window.scrollY,
+  //   };
+  // }, [state]);
 
   const reservationMap = state.calendar.reservations.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
     (acc, cur) => {
