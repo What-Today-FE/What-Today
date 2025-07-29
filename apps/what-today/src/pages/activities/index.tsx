@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useToast } from '@what-today/design-system';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { createReservation, fetchActivityDetail } from '@/apis/activityDetail';
 import ActivitiesDescription from '@/components/activities/ActivitiesDescription';
 import ActivitiesInformation from '@/components/activities/ActivitiesInformation';
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
@@ -13,42 +13,26 @@ import TabletReservationSheet from '@/components/activities/reservation/TabletRe
 import type { ReservationSummary } from '@/components/activities/reservation/types';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
+import { useActivityDetail, useCreateReservation } from '@/hooks/activityDetail';
 import { useResponsive } from '@/hooks/useResponsive';
-import { type ActivityWithSubImagesAndSchedules } from '@/schemas/activities';
 
 export default function ActivityDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [activity, setActivity] = useState<ActivityWithSubImagesAndSchedules | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const [isTabletSheetOpen, setIsTabletSheetOpen] = useState(false);
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
+  const [reservationSummary, setReservationSummary] = useState<ReservationSummary | null>(null);
 
   const { isMobile, isTablet, isDesktop } = useResponsive();
 
-  const [reservationSummary, setReservationSummary] = useState<ReservationSummary | null>(null);
+  const { data: activity, isLoading: loading, error } = useActivityDetail(id);
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchActivity = async () => {
-      try {
-        const data = await fetchActivityDetail(id);
-        setActivity(data);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : '활동 정보를 불러오는 중 오류가 발생했습니다.';
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActivity();
-  }, [id]);
+  const createReservationMutation = useCreateReservation(Number(id));
 
   if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>오류: {error}</p>;
+  if (error)
+    return <p>오류: {error instanceof Error ? error.message : '활동 정보를 불러오는 중 오류가 발생했습니다.'}</p>;
   if (!activity) return <p>데이터 없음</p>;
 
   const handleConfirmTabletReservation = (reservation: ReservationSummary) => {
@@ -64,19 +48,30 @@ export default function ActivityDetailPage() {
   const handleSubmitReservation = async () => {
     if (!reservationSummary) return;
 
-    try {
-      const reservation = await createReservation(Number(id), {
+    createReservationMutation.mutate(
+      {
         scheduleId: reservationSummary.scheduleId,
         headCount: reservationSummary.headCount,
-      });
-      alert(`예약이 완료되었습니다! (예약 ID: ${reservation.id})`);
-      // 예약 완료 후 상태 초기화
-      setReservationSummary(null);
-    } catch (error) {
-      console.error('예약 중 오류 발생:', error);
-      const errorMessage = error instanceof Error ? error.message : '예약 중 오류가 발생했습니다.';
-      alert(`예약 실패: ${errorMessage}`);
-    }
+      },
+      {
+        onSuccess: (data) => {
+          toast({
+            title: '예약 완료',
+            description: `예약 ID: ${data.id}`,
+            type: 'success',
+          });
+          setReservationSummary(null); // 예약 완료 후 상태 초기화
+        },
+        onError: (error) => {
+          const errorMessage = error instanceof Error ? error.message : '예약 중 오류가 발생했습니다.';
+          toast({
+            title: '예약 실패',
+            description: errorMessage,
+            type: 'error',
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -127,6 +122,7 @@ export default function ActivityDetailPage() {
       {!isDesktop && (
         <>
           <ReservationBottomBar
+            isSubmitting={createReservationMutation.isPending}
             price={activity.price}
             reservation={
               reservationSummary
