@@ -12,13 +12,23 @@ export default function ManageActivitiesPage() {
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteMyActivitiesQuery(3);
   const { mutate: deleteActivity } = useDeleteMyActivityMutation();
 
+  const handleDeleteConfirm = () => {
+    if (deleteTargetId !== null) {
+      deleteActivity(deleteTargetId, {
+        onSuccess: () => {
+          setIsDeleteOpen(false);
+          setDeleteTargetId(null);
+        },
+      });
+    }
+  };
   const observerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!observerRef.current || !hasNextPage) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && !isFetchingNextPage) {
           fetchNextPage();
         }
       },
@@ -28,16 +38,12 @@ export default function ManageActivitiesPage() {
     observer.observe(observerRef.current);
 
     return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const allActivities = data?.pages.flatMap((page) => page.activities) ?? [];
 
   const handleNavigateToMypage = () => {
     navigate('/mypage');
-  };
-
-  const handleDelete = (activityId: number) => {
-    deleteActivity(activityId);
   };
 
   let content;
@@ -102,16 +108,7 @@ export default function ManageActivitiesPage() {
           </div>
           <Modal.Actions>
             <Modal.CancelButton>아니요</Modal.CancelButton>
-            <Modal.ConfirmButton
-              onClick={() => {
-                if (deleteTargetId !== null) {
-                  deleteActivity(deleteTargetId);
-                  setIsDeleteOpen(false);
-                }
-              }}
-            >
-              네
-            </Modal.ConfirmButton>
+            <Modal.ConfirmButton onClick={handleDeleteConfirm}>네</Modal.ConfirmButton>
           </Modal.Actions>
         </Modal.Content>
       </Modal.Root>
