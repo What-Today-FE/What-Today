@@ -44,17 +44,17 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
     { key: 'confirmed', label: '승인' },
     { key: 'declined', label: '거절' },
   ];
-  const calcCount = (reservations: timeSlotReservationResponse | null) => {
-    if (!reservations) return { pending: 0, confirmed: 0, declined: 0 };
+  // const calcCount = (reservations: timeSlotReservationResponse | null) => {
+  //   if (!reservations) return { pending: 0, confirmed: 0, declined: 0 };
 
-    return reservations.reservations.reduce(
-      (acc, cur) => {
-        acc[cur.status] = (acc[cur.status] ?? 0) + 1;
-        return acc;
-      },
-      { pending: 0, confirmed: 0, declined: 0 },
-    );
-  };
+  //   return reservations.reservations.reduce(
+  //     (acc, cur) => {
+  //       acc[cur.status] = (acc[cur.status] ?? 0) + 1;
+  //       return acc;
+  //     },
+  //     { pending: 0, confirmed: 0, declined: 0 },
+  //   );
+  // };
   const fetchDailySchedule = async () => {
     try {
       const result = await getDailySchedule(activityId, { date: selectedDate });
