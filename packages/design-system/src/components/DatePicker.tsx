@@ -19,7 +19,6 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
     <div className='relative flex flex-col gap-12 md:flex-row'>
       <div className='relative w-full'>
         <Input.Root className='w-full'>
-          <Input.Label>날짜</Input.Label>
           <Input.Wrapper className='relative'>
             <Input.Field
               readOnly

@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
           { path: 'activities/:id', element: <ActivityDetailPage /> },
 
           { path: 'experiences/create', element: <CreateExperience /> },
-
+          { path: 'experiences/create/:id', element: <CreateExperience /> },
           {
             path: 'mypage',
             loader: authGuardLoader,

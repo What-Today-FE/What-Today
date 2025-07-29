@@ -40,7 +40,7 @@ export default function ManageActivitiesPage() {
           // 추후 삭제알림 모달창 뜨는 것으로 수정 예정
           onDelete={() => navigate('/')}
           // 추후 체험등록 페이지로 수정 예정
-          onEdit={() => navigate('/')}
+          onEdit={() => navigate(`/experiences/create/${id}`)}
         />
       );
     });
