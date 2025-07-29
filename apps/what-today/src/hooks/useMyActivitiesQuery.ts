@@ -17,7 +17,7 @@ export const useDeleteMyActivityMutation = () => {
 
   return useMutation({
     mutationFn: deleteMyActivity,
-    onSuccess: (_, activityId) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myActivitiesInfinite'] });
     },
     onError: (error) => {
