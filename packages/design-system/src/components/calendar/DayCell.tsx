@@ -1,4 +1,5 @@
 import type { Dayjs } from 'dayjs';
+import { useEffect, useRef } from 'react';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 import OwnerBadge from '../OwnerBadge';
@@ -25,6 +26,7 @@ interface DayCellProps {
    * 내부 날짜 텍스트에 적용할 클래스
    */
   dateClass?: string;
+  onMountRef?: (ref: HTMLDivElement | null) => void;
 }
 
 /**
@@ -47,11 +49,29 @@ interface DayCellProps {
  * />
  * ```
  */
-export default function DayCell({ day, reservableDates, reservations, dayCellClass, dateClass }: DayCellProps) {
+export default function DayCell({
+  day,
+  reservableDates,
+  reservations,
+  dayCellClass,
+  dateClass,
+  onMountRef,
+}: DayCellProps) {
   const { currentMonth, selectedDate, onSelectDate } = useCalendarContext();
+  const dayCellRef = useRef<HTMLDivElement>(null);
   const handleClick = () => {
     onSelectDate(day.format('YYYY-MM-DD'));
   };
+
+  // 마운트 후 ref 전달 (선택된 날짜의 ref만 외부로 전달)
+  // useEffect(() => { -----> 주석은 모든 날짜의 ref를 전달
+  //   onMountRef?.(dayCellRef.current);
+  // }, [onMountRef]);
+  useEffect(() => {
+    if (selectedDate === day.format('YYYY-MM-DD')) {
+      onMountRef?.(dayCellRef.current);
+    }
+  }, [onMountRef, selectedDate, day]);
 
   const isReservable = reservableDates && reservableDates.has(day.format('YYYY-MM-DD'));
   const isOtherMonth = day.month() !== currentMonth.month();
@@ -64,7 +84,7 @@ export default function DayCell({ day, reservableDates, reservations, dayCellCla
     isSelected && 'bg-primary-500 text-white',
   );
   return (
-    <div className={twMerge(dayCellBaseClass, dayCellClass, `dt-${day.format('YYYY-MM-DD')}`)} onClick={handleClick}>
+    <div ref={dayCellRef} className={twMerge(dayCellBaseClass, dayCellClass)} onClick={handleClick}>
       <span className={twMerge(dateBaseClass, dateClass)}>{day.date()}</span>
       {(['pending', 'confirmed', 'completed'] as const).map((status) => {
         const count = reservations?.[status] ?? 0;

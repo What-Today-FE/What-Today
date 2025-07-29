@@ -1,19 +1,10 @@
-import {
-  BottomSheet,
-  Button,
-  type CalendarReservationStatus,
-  ChevronIcon,
-  NoResult,
-  Popover,
-  Select,
-} from '@what-today/design-system';
+import { Button, type CalendarReservationStatus, ChevronIcon, NoResult, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getMonthlySchedule, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
-import ReservationSheet from '@/components/reservations-status/ReservationSheet';
 import { useResponsive } from '@/hooks/useResponsive';
 import type { monthlyScheduleResponse, myActivitiesResponse } from '@/schemas/myActivities';
 
@@ -212,6 +203,7 @@ export default function ReservationsStatusPage() {
         </section>
         <section ref={calendarRef} aria-label='예약 캘린더'>
           <ReservationCalendar
+            activityId={Number(state.selectedActivityId)}
             reservationsByDate={reservationMap}
             onChange={handleDateChange}
             onMonthChange={handleMonthChange}
@@ -228,7 +220,7 @@ export default function ReservationsStatusPage() {
   }
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
-      <BottomSheet.Root
+      {/* <BottomSheet.Root
         className='h-[80vh]'
         isOpen={state.isReservationSheetOpen && !responsive.isDesktop}
         onClose={() => setState((s) => ({ ...s, isReservationSheetOpen: false }))}
@@ -238,29 +230,21 @@ export default function ReservationsStatusPage() {
             <ReservationSheet activityId={Number(state.selectedActivityId)} selectedDate={state.selectedDate} />
           )}
         </BottomSheet.Content>
-      </BottomSheet.Root>
+      </BottomSheet.Root> */}
 
       {/* Popover Content */}
-      <div className={`fixed h-537 w-340 ${state.isReservationSheetOpen && responsive.isDesktop ? 'block' : 'hidden'}`}>
+      {/* <div className={`fixed h-537 w-340 ${state.isReservationSheetOpen && responsive.isDesktop ? 'block' : 'hidden'}`}>
         <Popover.Root open={state.isReservationSheetOpen && responsive.isDesktop}>
           <Popover.Trigger>
             <div />
           </Popover.Trigger>
-          <Popover.Content
-            overlay
-            className='z-1000 rounded-xl bg-white p-24 shadow-xl'
-            overlayOpacity={100}
-            style={reservationPopupPosition}
-            onOverlayClick={() => {
-              setState((s) => ({ ...s, isReservationSheetOpen: false }));
-            }}
-          >
+          <Popover.Content overlay className='z-1000 rounded-xl bg-white p-24 shadow-xl'>
             {state.selectedActivityId && state.selectedDate && (
               <ReservationSheet activityId={Number(state.selectedActivityId)} selectedDate={state.selectedDate} />
             )}
           </Popover.Content>
         </Popover.Root>
-      </div>
+      </div> */}
 
       <header className='mb-18 flex flex-col gap-10 p-1 md:mb-0'>
         <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
