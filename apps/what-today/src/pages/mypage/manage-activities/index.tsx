@@ -1,24 +1,18 @@
-import { Button, ChevronIcon, ExperienceCard, NoResult } from '@what-today/design-system';
-import { useEffect, useRef } from 'react';
+import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } from '@what-today/design-system';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
+import { useDeleteMyActivityMutation, useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
 
 export default function ManageActivitiesPage() {
   const navigate = useNavigate();
-
-  // const { data, isLoading, isError, error } = useQuery<myActivitiesResponse>({
-  //   queryKey: ['myActivities', { size: 10 }],
-  //   queryFn: () => getMyActivities({ size: 10 }),
-  // });
-
-  // const [data, setData] = useState<myActivitiesResponse | null>(null);
-  // const [loading, setLoading] = useState(true);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteMyActivitiesQuery(3);
+  const { mutate: deleteActivity } = useDeleteMyActivityMutation();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     if (!observerRef.current || !hasNextPage) return;
 
@@ -40,6 +34,10 @@ export default function ManageActivitiesPage() {
 
   const handleNavigateToMypage = () => {
     navigate('/mypage');
+  };
+
+  const handleDelete = (activityId: number) => {
+    deleteActivity(activityId);
   };
 
   let content;
@@ -64,7 +62,10 @@ export default function ManageActivitiesPage() {
             rating={rating}
             reviewCount={reviewCount}
             title={title}
-            onDelete={() => navigate('/')}
+            onDelete={() => {
+              setDeleteTargetId(id);
+              setIsDeleteOpen(true);
+            }}
             onEdit={() => navigate('/')}
           />
         ))}
@@ -93,6 +94,27 @@ export default function ManageActivitiesPage() {
       <section aria-label='체험 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
       </section>
+      <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
+        <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
+          <div className='flex flex-col items-center gap-6 text-center'>
+            <WarningLogo className='md:size-110 lg:size-150' size={88} />
+            <p className='text-2lg font-bold'>체험을 삭제하시겠습니까?</p>
+          </div>
+          <Modal.Actions>
+            <Modal.CancelButton>아니요</Modal.CancelButton>
+            <Modal.ConfirmButton
+              onClick={() => {
+                if (deleteTargetId !== null) {
+                  deleteActivity(deleteTargetId);
+                  setIsDeleteOpen(false);
+                }
+              }}
+            >
+              네
+            </Modal.ConfirmButton>
+          </Modal.Actions>
+        </Modal.Content>
+      </Modal.Root>
     </div>
   );
 }

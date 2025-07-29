@@ -19,3 +19,7 @@ export const getMonthlyReservations = async (
   const response = await axiosInstance.get(`/my-activities/${activityId}/reservation-dashboard`, { params });
   return activityReservationResponseSchema.parse(response.data);
 };
+
+export const deleteMyActivity = async (activityId: number) => {
+  return await axiosInstance.delete(`/my-activities/${activityId}`);
+};
