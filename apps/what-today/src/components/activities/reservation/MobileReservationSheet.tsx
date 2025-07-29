@@ -1,4 +1,5 @@
 import { BottomSheet, Button } from '@what-today/design-system';
+import { ArrowIcon } from '@what-today/design-system';
 import { useState } from 'react';
 
 import CalendarSelector from './CalendarSelector';
@@ -119,8 +120,8 @@ export default function MobileReservationSheet({
           <div className='flex flex-col gap-24 px-20 py-24'>
             <div className='mb-20'>
               <div className='flex items-center gap-12'>
-                <Button className='h-fit w-fit p-0 text-lg' variant='none' onClick={handleBackToDateTime}>
-                  ← 뒤로
+                <Button className='h-fit w-fit p-0' variant='none' onClick={handleBackToDateTime}>
+                  <ArrowIcon />
                 </Button>
                 <h2 className='text-xl font-bold text-gray-950'>참여 인원 선택</h2>
               </div>

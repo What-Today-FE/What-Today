@@ -1,3 +1,5 @@
+import type { ReservationResponse } from '@/schemas/myReservations';
+
 export interface Schedule {
   id: number;
   date: string;
@@ -43,7 +45,7 @@ export interface UseReservationReturn {
   isReadyToReserve: boolean;
 
   // API Actions
-  submitReservation: (activityId: number) => Promise<any>;
+  submitReservation: (activityId: number) => Promise<ReservationResponse>;
   isSubmitting: boolean;
 }
 
@@ -53,6 +55,7 @@ export interface ReservationFormProps {
   onReservationChange?: (summary: ReservationSummary | null) => void;
   onSubmit?: (request: ReservationRequest) => Promise<void>;
   showSubmitButton?: boolean;
+  isSubmitting?: boolean;
 }
 
 export interface DesktopReservationProps {

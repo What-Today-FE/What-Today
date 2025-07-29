@@ -3,13 +3,14 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { useCallback, useMemo, useState } from 'react';
 
 import { createReservation } from '@/apis/activityDetail';
+import type { ReservationResponse } from '@/schemas/myReservations';
 
 import type { ReservationSummary, Schedule, UseReservationReturn } from '../types';
 
 dayjs.extend(isSameOrAfter);
 
 interface UseReservationOptions {
-  onSuccess?: (reservation: any) => void;
+  onSuccess?: (reservation: ReservationResponse) => void;
   onError?: (error: Error) => void;
   onReservationChange?: (summary: ReservationSummary | null) => void;
 }

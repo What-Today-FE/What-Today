@@ -12,6 +12,7 @@ export default function ReservationForm({
   onReservationChange,
   onSubmit,
   showSubmitButton = false,
+  isSubmitting: externalIsSubmitting,
 }: ReservationFormProps) {
   const reservation = useReservation(schedules, price, {
     onReservationChange,
@@ -29,8 +30,11 @@ export default function ReservationForm({
     availableTimes,
     totalPrice,
     isReadyToReserve,
-    isSubmitting,
+    isSubmitting: internalIsSubmitting,
   } = reservation;
+
+  // 외부에서 전달받은 isSubmitting을 우선시
+  const isSubmitting = externalIsSubmitting ?? internalIsSubmitting;
 
   const handleSubmit = async () => {
     if (!onSubmit || !selectedScheduleId) return;
