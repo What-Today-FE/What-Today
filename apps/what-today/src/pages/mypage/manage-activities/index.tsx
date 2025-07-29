@@ -1,58 +1,76 @@
 import { Button, ChevronIcon, ExperienceCard, NoResult } from '@what-today/design-system';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getMyActivities } from '@/apis/myActivities';
-import type { myActivitiesResponse } from '@/schemas/myActivities';
+import { useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
 
 export default function ManageActivitiesPage() {
   const navigate = useNavigate();
-  const [data, setData] = useState<myActivitiesResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  // const { data, isLoading, isError, error } = useQuery<myActivitiesResponse>({
+  //   queryKey: ['myActivities', { size: 10 }],
+  //   queryFn: () => getMyActivities({ size: 10 }),
+  // });
+
+  // const [data, setData] = useState<myActivitiesResponse | null>(null);
+  // const [loading, setLoading] = useState(true);
+
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteMyActivitiesQuery(3);
+
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!observerRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 },
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage]);
+
+  const allActivities = data?.pages.flatMap((page) => page.activities) ?? [];
 
   const handleNavigateToMypage = () => {
     navigate('/mypage');
   };
 
-  const fetchMyActivities = async () => {
-    try {
-      const result = await getMyActivities({ size: 10 });
-      setData(result);
-    } catch (err) {
-      console.error('내 체험 조회 실패:', err);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchMyActivities();
-  }, []);
-
   let content;
-  if (loading) {
+  if (isLoading) {
     content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
-  } else if (data && data.activities.length > 0) {
-    content = data.activities.map(({ id, title, price, bannerImageUrl, rating, reviewCount }) => {
-      return (
-        <ExperienceCard
-          key={id}
-          bannerImageUrl={bannerImageUrl}
-          price={price}
-          rating={rating}
-          reviewCount={reviewCount}
-          title={title}
-          // 추후 삭제알림 모달창 뜨는 것으로 수정 예정
-          onDelete={() => navigate('/')}
-          // 추후 체험등록 페이지로 수정 예정
-          onEdit={() => navigate('/')}
-        />
-      );
-    });
-  } else {
+  } else if (isError) {
+    content = <div className='flex justify-center p-40 text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>;
+  } else if (allActivities.length === 0) {
     content = (
       <div className='flex justify-center p-40'>
         <NoResult dataName='등록한 체험이' />
       </div>
+    );
+  } else {
+    content = (
+      <>
+        {allActivities.map(({ id, title, price, bannerImageUrl, rating, reviewCount }) => (
+          <ExperienceCard
+            key={id}
+            bannerImageUrl={bannerImageUrl}
+            price={price}
+            rating={rating}
+            reviewCount={reviewCount}
+            title={title}
+            onDelete={() => navigate('/')}
+            onEdit={() => navigate('/')}
+          />
+        ))}
+        <div ref={observerRef} />
+        {isFetchingNextPage && <div className='text-center text-gray-400'>체험목록 불러오는 중...</div>}
+      </>
     );
   }
 
