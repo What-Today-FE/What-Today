@@ -1,3 +1,5 @@
+import Button from './button';
+import { ChevronIcon } from './icons';
 /**
  * Pagination 컴포넌트는 콘텐츠를 여러 페이지로 나누고,
  * 사용자가 원하는 페이지로 이동할 수 있도록 돕는 페이지네이션 UI를 제공합니다.
@@ -112,22 +114,24 @@ export default function Pagination({
   return (
     <div className='flex h-40 items-center justify-center gap-2'>
       {/* < 이전 */}
-      <button
-        className={`px-3 text-lg text-gray-950 ${
+      <Button
+        className={`w-20 !bg-transparent px-3 text-lg text-gray-950 ${
           currentPage === 1 || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'
         } ${classNames?.prev ?? ''}`}
         disabled={currentPage === 1 || isLoading}
+        size='xs'
+        variant='none'
         onClick={() => onPageChange(currentPage - 1)}
       >
-        {'<'}
-      </button>
+        <ChevronIcon direction='left' />
+      </Button>
 
       {/* 페이지 번호들 */}
       {pages.map((page) =>
         typeof page === 'number' ? (
           <button
             key={page}
-            className={`flex cursor-pointer items-center justify-center border-b-2 px-10 text-lg ${
+            className={`flex cursor-pointer items-center justify-center border-b-2 bg-transparent px-10 text-lg ${
               currentPage === page
                 ? `border-blue-500 text-gray-950 ${classNames?.activePage ?? ''}`
                 : `border-transparent text-gray-300 hover:text-gray-950 ${classNames?.page ?? ''}`
@@ -148,13 +152,15 @@ export default function Pagination({
       )}
 
       {/* > 다음 */}
-      <button
-        className={`px-3 text-lg text-gray-950 ${currentPage === totalPages || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'} ${classNames?.next ?? ''}`}
+      <Button
+        className={`w-20 px-3 text-lg text-gray-950 ${currentPage === totalPages || isLoading ? 'cursor-default opacity-30' : 'cursor-pointer'} ${classNames?.next ?? ''}`}
         disabled={currentPage === totalPages || isLoading}
+        size='xs'
+        variant='none'
         onClick={() => onPageChange(currentPage + 1)}
       >
-        {'>'}
-      </button>
+        <ChevronIcon direction='right' />
+      </Button>
     </div>
   );
 }
