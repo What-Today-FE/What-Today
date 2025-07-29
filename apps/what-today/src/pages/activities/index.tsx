@@ -8,6 +8,7 @@ import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import ActivityImages from '@/components/activities/ActivityImages';
 import Divider from '@/components/activities/Divider';
 import DesktopReservation from '@/components/activities/reservation/DesktopReservation';
+import MobileReservationSheet from '@/components/activities/reservation/MobileReservationSheet';
 import TabletReservationSheet from '@/components/activities/reservation/TabletReservationSheet';
 import type { ReservationSummary } from '@/components/activities/reservation/types';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
@@ -22,6 +23,7 @@ export default function ActivityDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [isTabletSheetOpen, setIsTabletSheetOpen] = useState(false);
+  const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
 
   const { isMobile, isTablet, isDesktop } = useResponsive();
 
@@ -52,6 +54,11 @@ export default function ActivityDetailPage() {
   const handleConfirmTabletReservation = (reservation: ReservationSummary) => {
     setReservationSummary(reservation);
     setIsTabletSheetOpen(false);
+  };
+
+  const handleConfirmMobileReservation = (reservation: ReservationSummary) => {
+    setReservationSummary(reservation);
+    setIsMobileSheetOpen(false);
   };
 
   const handleSubmitReservation = async () => {
@@ -133,10 +140,12 @@ export default function ActivityDetailPage() {
             }
             onReserve={handleSubmitReservation}
             onSelectDate={() => {
-              if (isMobile) alert('모바일 바텀시트 클릭');
+              if (isMobile) setIsMobileSheetOpen(true);
               else if (isTablet) setIsTabletSheetOpen(true);
             }}
           />
+
+          {/* 태블릿 바텀시트 */}
           {isTablet && (
             <TabletReservationSheet
               isOpen={isTabletSheetOpen}
@@ -144,6 +153,17 @@ export default function ActivityDetailPage() {
               schedules={activity.schedules}
               onClose={() => setIsTabletSheetOpen(false)}
               onConfirm={handleConfirmTabletReservation}
+            />
+          )}
+
+          {/* 모바일 바텀시트 */}
+          {isMobile && (
+            <MobileReservationSheet
+              isOpen={isMobileSheetOpen}
+              price={activity.price}
+              schedules={activity.schedules}
+              onClose={() => setIsMobileSheetOpen(false)}
+              onConfirm={handleConfirmMobileReservation}
             />
           )}
         </>
