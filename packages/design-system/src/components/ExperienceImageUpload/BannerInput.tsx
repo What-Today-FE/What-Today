@@ -24,7 +24,8 @@ export default function BannerInput({
   plusIconClassName,
   counterClassName,
   plusIconColor,
-}: InputProps) {
+  onChange,
+}: InputProps & { onChange?: (file: File | null) => void }) {
   const [previews, setPreviews] = useState<string[]>([]);
   const previousUrlRef = useRef<string | null>(null);
   const MAX_IMAGES = 1;
@@ -39,6 +40,7 @@ export default function BannerInput({
       const previewUrl = URL.createObjectURL(file);
       setPreviews([previewUrl]);
       previousUrlRef.current = previewUrl;
+      onChange?.(file);
     }
   };
 
@@ -49,6 +51,7 @@ export default function BannerInput({
       previousUrlRef.current = null;
     }
     setPreviews([]);
+    onChange?.(null);
   };
 
   // 컴포넌트 언마운트 시 URL 정리
@@ -66,14 +69,14 @@ export default function BannerInput({
     <div className={twMerge('mt-4 flex gap-14', wrapperClassName)}>
       <label
         className={twMerge(
-          'flex aspect-square w-80 flex-col items-center justify-center rounded-2xl bg-gray-100 md:w-128',
+          'flex aspect-square w-80 flex-col items-center justify-center rounded-3xl border border-gray-300 bg-white md:w-128',
           isUploaded ? 'pointer-events-none opacity-40' : 'cursor-pointer',
           labelClassName,
         )}
         htmlFor='banner-upload'
       >
         <PlusIcon className={twMerge('size-15', plusIconClassName)} color={plusIconColor ?? '#9FA0A7'} />
-        <span className={twMerge('mt-1 text-xs text-gray-400', counterClassName)}>
+        <span className={twMerge('mt-1 text-xs text-gray-600', counterClassName)}>
           {previews.length} / {MAX_IMAGES}
         </span>
       </label>
@@ -87,6 +90,7 @@ export default function BannerInput({
         onChange={handleFileChange}
       />
 
+      {/* 미리보기 이미지 */}
       {previews.map((preview, idx) => (
         <div key={idx} className={twMerge('relative aspect-square w-80 md:w-128', previewClassName)}>
           <img
@@ -96,14 +100,14 @@ export default function BannerInput({
           />
           <Button
             className={twMerge(
-              'bg-opacity-40 size-sm absolute -top-7 -right-7 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-5',
+              'bg-opacity-40 size-sm absolute -top-7 -right-7 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-9',
               deleteButtonClassName,
             )}
             size='xs'
             variant='none'
             onClick={handleDelete}
           >
-            <DeleteIcon className={twMerge('size-10', deleteIconClassName)} color='white' />
+            <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='white' />
           </Button>
         </div>
       ))}

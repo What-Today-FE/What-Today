@@ -13,6 +13,11 @@ import type { InputProps } from './types';
  *
  */
 
+type ImageItem = {
+  file: File;
+  previewUrl: string;
+};
+
 export default function IntroduceInput({
   wrapperClassName,
   labelClassName,
@@ -24,57 +29,64 @@ export default function IntroduceInput({
   plusIconClassName,
   counterClassName,
   plusIconColor,
-}: InputProps) {
-  const [previews, setPreviews] = useState<string[]>([]);
+  onChange,
+}: InputProps & { onChange?: (files: File[]) => void }) {
+  const [images, setImages] = useState<ImageItem[]>([]);
   const MAX_IMAGES = 4;
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    const validFiles = files.filter((file) => {
-      const isValidType = file.type.startsWith('image/');
-      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB 제한
-      return isValidType && isValidSize;
+    const selected = Array.from(e.target.files ?? []);
+    const validFiles = selected.filter((file) => file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024);
+
+    const allowed = validFiles.slice(0, MAX_IMAGES - images.length);
+    const newItems = allowed.map((file) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+
+    setImages((prev) => {
+      const updated = [...prev, ...newItems];
+      onChange?.(updated.map((item) => item.file));
+      return updated;
     });
-    const newFiles = validFiles.slice(0, MAX_IMAGES - previews.length);
-    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-    setPreviews((prev) => [...prev, ...newPreviews]);
 
     e.target.value = '';
   };
 
-  useEffect(() => {
-    return () => {
-      // 컴포넌트 언마운트 시 모든 URL 정리
-      previews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, []);
+  const handleDelete = (targetIndex: number) => {
+    const target = images[targetIndex];
+    if (target) URL.revokeObjectURL(target.previewUrl);
 
-  const handleDelete = (index: number) => {
-    const urlToRevoke = previews[index];
-    URL.revokeObjectURL(urlToRevoke);
-    setPreviews((prev) => prev.filter((_, i) => i !== index));
+    const updated = images.filter((_, i) => i !== targetIndex);
+    setImages(updated);
+    onChange?.(updated.map((item) => item.file));
   };
 
-  const isMaxReached = previews.length >= MAX_IMAGES;
+  useEffect(() => {
+    return () => {
+      images.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+    };
+  }, [images]);
+
+  const isMaxReached = images.length >= MAX_IMAGES;
 
   return (
     <div className={twMerge('mt-4 flex flex-wrap gap-14', wrapperClassName)}>
       {/* 업로드 버튼 */}
       <label
         className={twMerge(
-          'flex aspect-square w-80 cursor-pointer flex-col items-center justify-center rounded-2xl bg-gray-100 md:w-128',
+          'flex aspect-square w-80 cursor-pointer flex-col items-center justify-center rounded-3xl border border-gray-300 bg-white md:w-128',
           isMaxReached ? 'pointer-events-none opacity-40' : '',
           labelClassName,
         )}
         htmlFor='image-upload'
       >
         <PlusIcon className={twMerge('size-15', plusIconClassName)} color={plusIconColor ?? '#9FA0A7'} />
-        <span className={twMerge('mt-1 text-xs text-gray-400', counterClassName)}>
-          {previews.length}/{MAX_IMAGES}
+        <span className={twMerge('mt-1 text-xs text-gray-600', counterClassName)}>
+          {images.length}/{MAX_IMAGES}
         </span>
       </label>
 
-      {/* 실제 input */}
       <input
         multiple
         accept='image/*'
@@ -86,30 +98,33 @@ export default function IntroduceInput({
       />
 
       {/* 미리보기 이미지 */}
-      {previews.map((src, index) => (
-        <div
-          key={index}
-          className={twMerge('relative aspect-square w-80 cursor-pointer rounded-2xl md:w-128', previewClassName)}
-        >
-          <img
-            alt={`업로드된 소개 이미지 ${index + 1}`}
-            className={twMerge('h-full w-full rounded-2xl object-cover', imgClassName)}
-            src={src}
-          />
-          <Button
-            aria-label={`${index + 1}번째 이미지 삭제`}
-            className={twMerge(
-              'bg-opacity-40 size-sm absolute -top-7 -right-7 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-5',
-              deleteButtonClassName,
-            )}
-            size='xs'
-            variant='none'
-            onClick={() => handleDelete(index)}
+      {images.map((item, index) => {
+        const key = `${item.file.name}-${item.file.lastModified}`;
+        return (
+          <div
+            key={key}
+            className={twMerge('relative aspect-square w-80 cursor-pointer rounded-2xl md:w-128', previewClassName)}
           >
-            <DeleteIcon className={twMerge('size-10', deleteIconClassName)} color='white' />
-          </Button>
-        </div>
-      ))}
+            <img
+              alt={`업로드된 소개 이미지 ${index + 1}`}
+              className={twMerge('h-full w-full rounded-2xl object-cover', imgClassName)}
+              src={item.previewUrl}
+            />
+            <Button
+              aria-label={`${index + 1}번째 이미지 삭제`}
+              className={twMerge(
+                'bg-opacity-40 size-sm absolute -top-7 -right-7 flex h-fit w-fit cursor-pointer items-center rounded-full bg-black p-9',
+                deleteButtonClassName,
+              )}
+              size='xs'
+              variant='none'
+              onClick={() => handleDelete(index)}
+            >
+              <DeleteIcon className={twMerge('size-8', deleteIconClassName)} color='white' />
+            </Button>
+          </div>
+        );
+      })}
     </div>
   );
 }

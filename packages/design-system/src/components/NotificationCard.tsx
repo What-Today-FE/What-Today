@@ -102,9 +102,6 @@ export default function NotificationCard({ content, onDelete, onClickDetail }: N
           </p>
         </div>
       </div>
-      <div className='flex justify-between text-xs'>
-        <p className='text-gray-300'>1분 전</p> {/* api에 따라 수정 예정 */}
-      </div>
     </div>
   );
 }

@@ -8,6 +8,7 @@
 export interface Props<T> {
   items: T[];
   itemsPerPage: number;
+  onClick?: (id: number) => void;
 }
 
 /**
