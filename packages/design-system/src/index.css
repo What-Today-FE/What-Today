@@ -55,6 +55,8 @@
   html {
     font-family: 'Pretendard', system-ui, sans-serif;
     word-break: keep-all;
+    color: var(--color-gray-950);
+    background-color: white;
   }
 
   .prose pre {
@@ -67,5 +69,27 @@
 
   .prose pre code {
     padding: 1.5rem !important;
+  }
+}
+
+@layer components {
+  /* 제목 (32px PC/Tablet, 24px Mobile) */
+  .title-text {
+    @apply text-[1.5rem] font-bold md:text-[2rem]; /* 24px → 32px */
+  }
+
+  /* 소제목 (24px PC/Tablet, 20px Mobile) */
+  .subtitle-text {
+    @apply text-[1.25rem] font-bold md:text-[1.5rem]; /* 20px → 24px */
+  }
+
+  /* 본문 (16px PC/Tablet, 14px Mobile) */
+  .body-text {
+    @apply text-[0.875rem] font-normal md:text-[1rem]; /* 14px → 16px */
+  }
+
+  /* 캡션 (14px PC/Tablet, 12px Mobile) */
+  .caption-text {
+    @apply text-[0.75rem] font-normal md:text-[0.875rem]; /* 12px → 14px */
   }
 }
