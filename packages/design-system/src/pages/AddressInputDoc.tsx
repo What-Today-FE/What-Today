@@ -1,4 +1,4 @@
-import AddressInput from '@/components/addressInput/AddressInput';
+import { AddressInput } from '@/components';
 import Playground from '@/layouts/Playground';
 
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';

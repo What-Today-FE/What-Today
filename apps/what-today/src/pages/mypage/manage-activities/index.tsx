@@ -92,7 +92,7 @@ export default function ManageActivitiesPage() {
         </div>
         <div className='flex flex-col justify-between gap-10 pt-10 md:flex-row'>
           <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
-           <Button className='w-full md:w-138' onClick={() => navigate('/experiences/create')}>
+          <Button className='w-full md:w-138' onClick={() => navigate('/experiences/create')}>
             체험 등록하기
           </Button>
         </div>
