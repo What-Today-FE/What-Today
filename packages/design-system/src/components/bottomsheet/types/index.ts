@@ -7,6 +7,8 @@ export interface BottomSheetContextType {
   sheetRef: React.RefObject<HTMLDivElement | null>;
   /** BottomSheet의 내부 콘텐츠(scroll 영역)에 대한 ref */
   contentRef: React.RefObject<HTMLDivElement | null>;
+  /** BottomSheet의 높이를 재계산하는 함수 */
+  recalculateHeight?: () => void;
 }
 
 export interface BottomSheetRootProps {

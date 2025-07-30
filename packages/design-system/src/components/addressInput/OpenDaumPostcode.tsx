@@ -34,7 +34,6 @@ export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
       oncomplete: (data: DaumPostcodeData) => {
         const roadAddr = data.roadAddress;
 
-
         const fullAddr = roadAddr; // 필요 시 extraRoadAddr도 붙일 수 있음
         onSelect(fullAddr);
       },
@@ -42,7 +41,9 @@ export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
   };
 
 
+
   if (!window.daum?.Postcode) {
+
     const script = document.createElement('script');
     script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
     script.onload = handleOpen;
