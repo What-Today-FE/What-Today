@@ -23,4 +23,6 @@ export interface InputProps {
   plusIconClassName?: string;
   counterClassName?: string;
   plusIconColor?: string;
+  defaultImageUrl?: string;
+  defaultImageUrls?: string[];
 }

@@ -23,7 +23,6 @@ import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
 import RadioGroupDoc from '@pages/RadioGroupDoc';
 import ReservationCardDoc from '@pages/ReservationCardDoc';
-import SelectDoc from '@pages/SelectDoc';
 import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import TimePickerDoc from '@pages/TimePickerDoc';
@@ -32,6 +31,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import FooterDoc from '@/pages/FooterDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
+import ReservationInfoCardDoc from '@/pages/ReservationInfoCardDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
@@ -104,8 +104,8 @@ const router = createBrowserRouter([
         element: <PopoverDoc />,
       },
       {
-        path: 'Select',
-        element: <SelectDoc />,
+        path: 'ReservationInfoCard',
+        element: <ReservationInfoCardDoc />,
       },
       {
         path: 'Input',

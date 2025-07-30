@@ -11,7 +11,7 @@ import type { InputSubComponentProps } from './type';
 function InputLabel({ className, children }: InputSubComponentProps) {
   const { id } = useInputContext();
   return (
-    <label className={twMerge('mb-4 block', className)} htmlFor={id}>
+    <label className={twMerge('mb-4 block cursor-pointer', className)} htmlFor={id}>
       {children}
     </label>
   );

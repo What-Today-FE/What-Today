@@ -18,35 +18,13 @@ const HEADER_HEIGHT = 24;
  */
 export function useBodyScrollLock(isLocked: boolean) {
   useEffect(() => {
-    if (isLocked) {
-      // 현재 스크롤 위치 저장 (iOS에서 위치 변화 방지)
-      const scrollY = window.scrollY;
+    if (!isLocked) return;
 
-      // body 스크롤 방지
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    } else {
-      // 스크롤 위치 복원
-      const scrollY = document.body.style.top;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
 
-      // 이전 스크롤 위치로 복원
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
-    }
-
-    // cleanup: 컴포넌트 언마운트 시 스크롤 복원
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
+      document.body.style.overflow = originalOverflow;
     };
   }, [isLocked]);
 }
@@ -92,14 +70,18 @@ export function useDynamicHeight(
 
     if (contentScrollHeight <= availableHeight) {
       // 콘텐츠가 최대 높이보다 작으면 콘텐츠 크기에 맞춤
-      setContentHeight(contentScrollHeight);
-      setIsScrollable(false);
+      if (contentHeight !== contentScrollHeight) {
+        setContentHeight(contentScrollHeight);
+        setIsScrollable(false);
+      }
     } else {
       // 콘텐츠가 최대 높이보다 크면 최대 높이로 제한하고 스크롤 허용
-      setContentHeight(availableHeight);
-      setIsScrollable(true);
+      if (contentHeight !== availableHeight) {
+        setContentHeight(availableHeight);
+        setIsScrollable(true);
+      }
     }
-  }, [contentRef, isOpen, maxHeight]);
+  }, [contentRef, isOpen, maxHeight, contentHeight]);
 
   // 바텀시트가 열릴 때 높이 계산
   useEffect(() => {
@@ -116,6 +98,37 @@ export function useDynamicHeight(
       return () => clearTimeout(timer);
     }
   }, [isOpen, calculateHeight]);
+
+  // 콘텐츠 변경 감지를 위한 Observer들
+  useEffect(() => {
+    if (!contentRef.current || !isOpen) return;
+
+    const element = contentRef.current;
+
+    // ResizeObserver: 요소 크기 변경 감지
+    const resizeObserver = new ResizeObserver(() => {
+      setTimeout(calculateHeight, 10);
+    });
+
+    // MutationObserver: DOM 구조 변경 감지 (조건적 렌더링 등)
+    const mutationObserver = new MutationObserver(() => {
+      // 약간의 지연 후 높이 재계산 (DOM 업데이트 완료를 위해)
+      setTimeout(calculateHeight, 100);
+    });
+
+    resizeObserver.observe(element);
+    mutationObserver.observe(element, {
+      childList: true, // 자식 요소 추가/제거 감지
+      subtree: true, // 모든 하위 요소까지 감지
+      attributes: true, // 속성 변경도 감지 (클래스 변경 등)
+      attributeFilter: ['class', 'style'], // 주요 속성만 감지
+    });
+
+    return () => {
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [isOpen, calculateHeight, contentRef]);
 
   // 윈도우 리사이즈 시 높이 재계산
   useEffect(() => {
