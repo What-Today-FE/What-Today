@@ -1,5 +1,6 @@
 import { Select, type SelectItem } from '@components/select';
-import { type Dispatch, type SetStateAction, useMemo } from 'react';
+import { useMemo } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface TimePickerProps {
   /**
@@ -9,7 +10,11 @@ interface TimePickerProps {
   /**
    * 시간 변경 시 호출되는 콜백 함수입니다.
    */
-  onChange: Dispatch<SetStateAction<{ hour: string; minute: string } | null>>;
+  onChange: (time: { hour: string; minute: string } | null) => void;
+  /**
+   * 외부에서 TimePicker 전체의 스타일을 조정할 수 있는 클래스입니다.
+   */
+  className?: string;
 }
 
 /**
@@ -19,7 +24,7 @@ interface TimePickerProps {
  * @param {TimePickerProps} props - 컴포넌트에 전달되는 props
  * @returns 시/분 선택 UI
  */
-export default function TimePicker({ value, onChange }: TimePickerProps) {
+export default function TimePicker({ value, onChange, className }: TimePickerProps) {
   /**
    * Select.Item이 선택되었을 때 호출되는 핸들러입니다.
    * 선택된 값이 'hour' 또는 'minute'에 해당하는지 판별한 후, 상태를 업데이트합니다.
@@ -29,16 +34,16 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
   const setTime = (item: SelectItem) => {
     if (item?.value.includes('hour')) {
       const hour = item.value.split('-')[1];
-      onChange((prev) => ({
+      onChange({
         hour,
-        minute: prev?.minute ?? '00',
-      }));
+        minute: value?.minute ?? '00',
+      });
     } else if (item?.value.includes('minute')) {
       const minute = item.value.split('-')[1];
-      onChange((prev) => ({
-        hour: prev?.hour ?? '00',
+      onChange({
+        hour: value?.hour ?? '00',
         minute,
-      }));
+      });
     }
   };
 
@@ -51,10 +56,12 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
 
   return (
     <div>
-      <Select.Root className='w-120' value={selectedItem} onChangeValue={setTime}>
+      <Select.Root className={twMerge('w-120', className)} value={selectedItem} onChangeValue={setTime}>
         <Select.Trigger className='flex items-center gap-6 rounded-xl border bg-white px-20 py-10'>
-          {value?.hour ? <span>{value?.hour}</span> : <span className='text-gray-300'>시</span>} :
-          {value?.minute ? <span>{value.minute}</span> : <span className='text-gray-300'>분</span>}
+          <div className='flex gap-8'>
+            {value?.hour ? <span>{value?.hour}</span> : <span className='text-gray-300'>시</span>} :
+            {value?.minute ? <span>{value.minute}</span> : <span className='text-gray-300'>분</span>}
+          </div>
         </Select.Trigger>
 
         <Select.Content className='flex gap-4 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
