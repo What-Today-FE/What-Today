@@ -24,6 +24,7 @@ export default function BannerInput({
   plusIconClassName,
   counterClassName,
   plusIconColor,
+  defaultImageUrl,
   onChange,
 }: InputProps & { onChange?: (file: File | null) => void }) {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -56,12 +57,10 @@ export default function BannerInput({
 
   // 컴포넌트 언마운트 시 URL 정리
   useEffect(() => {
-    return () => {
-      if (previousUrlRef.current) {
-        URL.revokeObjectURL(previousUrlRef.current);
-      }
-    };
-  }, []);
+    if (defaultImageUrl && previews.length === 0) {
+      setPreviews([defaultImageUrl]);
+    }
+  }, [defaultImageUrl]);
 
   const isUploaded = previews.length >= MAX_IMAGES;
 
@@ -69,7 +68,7 @@ export default function BannerInput({
     <div className={twMerge('mt-4 flex gap-14', wrapperClassName)}>
       <label
         className={twMerge(
-          'flex aspect-square w-80 flex-col items-center justify-center rounded-3xl border border-gray-300 bg-white md:w-128',
+          'flex aspect-square w-110 flex-col items-center justify-center rounded-3xl border border-gray-300 bg-white md:w-128',
           isUploaded ? 'pointer-events-none opacity-40' : 'cursor-pointer',
           labelClassName,
         )}
@@ -92,7 +91,7 @@ export default function BannerInput({
 
       {/* 미리보기 이미지 */}
       {previews.map((preview, idx) => (
-        <div key={idx} className={twMerge('relative aspect-square w-80 md:w-128', previewClassName)}>
+        <div key={idx} className={twMerge('relative aspect-square w-110 sm:w-110 md:w-128', previewClassName)}>
           <img
             alt='배너 미리보기'
             className={twMerge('h-full w-full rounded-2xl object-cover', imgClassName)}

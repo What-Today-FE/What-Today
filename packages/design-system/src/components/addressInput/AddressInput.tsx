@@ -1,10 +1,12 @@
-import { useRef } from 'react';
-
+import { useEffect, useRef } from 'react';
 import { Input } from '../input';
-import { OpenDaumPostcode } from './openDaumPostcode';
+import { OpenDaumPostcode } from './OpenDaumPostcode';
 import type { AddressInputProps } from './types';
 
-export default function AddressInput({ onChange }: AddressInputProps) {
+
+export default function AddressInput({ value, onChange }: AddressInputProps) {
+
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -16,6 +18,11 @@ export default function AddressInput({ onChange }: AddressInputProps) {
     });
   };
 
+  useEffect(() => {
+    if (inputRef.current && value !== undefined) {
+      inputRef.current.value = value;
+    }
+  }, [value]);
   return (
     <div className='w-full'>
       <Input.Root className='w-full'>

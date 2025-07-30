@@ -34,19 +34,12 @@ export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
       oncomplete: (data: DaumPostcodeData) => {
         const roadAddr = data.roadAddress;
 
-        let extraRoadAddr = '';
-        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-          extraRoadAddr += data.bname;
-        }
-        if (data.buildingName !== '' && data.apartment === 'Y') {
-          extraRoadAddr += extraRoadAddr ? `, ${data.buildingName}` : data.buildingName;
-        }
-
         const fullAddr = roadAddr; // 필요 시 extraRoadAddr도 붙일 수 있음
         onSelect(fullAddr);
       },
     }).open();
   };
+
 
   if (!window.daum?.Postcode) {
     const script = document.createElement('script');
@@ -54,7 +47,6 @@ export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
     script.onload = handleOpen;
     script.onerror = () => {
       console.error('Daum 우편번호 스크립트 로딩에 실패했습니다.');
-      // 필요시 사용자에게 알림 또는 대체 방법 제공
     };
     document.body.appendChild(script);
   } else {

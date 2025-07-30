@@ -1,72 +1,117 @@
-import { Button, ExperienceCard, NoResult } from '@what-today/design-system';
-import { useEffect, useState } from 'react';
+import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } from '@what-today/design-system';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getMyActivities } from '@/apis/myActivities';
-import type { myActivitiesResponse } from '@/schemas/myActivities';
+import { useDeleteMyActivityMutation, useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
 
 export default function ManageActivitiesPage() {
   const navigate = useNavigate();
-  const [data, setData] = useState<myActivitiesResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
-  const fetchMyActivities = async () => {
-    try {
-      const result = await getMyActivities({ size: 10 });
-      setData(result);
-    } catch (err) {
-      console.error('내 체험 조회 실패:', err);
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteMyActivitiesQuery(3);
+  const { mutate: deleteActivity } = useDeleteMyActivityMutation();
+
+  const handleDeleteConfirm = () => {
+    if (deleteTargetId !== null) {
+      deleteActivity(deleteTargetId, {
+        onSuccess: () => {
+          setIsDeleteOpen(false);
+          setDeleteTargetId(null);
+        },
+      });
     }
-    setLoading(false);
+  };
+  const observerRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!observerRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 },
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  const allActivities = data?.pages.flatMap((page) => page.activities) ?? [];
+
+  const handleNavigateToMypage = () => {
+    navigate('/mypage');
   };
 
-  useEffect(() => {
-    fetchMyActivities();
-  }, []);
-
   let content;
-  if (loading) {
+  if (isLoading) {
     content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
-  } else if (data && data.activities.length > 0) {
-    content = data.activities.map(({ id, title, price, bannerImageUrl, rating, reviewCount }) => {
-      return (
-        <ExperienceCard
-          key={id}
-          bannerImageUrl={bannerImageUrl}
-          price={price}
-          rating={rating}
-          reviewCount={reviewCount}
-          title={title}
-          // 추후 삭제알림 모달창 뜨는 것으로 수정 예정
-          onDelete={() => navigate('/')}
-          // 추후 체험등록 페이지로 수정 예정
-          onEdit={() => navigate('/')}
-        />
-      );
-    });
-  } else {
+  } else if (isError) {
+    content = <div className='flex justify-center p-40 text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>;
+  } else if (allActivities.length === 0) {
     content = (
       <div className='flex justify-center p-40'>
         <NoResult dataName='등록한 체험이' />
       </div>
     );
+  } else {
+    content = (
+      <>
+        {allActivities.map(({ id, title, price, bannerImageUrl, rating, reviewCount }) => (
+          <ExperienceCard
+            key={id}
+            bannerImageUrl={bannerImageUrl}
+            price={price}
+            rating={rating}
+            reviewCount={reviewCount}
+            title={title}
+            onDelete={() => {
+              setDeleteTargetId(id);
+              setIsDeleteOpen(true);
+            }}
+            onEdit={() => navigate(`/experiences/create/${id}`)}
+          />
+        ))}
+        <div ref={observerRef} />
+        {isFetchingNextPage && <div className='text-center text-gray-400'>체험목록 불러오는 중...</div>}
+      </>
+    );
   }
 
   return (
     <div className='flex flex-col gap-13 md:gap-30'>
-      <header className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
-        <div className='flex flex-col gap-10'>
+      <header className='flex flex-col gap-10'>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
+          <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>
+            <ChevronIcon color='var(--color-gray-300)' direction='left' />
+          </Button>
           <h1 className='text-xl font-bold text-gray-950'>내 체험 관리</h1>
-          <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
         </div>
-        {/* 추후 체험등록 페이지로 수정 예정 */}
-        <Button className='w-full md:w-138' onClick={() => navigate('/')}>
-          체험 등록하기
-        </Button>
+        <div className='flex flex-col justify-between gap-10 pt-10 md:flex-row'>
+          <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
+           <Button className='w-full md:w-138' onClick={() => navigate('/experiences/create')}>
+            체험 등록하기
+          </Button>
+        </div>
       </header>
       <section aria-label='체험 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
       </section>
+      <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
+        <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
+          <div className='flex flex-col items-center gap-6 text-center'>
+            <WarningLogo className='md:size-110 lg:size-150' size={88} />
+            <p className='text-2lg font-bold'>체험을 삭제하시겠습니까?</p>
+          </div>
+          <Modal.Actions>
+            <Modal.CancelButton>아니요</Modal.CancelButton>
+            <Modal.ConfirmButton onClick={handleDeleteConfirm}>네</Modal.ConfirmButton>
+          </Modal.Actions>
+        </Modal.Content>
+      </Modal.Root>
     </div>
   );
 }
