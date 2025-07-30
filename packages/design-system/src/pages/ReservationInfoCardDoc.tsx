@@ -56,6 +56,7 @@ import { ReservationInfoCard } from '@what-today/design-system';
           headCount={2}
           nickname='홍길동'
           ownerStatus='pending'
+          reservationId={1}
           userStatus='pending'
           onApprove={() => alert('승인됨')}
           onReject={() => alert('거절됨')}
@@ -73,8 +74,20 @@ import { ReservationInfoCard } from '@what-today/design-system';
       />
       <h3 className='mb-8 text-base font-semibold text-gray-600'>완료 상태 (Badge 표시)</h3>
       <div className='flex w-400 flex-col gap-10'>
-        <ReservationInfoCard headCount={3} nickname='김철수' ownerStatus='confirmed' userStatus='confirmed' />
-        <ReservationInfoCard headCount={12} nickname='김태일' ownerStatus='confirmed' userStatus='declined' />
+        <ReservationInfoCard
+          headCount={3}
+          nickname='김철수'
+          ownerStatus='confirmed'
+          reservationId={1}
+          userStatus='confirmed'
+        />
+        <ReservationInfoCard
+          headCount={12}
+          nickname='김태일'
+          ownerStatus='confirmed'
+          reservationId={2}
+          userStatus='declined'
+        />
       </div>
       <DocCode
         code={`<ReservationInfoCard
