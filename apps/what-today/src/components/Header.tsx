@@ -1,7 +1,7 @@
 import { ProfileLogo } from '@what-today/design-system';
 import { ImageLogo } from '@what-today/design-system';
 import { TextLogo } from '@what-today/design-system';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useResponsive } from '@/hooks/useResponsive';
 import { useWhatTodayStore } from '@/stores';
@@ -9,8 +9,14 @@ import { useWhatTodayStore } from '@/stores';
 import NotificationPopover from './notification/NotificationPopover';
 
 export default function Header() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { user, isLoggedIn } = useWhatTodayStore();
   const { isMobile } = useResponsive();
+
+  const handleLinkClick = (path: string) => {
+    navigate(`/${path}`, { state: { from: location } });
+  };
 
   return (
     <div className='relative z-50 flex w-full justify-between py-16'>
@@ -41,13 +47,13 @@ export default function Header() {
         </div>
       ) : (
         <div className='text-md flex items-center gap-4 sm:gap-12'>
-          <Link to='/login'>
-            <p className='cursor-pointer hover:opacity-60'>로그인</p>
-          </Link>
+          <p className='cursor-pointer hover:opacity-60' onClick={() => handleLinkClick('login')}>
+            로그인
+          </p>
           <div className='mx-12 h-12 w-px bg-gray-100' />
-          <Link to='/signup'>
-            <p className='cursor-pointer hover:opacity-60'>회원가입</p>
-          </Link>
+          <p className='cursor-pointer hover:opacity-60' onClick={() => handleLinkClick('signup')}>
+            회원가입
+          </p>
         </div>
       )}
     </div>

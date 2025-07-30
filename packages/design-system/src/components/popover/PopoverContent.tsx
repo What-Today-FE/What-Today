@@ -37,6 +37,7 @@ export interface PopoverContentProps extends BaseProp {
 function PopoverContent({
   children,
   className,
+  style,
   preventInteraction = false,
   overlay = false,
   matchTriggerWidth = false,
@@ -59,7 +60,7 @@ function PopoverContent({
 
   return (
     <Portal>
-      {overlay && <div className='fixed inset-0 z-40 bg-black/30' />}
+      {overlay && <div className='fixed inset-0 z-99 bg-black/30' />}
       <div
         ref={handleContentRef}
         className={twMerge('absolute top-0 left-0 z-50', className)}
@@ -76,12 +77,14 @@ function PopoverContent({
                 width: 'fit-content',
               }),
           visibility: contentSize.width ? 'visible' : 'hidden', // Popover.Content의 위치가 계산되기 전에는 화면에 보이지 않도록
+
+          ...style, // 각 컴퍼넌트별 커스텀 Style
         }}
       >
         {children}
       </div>
     </Portal>
-    // Trigger도 Overlay 위쪽으로 올라와야 하면 아래 내용 사용 + 상대적 popoverPostion 수정 (relative div가 바뀜)
+    // Trigger도 Overlay 위쪽으로 올라와야 하면 아래 내용 사용 + 상대적 popoverPosition 수정 (relative div가 바뀜)
     // <Portal>
     //   {open && (
     //     <div className='pointer-events-none fixed inset-0 z-[900]'>

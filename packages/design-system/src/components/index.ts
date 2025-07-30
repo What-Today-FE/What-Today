@@ -23,6 +23,7 @@ export * from './popover';
 export { default as ProfileImageInput } from './ProfileImageInput';
 export { default as RadioGroup } from './RadioGroup/RadioGroup';
 export { default as ReservationCard } from './ReservationCard';
+export { default as ReservationInfoCard } from './ReservationInfoCard';
 export * from './select';
 export { default as StarRating } from './StarRating';
 export { default as TimePicker } from './TimePicker';
