@@ -33,7 +33,12 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
   const { isOpen, contentRef } = context;
 
   // 동적 높이 조절
-  const { contentHeight, isScrollable } = useDynamicHeight(contentRef, isOpen);
+  const { contentHeight, isScrollable, recalculateHeight } = useDynamicHeight(contentRef, isOpen);
+
+  // context에 recalculateHeight 추가
+  if (context.recalculateHeight !== recalculateHeight) {
+    context.recalculateHeight = recalculateHeight;
+  }
 
   return (
     <div
