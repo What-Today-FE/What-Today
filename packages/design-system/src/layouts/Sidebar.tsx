@@ -10,8 +10,39 @@ export default function DesignSystemLayout() {
         </Link>
         <nav>
           <ul className='m-0 list-none p-0'>
-            <SidebarNavItem label='Button (Example Doc)' to='/docs/button-example' />
+            <SidebarNavItem label='Button' to='/docs/button' />
             {/* ✅ 아래에 <SidebarNavItem>을 활용한 컴포넌트 문서 링크를 추가해주세요. */}
+            <SidebarNavItem label='Input' to='/docs/Input' />
+            <SidebarNavItem label='Icon' to='/docs/Icon' />
+            <SidebarNavItem label='Logo' to='/docs/Logo' />
+            <SidebarNavItem label='Pagination' to='/docs/Pagination' />
+            <SidebarNavItem label='RadioGroup' to='/docs/RadioGroup' />
+            <SidebarNavItem label='Calendar' to='/docs/Calendar' />
+            <SidebarNavItem label='Textarea' to='/docs/Textarea' />
+            <SidebarNavItem label='Dropdown' to='/docs/Dropdown' />
+            <SidebarNavItem label='Select' to='/docs/Select' />
+            <SidebarNavItem label='Popover' to='/docs/Popover' />
+            <SidebarNavItem label='ExperienceCard' to='/docs/ExperienceCard' />
+            <SidebarNavItem label='NoResult' to='/docs/NoResult' />
+            <SidebarNavItem label='UserBadge' to='/docs/UserBadge' />
+            <SidebarNavItem label='MainCard' to='/docs/MainCard' />
+            <SidebarNavItem label='ReservationCard' to='/docs/ReservationCard' />
+            <SidebarNavItem label='ReservationInfoCard' to='/docs/ReservationInfoCard' />
+            <SidebarNavItem label='Footer' to='/docs/Footer' />
+            <SidebarNavItem label='OwnerBadge' to='/docs/OwnerBadge' />
+            <SidebarNavItem label='ProfileImageInput' to='/docs/ProfileImageInput' />
+            <SidebarNavItem label='NotificationCard' to='/docs/NotificationCard' />
+            <SidebarNavItem label='Toast' to='/docs/Toast' />
+            <SidebarNavItem label='ExperienceImageUpload' to='/docs/ExperienceImageUpload' />
+            <SidebarNavItem label='MainBanner' to='/docs/MainBanner' />
+            <SidebarNavItem label='Carousel' to='/docs/Carousel' />
+            <SidebarNavItem label='MainSearchInput' to='/docs/MainSearchInput' />
+            <SidebarNavItem label='BottomSheet' to='/docs/BottomSheet' />
+            <SidebarNavItem label='DatePicker' to='/docs/DatePicker' />
+            <SidebarNavItem label='Modal' to='/docs/Modal' />
+            <SidebarNavItem label='StarRating' to='/docs/StarRating' />
+            <SidebarNavItem label='TimePicker' to='/docs/TimePicker' />
+            <SidebarNavItem label='AddressInput' to='/docs/AddressInput' />
           </ul>
         </nav>
       </aside>
