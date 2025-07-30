@@ -40,17 +40,9 @@ export const OpenDaumPostcode = (onSelect: (address: string) => void) => {
     }).open();
   };
 
-  if (typeof window === 'undefined') {
-    console.warn('OpenDaumPostcode는 브라우저 환경에서만 동작합니다.');
-    return;
-  }
+
 
   if (!window.daum?.Postcode) {
-    const existingScript = document.querySelector('script[src*="postcode.v2.js"]');
-    if (existingScript) {
-      existingScript.addEventListener('load', handleOpen);
-      return;
-    }
 
     const script = document.createElement('script');
     script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
