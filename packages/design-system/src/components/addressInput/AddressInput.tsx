@@ -1,38 +1,20 @@
-import { useEffect, useRef } from 'react';
-
 import { Input } from '../input';
 import { OpenDaumPostcode } from './OpenDaumPostcode';
 import type { AddressInputProps } from './types';
 
-export default function AddressInput({ value, onChange }: AddressInputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
+export default function AddressInput({ value = '', onChange, error }: AddressInputProps) {
   const handleClick = () => {
     OpenDaumPostcode((selectedAddress) => {
-      if (inputRef.current) {
-        inputRef.current.value = selectedAddress; // DOM에 직접 값 설정
-      }
-      onChange?.(selectedAddress); // 필요 시 외부에도 알림
+      onChange?.(selectedAddress); // RHF가 이걸 통해 상태 업데이트
     });
   };
 
-  useEffect(() => {
-    if (inputRef.current && value !== undefined) {
-      inputRef.current.value = value;
-    }
-  }, [value]);
   return (
     <div className='w-full'>
-      <Input.Root className='w-full'>
+      <Input.Root className='w-full' error={error}>
         <Input.Label>주소</Input.Label>
         <Input.Wrapper>
-          <Input.Field
-            ref={inputRef}
-            readOnly
-            className='md:text-md py-5 text-sm text-gray-950'
-            placeholder='주소를 입력해 주세요'
-            onClick={handleClick}
-          />
+          <Input.Field readOnly placeholder='주소를 입력해 주세요' value={value} onClick={handleClick} />
         </Input.Wrapper>
         <Input.ErrorMessage />
       </Input.Root>

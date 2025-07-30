@@ -108,3 +108,36 @@ export type ActivityWithSchedulesResponse = z.infer<typeof activityWithSchedules
 export type CreateActivityBody = z.infer<typeof createActivityBodySchema>;
 export type UpdateMyActivityBody = z.infer<typeof updateMyActivityBodySchema>;
 export type CreateActivityFormValues = z.infer<typeof createActivityFormSchema>;
+
+// ==========================================================================
+// 등록 폼 유효성 검사 테스트용
+export const createExperienceFormSchema = z.object({
+  title: z.string().min(1, '제목을 입력해주세요'),
+  category: z
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, { message: '카테고리를 선택해주세요' }),
+  description: z.string().min(1, '설명을 입력해주세요'),
+  price: z.string().min(1, '가격을 입력해주세요'),
+  address: z.string().min(1, '주소를 입력해주세요'),
+  schedules: z
+    .array(
+      z.object({
+        date: z.any().refine((val) => val !== null, { message: '날짜를 입력해주세요' }),
+        startTime: z
+          .object({ hour: z.string(), minute: z.string() })
+          .nullable()
+          .refine(Boolean, { message: '시작 시간을 입력해주세요' }),
+        endTime: z
+          .object({ hour: z.string(), minute: z.string() })
+          .nullable()
+          .refine(Boolean, { message: '종료 시간을 입력해주세요' }),
+      }),
+    )
+    .min(1, '최소 1개의 예약 시간을 등록해주세요'),
+  bannerFile: z.string().min(1, '배너 이미지를 등록해주세요'), // string URL도 가능
+  subImageFiles: z.array(z.string().min(1)).min(1, '소개 이미지를 최소 1개 등록해주세요'),
+});
