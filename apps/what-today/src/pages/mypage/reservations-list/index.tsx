@@ -115,7 +115,7 @@ export default function ReservationsListPage() {
         <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
         <ul>
           {group.map((res) => {
-            const showCancelButton = res.status === 'confirmed';
+            const showCancelButton = res.status === 'pending';
             const showReviewButton = res.status === 'completed' && !res.reviewSubmitted;
 
             return (
