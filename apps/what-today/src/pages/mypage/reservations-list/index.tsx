@@ -134,7 +134,7 @@ export default function ReservationsListPage() {
                 />
 
                 {(showCancelButton || showReviewButton) && (
-                  <div className='mt-12 flex gap-12'>
+                  <div className='mt-8 mb-24'>
                     {showCancelButton && (
                       <Button
                         className='text-md w-full bg-gray-50 font-medium text-gray-600'
