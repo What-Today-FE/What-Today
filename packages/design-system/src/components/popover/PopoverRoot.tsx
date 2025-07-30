@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { PopoverContext } from './PopoverContext';
@@ -12,13 +12,21 @@ export interface PopoverRootProps extends BaseProp {
   direction?: Position; // Popover가 뜰 위치 (ex. Trigger 기준 => 'bottom' / 뷰포트 기준 => 'fixed-top-center')
   open?: boolean; // 외부에서 제어할 수 있는 open
   onOpenChange?: (open: boolean) => void; // 외부 상태 변경 감지
+  externalTriggerRef?: RefObject<HTMLDivElement | null>; // ✅ 외부 Trigger ref 주입
 }
 
 /**
  * @component PopoverRoot
  * @description Popover의 위치, 크기, 외부 클릭, Esc 키 등 다양한 상호작용 로직을 포함한 루트 컴포넌트입니다.
  */
-function PopoverRoot({ children, direction = 'bottom', className, open: openProp, onOpenChange }: PopoverRootProps) {
+function PopoverRoot({
+  children,
+  direction = 'bottom',
+  className,
+  open: openProp,
+  onOpenChange,
+  externalTriggerRef,
+}: PopoverRootProps) {
   // Popover의 열고 닫힘 상태 (controlled / uncontrolled 지원)
   const isControlled = openProp !== undefined;
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -39,7 +47,8 @@ function PopoverRoot({ children, direction = 'bottom', className, open: openProp
   const [triggerWidth, setTriggerWidth] = useState<number | null>(null); // Popover.Trigger의 크기
   const [contentSize, setContentSize] = useState(EMPTY_SIZE); // Popover.Content의 크기
 
-  const triggerRef = useRef<HTMLDivElement | null>(null); // Popover.Trigger의 Ref
+  const innerTriggerRef = useRef<HTMLDivElement | null>(null); // Popover.Trigger의 Ref
+  const triggerRef = externalTriggerRef ?? innerTriggerRef;
   const contentElementRef = useRef<HTMLDivElement | null>(null); // Popover.Content의 Ref
 
   /**
@@ -136,12 +145,11 @@ function PopoverRoot({ children, direction = 'bottom', className, open: openProp
     // Popover 외부 영역을 누르면 Popover 닫힘 (Popover에서는 스크롤 방지 제외)
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (
-        contentElementRef.current &&
-        !contentElementRef.current.contains(target) && // Popover.Content 외부 영역 클릭
-        triggerRef.current &&
-        !triggerRef.current.contains(target) // Popover.Trigger 외부 영역 클릭
-      ) {
+      const isInContent = contentElementRef.current?.contains(target);
+      const isInTrigger = triggerRef.current?.contains(target);
+      const isInSelectContent = document.querySelector('.select-content')?.contains(target); // popover위에 Select가 있을 때 항목이 선택되어도 팝오버까지 꺼지지 않도록
+
+      if (!isInContent && !isInTrigger && !isInSelectContent) {
         internalSetOpen(false);
       }
     };

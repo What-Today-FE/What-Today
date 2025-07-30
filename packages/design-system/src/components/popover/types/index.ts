@@ -63,4 +63,5 @@ export interface PopoverContextType {
 export interface BaseProp {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }

@@ -156,3 +156,6 @@ export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 
 /** 예약 생성 요청 바디 타입 */
 export type CreateReservationBodyDto = z.infer<typeof createReservationBodySchema>;
+
+/** 예약 상태 타입 */
+export type ReservationStatus = z.infer<typeof reservationStatusSchema>;
