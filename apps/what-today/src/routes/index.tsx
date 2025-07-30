@@ -14,24 +14,27 @@ import ReservationsListPage from '@/pages/mypage/reservations-list';
 import ReservationsStatusPage from '@/pages/mypage/reservations-status';
 import SignupPage from '@/pages/signup';
 
-import { authGuardLoader } from './authGuardLoader';
+import { authGuardLoader, redirectIfLoggedInLoader } from './authGuardLoader';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      { path: 'login', element: <LoginPage /> },
-      { path: 'signup', element: <SignupPage /> },
-      { path: 'oauth/kakao', element: <KakaoCallback /> },
-      { path: 'oauth/kakao/signup', element: <KakaoCallbackSignup /> },
-
+      {
+        loader: redirectIfLoggedInLoader,
+        children: [
+          { path: 'login', element: <LoginPage /> },
+          { path: 'signup', element: <SignupPage /> },
+          { path: 'oauth/kakao', element: <KakaoCallback /> },
+          { path: 'oauth/kakao/signup', element: <KakaoCallbackSignup /> },
+        ],
+      },
       {
         element: <DefaultLayout />,
         children: [
           { index: true, element: <MainPage /> },
           { path: 'activities/:id', element: <ActivityDetailPage /> },
-
           {
             path: 'mypage',
             loader: authGuardLoader,

@@ -2,6 +2,7 @@ import type {
   CreateReviewBody,
   MyReservationsResponse,
   ReservationResponse,
+  ReservationStatus,
   ReviewResponse,
   UpdateMyReservationBody,
 } from '@/schemas/myReservations';
@@ -20,12 +21,22 @@ import axiosInstance from './axiosInstance';
  * @param params optional - size, cursorId, status
  * @returns MyReservationsResponse
  */
-export const fetchMyReservations = async (params?: {
+export const fetchMyReservations = async ({
+  cursorId,
+  size = 10,
+  status,
+}: {
+  cursorId?: number | null;
   size?: number;
-  cursorId?: number;
-  status?: string;
+  status?: ReservationStatus | null;
 }): Promise<MyReservationsResponse> => {
-  const response = await axiosInstance.get('/my-reservations', { params });
+  const response = await axiosInstance.get('/my-reservations', {
+    params: {
+      cursorId,
+      size,
+      status,
+    },
+  });
   return myReservationsResponseSchema.parse(response.data);
 };
 
