@@ -32,6 +32,10 @@ interface ReservationCardProps {
    * 체험 종료 시간 ('HH:mm', 24시간제 시각 문자열)
    */
   endTime: string;
+  /**
+   * 카드 클릭 시 실행할 콜백 함수 (예: 체험 상세 페이지 이동)
+   */
+  onClick?: () => void;
 }
 
 /**
@@ -66,6 +70,7 @@ export default function ReservationCard({
   headCount,
   startTime,
   endTime,
+  onClick,
 }: ReservationCardProps) {
   const formatPrice = (value: number) => value.toLocaleString('ko');
   // badge 컴포넌트로 수정 예정
@@ -79,7 +84,10 @@ export default function ReservationCard({
   const { badge, style } = reservationStatus[status];
 
   return (
-    <article className='flex -space-x-38 rounded-3xl shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:-space-x-20 xl:max-w-640 xl:-space-x-26'>
+    <article
+      className='flex cursor-pointer -space-x-38 rounded-2xl shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:-space-x-20 xl:max-w-640 xl:-space-x-26'
+      onClick={onClick}
+    >
       <section className='z-10 flex h-136 w-full flex-col justify-between rounded-3xl bg-white p-20 shadow-[0px_-8px_20px_0px_rgba(0,0,0,0.05)] xl:h-181 xl:px-40 xl:py-30'>
         <header className='flex flex-col xl:gap-4'>
           <div className='flex flex-col gap-4 xl:gap-8'>
