@@ -47,7 +47,7 @@ const createScheduleBodySchema = z.object({
   endTime: z.string(), // 예: '16:00'
 });
 
-// ✅ CreateActivityBodyDto 요청 바디 스키마
+// ✅ CreateActivityBodyDto 요청 바디 스키마 (API 전송용)
 export const createActivityBodySchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
   category: z.string().min(1, '카테고리를 선택해주세요'),
@@ -76,7 +76,35 @@ export const updateMyActivityBodySchema = z.object({
   schedulesToAdd: z.array(createScheduleBodySchema).default([]),
 });
 
+/* ------------------------------------------------------------------
+   📌 폼 입력 단계 전용 스키마 (react-hook-form resolver용)
+   - File, Dayjs 객체 등 UI에서 쓰는 값 형태를 검증
+   - 제출 시 createActivityBodySchema 형태로 변환해서 API 요청
+------------------------------------------------------------------- */
+export const createActivityFormSchema = z.object({
+  title: z.string().min(1, '제목을 입력해주세요'),
+  category: z
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
+    .nullable(),
+  description: z.string().min(1, '설명을 입력해주세요'),
+  price: z.string().min(1, '가격을 입력해주세요'),
+  address: z.string().min(1, '주소를 입력해주세요'),
+  schedules: z.array(
+    z.object({
+      date: z.any().nullable(), // Dayjs | null
+      startTime: z.object({ hour: z.string(), minute: z.string() }).nullable(),
+      endTime: z.object({ hour: z.string(), minute: z.string() }).nullable(),
+    }),
+  ),
+  bannerFile: z.instanceof(File).nullable(),
+  subImageFiles: z.array(z.instanceof(File)),
+});
+
 // 🔄 타입 추론들 (z.infer)
 export type ActivityWithSchedulesResponse = z.infer<typeof activityWithSchedulesResponseSchema>;
 export type CreateActivityBody = z.infer<typeof createActivityBodySchema>;
 export type UpdateMyActivityBody = z.infer<typeof updateMyActivityBodySchema>;
+export type CreateActivityFormValues = z.infer<typeof createActivityFormSchema>;

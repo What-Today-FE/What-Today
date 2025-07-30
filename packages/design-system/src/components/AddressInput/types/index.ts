@@ -9,4 +9,5 @@ export interface DaumPostcodeData {
 
 export interface AddressInputProps {
   onChange?: (value: string) => void;
+  value?: string;
 }

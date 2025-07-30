@@ -43,7 +43,8 @@ export default function CreateExperience() {
   const [schedules, setSchedules] = useState<Schedule[]>([{ date: null, startTime: null, endTime: null }]);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
-
+  const [bannerImageUrl, setBannerImageUrl] = useState(''); // ✅ 배너 미리보기
+  const [subImageUrls, setSubImageUrls] = useState<string[]>([]); // ✅ 서브 이미지 미리보기
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -54,10 +55,14 @@ export default function CreateExperience() {
         const res = await axiosInstance.get(`/activities/${id}`);
         const safeData = {
           ...res.data,
-          schedules: res.data.schedules.map((s: any) => ({
-            ...s,
-            times: s.times ?? [],
-          })),
+          // 🚨 사용자님의 요청에 따라 이 부분의 `any`만 수정합니다.
+          // activityWithSchedulesResponseSchema의 schedules 내부에 있는 schedule 타입에 맞게 명시합니다.
+          schedules: res.data.schedules.map(
+            (s: { date: string; times?: Array<{ startTime: string; endTime: string; id: number }> }) => ({
+              ...s,
+              times: s.times ?? [], // times가 없을 경우 빈 배열로 처리
+            }),
+          ),
         };
 
         const parsed = activityWithSchedulesResponseSchema.parse(safeData);
@@ -67,29 +72,28 @@ export default function CreateExperience() {
         setPrice(String(parsed.price));
         setAddress(parsed.address);
         setSelectedValue({ value: parsed.category, label: parsed.category });
+        setBannerImageUrl(parsed.bannerImageUrl);
+        setSubImageUrls(parsed.subImages.map((img) => img.imageUrl));
 
-        setSchedules(
-          parsed.schedules.length > 0
-            ? parsed.schedules.flatMap((s) =>
-                (s.times.length > 0 ? s.times : [{ startTime: '', endTime: '' }]).map((t) => ({
-                  date: dayjs(s.date),
-                  startTime: t.startTime
-                    ? {
-                        hour: t.startTime.split(':')[0].padStart(2, '0'),
-                        minute: t.startTime.split(':')[1].padStart(2, '0'),
-                      }
-                    : null,
-                  endTime: t.endTime
-                    ? {
-                        hour: t.endTime.split(':')[0].padStart(2, '0'),
-                        minute: t.endTime.split(':')[1].padStart(2, '0'),
-                      }
-                    : null,
-                })),
-              )
-            : [{ date: null, startTime: null, endTime: null }],
-        );
-        console.log(parsed.schedules);
+        // ✅ 수정 모드일 때 기존 등록 스케줄 그대로 매핑
+        const loadedSchedules: Schedule[] = [];
+        parsed.schedules.forEach((schedule) => {
+          schedule.times.forEach((time) => {
+            loadedSchedules.push({
+              date: dayjs(schedule.date), // 날짜 그대로 변환
+              startTime: {
+                hour: time.startTime.split(':')[0],
+                minute: time.startTime.split(':')[1],
+              },
+              endTime: {
+                hour: time.endTime.split(':')[0],
+                minute: time.endTime.split(':')[1],
+              },
+            });
+          });
+        });
+
+        setSchedules(loadedSchedules.length > 0 ? loadedSchedules : [{ date: null, startTime: null, endTime: null }]);
       } catch (err) {
         console.error('체험 수정 데이터 불러오기 실패:', err);
       }
@@ -97,7 +101,6 @@ export default function CreateExperience() {
 
     fetch();
   }, [id]);
-
   const handleAddSchedule = () => {
     setSchedules((prev) => [...prev, { date: null, startTime: null, endTime: null }]);
   };
@@ -205,7 +208,7 @@ export default function CreateExperience() {
           <Select.Content>
             <Select.Group>
               <Select.Label>카테고리</Select.Label>
-              <Select.Item value='문화 · 예술'>문화 예술</Select.Item>
+              <Select.Item value='문화 · 예술'>문화예술</Select.Item>
               <Select.Item value='식음료'>식음료</Select.Item>
               <Select.Item value='스포츠'>스포츠</Select.Item>
               <Select.Item value='투어'>투어</Select.Item>
@@ -243,7 +246,7 @@ export default function CreateExperience() {
         </Input.Root>
 
         {/* 주소 */}
-        <AddressInput onChange={setAddress} />
+        <AddressInput value={address} onChange={setAddress} />
 
         {/* 날짜/시간 반복 */}
         <div className='flex flex-col gap-20'>
@@ -286,7 +289,7 @@ export default function CreateExperience() {
                     )
                   }
                 />
-                <div>
+                <div className='flex justify-center'>
                   {index === 0 ? (
                     <Button
                       className='flex h-fit w-fit cursor-pointer items-center rounded-full bg-blue-400 p-10'
@@ -313,21 +316,13 @@ export default function CreateExperience() {
         </div>
 
         {/* 이미지 업로드 */}
-        <div className='flex flex-col gap-20'>
-          <div className=''>
-            <h3 className='text-lg font-bold'>배너 이미지 등록</h3>
-            <BannerInput onChange={setBannerFile} />
-          </div>
-          <div>
-            <h3 className='text-lg font-bold'>소개 이미 등록</h3>
-            <IntroduceInput onChange={setSubImageFiles} />
-          </div>
-        </div>
+        <BannerInput defaultImageUrl={bannerImageUrl} onChange={setBannerFile} />
+        <IntroduceInput defaultImageUrls={subImageUrls} onChange={setSubImageFiles} />
 
         {/* 등록 버튼 */}
         <div className='flex justify-center'>
           <Button className='w-138' disabled={loading} size='sm' variant='fill' onClick={handleSubmit}>
-            {loading ? '등록 중...' : '등록하기'}
+            {loading ? (isEdit ? '수정 중...' : '등록 중...') : isEdit ? '수정하기' : '등록하기'}
           </Button>
         </div>
       </div>

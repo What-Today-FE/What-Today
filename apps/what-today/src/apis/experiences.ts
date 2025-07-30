@@ -10,7 +10,7 @@ export const createActivity = async (body: CreateActivityBody) => {
 
 // ✅ 체험 수정 API: 유효성 검사 및 요청
 export const patchActivity = async (activityId: number, body: UpdateMyActivityBody) => {
-  return await axiosInstance.patch(`/activities/${activityId}`, body).then((res) => res.data);
+  return await axiosInstance.patch(`/my-activities/${activityId}`, body).then((res) => res.data);
 };
 
 //  createActivityBodySchema,   parse를 여기서 관리하지 말고 페이지 handleSubmit에서 관리
