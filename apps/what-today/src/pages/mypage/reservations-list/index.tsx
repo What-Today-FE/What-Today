@@ -114,7 +114,7 @@ export default function ReservationsListPage() {
 
     return sortedByDateDesc.map(([date, group], index) => (
       <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
-        <h3 className='text-lg font-bold text-gray-800'>{date}</h3>
+        <h3 className='body-text font-bold'>{date}</h3>
         <ul>
           {group.map((res) => {
             const showCancelButton = res.status === 'pending';
@@ -137,7 +137,7 @@ export default function ReservationsListPage() {
                   <div className='mt-8 mb-24'>
                     {showCancelButton && (
                       <Button
-                        className='text-md w-full bg-gray-50 font-medium text-gray-600'
+                        className='caption-text w-full bg-gray-50 text-gray-400'
                         size='md'
                         variant='fill'
                         onClick={() => setCancelTarget(res)}
@@ -147,7 +147,7 @@ export default function ReservationsListPage() {
                     )}
                     {showReviewButton && (
                       <Button
-                        className='text-md w-full font-medium text-white'
+                        className='caption-text w-full'
                         size='md'
                         variant='fill'
                         onClick={() => setReviewTarget(res)}
@@ -167,7 +167,7 @@ export default function ReservationsListPage() {
 
   let content;
   if (isLoading) {
-    content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
+    content = <div className='flex justify-center p-40 text-gray-400'>로딩 중...</div>;
   } else if (reservations.length > 0) {
     content = <div className='space-y-10'>{renderGroupedReservations(reservations)}</div>;
   } else {
@@ -182,18 +182,13 @@ export default function ReservationsListPage() {
     <div ref={scrollContainerRef} className='flex flex-col gap-13 md:gap-20'>
       <header className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
         <div className='flex flex-col gap-10'>
-          <h1 className='text-2lg font-bold text-gray-950'>예약내역</h1>
-          <p className='text-md font-medium text-gray-500'>예약내역 변경 및 취소할 수 있습니다.</p>
+          <h1 className='subtitle-text'>예약내역</h1>
+          <p className='body-text text-gray-400'>예약내역 변경 및 취소할 수 있습니다.</p>
         </div>
       </header>
 
       <section className='mb-10'>
-        <RadioGroup
-          radioGroupClassName='gap-6'
-          selectedValue={selectedStatus}
-          titleClassName='text-lg font-semibold mb-2'
-          onSelect={(value) => setSelectedStatus(String(value))}
-        >
+        <RadioGroup selectedValue={selectedStatus} onSelect={(value) => setSelectedStatus(String(value))}>
           <div className='flex flex-wrap gap-6'>
             <RadioGroup.Radio value='pending'>예약 대기</RadioGroup.Radio>
             <RadioGroup.Radio value='confirmed'>예약 승인</RadioGroup.Radio>
@@ -212,9 +207,9 @@ export default function ReservationsListPage() {
       {/* 예약 취소 확인 모달 */}
       <Modal.Root open={isDeleteOpen} onClose={() => setCancelTarget(null)}>
         <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
-          <div className='flex flex-col items-center gap-6 text-center'>
+          <div className='flex flex-col items-center gap-10 text-center'>
             <WarningLogo className='md:size-110 lg:size-150' size={88} />
-            <p className='text-2lg font-bold'>예약을 취소하시겠어요?</p>
+            <p className='subtitle-text'>예약을 취소하시겠어요?</p>
           </div>
           <Modal.Actions className='w-full'>
             <Modal.CancelButton className='w-full px-0'>아니요</Modal.CancelButton>
@@ -232,8 +227,8 @@ export default function ReservationsListPage() {
         {reviewTarget && (
           <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
             <Modal.CloseButton />
-            <h2 className='mt-22 text-lg font-bold'>{reviewTarget.activity.title}</h2>
-            <p className='text-md text-gray-500'>
+            <h2 className='body-text mt-22 font-bold'>{reviewTarget.activity.title}</h2>
+            <p className='caption-text text-gray-400'>
               {reviewTarget.date}/ {reviewTarget.startTime} ~ {reviewTarget.endTime} ({reviewTarget.headCount}명)
             </p>
 
@@ -244,10 +239,12 @@ export default function ReservationsListPage() {
 
             {/* 텍스트 입력 영역 */}
             <Input.Root size='xs'>
-              <Input.Label className='mt-24 mb-16 self-start text-left font-bold'>소중한 경험을 들려주세요</Input.Label>
+              <Input.Label className='body-text mt-24 mb-12 self-start text-left font-bold'>
+                소중한 경험을 들려주세요
+              </Input.Label>
               <Input.Wrapper className='shadow-sm'>
                 <Input.Textarea
-                  className='h-180'
+                  className='h-140'
                   maxLength={100}
                   placeholder='체험에서 느낀 경험을 자유롭게 남겨주세요.'
                   value={reviewContent}
