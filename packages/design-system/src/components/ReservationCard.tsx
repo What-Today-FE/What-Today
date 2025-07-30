@@ -101,7 +101,7 @@ export default function ReservationCard({
         </header>
         <div className='flex items-center gap-4'>
           <div className='body-text font-bold'>₩{formatPrice(totalPrice)}</div>
-          <div className='caption-text text-gray-400'>{headCount}명</div>
+          <div className='caption-text text-gray-400'>{formatPrice(headCount)}명</div>
         </div>
       </section>
       <img alt={`${title} 체험 배너`} className='size-150 rounded-r-2xl object-cover' src={bannerImageUrl} />
