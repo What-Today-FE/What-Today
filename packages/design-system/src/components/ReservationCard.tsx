@@ -88,7 +88,7 @@ export default function ReservationCard({
       className='flex cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:-space-x-20 xl:max-w-640 xl:-space-x-26'
       onClick={onClick}
     >
-      <section className='z-10 flex h-150 w-full flex-col justify-between rounded-3xl bg-white p-20 shadow-[0px_-8px_20px_0px_rgba(0,0,0,0.05)] xl:px-40 xl:py-30'>
+      <section className='z-10 flex h-150 w-full flex-col justify-between rounded-l-2xl rounded-r-3xl bg-white p-20 xl:px-40 xl:py-30'>
         <header className='flex flex-col xl:gap-4'>
           <div className='flex flex-col gap-4 xl:gap-8'>
             {/* badge 컴포넌트로 수정 예정 */}
