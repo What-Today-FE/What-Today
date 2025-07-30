@@ -54,3 +54,7 @@ export async function patchReservationStatus(
   const response = await axiosInstance.patch(`/my-activities/${activityId}/reservations/${reservationId}`, { status });
   return reservationSchema.parse(response.data);
 }
+
+export const deleteMyActivity = async (activityId: number) => {
+  return await axiosInstance.delete(`/my-activities/${activityId}`);
+};
