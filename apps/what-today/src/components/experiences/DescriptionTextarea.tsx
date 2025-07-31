@@ -10,6 +10,7 @@ function DescriptionTextarea({ error, ...props }: InputProps) {
       <Input.Wrapper>
         <Input.Textarea autoHeight className='min-h-100' placeholder='체험에 대한 설명을 입력해 주세요.' {...props} />
       </Input.Wrapper>
+      <Input.ErrorMessage />
     </Input.Root>
   );
 }
