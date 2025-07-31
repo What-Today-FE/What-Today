@@ -1,15 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AddressInput, Button, DatePicker, MinusIcon, PlusIcon, Select, TimePicker } from '@what-today/design-system';
 import type { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import dayjs from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { fetchActivityDetail } from '@/apis/activityDetail';
+import { postExperiences, uploadImage } from '@/apis/experiences';
 import DescriptionTextarea from '@/components/experiences/DescriptionTextarea';
 import ImageInput from '@/components/experiences/ImageInput';
 import PriceInput from '@/components/experiences/PriceInput';
 import TitleInput from '@/components/experiences/TitleInput';
-import { createExperienceFormSchema } from '@/schemas/experiences';
+import { type createExperienceForm, createExperienceFormSchema } from '@/schemas/experiences';
 
 interface Time {
   hour: string;
@@ -27,6 +30,25 @@ type ScheduleInputProps = {
   onChange: (schedules: Schedule[]) => void;
 };
 
+function timeToMinutes(time: { hour: string; minute: string } | null): number {
+  if (!time) return -1;
+  return parseInt(time.hour) * 60 + parseInt(time.minute);
+}
+
+function isOverlappingSchedule(a: Schedule, b: Schedule): boolean {
+  const aStart = timeToMinutes(a.startTime);
+  const aEnd = timeToMinutes(a.endTime);
+  const bStart = timeToMinutes(b.startTime);
+  const bEnd = timeToMinutes(b.endTime);
+
+  const aDate = a.date?.format?.('YYYY-MM-DD');
+  const bDate = b.date?.format?.('YYYY-MM-DD');
+
+  if (aDate !== bDate) return false;
+
+  return aStart < bEnd && bStart < aEnd;
+}
+
 function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   const [temp, setTemp] = useState<Schedule>({
     date: null,
@@ -42,8 +64,11 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
       return;
     }
 
-    const isAlreadyAdded = value.some((s) => s.date === date && s.startTime === startTime && s.endTime === endTime);
-    if (isAlreadyAdded) return;
+    const hasOverlap = value.some((s) => isOverlappingSchedule(s, temp));
+    if (hasOverlap) {
+      alert('해당 시간대는 이미 다른 일정과 겹칩니다.');
+      return;
+    }
 
     onChange([...value, temp]);
 
@@ -61,18 +86,21 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
     onChange(updated);
   };
 
-  useEffect(() => {
-    const { date, startTime, endTime } = temp;
-    const isComplete = date && startTime && endTime;
+  // useEffect(() => {
+  //   const { date, startTime, endTime } = temp;
+  //   const isComplete = date && startTime && endTime;
 
-    if (!isComplete) return;
+  //   if (!isComplete) return;
 
-    const isAlreadyAdded = value.some((s) => s.date === date && s.startTime === startTime && s.endTime === endTime);
-    if (isAlreadyAdded) return;
+  //   const hasOverlap = value.some((s) => isOverlappingSchedule(s, temp));
+  //   if (hasOverlap) {
+  //     alert('해당 시간대는 이미 다른 일정과 겹칩니다.');
+  //     return;
+  //   }
 
-    onChange([...value, temp]);
-    setTemp({ date: null, startTime: null, endTime: null });
-  }, [temp]);
+  //   onChange([...value, temp]);
+  //   setTemp({ date: null, startTime: null, endTime: null });
+  // }, [temp]);
 
   return (
     <div className='flex flex-col gap-12'>
@@ -136,13 +164,14 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
 
 export default function CreateExperience() {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const isEdit = !!id;
+  const { id: activityId } = useParams();
+  const isEdit = !!activityId;
 
-  // const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
-  // const [schedules, setSchedules] = useState<Schedule[]>([]);
-  // const [bannerImage, setBannerImage] = useState<string>('');
-  // const [introImages, setIntroImages] = useState<string[]>([]);
+  const originalSubImageIdsRef = useRef<number[]>([]);
+  const originalSubImageUrlsRef = useRef<string[]>([]);
+
+  const originalScheduleIdsRef = useRef<number[]>([]);
+  const originalSchedulesRef = useRef<string[]>([]);
 
   const {
     register,
@@ -150,15 +179,16 @@ export default function CreateExperience() {
     setValue,
     watch,
     control,
+    reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<createExperienceForm>({
     resolver: zodResolver(createExperienceFormSchema),
     mode: 'onSubmit', // or 'onSubmit'
     defaultValues: {
       title: '',
-      category: null,
+      category: {},
       description: '',
-      price: '',
+      price: 0,
       address: '',
       schedules: [],
       bannerFile: '',
@@ -166,11 +196,136 @@ export default function CreateExperience() {
     },
   });
 
+  // 🔹 이미지 URL → blob URL로 변환하는 유틸
+  async function imageUrlToBlobUrl(imageUrl: string): Promise<string> {
+    const res = await fetch(imageUrl);
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  }
+
+  // 🔹 시간 문자열 → { hour, minute } 객체로 변환
+  function parseTimeToObject(time: string) {
+    const [hour, minute] = time.split(':');
+    return { hour, minute };
+  }
+
+  // 🔹 체험 상세 데이터 불러오기 및 RHF 초기값 세팅
+  async function loadExperienceDetail(activityId: string) {
+    try {
+      const { title, category, description, price, address, schedules, bannerImageUrl, subImages } =
+        await fetchActivityDetail(activityId);
+      const subImageUrls = subImages.map((img) => img.imageUrl);
+      console.log(subImageUrls);
+      // console.log(subImageUrls.subImages[0].imageUrl);
+
+      // console.log(title, category, description, price, address, schedules, bannerImageUrl, subImageUrls);
+
+      originalSubImageIdsRef.current = subImages.map((img) => img.id);
+      originalSubImageUrlsRef.current = subImages.map((img) => img.imageUrl);
+
+      originalScheduleIdsRef.current = schedules.map((s) => s.id);
+      originalSchedulesRef.current = schedules.map((s) => `${s.date}_${s.startTime}_${s.endTime}`);
+
+      console.log(originalSubImageIdsRef);
+      console.log(originalSubImageUrlsRef);
+      console.log(originalScheduleIdsRef);
+      console.log(originalSchedulesRef);
+
+      // reset({
+      //   ...,
+      //   subImageFiles: subImages.map((img) => img.imageUrl),
+      //   schedules: schedules.map((s) => ({
+      //     date: dayjs(s.date),
+      //     startTime: parseTimeToObject(s.startTime),
+      //     endTime: parseTimeToObject(s.endTime),
+      //   })),
+      // });
+
+      reset({
+        title,
+        category: { value: category, label: category }, // Select 컴포넌트용
+        description,
+        price: price, // RHF에서는 문자열일 수 있음
+        address,
+        schedules: schedules.map((s) => ({
+          date: dayjs(s.date),
+          startTime: parseTimeToObject(s.startTime),
+          endTime: parseTimeToObject(s.endTime),
+        })),
+        bannerFile: bannerImageUrl,
+        subImageFiles: subImageUrls,
+      });
+    } catch (err) {
+      console.error('체험 상세 로딩 실패:', err);
+      alert('체험 정보를 불러오지 못했습니다.');
+    }
+  }
+
+  useEffect(() => {
+    if (!isEdit || !activityId) return;
+    loadExperienceDetail(activityId);
+  }, [isEdit, activityId]);
+
+  async function blobUrlToFile(blobUrl: string, fileName: string): Promise<File> {
+    const res = await fetch(blobUrl);
+    const blob = await res.blob();
+    return new File([blob], fileName, { type: blob.type });
+  }
+
+  const onSubmit: SubmitHandler<createExperienceForm> = async (data: createExperienceForm) => {
+    try {
+      // 1-1. bannerFile 업로드
+      const bannerFile = await blobUrlToFile(data.bannerFile, 'banner.png');
+      const bannerImageUrl = await uploadImage(bannerFile);
+
+      // 1-2. subImageFiles 업로드
+      const subImageUrls = await Promise.all(
+        data.subImageFiles.map((blobUrl, index) =>
+          blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file)),
+        ),
+      );
+
+      // 2. category, schedules 전처리
+      const transformedCategory = data.category.value;
+
+      const transformedSchedules = data.schedules.map((schedule) => {
+        const formattedDate = schedule.date?.format?.('YYYY-MM-DD') ?? '';
+        const formattedStart = `${schedule.startTime?.hour ?? '00'}:${schedule.startTime?.minute ?? '00'}`;
+        const formattedEnd = `${schedule.endTime?.hour ?? '00'}:${schedule.endTime?.minute ?? '00'}`;
+
+        return {
+          date: formattedDate,
+          startTime: formattedStart,
+          endTime: formattedEnd,
+        };
+      });
+
+      // 3. 데이터 재구성
+      const finalData = {
+        title: data.title,
+        category: transformedCategory,
+        description: data.description,
+        price: Number(data.price),
+        address: data.address,
+        schedules: transformedSchedules,
+        bannerImageUrl,
+        subImageUrls,
+      };
+
+      // 4. 최종 제출
+      await postExperiences(finalData);
+      navigate('/');
+    } catch (e) {
+      console.error('이미지 업로드 실패:', e);
+      alert('이미지 업로드 중 문제가 발생했습니다.');
+    }
+  };
+
   return (
     <div className='m-auto w-full max-w-700'>
       <h1 className='text-2xl font-bold md:text-3xl'>내 체험 등록</h1>
 
-      <form className='flex flex-col gap-24' onSubmit={handleSubmit((data) => console.log(data))}>
+      <form className='flex flex-col gap-24' onSubmit={handleSubmit(onSubmit)}>
         <TitleInput {...register('title')} error={errors.title?.message} />
 
         <div>
@@ -180,7 +335,7 @@ export default function CreateExperience() {
             render={({ field }) => (
               <Select.Root value={field.value} onChangeValue={field.onChange}>
                 <Select.Title className='font-normal'>카테고리</Select.Title>
-                <Select.Trigger className={errors.category ? 'border border-red-500' : 'border border-gray-300'}>
+                <Select.Trigger className={errors.category ? 'border border-red-500' : 'border border-gray-100'}>
                   <Select.Value className='flex' placeholder='카테고리를 선택해 주세요' />
                 </Select.Trigger>
                 <Select.Content>

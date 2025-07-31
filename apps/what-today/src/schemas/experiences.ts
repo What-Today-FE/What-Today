@@ -53,13 +53,16 @@ export const createActivityBodySchema = z.object({
   category: z.string().min(1, '카테고리를 선택해주세요'),
   description: z.string().min(1, '설명을 입력해주세요'),
   price: z
-    .number()
-    .nonnegative()
-    .refine((val) => val >= 0, '가격은 0 이상이어야 합니다'),
+    .string()
+    .min(1)
+    .refine((val) => !isNaN(Number(val)), { message: '숫자를 입력하세요.' })
+    .transform((val) => Number(val)),
   address: z.string().min(1, '주소를 입력해주세요'),
   schedules: z.array(createScheduleBodySchema).default([]),
-  bannerImageUrl: z.string().url('배너 이미지 URL이 유효하지 않습니다'),
-  subImageUrls: z.array(z.string().url()).default([]),
+  // bannerImageUrl: z.string().url('배너 이미지 URL이 유효하지 않습니다'),
+  // subImageUrls: z.array(z.string().url()).default([]),
+  bannerImageUrl: z.string().min(1, '배너 이미지를 등록해주세요'), // string URL도 가능
+  subImageUrls: z.array(z.string()),
 });
 
 // ✅ UpdateMyActivityBodyDto 요청 바디 스키마
@@ -121,7 +124,11 @@ export const createExperienceFormSchema = z.object({
     .nullable()
     .refine((val) => val !== null, { message: '카테고리를 선택해주세요' }),
   description: z.string().min(1, '설명을 입력해주세요'),
-  price: z.string().min(1, '가격을 입력해주세요'),
+  price: z
+    .string()
+    .min(1)
+    .refine((val) => !isNaN(Number(val)), { message: '숫자를 입력하세요.' })
+    .transform((val) => Number(val)),
   address: z.string().min(1, '주소를 입력해주세요'),
   schedules: z
     .array(
@@ -139,5 +146,7 @@ export const createExperienceFormSchema = z.object({
     )
     .min(1, '최소 1개의 예약 시간을 등록해주세요'),
   bannerFile: z.string().min(1, '배너 이미지를 등록해주세요'), // string URL도 가능
-  subImageFiles: z.array(z.string().min(1)).min(1, '소개 이미지를 최소 1개 등록해주세요'),
+  subImageFiles: z.array(z.string()),
 });
+
+export type createExperienceForm = z.infer<typeof createExperienceFormSchema>;
