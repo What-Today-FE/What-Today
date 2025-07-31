@@ -9,7 +9,7 @@ import { Popover } from './popover';
 interface DatePickerProps {
   value: Dayjs | null;
   onChange: (newDate: Dayjs) => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export default function DatePicker({ value, onChange, disabled }: DatePickerProps) {

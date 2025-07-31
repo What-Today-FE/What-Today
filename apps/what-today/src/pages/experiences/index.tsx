@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AddressInput, Button, DatePicker, MinusIcon, PlusIcon, Select, TimePicker } from '@what-today/design-system';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -50,98 +50,129 @@ function isOverlappingSchedule(a: Schedule, b: Schedule): boolean {
 }
 
 function ScheduleInput({ value, onChange }: ScheduleInputProps) {
-  const [temp, setTemp] = useState<Schedule>({
-    date: null,
-    startTime: null,
-    endTime: null,
-  });
+  const handleScheduleChange = (index: number, field: keyof Schedule, newValue: any) => {
+    const updated = [...value];
+    updated[index] = { ...updated[index], [field]: newValue };
 
-  const handleAddSchedule = () => {
-    const { date, startTime, endTime } = temp;
+    const currentSchedule = updated[index];
+    // 1. 시작 시간이 끝 시간보다 늦은지 검사
+    if (currentSchedule.startTime && currentSchedule.endTime) {
+      const startMinutes = timeToMinutes(currentSchedule.startTime);
+      const endMinutes = timeToMinutes(currentSchedule.endTime);
 
-    if (!date || !startTime || !endTime) {
-      alert('날짜와 시간을 입력해주세요.');
-      return;
+      if (startMinutes >= endMinutes) {
+        alert('시작 시간은 끝 시간보다 빨라야 합니다.');
+        return; // 변경사항 적용하지 않음
+      }
     }
 
-    const hasOverlap = value.some((s) => isOverlappingSchedule(s, temp));
-    if (hasOverlap) {
-      alert('해당 시간대는 이미 다른 일정과 겹칩니다.');
-      return;
+    // 2. 현재 스케줄이 완성되었고, 다른 스케줄과 겹치는지 검사
+    if (currentSchedule.date && currentSchedule.startTime && currentSchedule.endTime) {
+      // 현재 인덱스를 제외한 다른 스케줄들과 비교
+      const hasOverlap = updated
+        .filter((_, idx) => idx !== index) // 현재 수정 중인 항목 제외
+        .some((otherSchedule) => {
+          // 완성된 스케줄만 비교
+          if (!otherSchedule.date || !otherSchedule.startTime || !otherSchedule.endTime) {
+            return false;
+          }
+          return isOverlappingSchedule(currentSchedule, otherSchedule);
+        });
+
+      if (hasOverlap) {
+        alert('해당 시간대는 이미 다른 일정과 겹칩니다.');
+        return; // 변경사항 적용하지 않음
+      }
     }
 
-    onChange([...value, temp]);
+    // 3. 마지막 행이 모두 입력되면 새로운 빈 행 추가
+    if (index === value.length - 1) {
+      const lastSchedule = updated[index];
+      if (lastSchedule.date && lastSchedule.startTime && lastSchedule.endTime) {
+        // 새로운 빈 행 추가
+        updated.push({ date: null, startTime: null, endTime: null });
+      }
+    }
 
-    // 다음 입력을 위해 초기화
-    setTemp({
-      date: null,
-      startTime: null,
-      endTime: null,
-    });
+    onChange(updated);
   };
 
   const handleRemoveSchedule = (index: number) => {
+    if (value.length <= 1) return; // 최소 하나는 유지
+
     const updated = [...value];
     updated.splice(index, 1);
     onChange(updated);
   };
 
+  // 항상 마지막에 빈 행이 있도록 보장
+  const schedules = (() => {
+    if (value.length === 0) {
+      // 빈 배열이면 빈 행 하나 추가
+      return [{ date: null, startTime: null, endTime: null }];
+    }
+
+    // 마지막 항목이 빈 행인지 확인
+    const lastItem = value[value.length - 1];
+    const isLastEmpty = !lastItem.date && !lastItem.startTime && !lastItem.endTime;
+
+    if (isLastEmpty) {
+      // 이미 마지막이 빈 행이면 그대로 반환
+      return value;
+    } else {
+      // 마지막이 완성된 행이면 빈 행 추가
+      return [...value, { date: null, startTime: null, endTime: null }];
+    }
+  })();
+
   return (
     <div className='flex flex-col gap-12'>
-      {/* 기존 일정 리스트 */}
-      {(value ?? []).map((schedule, idx) => (
-        <div key={idx} className='flex flex-col items-center gap-8 md:flex-row'>
-          <div className='w-full flex-1'>
-            <DatePicker disabled value={schedule.date} onChange={() => {}} />
-          </div>
+      {schedules.map((schedule, idx) => {
+        const isLast = idx === schedules.length - 1;
+        const isComplete = schedule.date && schedule.startTime && schedule.endTime;
 
-          <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
-            <div className='flex-1 md:w-120'>
-              <TimePicker disabled className='w-full' value={schedule.startTime} onChange={() => {}} />
+        return (
+          <div key={idx} className='flex flex-col items-center gap-8 md:flex-row'>
+            <div className='w-full flex-1'>
+              <DatePicker value={schedule.date} onChange={(date) => handleScheduleChange(idx, 'date', date)} />
             </div>
-            <div className='flex-1 md:w-120'>
-              <TimePicker disabled className='w-full' value={schedule.endTime} onChange={() => {}} />
-            </div>
-            <Button
-              className='aspect-square w-fit rounded-full bg-gray-200'
-              variant='none'
-              onClick={() => handleRemoveSchedule(idx)}
-            >
-              <MinusIcon color='white' />
-            </Button>
-          </div>
-        </div>
-      ))}
+            <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
+              <div className='flex-1'>
+                <TimePicker
+                  className='w-full md:w-120'
+                  value={schedule.startTime}
+                  onChange={(time) => handleScheduleChange(idx, 'startTime', time)}
+                />
+              </div>
+              <div className='flex-1'>
+                <TimePicker
+                  className='w-full md:w-120'
+                  value={schedule.endTime}
+                  onChange={(time) => handleScheduleChange(idx, 'endTime', time)}
+                />
+              </div>
 
-      {/* 입력 폼 */}
-      <div className='flex flex-col items-center gap-8 md:flex-row'>
-        <div className='w-full flex-1'>
-          <DatePicker value={temp.date} onChange={(date) => setTemp((prev) => ({ ...prev, date }))} />
-        </div>
-        <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
-          <div className='flex-1'>
-            <TimePicker
-              className='w-full md:w-120'
-              value={temp.startTime}
-              onChange={(time) => setTemp((prev) => ({ ...prev, startTime: time }))}
-            />
+              {/* 마지막 행이 아니거나, 완성된 행이면 삭제 버튼 표시 */}
+              {(!isLast || isComplete) && (
+                <Button
+                  className='aspect-square w-fit rounded-full bg-gray-200'
+                  variant='none'
+                  onClick={() => handleRemoveSchedule(idx)}
+                >
+                  <MinusIcon color='white' />
+                </Button>
+              )}
+
+              {/* 마지막 행이고 비어있으면 플레이스홀더 */}
+              {isLast && (
+                <Button className='bg-primary-500 aspect-square w-fit rounded-full' variant='none'>
+                  <PlusIcon color='white' />
+                </Button>
+              )}
+            </div>
           </div>
-          <div className='flex-1'>
-            <TimePicker
-              className='w-full md:w-120'
-              value={temp.endTime}
-              onChange={(time) => setTemp((prev) => ({ ...prev, endTime: time }))}
-            />
-          </div>
-          <Button
-            className='bg-primary-500 aspect-square w-fit rounded-full'
-            variant='none'
-            onClick={handleAddSchedule}
-          >
-            <PlusIcon color='white' />
-          </Button>
-        </div>
-      </div>
+        );
+      })}
     </div>
   );
 }
@@ -165,7 +196,7 @@ export default function CreateExperience() {
     formState: { errors },
   } = useForm<createExperienceForm>({
     resolver: zodResolver(createExperienceFormSchema),
-    mode: 'onSubmit', // or 'onSubmit'
+    mode: 'onSubmit',
     defaultValues: {
       title: '',
       category: {},
@@ -177,13 +208,6 @@ export default function CreateExperience() {
       subImageFiles: [],
     },
   });
-
-  // 🔹 이미지 URL → blob URL로 변환하는 유틸
-  async function imageUrlToBlobUrl(imageUrl: string): Promise<string> {
-    const res = await fetch(imageUrl);
-    const blob = await res.blob();
-    return URL.createObjectURL(blob);
-  }
 
   // 🔹 시간 문자열 → { hour, minute } 객체로 변환
   function parseTimeToObject(time: string) {
@@ -251,17 +275,14 @@ export default function CreateExperience() {
       // 2. category, schedules 전처리
       const transformedCategory = data.category.value;
 
-      const transformedSchedules = data.schedules.map((schedule) => {
-        const formattedDate = schedule.date?.format?.('YYYY-MM-DD') ?? '';
-        const formattedStart = `${schedule.startTime?.hour ?? '00'}:${schedule.startTime?.minute ?? '00'}`;
-        const formattedEnd = `${schedule.endTime?.hour ?? '00'}:${schedule.endTime?.minute ?? '00'}`;
+      // 완성된 스케줄만 필터링
+      const validSchedules = data.schedules.filter((s) => s.date && s.startTime && s.endTime);
 
-        return {
-          date: formattedDate,
-          startTime: formattedStart,
-          endTime: formattedEnd,
-        };
-      });
+      const transformedSchedules = validSchedules.map((schedule) => ({
+        date: schedule.date?.format?.('YYYY-MM-DD') ?? '',
+        startTime: `${schedule.startTime?.hour ?? '00'}:${schedule.startTime?.minute ?? '00'}`,
+        endTime: `${schedule.endTime?.hour ?? '00'}:${schedule.endTime?.minute ?? '00'}`,
+      }));
 
       // 3. 데이터 재구성
       const finalData = {
@@ -285,6 +306,12 @@ export default function CreateExperience() {
   };
 
   const handleEdit: SubmitHandler<createExperienceForm> = async (data) => {
+    // 🔹 activityId null 체크 추가
+    if (!activityId) {
+      alert('체험 ID가 없습니다.');
+      return;
+    }
+
     // 1. bannerImageUrl 처리 (blob이면 업로드, 아니면 그대로 사용)
     const bannerImageUrl = data.bannerFile.startsWith('blob:')
       ? await blobUrlToFile(data.bannerFile, 'banner.png').then((file) => uploadImage(file))
@@ -298,8 +325,8 @@ export default function CreateExperience() {
     );
 
     // 🔹 최종 subImageUrls = 기존 유지할 URL + 새로 추가된 URL
-    const currentImageUrls = data.subImageFiles.filter((url) => originalSubImageUrlsRef.current.includes(url));
-    const finalSubImageUrls = [...currentImageUrls, ...subImageUrlsToAdd];
+    // const currentImageUrls = data.subImageFiles.filter((url) => originalSubImageUrlsRef.current.includes(url));
+    // const finalSubImageUrls = [...currentImageUrls, ...subImageUrlsToAdd];
 
     // 🔹 삭제할 이미지 ID
     const subImageIdsToRemove = originalSubImageUrlsRef.current
@@ -352,7 +379,7 @@ export default function CreateExperience() {
       scheduleIdsToRemove,
     };
 
-    await patchExperiences(activityId, body);
+    await patchExperiences(body, activityId);
     navigate(`/activities/${activityId}`);
   };
 

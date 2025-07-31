@@ -45,9 +45,15 @@ function InputTextarea({ autoHeight = false, value, onChange, ref, className, ..
       disabled={disabled}
       id={id}
       value={value}
-      onBlur={() => setIsFocused?.(false)}
+      onBlur={(e) => {
+        setIsFocused?.(false);
+        props.onBlur?.(e);
+      }}
       onChange={autoHeight ? handleInputChange : onChange}
-      onFocus={() => setIsFocused?.(true)}
+      onFocus={(e) => {
+        setIsFocused?.(true);
+        props.onFocus?.(e);
+      }}
       {...props}
     />
   );

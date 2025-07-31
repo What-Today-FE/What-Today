@@ -121,7 +121,6 @@ export const createExperienceFormSchema = z.object({
       value: z.string(),
       label: z.string(),
     })
-    .nullable()
     .refine((val) => val !== null, { message: '카테고리를 선택해주세요' }),
   description: z.string().min(1, '설명을 입력해주세요'),
   price: z.number({ invalid_type_error: '숫자를 입력해주세요.' }).min(0, { message: '가격은 0 이상이어야 합니다.' }),
@@ -129,18 +128,18 @@ export const createExperienceFormSchema = z.object({
   schedules: z
     .array(
       z.object({
-        date: z.any().refine((val) => val !== null, { message: '날짜를 입력해주세요' }),
-        startTime: z
-          .object({ hour: z.string(), minute: z.string() })
-          .nullable()
-          .refine(Boolean, { message: '시작 시간을 입력해주세요' }),
-        endTime: z
-          .object({ hour: z.string(), minute: z.string() })
-          .nullable()
-          .refine(Boolean, { message: '종료 시간을 입력해주세요' }),
+        date: z.any().nullable(),
+        startTime: z.any().nullable(),
+        endTime: z.any().nullable(),
       }),
     )
-    .min(1, '최소 1개의 예약 시간을 등록해주세요'),
+    .transform((schedules) =>
+      // 스키마 검증 전에 완성된 스케줄만 필터링
+      schedules.filter((s) => s.date && s.startTime && s.endTime),
+    )
+    .refine((validSchedules) => validSchedules.length > 0, {
+      message: '최소 하나의 스케줄을 입력해주세요.',
+    }),
   bannerFile: z.string().min(1, '배너 이미지를 등록해주세요'),
   subImageFiles: z.array(z.string()),
 });

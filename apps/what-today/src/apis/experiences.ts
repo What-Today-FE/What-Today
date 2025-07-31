@@ -58,8 +58,8 @@ export const postExperiences = async (body: CreateActivityBody): Promise<Activit
  * @returns 체험 수정 데이터
  */
 export const patchExperiences = async (
-  activityId: number,
   body: UpdateMyActivityBody,
+  activityId?: string,
 ): Promise<ActivityWithSchedulesResponse> => {
   const response = await axiosInstance.patch(`my-activities/${activityId}`, body);
 
