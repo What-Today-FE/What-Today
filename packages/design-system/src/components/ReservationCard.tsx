@@ -32,6 +32,10 @@ interface ReservationCardProps {
    * 체험 종료 시간 ('HH:mm', 24시간제 시각 문자열)
    */
   endTime: string;
+  /**
+   * 카드 클릭 시 실행할 콜백 함수 (예: 체험 상세 페이지 이동)
+   */
+  onClick?: () => void;
 }
 
 /**
@@ -66,6 +70,7 @@ export default function ReservationCard({
   headCount,
   startTime,
   endTime,
+  onClick,
 }: ReservationCardProps) {
   const formatPrice = (value: number) => value.toLocaleString('ko');
   // badge 컴포넌트로 수정 예정
@@ -79,24 +84,31 @@ export default function ReservationCard({
   const { badge, style } = reservationStatus[status];
 
   return (
-    <article className='flex -space-x-38 rounded-3xl shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:-space-x-20 xl:max-w-640 xl:-space-x-26'>
-      <section className='z-10 flex h-136 w-full flex-col justify-between rounded-3xl bg-white p-20 shadow-[0px_-8px_20px_0px_rgba(0,0,0,0.05)] xl:h-181 xl:px-40 xl:py-30'>
-        <header className='flex flex-col xl:gap-4'>
-          <div className='flex flex-col gap-4 xl:gap-8'>
-            {/* badge 컴포넌트로 수정 예정 */}
-            <span className={`w-63 rounded-full px-6 py-1 text-center text-sm font-bold ${style}`}>{badge}</span>
-            <h3 className='xl:text-2lg text-sm font-bold text-gray-950'>{title}</h3>
-          </div>
-          <div className='text-sm font-medium text-gray-500 xl:text-lg'>
-            <time>{startTime}</time>-<time>{endTime}</time>
-          </div>
-        </header>
-        <div className='flex items-center gap-4'>
-          <div className='xl:text-2lg text-lg font-bold text-gray-950'>₩{formatPrice(totalPrice)}</div>
-          <div className='text-md font-medium text-gray-400 xl:text-lg'>{headCount}명</div>
+    <article
+      className='flex h-150 cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:h-160 md:-space-x-20 xl:-space-x-26'
+      onClick={onClick}
+    >
+      <section className='z-10 flex w-full flex-col justify-between rounded-l-2xl rounded-r-3xl bg-white p-20 xl:gap-6'>
+        <div className='flex flex-col gap-4 xl:gap-6'>
+          {/* badge 컴포넌트로 수정 예정 */}
+          <span className={`caption-text w-fit rounded-full px-8 py-2 text-center font-bold ${style}`}>{badge}</span>
+          <h3 className='section-text'>{title}</h3>
+        </div>
+        <div className='body-text text-gray-400'>
+          <time>{startTime}</time>-<time>{endTime}</time>
+        </div>
+        <div className='body-text mt-10 flex items-center gap-4 md:mt-0'>
+          <div className='font-bold'>₩{formatPrice(totalPrice)}</div>
+          <div className='text-gray-400'>{formatPrice(headCount)}명</div>
         </div>
       </section>
-      <img alt={`${title} 체험 배너`} className='size-136 rounded-r-3xl xl:size-181' src={bannerImageUrl} />
+      <div className='flex-shrink-0'>
+        <img
+          alt={`${title} 체험 배너`}
+          className='h-full w-150 rounded-r-2xl object-cover md:w-160'
+          src={bannerImageUrl}
+        />
+      </div>
     </article>
   );
 }
