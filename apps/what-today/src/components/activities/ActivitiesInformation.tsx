@@ -35,7 +35,7 @@ export default function ActivitiesInformation({
   const { mutate: deleteActivity } = useDeleteMyActivityMutation();
 
   const handleDeleteConfirm = () => {
-    if (id !== null) {
+    if (id && !isNaN(Number(id))) {
       deleteActivity(Number(id), {
         onSuccess: () => {
           setIsDeleteOpen(false);
@@ -44,7 +44,7 @@ export default function ActivitiesInformation({
         onError: (error) => {
           const errorMessage = error instanceof Error ? error.message : '삭제 중 오류가 발생했습니다.';
           toast({
-            title: '삭제 완료',
+            title: '삭제 실패',
             description: errorMessage,
             type: 'error',
           });

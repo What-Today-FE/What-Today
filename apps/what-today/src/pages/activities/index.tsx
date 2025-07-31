@@ -94,7 +94,7 @@ export default function ActivityDetailPage() {
                 address={activity.address}
                 category={activity.category}
                 id={id}
-                isAuthor={activity?.userId === user?.id}
+                isAuthor={user?.id ? activity?.userId === user.id : false}
                 rating={activity.rating}
                 reviewCount={activity.reviewCount}
                 title={activity.title}
@@ -110,7 +110,7 @@ export default function ActivityDetailPage() {
               address={activity.address}
               category={activity.category}
               id={id}
-              isAuthor={activity?.userId === user?.id}
+              isAuthor={user?.id ? activity?.userId === user.id : false}
               rating={activity.rating}
               reviewCount={activity.reviewCount}
               title={activity.title}
