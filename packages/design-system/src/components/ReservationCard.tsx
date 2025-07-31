@@ -85,26 +85,28 @@ export default function ReservationCard({
 
   return (
     <article
-      className='flex cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:-space-x-20 xl:max-w-640 xl:-space-x-26'
+      className='flex h-150 cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:-space-x-20 xl:-space-x-26'
       onClick={onClick}
     >
-      <section className='z-10 flex h-150 w-full flex-col justify-between rounded-l-2xl rounded-r-3xl bg-white p-20 xl:px-40 xl:py-30'>
+      <section className='z-10 flex w-full flex-col justify-between rounded-l-2xl rounded-r-3xl bg-white p-20'>
         <header className='flex flex-col xl:gap-4'>
-          <div className='flex flex-col gap-4 xl:gap-8'>
+          <div className='flex flex-col gap-4 xl:gap-6'>
             {/* badge 컴포넌트로 수정 예정 */}
             <span className={`caption-text w-fit rounded-full px-8 py-2 text-center font-bold ${style}`}>{badge}</span>
-            <h3 className='subtitle-text'>{title}</h3>
+            <h3 className='section-text'>{title}</h3>
           </div>
-          <div className='caption-text text-gray-400'>
+          <div className='body-text text-gray-400'>
             <time>{startTime}</time>-<time>{endTime}</time>
           </div>
         </header>
-        <div className='flex items-center gap-4'>
-          <div className='body-text font-bold'>₩{formatPrice(totalPrice)}</div>
-          <div className='caption-text text-gray-400'>{formatPrice(headCount)}명</div>
+        <div className='body-text flex items-center gap-4'>
+          <div className='font-bold'>₩{formatPrice(totalPrice)}</div>
+          <div className='text-gray-400'>{formatPrice(headCount)}명</div>
         </div>
       </section>
-      <img alt={`${title} 체험 배너`} className='size-150 rounded-r-2xl object-cover' src={bannerImageUrl} />
+      <div className='flex-shrink-0'>
+        <img alt={`${title} 체험 배너`} className='h-full w-150 rounded-r-2xl object-cover' src={bannerImageUrl} />
+      </div>
     </article>
   );
 }
