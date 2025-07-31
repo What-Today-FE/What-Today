@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
-import { AddressInput, Button, Select, type SelectItem } from '@what-today/design-system';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AddressInput, Button, Select, type SelectItem, useToast } from '@what-today/design-system';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useRef } from 'react';
-import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchActivityDetail } from '@/apis/activityDetail';
@@ -20,6 +20,7 @@ export default function CreateExperience() {
   const { id: activityId } = useParams();
   const isEdit = !!activityId;
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const originalSubImageIdsRef = useRef<number[]>([]);
   const originalSubImageUrlsRef = useRef<string[]>([]);
@@ -48,13 +49,13 @@ export default function CreateExperience() {
     },
   });
 
-  // 🔹 시간 문자열 → { hour, minute } 객체로 변환
+  // 시간 문자열 → { hour, minute } 객체로 변환
   function parseTimeToObject(time: string) {
     const [hour, minute] = time.split(':');
     return { hour, minute };
   }
 
-  // 🔹 체험 상세 데이터 불러오기 및 RHF 초기값 세팅
+  // 체험 상세 데이터 불러오기 및 RHF 초기값 세팅
   const loadExperienceDetail = useCallback(
     async (activityId: string) => {
       try {
@@ -84,7 +85,11 @@ export default function CreateExperience() {
         });
       } catch (err) {
         console.error('체험 상세 로딩 실패:', err);
-        alert('체험 정보를 불러오지 못했습니다.');
+        toast({
+          title: '불러오기 실패',
+          description: `체험 정보를 불러오지 못했습니다.`,
+          type: 'error',
+        });
       }
     },
     [reset],
@@ -101,163 +106,160 @@ export default function CreateExperience() {
     return new File([blob], fileName, { type: blob.type });
   }
 
-  const handleCreate: SubmitHandler<createExperienceForm> = async (data: createExperienceForm) => {
-    try {
-      // 1-1. bannerFile 업로드
+  const createExperienceMutation = useMutation({
+    mutationFn: async (data: createExperienceForm) => {
       const bannerFile = await blobUrlToFile(data.bannerFile, 'banner.png');
-      const bannerImageUrlResponse = await uploadImage(bannerFile);
-      const bannerImageUrl = bannerImageUrlResponse.file;
+      const bannerImageUrl = (await uploadImage(bannerFile)).file;
 
-      // 1-2. subImageFiles 업로드
       const subImageUrlResponses = await Promise.all(
         data.subImageFiles.map((blobUrl, index) =>
           blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file)),
         ),
       );
-      const subImageUrls = subImageUrlResponses.map((response) => response.file);
+      const subImageUrls = subImageUrlResponses.map((res) => res.file);
 
-      // 2. category, schedules 전처리
-      const transformedCategory = data.category.value;
-
-      // 완성된 스케줄만 필터링
-      const validSchedules = data.schedules.filter((s) => s.date && s.startTime && s.endTime);
-
-      const transformedSchedules = validSchedules.map((schedule) => ({
-        date: schedule.date?.format?.('YYYY-MM-DD') ?? '',
-        startTime: `${schedule.startTime?.hour ?? '00'}:${schedule.startTime?.minute ?? '00'}`,
-        endTime: `${schedule.endTime?.hour ?? '00'}:${schedule.endTime?.minute ?? '00'}`,
-      }));
-
-      // 3. 데이터 재구성
       const finalData = {
         title: data.title,
-        category: transformedCategory as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
+        category: data.category.value as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
         description: data.description,
         price: Number(data.price),
         address: data.address,
-        schedules: transformedSchedules,
+        schedules: data.schedules
+          .filter((s) => s.date && s.startTime && s.endTime)
+          .map((s) => ({
+            date: s.date!.format('YYYY-MM-DD'),
+            startTime: `${s.startTime!.hour}:${s.startTime!.minute}`,
+            endTime: `${s.endTime!.hour}:${s.endTime!.minute}`,
+          })),
         bannerImageUrl,
-        subImageUrls: subImageUrls.length > 0 ? subImageUrls : [],
+        subImageUrls,
       };
 
-      // 4. 최종 제출
-      await postExperiences(finalData);
+      return postExperiences(finalData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
+      });
+      toast({
+        title: '체험 등록 성공',
+        description: `성공적으로 체험을 등록했습니다.`,
+        type: 'success',
+      });
+      navigate('/');
+    },
+    onError: (error) => {
+      console.error('체험 등록 실패:', error);
+      toast({
+        title: '체험 등록 실패',
+        description: `체험 등록에 실패했습니다.`,
+        type: 'error',
+      });
+    },
+  });
 
-      // 내 체험 관리 쿼리 무효화
+  const editExperienceMutation = useMutation({
+    mutationFn: async (params: { activityId: string; data: createExperienceForm }) => {
+      const { activityId, data } = params;
+
+      const bannerImageUrl = data.bannerFile.startsWith('blob:')
+        ? await blobUrlToFile(data.bannerFile, 'banner.png')
+            .then(uploadImage)
+            .then((res) => res.file)
+        : data.bannerFile;
+
+      const subImageUrlsToAdd = await Promise.all(
+        data.subImageFiles
+          .filter((url) => !originalSubImageUrlsRef.current.includes(url))
+          .map((url, index) => blobUrlToFile(url, `sub_${index}.png`).then((file) => uploadImage(file))),
+      ).then((resList) => resList.map((r) => r.file));
+
+      const subImageIdsToRemove = originalSubImageUrlsRef.current
+        .filter((url) => !data.subImageFiles.includes(url))
+        .map((url) => {
+          const index = originalSubImageUrlsRef.current.indexOf(url);
+          return originalSubImageIdsRef.current[index];
+        });
+
+      const schedulesToAdd = data.schedules
+        .filter((s) => {
+          if (!s.date || !s.startTime || !s.endTime) return false;
+          const key = `${s.date.format('YYYY-MM-DD')}_${s.startTime.hour}:${s.startTime.minute}_${s.endTime.hour}:${s.endTime.minute}`;
+          return !originalSchedulesRef.current.includes(key);
+        })
+        .map((s) => ({
+          date: s.date!.format('YYYY-MM-DD'),
+          startTime: `${s.startTime!.hour}:${s.startTime!.minute}`,
+          endTime: `${s.endTime!.hour}:${s.endTime!.minute}`,
+        }));
+
+      const scheduleIdsToRemove = originalSchedulesRef.current
+        .filter((key) => {
+          return !data.schedules.some((s) => {
+            const currentKey = `${s.date!.format('YYYY-MM-DD')}_${s.startTime!.hour}:${s.startTime!.minute}_${s.endTime!.hour}:${s.endTime!.minute}`;
+            return currentKey === key;
+          });
+        })
+        .map((key) => {
+          const index = originalSchedulesRef.current.indexOf(key);
+          return originalScheduleIdsRef.current[index];
+        });
+
+      const body = {
+        title: data.title,
+        category: data.category.value as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
+        description: data.description,
+        price: Number(data.price),
+        address: data.address,
+        bannerImageUrl,
+        subImageUrlsToAdd,
+        subImageIdsToRemove,
+        schedulesToAdd,
+        scheduleIdsToRemove,
+      };
+
+      return patchExperiences(body, activityId);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['activity', variables.activityId] });
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
       });
 
-      // 메인 페이지 체험 목록 쿼리 무효화
-      queryClient.invalidateQueries({
-        queryKey: ['activities'],
+      toast({
+        title: '체험 수정 성공',
+        description: `성공적으로 체험을 수정했습니다.`,
+        type: 'success',
       });
 
-      navigate('/');
-    } catch (e) {
-      console.error('이미지 업로드 실패:', e);
-      alert('이미지 업로드 중 문제가 발생했습니다.');
-    }
-  };
-
-  const handleEdit: SubmitHandler<createExperienceForm> = async (data) => {
-    // 🔹 activityId null 체크 추가
-    if (!activityId) {
-      alert('체험 ID가 없습니다.');
-      return;
-    }
-
-    // 1. bannerImageUrl 처리 (blob이면 업로드, 아니면 그대로 사용)
-    const bannerImageUrl = data.bannerFile.startsWith('blob:')
-      ? await blobUrlToFile(data.bannerFile, 'banner.png')
-          .then((file) => uploadImage(file))
-          .then((response) => response.file)
-      : data.bannerFile;
-
-    // 🔹 새로 추가된 이미지(blob만 있음)만 업로드
-    const subImageUrlResponses = await Promise.all(
-      data.subImageFiles
-        .filter((url) => !originalSubImageUrlsRef.current.includes(url)) // 새로 추가된 blob만
-        .map((blobUrl, index) => blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file))),
-    );
-    const subImageUrlsToAdd = subImageUrlResponses.map((response) => response.file);
-
-    // 🔹 삭제할 이미지 ID
-    const subImageIdsToRemove = originalSubImageUrlsRef.current
-      .filter((url) => !data.subImageFiles.includes(url)) // 원래 있었는데 사라진 URL
-      .map((url) => {
-        const index = originalSubImageUrlsRef.current.indexOf(url);
-        return originalSubImageIdsRef.current[index];
+      navigate(`/activities/${variables.activityId}`);
+    },
+    onError: (error) => {
+      console.error('체험 수정 실패:', error);
+      toast({
+        title: '체험 수정 실패',
+        description: `체험 수정에 실패했습니다.`,
+        type: 'error',
       });
-
-    // 🔹 새로 추가된 스케줄
-    const schedulesToAdd = data.schedules
-      .filter((s) => {
-        if (!s.date || !s.startTime || !s.endTime) return false;
-
-        const key = `${s.date.format('YYYY-MM-DD')}_${s.startTime.hour}:${s.startTime.minute}_${s.endTime.hour}:${s.endTime.minute}`;
-        return !originalSchedulesRef.current.includes(key);
-      })
-      .map((s) => ({
-        date: s.date.format('YYYY-MM-DD'),
-        startTime: `${s.startTime!.hour}:${s.startTime!.minute}`,
-        endTime: `${s.endTime!.hour}:${s.endTime!.minute}`,
-      }));
-
-    // 🔹 삭제할 스케줄 ID
-    const scheduleIdsToRemove = originalSchedulesRef.current
-      .filter((key) => {
-        return !data.schedules.some((s) => {
-          if (!s.date || !s.startTime || !s.endTime) return false;
-
-          const currentKey = `${s.date.format('YYYY-MM-DD')}_${s.startTime.hour}:${s.startTime.minute}_${s.endTime.hour}:${s.endTime.minute}`;
-          return currentKey === key;
-        });
-      })
-      .map((key) => {
-        const index = originalSchedulesRef.current.indexOf(key);
-        return originalScheduleIdsRef.current[index];
-      });
-
-    // 🔹 최종 body 구성
-    const body = {
-      title: data.title,
-      category: data.category.value as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
-      description: data.description,
-      price: Number(data.price),
-      address: data.address,
-      bannerImageUrl,
-      subImageUrlsToAdd,
-      subImageIdsToRemove,
-      schedulesToAdd,
-      scheduleIdsToRemove,
-    };
-
-    await patchExperiences(body, activityId);
-
-    // 내 체험 관리 쿼리 무효화
-    queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
-    });
-
-    // 메인 페이지 체험 목록 쿼리 무효화
-    queryClient.invalidateQueries({
-      queryKey: ['activities'],
-    });
-
-    // 상세 페이지 쿼리 무효화
-    queryClient.invalidateQueries({
-      queryKey: ['activity', activityId],
-    });
-
-    navigate(`/activities/${activityId}`);
-  };
+    },
+  });
 
   return (
     <div className='m-auto w-full max-w-700'>
       <h1 className='my-36 text-2xl font-bold md:text-3xl'>내 체험 {isEdit ? '수정' : '등록'}</h1>
 
-      <form className='flex flex-col gap-24' onSubmit={handleSubmit(isEdit ? handleEdit : handleCreate)}>
+      <form
+        className='flex flex-col gap-24'
+        onSubmit={handleSubmit((data) => {
+          if (isEdit && activityId) {
+            editExperienceMutation.mutate({ activityId, data });
+          } else {
+            createExperienceMutation.mutate(data);
+          }
+        })}
+      >
         <TitleInput {...register('title')} error={errors.title?.message} />
 
         <div>
@@ -351,7 +353,13 @@ export default function CreateExperience() {
         </div>
 
         <div className='mt-36 flex justify-center'>
-          <Button size='sm' type='submit' variant='fill' onClick={() => {}}>
+          <Button
+            loading={isEdit ? editExperienceMutation.isPending : createExperienceMutation.isPending}
+            size='sm'
+            type='submit'
+            variant='fill'
+            onClick={() => {}}
+          >
             {isEdit ? '수정하기' : '등록하기'}
           </Button>
         </div>
