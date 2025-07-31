@@ -134,7 +134,7 @@ export default function ProfileImageInput({ src, initial = src, onChange }: Prof
 
   return (
     <div className='flex flex-col items-center gap-16'>
-      <label className='relative rounded-full border border-gray-100 p-8'>
+      <label className='relative rounded-full border border-gray-50 p-8'>
         {shouldShowDeleteButton && (
           <div className='absolute top-16 right-8 z-10'>
             <DeleteButton onDelete={handleDelete} />
@@ -156,15 +156,11 @@ export default function ProfileImageInput({ src, initial = src, onChange }: Prof
         />
       </label>
       {!isDefaultImage ? (
-        <Button
-          className='m-0 h-fit w-fit p-0 px-4 text-lg font-normal text-gray-400 hover:opacity-60'
-          variant='none'
-          onClick={handleReset}
-        >
+        <Button className='body-text text-gray-400 hover:opacity-60' size='none' variant='none' onClick={handleReset}>
           기본 이미지로 변경
         </Button>
       ) : (
-        <label className='cursor-pointer text-lg text-gray-400 hover:opacity-60' htmlFor='profileImage'>
+        <label className='body-text cursor-pointer text-gray-400 hover:opacity-60' htmlFor='profileImage'>
           프로필 이미지 변경
         </label>
       )}

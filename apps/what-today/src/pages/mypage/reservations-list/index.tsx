@@ -1,8 +1,18 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Input, Modal, NoResult, RadioGroup, ReservationCard, StarRating } from '@what-today/design-system';
+import {
+  Button,
+  ChevronIcon,
+  Input,
+  Modal,
+  NoResult,
+  RadioGroup,
+  ReservationCard,
+  StarRating,
+} from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
 
 import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/myReservations';
@@ -12,6 +22,7 @@ import type { MyReservationsResponse, Reservation, ReservationStatus } from '@/s
 export default function ReservationsListPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [selectedStatus, setSelectedStatus] = useState<string>('');
 
@@ -177,11 +188,14 @@ export default function ReservationsListPage() {
 
   return (
     <div ref={scrollContainerRef} className='flex flex-col gap-13 md:gap-20'>
-      <header className='flex flex-col justify-between gap-14 py-1 md:flex-row md:items-center'>
-        <div className='flex flex-col gap-10'>
-          <h1 className='text-2lg font-bold text-gray-950'>예약내역</h1>
-          <p className='text-md font-medium text-gray-500'>예약내역 변경 및 취소할 수 있습니다.</p>
+      <header className='mb-16 flex flex-col gap-12'>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-8 md:pb-12'>
+          <Button className='w-30 p-0' size='sm' variant='none' onClick={() => navigate('/mypage')}>
+            <ChevronIcon color='var(--color-gray-300)' direction='left' />
+          </Button>
+          <h1 className='subtitle-text'>예약 내역</h1>
         </div>
+        <p className='body-text text-gray-400 md:pt-10'>예약내역 변경 및 취소할 수 있습니다.</p>
       </header>
 
       <section className='mb-10'>

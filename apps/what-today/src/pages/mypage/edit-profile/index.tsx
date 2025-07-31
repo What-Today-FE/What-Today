@@ -90,13 +90,6 @@ export default function EditProfilePage() {
   const watchedPassword = watch('password');
 
   /**
-   * @description 뒤로가기 버튼으로 리다이렉트할 페이지입니다.
-   */
-  const handleNavigateToMypage = () => {
-    navigate('/mypage');
-  };
-
-  /**
    * @description 비밀번호가 수정된 경우에만 로그아웃 후 재로그인을 유도합니다.
    */
   const handleLogout = () => {
@@ -174,19 +167,22 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className='flex flex-col gap-12 text-gray-900'>
-      <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
-        <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>
-          <ChevronIcon color='var(--color-gray-300)' direction='left' />
-        </Button>
-        <h1 className='text-xl font-bold'>내 정보</h1>
-      </div>
+    <div className='flex flex-col gap-12 text-gray-950'>
+      <header className='mb-16 flex flex-col gap-12'>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-8 md:pb-12'>
+          <Button className='w-30 p-0' size='sm' variant='none' onClick={() => navigate('/mypage')}>
+            <ChevronIcon color='var(--color-gray-300)' direction='left' />
+          </Button>
+          <h1 className='subtitle-text'>내 정보</h1>
+        </div>
+        <p className='body-text text-gray-400 md:pt-10'>닉네임과 비밀번호를 수정하실 수 있습니다.</p>
+      </header>
       <form
         className='flex w-full flex-col items-center justify-center gap-32 pt-20'
         onReset={handleReset}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className='flex w-full flex-col gap-12'>
+        <div className='body-text flex w-full flex-col gap-24'>
           <Controller
             control={control}
             name='profileImageUrl'
@@ -206,22 +202,10 @@ export default function EditProfilePage() {
         </div>
 
         <div className='flex w-full max-w-640 justify-center gap-12'>
-          <Button
-            className='h-fit w-auto rounded-xl py-10 font-normal'
-            loading={isPending}
-            size='xl'
-            type='reset'
-            variant='outline'
-          >
+          <Button loading={isPending} size='sm' type='reset' variant='outline'>
             취소
           </Button>
-          <Button
-            className='h-fit w-auto rounded-xl py-10 font-normal'
-            disabled={isSubmitting || !isValid}
-            loading={isPending}
-            size='xl'
-            type='submit'
-          >
+          <Button disabled={isSubmitting || !isValid} loading={isPending} size='sm' type='submit'>
             저장
           </Button>
         </div>
