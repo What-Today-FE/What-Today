@@ -10,6 +10,14 @@ interface ReviewSectionProps {
   activityId: number;
 }
 
+const getSatisfactionText = (rating: number) => {
+  if (rating >= 4.5) return '매우 만족';
+  if (rating >= 4.0) return '만족';
+  if (rating >= 3.5) return '보통';
+  if (rating >= 3.0) return '아쉬움';
+  return '불만족';
+};
+
 export default function ReviewSection({ activityId }: ReviewSectionProps) {
   const {
     allReviews,
@@ -49,15 +57,6 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
       </section>
     );
   }
-
-  // 평점에 따른 만족도 텍스트
-  const getSatisfactionText = (rating: number) => {
-    if (rating >= 4.5) return '매우 만족';
-    if (rating >= 4.0) return '만족';
-    if (rating >= 3.5) return '보통';
-    if (rating >= 3.0) return '아쉬움';
-    return '불만족';
-  };
 
   return (
     <section className='w-full'>
