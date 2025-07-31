@@ -50,3 +50,18 @@ export const postExperiences = async (body: CreateActivityBody): Promise<Activit
 
   return response.data;
 };
+
+/**
+ * @description 체험 수정
+ *
+ * @param body 등록할 체험 수정 데이터
+ * @returns 체험 수정 데이터
+ */
+export const patchExperiences = async (
+  activityId: number,
+  body: UpdateMyActivityBody,
+): Promise<ActivityWithSchedulesResponse> => {
+  const response = await axiosInstance.patch(`my-activities/${activityId}`, body);
+
+  return response.data;
+};

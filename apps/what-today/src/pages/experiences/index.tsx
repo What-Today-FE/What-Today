@@ -7,7 +7,7 @@ import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchActivityDetail } from '@/apis/activityDetail';
-import { postExperiences, uploadImage } from '@/apis/experiences';
+import { patchExperiences, postExperiences, uploadImage } from '@/apis/experiences';
 import DescriptionTextarea from '@/components/experiences/DescriptionTextarea';
 import ImageInput from '@/components/experiences/ImageInput';
 import PriceInput from '@/components/experiences/PriceInput';
@@ -85,22 +85,6 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
     updated.splice(index, 1);
     onChange(updated);
   };
-
-  // useEffect(() => {
-  //   const { date, startTime, endTime } = temp;
-  //   const isComplete = date && startTime && endTime;
-
-  //   if (!isComplete) return;
-
-  //   const hasOverlap = value.some((s) => isOverlappingSchedule(s, temp));
-  //   if (hasOverlap) {
-  //     alert('해당 시간대는 이미 다른 일정과 겹칩니다.');
-  //     return;
-  //   }
-
-  //   onChange([...value, temp]);
-  //   setTemp({ date: null, startTime: null, endTime: null });
-  // }, [temp]);
 
   return (
     <div className='flex flex-col gap-12'>
@@ -215,31 +199,12 @@ export default function CreateExperience() {
       const { title, category, description, price, address, schedules, bannerImageUrl, subImages } =
         await fetchActivityDetail(activityId);
       const subImageUrls = subImages.map((img) => img.imageUrl);
-      console.log(subImageUrls);
-      // console.log(subImageUrls.subImages[0].imageUrl);
-
-      // console.log(title, category, description, price, address, schedules, bannerImageUrl, subImageUrls);
 
       originalSubImageIdsRef.current = subImages.map((img) => img.id);
       originalSubImageUrlsRef.current = subImages.map((img) => img.imageUrl);
 
       originalScheduleIdsRef.current = schedules.map((s) => s.id);
       originalSchedulesRef.current = schedules.map((s) => `${s.date}_${s.startTime}_${s.endTime}`);
-
-      console.log(originalSubImageIdsRef);
-      console.log(originalSubImageUrlsRef);
-      console.log(originalScheduleIdsRef);
-      console.log(originalSchedulesRef);
-
-      // reset({
-      //   ...,
-      //   subImageFiles: subImages.map((img) => img.imageUrl),
-      //   schedules: schedules.map((s) => ({
-      //     date: dayjs(s.date),
-      //     startTime: parseTimeToObject(s.startTime),
-      //     endTime: parseTimeToObject(s.endTime),
-      //   })),
-      // });
 
       reset({
         title,
@@ -272,7 +237,7 @@ export default function CreateExperience() {
     return new File([blob], fileName, { type: blob.type });
   }
 
-  const onSubmit: SubmitHandler<createExperienceForm> = async (data: createExperienceForm) => {
+  const handleCreate: SubmitHandler<createExperienceForm> = async (data: createExperienceForm) => {
     try {
       // 1-1. bannerFile 업로드
       const bannerFile = await blobUrlToFile(data.bannerFile, 'banner.png');
@@ -321,11 +286,84 @@ export default function CreateExperience() {
     }
   };
 
+  const handleEdit: SubmitHandler<createExperienceForm> = async (data) => {
+    // 1. bannerImageUrl 처리 (blob이면 업로드, 아니면 그대로 사용)
+    const bannerImageUrl = data.bannerFile.startsWith('blob:')
+      ? await blobUrlToFile(data.bannerFile, 'banner.png').then((file) => uploadImage(file))
+      : data.bannerFile;
+
+    // 🔹 새로 추가된 이미지(blob만 있음)만 업로드
+    const subImageUrlsToAdd = await Promise.all(
+      data.subImageFiles
+        .filter((url) => !originalSubImageUrlsRef.current.includes(url)) // 새로 추가된 blob만
+        .map((blobUrl, index) => blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file))),
+    );
+
+    // 🔹 최종 subImageUrls = 기존 유지할 URL + 새로 추가된 URL
+    const currentImageUrls = data.subImageFiles.filter((url) => originalSubImageUrlsRef.current.includes(url));
+    const finalSubImageUrls = [...currentImageUrls, ...subImageUrlsToAdd];
+
+    // 🔹 삭제할 이미지 ID
+    const subImageIdsToRemove = originalSubImageUrlsRef.current
+      .filter((url) => !data.subImageFiles.includes(url)) // 원래 있었는데 사라진 URL
+      .map((url) => {
+        const index = originalSubImageUrlsRef.current.indexOf(url);
+        return originalSubImageIdsRef.current[index];
+      });
+
+    // 🔹 새로 추가된 스케줄
+    const schedulesToAdd = data.schedules
+      .filter((s) => {
+        if (!s.date || !s.startTime || !s.endTime) return false;
+
+        const key = `${s.date.format('YYYY-MM-DD')}_${s.startTime.hour}:${s.startTime.minute}_${s.endTime.hour}:${s.endTime.minute}`;
+        return !originalSchedulesRef.current.includes(key);
+      })
+      .map((s) => ({
+        date: s.date.format('YYYY-MM-DD'),
+        startTime: `${s.startTime!.hour}:${s.startTime!.minute}`,
+        endTime: `${s.endTime!.hour}:${s.endTime!.minute}`,
+      }));
+
+    // 🔹 삭제할 스케줄 ID
+    const scheduleIdsToRemove = originalSchedulesRef.current
+      .filter((key) => {
+        return !data.schedules.some((s) => {
+          if (!s.date || !s.startTime || !s.endTime) return false;
+
+          const currentKey = `${s.date.format('YYYY-MM-DD')}_${s.startTime.hour}:${s.startTime.minute}_${s.endTime.hour}:${s.endTime.minute}`;
+          return currentKey === key;
+        });
+      })
+      .map((key) => {
+        const index = originalSchedulesRef.current.indexOf(key);
+        return originalScheduleIdsRef.current[index];
+      });
+
+    // 🔹 최종 body 구성
+    const body = {
+      title: data.title,
+      category: data.category.value,
+      description: data.description,
+      price: Number(data.price),
+      address: data.address,
+      bannerImageUrl,
+      subImageUrlsToAdd,
+      subImageIdsToRemove,
+      schedulesToAdd,
+      scheduleIdsToRemove,
+    };
+
+    console.log('최종 수정 body:', body);
+    await patchExperiences(activityId, body);
+    navigate(`/activities/${activityId}`);
+  };
+
   return (
     <div className='m-auto w-full max-w-700'>
       <h1 className='text-2xl font-bold md:text-3xl'>내 체험 등록</h1>
 
-      <form className='flex flex-col gap-24' onSubmit={handleSubmit(onSubmit)}>
+      <form className='flex flex-col gap-24' onSubmit={handleSubmit(isEdit ? handleEdit : handleCreate)}>
         <TitleInput {...register('title')} error={errors.title?.message} />
 
         <div>
@@ -357,7 +395,12 @@ export default function CreateExperience() {
 
         <DescriptionTextarea {...register('description')} error={errors.description?.message} />
 
-        <PriceInput {...register('price')} error={errors.price?.message} />
+        <PriceInput
+          {...register('price', {
+            valueAsNumber: true,
+          })}
+          error={errors.price?.message}
+        />
 
         <Controller
           control={control}

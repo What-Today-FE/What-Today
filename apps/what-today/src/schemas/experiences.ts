@@ -124,11 +124,7 @@ export const createExperienceFormSchema = z.object({
     .nullable()
     .refine((val) => val !== null, { message: '카테고리를 선택해주세요' }),
   description: z.string().min(1, '설명을 입력해주세요'),
-  price: z
-    .string()
-    .min(1)
-    .refine((val) => !isNaN(Number(val)), { message: '숫자를 입력하세요.' })
-    .transform((val) => Number(val)),
+  price: z.number({ invalid_type_error: '숫자를 입력해주세요.' }).min(0, { message: '가격은 0 이상이어야 합니다.' }),
   address: z.string().min(1, '주소를 입력해주세요'),
   schedules: z
     .array(
@@ -145,7 +141,7 @@ export const createExperienceFormSchema = z.object({
       }),
     )
     .min(1, '최소 1개의 예약 시간을 등록해주세요'),
-  bannerFile: z.string().min(1, '배너 이미지를 등록해주세요'), // string URL도 가능
+  bannerFile: z.string().min(1, '배너 이미지를 등록해주세요'),
   subImageFiles: z.array(z.string()),
 });
 
