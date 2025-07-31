@@ -92,15 +92,15 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
       {(value ?? []).map((schedule, idx) => (
         <div key={idx} className='flex flex-col items-center gap-8 md:flex-row'>
           <div className='w-full flex-1'>
-            <DatePicker value={schedule.date} onChange={() => {}} />
+            <DatePicker disabled value={schedule.date} onChange={() => {}} />
           </div>
 
           <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
             <div className='flex-1 md:w-120'>
-              <TimePicker className='w-full' value={schedule.startTime} onChange={() => {}} />
+              <TimePicker disabled className='w-full' value={schedule.startTime} onChange={() => {}} />
             </div>
             <div className='flex-1 md:w-120'>
-              <TimePicker className='w-full' value={schedule.endTime} onChange={() => {}} />
+              <TimePicker disabled className='w-full' value={schedule.endTime} onChange={() => {}} />
             </div>
             <Button
               className='aspect-square w-fit rounded-full bg-gray-200'
@@ -160,8 +160,6 @@ export default function CreateExperience() {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     control,
     reset,
     formState: { errors },
@@ -361,7 +359,7 @@ export default function CreateExperience() {
 
   return (
     <div className='m-auto w-full max-w-700'>
-      <h1 className='text-2xl font-bold md:text-3xl'>내 체험 등록</h1>
+      <h1 className='text-2xl font-bold md:text-3xl'>내 체험 {isEdit ? '수정' : '등록'}</h1>
 
       <form className='flex flex-col gap-24' onSubmit={handleSubmit(isEdit ? handleEdit : handleCreate)}>
         <TitleInput {...register('title')} error={errors.title?.message} />
@@ -427,7 +425,6 @@ export default function CreateExperience() {
 
         <div>
           <p className='mb-4 block'>배너 이미지 등록</p>
-          {/* <ImageInput max={1} value={watch('bannerFile')} onChange={(url) => setValue('bannerFile', url)} /> */}
           <Controller
             control={control}
             name='bannerFile'
@@ -442,7 +439,6 @@ export default function CreateExperience() {
 
         <div>
           <p className='mb-4 block'>소개 이미지 등록</p>
-          {/* <ImageInput max={4} value={watch('subImageFiles')} onChange={(url) => setValue('subImageFiles', url)} /> */}
           <Controller
             control={control}
             name='subImageFiles'

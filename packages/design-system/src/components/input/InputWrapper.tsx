@@ -27,7 +27,7 @@ function InputWrapper({ className, children }: InputSubComponentProps) {
 
   const BASE_CLASSNAME = twMerge(
     'flex items-center gap-8 rounded-xl border px-20 py-10 bg-white',
-    disabled && 'cursor-not-allowed',
+    disabled && 'cursor-default opacity-50',
     borderClass,
   );
 

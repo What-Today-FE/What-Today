@@ -21,12 +21,13 @@ import type { BaseProps } from './types';
  * ```
  */
 function SelectTrigger({ className, children }: BaseProps) {
-  const { open, setOpen } = useSelectContext();
+  const { open, setOpen, disabled } = useSelectContext();
   return (
     <Popover.Trigger asChild>
       <div
         className={twMerge(
           'flex items-center justify-between rounded-xl border border-gray-100 bg-white px-15 py-10',
+          disabled && 'pointer-events-none opacity-70',
           className,
         )}
         role='button'

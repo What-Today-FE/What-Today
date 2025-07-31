@@ -15,6 +15,7 @@ interface TimePickerProps {
    * 외부에서 TimePicker 전체의 스타일을 조정할 수 있는 클래스입니다.
    */
   className?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -24,7 +25,7 @@ interface TimePickerProps {
  * @param {TimePickerProps} props - 컴포넌트에 전달되는 props
  * @returns 시/분 선택 UI
  */
-export default function TimePicker({ value, onChange, className }: TimePickerProps) {
+export default function TimePicker({ value, onChange, className, disabled = false }: TimePickerProps) {
   /**
    * Select.Item이 선택되었을 때 호출되는 핸들러입니다.
    * 선택된 값이 'hour' 또는 'minute'에 해당하는지 판별한 후, 상태를 업데이트합니다.
@@ -56,9 +57,14 @@ export default function TimePicker({ value, onChange, className }: TimePickerPro
 
   return (
     <div>
-      <Select.Root className={twMerge('w-120', className)} value={selectedItem} onChangeValue={setTime}>
+      <Select.Root
+        className={twMerge('w-120', className)}
+        disabled={disabled}
+        value={selectedItem}
+        onChangeValue={setTime}
+      >
         <Select.Trigger className='flex items-center gap-6 rounded-xl border bg-white px-20 py-10'>
-          <div className='flex gap-8'>
+          <div className={twMerge('flex gap-8', disabled && 'opacity-60')}>
             {value?.hour ? <span>{value?.hour}</span> : <span className='text-gray-300'>시</span>} :
             {value?.minute ? <span>{value.minute}</span> : <span className='text-gray-300'>분</span>}
           </div>

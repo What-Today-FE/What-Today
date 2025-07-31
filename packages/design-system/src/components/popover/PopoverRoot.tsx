@@ -13,6 +13,7 @@ export interface PopoverRootProps extends BaseProp {
   open?: boolean; // 외부에서 제어할 수 있는 open
   onOpenChange?: (open: boolean) => void; // 외부 상태 변경 감지
   externalTriggerRef?: RefObject<HTMLDivElement | null>; // ✅ 외부 Trigger ref 주입
+  disabled?: boolean; // disabled 여부
 }
 
 /**
@@ -26,6 +27,7 @@ function PopoverRoot({
   open: openProp,
   onOpenChange,
   externalTriggerRef,
+  disabled = false,
 }: PopoverRootProps) {
   // Popover의 열고 닫힘 상태 (controlled / uncontrolled 지원)
   const isControlled = openProp !== undefined;
@@ -177,6 +179,7 @@ function PopoverRoot({
         direction,
         triggerWidth,
         isControlled,
+        disabled,
       }}
     >
       <div className={twMerge('relative', className)}>{children}</div>
