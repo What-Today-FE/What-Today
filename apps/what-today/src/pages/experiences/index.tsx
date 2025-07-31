@@ -352,14 +352,13 @@ export default function CreateExperience() {
       scheduleIdsToRemove,
     };
 
-    console.log('최종 수정 body:', body);
     await patchExperiences(activityId, body);
     navigate(`/activities/${activityId}`);
   };
 
   return (
     <div className='m-auto w-full max-w-700'>
-      <h1 className='text-2xl font-bold md:text-3xl'>내 체험 {isEdit ? '수정' : '등록'}</h1>
+      <h1 className='my-36 text-2xl font-bold md:text-3xl'>내 체험 {isEdit ? '수정' : '등록'}</h1>
 
       <form className='flex flex-col gap-24' onSubmit={handleSubmit(isEdit ? handleEdit : handleCreate)}>
         <TitleInput {...register('title')} error={errors.title?.message} />
@@ -451,7 +450,7 @@ export default function CreateExperience() {
           />
         </div>
 
-        <div className='flex justify-center'>
+        <div className='mt-36 flex justify-center'>
           <Button size='sm' type='submit' variant='fill' onClick={() => {}}>
             {isEdit ? '수정하기' : '등록하기'}
           </Button>
