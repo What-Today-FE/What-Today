@@ -23,7 +23,6 @@ export default function ReservationsListPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const [selectedStatus, setSelectedStatus] = useState<string>('');
 
