@@ -121,7 +121,7 @@ export default function ReservationsListPage() {
             const showReviewButton = res.status === 'completed' && !res.reviewSubmitted;
 
             return (
-              <li key={res.id}>
+              <li key={res.id} className='mb-24'>
                 <ReservationCard
                   bannerImageUrl={res.activity.bannerImageUrl}
                   endTime={res.endTime}
