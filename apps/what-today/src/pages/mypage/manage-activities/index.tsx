@@ -73,6 +73,7 @@ export default function ManageActivitiesPage() {
               setIsDeleteOpen(true);
             }}
             onEdit={() => navigate(`/experiences/create/${id}`)}
+            onNavigate={() => navigate(`/activities/${id}`)}
           />
         ))}
         <div ref={observerRef} />
