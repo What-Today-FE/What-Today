@@ -19,7 +19,13 @@ type ImageInputProps =
 export default function ImageInput({ value, onChange, max, className }: ImageInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const id = useId();
-  const urls = Array.isArray(value) ? value : value ? [value] : [];
+  let urls: string[] = [];
+
+  if (Array.isArray(value)) {
+    urls = value;
+  } else if (value) {
+    urls = [value];
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,17 +57,17 @@ export default function ImageInput({ value, onChange, max, className }: ImageInp
   const isFull = urls.length >= max;
 
   return (
-    <div className={twMerge('flex items-start gap-8 overflow-x-scroll', className)}>
+    <div className={twMerge('flex items-start gap-12', className)}>
       {/* 파일 선택 버튼 */}
       <label
         className={twMerge(
-          'hover:bg-gray-25 flex size-80 shrink-0 cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border border-gray-100 bg-white md:size-100',
+          'relative flex size-80 shrink-0 cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border border-gray-100 bg-white hover:border-gray-400 md:size-100',
           isFull && 'pointer-events-none opacity-40',
         )}
         htmlFor={id}
       >
-        <PlusIcon className='size-16' color='var(--color-gray-100)' />
-        <span className='mt-2 text-sm text-gray-400'>{`${urls.length} / ${max}`}</span>
+        <PlusIcon className='mt-12 size-16' color='var(--color-gray-100)' />
+        <span className='mt-2 text-xs text-gray-400'>{`${urls.length} / ${max}`}</span>
         <input
           ref={inputRef}
           accept='image/*'
@@ -74,17 +80,19 @@ export default function ImageInput({ value, onChange, max, className }: ImageInp
       </label>
 
       {/* 미리보기 이미지들 */}
-      <div className='flex gap-8'>
+      <div className='flex w-full gap-12 overflow-x-scroll'>
         {urls.map((preview, i) => (
-          <div key={i} className='relative size-80 rounded-xl border border-gray-100 bg-white md:size-100'>
-            <img alt='preview' className='h-full w-full rounded-xl object-cover' src={preview} />
+          <div key={i} className='relative'>
+            <div className='size-80 overflow-hidden rounded-xl border border-gray-100 bg-white md:size-100'>
+              <img alt='preview' className='h-full w-full rounded-lg object-cover' src={preview} />
+            </div>
             <Button
-              className='absolute -top-8 -right-8 size-24 rounded-full bg-gray-200 p-7 hover:bg-gray-300'
+              className='absolute top-0 -right-8 size-20 rounded-full bg-gray-200 p-6 hover:bg-gray-300'
               size='xs'
               variant='none'
               onClick={() => handleDelete(i)}
             >
-              <DeleteIcon className='size-8' color='white' />
+              <DeleteIcon className='size-12' color='white' />
             </Button>
           </div>
         ))}

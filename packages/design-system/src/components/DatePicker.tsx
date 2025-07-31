@@ -1,7 +1,6 @@
 import dayjs, { type Dayjs } from 'dayjs';
 
 import { Calendar } from './calendar';
-import DayCell from './calendar/DayCell';
 import { CalendarIcon } from './icons';
 import { Input } from './input';
 import { Popover } from './popover';
@@ -26,7 +25,7 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
                 <Input.Field readOnly placeholder='년 / 월 / 일' value={formattedDate} />
                 <span className='cursor-pointer'>
                   <Input.Icon>
-                    <CalendarIcon className='size-15 md:size-20' />
+                    <CalendarIcon className='size-20' />
                   </Input.Icon>
                 </span>
               </Input.Wrapper>
@@ -38,7 +37,17 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
             <Calendar.Root initialDate={today} onDateChange={(newDate) => onChange(dayjs(newDate))}>
               <Calendar.Header headerClass='my-12' />
               <Calendar.Grid divider weekdayType='short'>
-                {(day) => <DayCell day={day} />}
+                {(day) => {
+                  const isBeforeToday = day.isBefore(dayjs(), 'day');
+
+                  return (
+                    <Calendar.DayCell
+                      dateClass={!isBeforeToday ? 'hover:bg-gray-50' : undefined}
+                      day={day}
+                      dayCellClass={isBeforeToday ? 'opacity-30 pointer-events-none cursor-not-allowed' : undefined}
+                    />
+                  );
+                }}
               </Calendar.Grid>
             </Calendar.Root>
           </Popover.Content>

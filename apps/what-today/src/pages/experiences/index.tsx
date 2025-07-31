@@ -443,7 +443,7 @@ export default function CreateExperience() {
             render={({ field }) => (
               <Select.Root value={field.value} onChangeValue={(value: SelectItem) => field.onChange(value)}>
                 <Select.Title className='font-normal'>카테고리</Select.Title>
-                <Select.Trigger className={errors.category ? 'border border-red-500' : 'border border-gray-100'}>
+                <Select.Trigger className={errors.category && 'border border-red-500'}>
                   <Select.Value className='flex' placeholder='카테고리를 선택해 주세요' />
                 </Select.Trigger>
                 <Select.Content>

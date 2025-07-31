@@ -22,12 +22,22 @@ import type { BaseProps } from './types';
  */
 function SelectTrigger({ className, children }: BaseProps) {
   const { open, setOpen, disabled } = useSelectContext();
+
+  let borderColor = 'border-gray-100';
+
+  if (disabled) {
+    borderColor = 'border-gray-100 opacity-70';
+  } else if (open) {
+    borderColor = 'border-gray-400';
+  }
+
   return (
     <Popover.Trigger asChild>
       <div
         className={twMerge(
-          'flex items-center justify-between rounded-xl border border-gray-100 bg-white px-15 py-10',
+          'flex items-center justify-between rounded-xl border border-gray-100 bg-white px-20 py-10',
           disabled && 'pointer-events-none opacity-70',
+          borderColor,
           className,
         )}
         role='button'
