@@ -26,12 +26,12 @@ export default function MainSearchInput({ onClick }: MainSearchInputProps) {
 
   return (
     <div className='relative flex w-full items-center justify-between bg-white'>
-      <div className='absolute inset-y-0 left-0 flex items-center pl-28'>
+      <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-28'>
         <SearchIcon className='cursor-pointer text-gray-400' onClick={handleFocusInput} />
       </div>
       <input
         ref={inputRef}
-        className='md:text-2lg text-md w-full rounded-2xl border border-gray-300 px-55 py-15 text-gray-500 shadow-xl focus:ring-2 focus:ring-blue-500 focus:outline-none md:px-60 md:py-22'
+        className='md:text-2lg text-md w-full rounded-xl border border-gray-300 px-50 py-15 text-gray-400 focus:inset-ring-2 focus:inset-ring-blue-500 md:px-60 md:py-22'
         placeholder='내가 원하는 체험은'
         type='text'
         value={keyword}
@@ -39,7 +39,7 @@ export default function MainSearchInput({ onClick }: MainSearchInputProps) {
         onKeyDown={handleKeyDown}
       />
       <Button
-        className='font-sm md:font-lg absolute top-1/2 right-12 h-41 w-85 -translate-y-1/2 md:h-50 md:w-120'
+        className='body-text absolute top-1/2 right-12 h-38 w-85 -translate-y-1/2 md:h-50 md:w-120'
         size='lg'
         variant='fill'
         onClick={handleSubmit}

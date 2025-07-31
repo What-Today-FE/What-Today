@@ -80,102 +80,100 @@ export default function MainPage() {
   const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <div className='relative z-10 mt-40 flex h-auto flex-col gap-40'>
+    <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
       <MainBanner />
 
-      <div className='flex flex-col gap-20 px-30'>
-        <h2 className='flex justify-center text-2xl font-bold'>무엇을 체험하고 싶으신가요?</h2>
+      <div className='flex flex-col gap-20'>
+        <h2 className='title-text'>🔥 인기 체험</h2>
+        <div className='-mx-15 flex'>
+          <Carousel items={activities} itemsPerPage={itemsPerPage} onClick={(id) => navigate(`/activities/${id}`)} />
+        </div>
+      </div>
+
+      <div className='flex flex-col gap-20 md:px-30'>
+        <h2 className='title-text flex justify-center'>무엇을 체험하고 싶으신가요?</h2>
         <MainSearchInput onClick={handleSearch} />
       </div>
 
-      <div className='flex flex-col gap-60'>
-        <div className='flex flex-col gap-20'>
-          <h2 className='text-2xl font-bold text-gray-950'>🔥 인기 체험</h2>
-          <div className='-mx-15 flex'>
-            <Carousel items={activities} itemsPerPage={itemsPerPage} onClick={(id) => navigate(`/activities/${id}`)} />
-          </div>
-        </div>
+      <div className='flex flex-col gap-20'>
+        <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
 
-        <div className='flex flex-col gap-20'>
-          <h2 className='mb-2 flex items-center gap-12 text-2xl font-semibold text-gray-950'>🛼 모든 체험</h2>
-
-          <div className='flex flex-wrap items-center justify-between gap-20'>
-            <RadioGroup
-              radioGroupClassName='flex flex-wrap gap-12 min-w-0 max-w-full'
-              selectedValue={selectedCategory}
-              onSelect={setSelectedCategory}
-            >
-              <div className='flex max-w-full min-w-0 flex-wrap gap-12'>
-                <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
-                  <ArtIcon />
-                  문화 예술
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='음식'>
-                  <FoodIcon />
-                  음식
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='스포츠'>
-                  <SportIcon />
-                  스포츠
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='웰빙'>
-                  <WellbeingIcon />
-                  웰빙
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='버스'>
-                  <BusIcon />
-                  버스
-                </RadioGroup.Radio>
-                <RadioGroup.Radio value='투어'>
-                  <TourIcon />
-                  여행
-                </RadioGroup.Radio>
-              </div>
-            </RadioGroup>
-
-            <div className='shrink-0'>
-              <Select.Root
-                value={selectedValue}
-                onChangeValue={(item) => {
-                  setSelectedValue(item);
-                  if (item) {
-                    setSortOrder(item.value as 'asc' | 'desc');
-                  }
-                }}
-              >
-                <Select.Trigger className='text-2lg flex min-w-fit gap-6 border-none bg-white px-15 py-10'>
-                  <Select.Value className='text-gray-950' placeholder='가격' />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Group className='text-lg whitespace-nowrap'>
-                    <Select.Item value='desc'> 높은순</Select.Item>
-                    <Select.Item value='asc'> 낮은순</Select.Item>
-                  </Select.Group>
-                </Select.Content>
-              </Select.Root>
+        <div className='flex flex-wrap items-center justify-between gap-20'>
+          <RadioGroup
+            radioGroupClassName='flex flex-wrap gap-12 min-w-0 max-w-full'
+            selectedValue={selectedCategory}
+            onSelect={setSelectedCategory}
+          >
+            <div className='flex max-w-full min-w-0 flex-wrap gap-12'>
+              <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
+                <ArtIcon />
+                문화 예술
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='음식'>
+                <FoodIcon />
+                음식
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='스포츠'>
+                <SportIcon />
+                스포츠
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='웰빙'>
+                <WellbeingIcon />
+                웰빙
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='버스'>
+                <BusIcon />
+                버스
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='투어'>
+                <TourIcon />
+                여행
+              </RadioGroup.Radio>
             </div>
-          </div>
+          </RadioGroup>
 
-          <div className='grid grid-cols-2 gap-10 md:grid-cols-2 lg:grid-cols-4'>
-            {pagedItems.map((item) => (
-              <MainCard.Root
-                key={item.id}
-                bannerImageUrl={item.bannerImageUrl}
-                className=''
-                price={item.price}
-                rating={item.rating}
-                reviewCount={item.reviewCount}
-                title={item.title}
-                onClick={() => navigate(`/activities/${item.id}`)}
-              >
-                <MainCard.Image className='' />
-                <MainCard.Content />
-              </MainCard.Root>
-            ))}
+          <div className='shrink-0'>
+            <Select.Root
+              value={selectedValue}
+              onChangeValue={(item) => {
+                setSelectedValue(item);
+                if (item) {
+                  setSortOrder(item.value as 'asc' | 'desc');
+                }
+              }}
+            >
+              <Select.Trigger className='text-2lg flex min-w-fit gap-8 border-none bg-white px-15 py-10'>
+                <Select.Value className='text-gray-950' placeholder='가격' />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Group className='body-text text-center whitespace-nowrap'>
+                  <Select.Item value='desc'> 높은순</Select.Item>
+                  <Select.Item value='asc'> 낮은순</Select.Item>
+                </Select.Group>
+              </Select.Content>
+            </Select.Root>
           </div>
-
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
+
+        <div className='grid grid-cols-2 gap-12 md:grid-cols-2 lg:grid-cols-4'>
+          {pagedItems.map((item) => (
+            <MainCard.Root
+              key={item.id}
+              bannerImageUrl={item.bannerImageUrl}
+              className=''
+              price={item.price}
+              rating={item.rating}
+              reviewCount={item.reviewCount}
+              title={item.title}
+              onClick={() => navigate(`/activities/${item.id}`)}
+            >
+              <MainCard.Image className='' />
+              <MainCard.Content />
+            </MainCard.Root>
+          ))}
+        </div>
+
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ export default function MainCardRoot({
 }: MainCardProps) {
   return (
     <MainCardContext.Provider value={{ title, price, bannerImageUrl, rating, reviewCount, onClick }}>
-      <div className=''>
+      <div className='rounded-xl'>
         <div
           className={twMerge(
             'relative flex flex-shrink-0 cursor-pointer flex-col transition-transform duration-300',
