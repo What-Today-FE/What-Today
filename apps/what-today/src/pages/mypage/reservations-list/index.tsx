@@ -3,6 +3,7 @@ import { Button, Input, Modal, NoResult, RadioGroup, ReservationCard, StarRating
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
 
 import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/myReservations';
@@ -10,6 +11,7 @@ import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import type { MyReservationsResponse, Reservation, ReservationStatus } from '@/schemas/myReservations';
 
 export default function ReservationsListPage() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -128,6 +130,7 @@ export default function ReservationsListPage() {
                   status={res.status}
                   title={res.activity.title}
                   totalPrice={res.totalPrice}
+                  onNavigate={() => navigate(`/activities/${res.activity.id}`)}
                 />
 
                 {(showCancelButton || showReviewButton) && (
