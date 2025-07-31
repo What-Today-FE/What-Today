@@ -32,6 +32,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import FooterDoc from '@/pages/FooterDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import ReservationInfoCardDoc from '@/pages/ReservationInfoCardDoc';
+import SelectDoc from '@/pages/SelectDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <LandingPage />,
+      },
+      {
+        path: 'Select',
+        element: <SelectDoc />,
       },
       {
         path: 'TimePicker',
