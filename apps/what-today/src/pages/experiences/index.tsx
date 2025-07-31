@@ -1,8 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AddressInput, Button, DatePicker, MinusIcon, PlusIcon, Select, TimePicker } from '@what-today/design-system';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  AddressInput,
+  Button,
+  DatePicker,
+  MinusIcon,
+  PlusIcon,
+  Select,
+  type SelectItem,
+  TimePicker,
+} from '@what-today/design-system';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -20,9 +30,9 @@ interface Time {
 }
 
 interface Schedule {
-  date: Dayjs | null;
-  startTime: Time | null;
-  endTime: Time | null;
+  date?: Dayjs | null;
+  startTime?: Time | null;
+  endTime?: Time | null;
 }
 
 type ScheduleInputProps = {
@@ -35,7 +45,7 @@ function timeToMinutes(time: { hour: string; minute: string } | null): number {
   return parseInt(time.hour) * 60 + parseInt(time.minute);
 }
 
-function isOverlappingSchedule(a: Schedule, b: Schedule): boolean {
+function isOverlappingSchedule(a: Required<Schedule>, b: Required<Schedule>): boolean {
   const aStart = timeToMinutes(a.startTime);
   const aEnd = timeToMinutes(a.endTime);
   const bStart = timeToMinutes(b.startTime);
@@ -50,7 +60,7 @@ function isOverlappingSchedule(a: Schedule, b: Schedule): boolean {
 }
 
 function ScheduleInput({ value, onChange }: ScheduleInputProps) {
-  const handleScheduleChange = (index: number, field: keyof Schedule, newValue: any) => {
+  const handleScheduleChange = (index: number, field: keyof Schedule, newValue: Dayjs | Time | null) => {
     const updated = [...value];
     updated[index] = { ...updated[index], [field]: newValue };
 
@@ -76,7 +86,7 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
           if (!otherSchedule.date || !otherSchedule.startTime || !otherSchedule.endTime) {
             return false;
           }
-          return isOverlappingSchedule(currentSchedule, otherSchedule);
+          return isOverlappingSchedule(currentSchedule as Required<Schedule>, otherSchedule as Required<Schedule>);
         });
 
       if (hasOverlap) {
@@ -129,25 +139,29 @@ function ScheduleInput({ value, onChange }: ScheduleInputProps) {
     <div className='flex flex-col gap-12'>
       {schedules.map((schedule, idx) => {
         const isLast = idx === schedules.length - 1;
+        const scheduleKey =
+          schedule?.date && schedule?.startTime && schedule?.endTime
+            ? `${schedule.date.format?.('YYYY-MM-DD') ?? 'no-date'}-${schedule.startTime.hour}:${schedule.startTime.minute}-${schedule.endTime.hour}:${schedule.endTime.minute}`
+            : `empty-schedule-${idx}`;
         const isComplete = schedule.date && schedule.startTime && schedule.endTime;
 
         return (
-          <div key={idx} className='flex flex-col items-center gap-8 md:flex-row'>
+          <div key={scheduleKey} className='flex flex-col items-center gap-8 md:flex-row'>
             <div className='w-full flex-1'>
-              <DatePicker value={schedule.date} onChange={(date) => handleScheduleChange(idx, 'date', date)} />
+              <DatePicker value={schedule?.date || null} onChange={(date) => handleScheduleChange(idx, 'date', date)} />
             </div>
             <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
               <div className='flex-1'>
                 <TimePicker
                   className='w-full md:w-120'
-                  value={schedule.startTime}
+                  value={schedule?.startTime || null}
                   onChange={(time) => handleScheduleChange(idx, 'startTime', time)}
                 />
               </div>
               <div className='flex-1'>
                 <TimePicker
                   className='w-full md:w-120'
-                  value={schedule.endTime}
+                  value={schedule?.endTime || null}
                   onChange={(time) => handleScheduleChange(idx, 'endTime', time)}
                 />
               </div>
@@ -181,6 +195,7 @@ export default function CreateExperience() {
   const navigate = useNavigate();
   const { id: activityId } = useParams();
   const isEdit = !!activityId;
+  const queryClient = useQueryClient();
 
   const originalSubImageIdsRef = useRef<number[]>([]);
   const originalSubImageUrlsRef = useRef<string[]>([]);
@@ -216,42 +231,45 @@ export default function CreateExperience() {
   }
 
   // 🔹 체험 상세 데이터 불러오기 및 RHF 초기값 세팅
-  async function loadExperienceDetail(activityId: string) {
-    try {
-      const { title, category, description, price, address, schedules, bannerImageUrl, subImages } =
-        await fetchActivityDetail(activityId);
-      const subImageUrls = subImages.map((img) => img.imageUrl);
+  const loadExperienceDetail = useCallback(
+    async (activityId: string) => {
+      try {
+        const { title, category, description, price, address, schedules, bannerImageUrl, subImages } =
+          await fetchActivityDetail(activityId);
+        const subImageUrls = subImages.map((img) => img.imageUrl);
 
-      originalSubImageIdsRef.current = subImages.map((img) => img.id);
-      originalSubImageUrlsRef.current = subImages.map((img) => img.imageUrl);
+        originalSubImageIdsRef.current = subImages.map((img) => img.id);
+        originalSubImageUrlsRef.current = subImages.map((img) => img.imageUrl);
 
-      originalScheduleIdsRef.current = schedules.map((s) => s.id);
-      originalSchedulesRef.current = schedules.map((s) => `${s.date}_${s.startTime}_${s.endTime}`);
+        originalScheduleIdsRef.current = schedules.map((s) => s.id);
+        originalSchedulesRef.current = schedules.map((s) => `${s.date}_${s.startTime}_${s.endTime}`);
 
-      reset({
-        title,
-        category: { value: category, label: category }, // Select 컴포넌트용
-        description,
-        price: price, // RHF에서는 문자열일 수 있음
-        address,
-        schedules: schedules.map((s) => ({
-          date: dayjs(s.date),
-          startTime: parseTimeToObject(s.startTime),
-          endTime: parseTimeToObject(s.endTime),
-        })),
-        bannerFile: bannerImageUrl,
-        subImageFiles: subImageUrls,
-      });
-    } catch (err) {
-      console.error('체험 상세 로딩 실패:', err);
-      alert('체험 정보를 불러오지 못했습니다.');
-    }
-  }
+        reset({
+          title,
+          category: { value: category, label: category }, // Select 컴포넌트용
+          description,
+          price: price, // RHF에서는 문자열일 수 있음
+          address,
+          schedules: schedules.map((s) => ({
+            date: dayjs(s.date),
+            startTime: parseTimeToObject(s.startTime),
+            endTime: parseTimeToObject(s.endTime),
+          })),
+          bannerFile: bannerImageUrl,
+          subImageFiles: subImageUrls,
+        });
+      } catch (err) {
+        console.error('체험 상세 로딩 실패:', err);
+        alert('체험 정보를 불러오지 못했습니다.');
+      }
+    },
+    [reset],
+  );
 
   useEffect(() => {
     if (!isEdit || !activityId) return;
     loadExperienceDetail(activityId);
-  }, [isEdit, activityId]);
+  }, [isEdit, activityId, loadExperienceDetail]);
 
   async function blobUrlToFile(blobUrl: string, fileName: string): Promise<File> {
     const res = await fetch(blobUrl);
@@ -263,14 +281,16 @@ export default function CreateExperience() {
     try {
       // 1-1. bannerFile 업로드
       const bannerFile = await blobUrlToFile(data.bannerFile, 'banner.png');
-      const bannerImageUrl = await uploadImage(bannerFile);
+      const bannerImageUrlResponse = await uploadImage(bannerFile);
+      const bannerImageUrl = bannerImageUrlResponse.file;
 
       // 1-2. subImageFiles 업로드
-      const subImageUrls = await Promise.all(
+      const subImageUrlResponses = await Promise.all(
         data.subImageFiles.map((blobUrl, index) =>
           blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file)),
         ),
       );
+      const subImageUrls = subImageUrlResponses.map((response) => response.file);
 
       // 2. category, schedules 전처리
       const transformedCategory = data.category.value;
@@ -287,17 +307,28 @@ export default function CreateExperience() {
       // 3. 데이터 재구성
       const finalData = {
         title: data.title,
-        category: transformedCategory,
+        category: transformedCategory as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
         description: data.description,
         price: Number(data.price),
         address: data.address,
         schedules: transformedSchedules,
         bannerImageUrl,
-        subImageUrls,
+        subImageUrls: subImageUrls.length > 0 ? subImageUrls : [],
       };
 
       // 4. 최종 제출
       await postExperiences(finalData);
+
+      // 내 체험 관리 쿼리 무효화
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
+      });
+
+      // 메인 페이지 체험 목록 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: ['activities'],
+      });
+
       navigate('/');
     } catch (e) {
       console.error('이미지 업로드 실패:', e);
@@ -314,19 +345,18 @@ export default function CreateExperience() {
 
     // 1. bannerImageUrl 처리 (blob이면 업로드, 아니면 그대로 사용)
     const bannerImageUrl = data.bannerFile.startsWith('blob:')
-      ? await blobUrlToFile(data.bannerFile, 'banner.png').then((file) => uploadImage(file))
+      ? await blobUrlToFile(data.bannerFile, 'banner.png')
+          .then((file) => uploadImage(file))
+          .then((response) => response.file)
       : data.bannerFile;
 
     // 🔹 새로 추가된 이미지(blob만 있음)만 업로드
-    const subImageUrlsToAdd = await Promise.all(
+    const subImageUrlResponses = await Promise.all(
       data.subImageFiles
         .filter((url) => !originalSubImageUrlsRef.current.includes(url)) // 새로 추가된 blob만
         .map((blobUrl, index) => blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file))),
     );
-
-    // 🔹 최종 subImageUrls = 기존 유지할 URL + 새로 추가된 URL
-    // const currentImageUrls = data.subImageFiles.filter((url) => originalSubImageUrlsRef.current.includes(url));
-    // const finalSubImageUrls = [...currentImageUrls, ...subImageUrlsToAdd];
+    const subImageUrlsToAdd = subImageUrlResponses.map((response) => response.file);
 
     // 🔹 삭제할 이미지 ID
     const subImageIdsToRemove = originalSubImageUrlsRef.current
@@ -368,7 +398,7 @@ export default function CreateExperience() {
     // 🔹 최종 body 구성
     const body = {
       title: data.title,
-      category: data.category.value,
+      category: data.category.value as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
       description: data.description,
       price: Number(data.price),
       address: data.address,
@@ -380,6 +410,22 @@ export default function CreateExperience() {
     };
 
     await patchExperiences(body, activityId);
+
+    // 내 체험 관리 쿼리 무효화
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
+    });
+
+    // 메인 페이지 체험 목록 쿼리 무효화
+    queryClient.invalidateQueries({
+      queryKey: ['activities'],
+    });
+
+    // 상세 페이지 쿼리 무효화
+    queryClient.invalidateQueries({
+      queryKey: ['activity', activityId],
+    });
+
     navigate(`/activities/${activityId}`);
   };
 
@@ -395,7 +441,7 @@ export default function CreateExperience() {
             control={control}
             name='category'
             render={({ field }) => (
-              <Select.Root value={field.value} onChangeValue={field.onChange}>
+              <Select.Root value={field.value} onChangeValue={(value: SelectItem) => field.onChange(value)}>
                 <Select.Title className='font-normal'>카테고리</Select.Title>
                 <Select.Trigger className={errors.category ? 'border border-red-500' : 'border border-gray-100'}>
                   <Select.Value className='flex' placeholder='카테고리를 선택해 주세요' />
@@ -430,19 +476,22 @@ export default function CreateExperience() {
           control={control}
           name='address'
           render={({ field, fieldState }) => (
-            <AddressInput error={fieldState.error?.message} value={field.value} onChange={field.onChange} />
+            <AddressInput
+              error={fieldState.error?.message}
+              value={field.value}
+              onChange={(value: string) => field.onChange(value)}
+            />
           )}
         />
 
         <div>
           <p className='mb-4 block'>예약 가능한 시간대</p>
-          {/* <ScheduleInput value={schedules} onChange={setSchedules} /> */}
           <Controller
             control={control}
             name='schedules'
             render={({ field, fieldState }) => (
               <>
-                <ScheduleInput value={field.value} onChange={field.onChange} />
+                <ScheduleInput value={field.value} onChange={(value: Schedule[]) => field.onChange(value)} />
                 {fieldState.error && <p className='text-sm text-red-500'>{fieldState.error.message}</p>}
               </>
             )}
@@ -456,7 +505,7 @@ export default function CreateExperience() {
             name='bannerFile'
             render={({ field, fieldState }) => (
               <>
-                <ImageInput max={1} value={field.value} onChange={field.onChange} />
+                <ImageInput max={1} value={field.value} onChange={(value: string) => field.onChange(value)} />
                 {fieldState.error && <p className='text-sm text-red-500'>{fieldState.error.message}</p>}
               </>
             )}
@@ -470,7 +519,7 @@ export default function CreateExperience() {
             name='subImageFiles'
             render={({ field, fieldState }) => (
               <>
-                <ImageInput max={4} value={field.value} onChange={field.onChange} />
+                <ImageInput max={4} value={field.value} onChange={(value: string[]) => field.onChange(value)} />
                 {fieldState.error && <p className='text-sm text-red-500'>{fieldState.error.message}</p>}
               </>
             )}

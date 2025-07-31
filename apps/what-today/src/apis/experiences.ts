@@ -2,7 +2,7 @@ import {
   type ActivityWithSchedulesResponse,
   type CreateActivityBody,
   type UpdateMyActivityBody,
-} from '@/schemas/experiences'; // 스키마 정의된 파일 기준 경로로 수정하세요
+} from '@/schemas/experiences';
 
 import axiosInstance from './axiosInstance';
 
@@ -36,7 +36,7 @@ export const uploadImage = async (file: File): Promise<{ file: string }> => {
     },
   });
 
-  return response.data.activityImageUrl;
+  return { file: response.data.activityImageUrl };
 };
 
 /**

@@ -50,7 +50,7 @@ const createScheduleBodySchema = z.object({
 // ✅ CreateActivityBodyDto 요청 바디 스키마 (API 전송용)
 export const createActivityBodySchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
-  category: z.string().min(1, '카테고리를 선택해주세요'),
+  category: categoryEnum,
   description: z.string().min(1, '설명을 입력해주세요'),
   price: z
     .string()
@@ -59,10 +59,8 @@ export const createActivityBodySchema = z.object({
     .transform((val) => Number(val)),
   address: z.string().min(1, '주소를 입력해주세요'),
   schedules: z.array(createScheduleBodySchema).default([]),
-  // bannerImageUrl: z.string().url('배너 이미지 URL이 유효하지 않습니다'),
-  // subImageUrls: z.array(z.string().url()).default([]),
-  bannerImageUrl: z.string().min(1, '배너 이미지를 등록해주세요'), // string URL도 가능
-  subImageUrls: z.array(z.string()),
+  bannerImageUrl: z.string().url('배너 이미지 URL이 유효하지 않습니다'),
+  subImageUrls: z.array(z.string().url()).default([]),
 });
 
 // ✅ UpdateMyActivityBodyDto 요청 바디 스키마
