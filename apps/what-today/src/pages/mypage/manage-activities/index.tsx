@@ -42,10 +42,6 @@ export default function ManageActivitiesPage() {
 
   const allActivities = data?.pages.flatMap((page) => page.activities) ?? [];
 
-  const handleNavigateToMypage = () => {
-    navigate('/mypage');
-  };
-
   let content;
   if (isLoading) {
     content = <div className='flex justify-center p-40 text-gray-400'>로딩 중...</div>;
