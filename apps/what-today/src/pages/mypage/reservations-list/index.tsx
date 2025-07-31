@@ -114,7 +114,7 @@ export default function ReservationsListPage() {
 
     return sortedByDateDesc.map(([date, group], index) => (
       <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
-        <h3 className='body-text font-bold'>{date}</h3>
+        <h3 className='section-text'>{date}</h3>
         <ul>
           {group.map((res) => {
             const showCancelButton = res.status === 'pending';
@@ -209,7 +209,7 @@ export default function ReservationsListPage() {
         <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
           <div className='flex flex-col items-center gap-10 text-center'>
             <WarningLogo className='md:size-110 lg:size-150' size={88} />
-            <p className='subtitle-text'>예약을 취소하시겠어요?</p>
+            <p className='section-text'>예약을 취소하시겠어요?</p>
           </div>
           <Modal.Actions className='w-full'>
             <Modal.CancelButton className='w-full px-0'>아니요</Modal.CancelButton>
@@ -227,7 +227,7 @@ export default function ReservationsListPage() {
         {reviewTarget && (
           <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
             <Modal.CloseButton />
-            <h2 className='body-text mt-22 font-bold'>{reviewTarget.activity.title}</h2>
+            <h2 className='section-text mt-22 font-bold'>{reviewTarget.activity.title}</h2>
             <p className='caption-text text-gray-400'>
               {reviewTarget.date}/ {reviewTarget.startTime} ~ {reviewTarget.endTime} ({reviewTarget.headCount}명)
             </p>
