@@ -56,7 +56,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
                   title={item.title}
                   onClick={() => onClick?.(item.id)}
                 >
-                  <MainCard.Image className='rounded-t-3xl object-cover' />
+                  <MainCard.Image />
                   <MainCard.Content />
                 </MainCard.Root>
               </div>
@@ -77,14 +77,14 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
             <MainCard.Root
               key={item.id}
               bannerImageUrl={item.bannerImageUrl}
-              className='w-[265px] shrink-0'
+              className='w-265 shrink-0'
               price={item.price}
               rating={item.rating}
               reviewCount={item.reviewCount}
               title={item.title}
               onClick={() => onClick?.(item.id)}
             >
-              <MainCard.Image className='h-[260px] rounded-t-3xl object-cover brightness-90 contrast-125' />
+              <MainCard.Image className='brightness-90 contrast-125' />
               <MainCard.Content />
             </MainCard.Root>
           ))}

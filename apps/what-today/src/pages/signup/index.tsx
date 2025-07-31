@@ -91,7 +91,7 @@ export default function SignupPage() {
         </Link>
 
         <form className='flex w-full flex-col items-center justify-center gap-32' onSubmit={handleSubmit(onSubmit)}>
-          <div className='flex w-full flex-col gap-12'>
+          <div className='flex w-full flex-col gap-24'>
             <EmailInput {...register('email')} error={errors.email?.message} />
             <NicknameInput {...register('nickname')} error={errors.nickname?.message} />
             <PasswordInput {...register('password')} error={errors.password?.message} />
@@ -100,7 +100,7 @@ export default function SignupPage() {
 
           <div className='flex w-full flex-col gap-12'>
             <Button
-              className='h-fit w-full rounded-xl py-10 font-normal'
+              className='h-fit w-full rounded-xl py-10'
               disabled={isSubmitting || !isValid}
               loading={isPending}
               size='xl'
@@ -114,7 +114,7 @@ export default function SignupPage() {
               <div className='h-1 flex-1 bg-gray-100' />
             </div>
             <Button
-              className='h-fit w-full rounded-xl py-10 font-normal'
+              className='h-fit w-full rounded-xl py-10'
               loading={isPending}
               size='xl'
               variant='outline'

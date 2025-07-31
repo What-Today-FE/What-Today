@@ -14,8 +14,8 @@ export default function ReservationTabPanel({
   onReject,
 }: ReservationTabPanel) {
   return (
-    <div className='flex grow flex-col gap-12'>
-      <h3 className='text-md font-bold'>예약 내역</h3>
+    <div className='flex h-[60vh] grow flex-col gap-12 overflow-scroll xl:h-full'>
+      <h3 className='body-text font-bold'>예약 내역</h3>
       {reservationData.length > 0 ? (
         reservationData.map(({ id, nickname, headCount, status }) => {
           return (

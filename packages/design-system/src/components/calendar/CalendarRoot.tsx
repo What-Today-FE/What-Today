@@ -77,7 +77,7 @@ export default function CalendarRoot({
 
   return (
     <CalendarContext.Provider value={{ selectedDate, onSelectDate: handleSelectDate, currentMonth, setCurrentMonth }}>
-      <div aria-label='예약 캘린더' className={twMerge('flex w-full max-w-640 flex-col gap-8', className)}>
+      <div aria-label='예약 캘린더' className={twMerge('flex w-full flex-col gap-8', className)}>
         {children}
       </div>
     </CalendarContext.Provider>

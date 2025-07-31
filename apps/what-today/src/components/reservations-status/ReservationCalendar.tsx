@@ -79,7 +79,7 @@ export default function ReservationCalendar({
   return (
     <div ref={calendarRef}>
       <Calendar.Root
-        className='gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
+        className='gap-8 rounded-2xl border border-gray-50 pt-20 pb-10 md:gap-30'
         onDateChange={(date) => {
           handleDateSelect(date);
           onChange?.(date);
@@ -115,7 +115,6 @@ export default function ReservationCalendar({
 
       {/* ✅ 모바일: BottomSheet */}
       <BottomSheet.Root
-        className='h-[80vh]'
         isOpen={isReservationSheetOpen && !responsive.isDesktop}
         onClose={() => setIsReservationSheetOpen(false)}
       >
@@ -132,7 +131,7 @@ export default function ReservationCalendar({
         onOpenChange={setIsReservationSheetOpen}
       >
         <Popover.Content
-          className='z-50 rounded-3xl bg-white px-24 py-30 shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
+          className='z-50 rounded-2xl border border-gray-50 bg-white px-24 py-30'
           style={reservationPopupPosition}
         >
           <div className='h-460 w-292'>

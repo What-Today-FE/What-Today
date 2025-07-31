@@ -161,7 +161,7 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       </section>
       <section className='flex flex-col gap-20 md:flex-row'>
         <div className='flex grow flex-col gap-12'>
-          <h3 className='text-md font-bold'>예약 시간</h3>
+          <h3 className='body-text font-bold'>예약 시간</h3>
           <Select.Root value={state.selectedSchedule} onChangeValue={handleSelectSchedule}>
             <Select.Trigger className='h-54'>
               <Select.Value placeholder='예약 시간 선택하기' />
@@ -181,14 +181,14 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
           </Select.Root>
         </div>
       </section>
-      <div className='flex text-lg'>
+      <div className='body-text flex'>
         {tabData.map(({ key, label }) => {
           const selectedStyle =
-            state.selectedStatus === key ? 'border-b-2 border-primary-500 text-primary-500' : 'text-gray-500';
+            state.selectedStatus === key ? '  text-primary-500 bg-primary-100 border-primary-500' : 'text-gray-400';
           return (
             <button
               key={key}
-              className={twMerge('w-full rounded-none border-b border-gray-100 py-6', selectedStyle)}
+              className={twMerge('w-full cursor-pointer rounded-t-xl border-b border-gray-100 py-6', selectedStyle)}
               onClick={() => handleTabChange(key)}
             >
               {label} {state.selectedCount[key]}

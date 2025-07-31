@@ -91,7 +91,7 @@ export default function ReservationsStatusPage() {
   } else if (activityList && activityList.activities.length > 0) {
     scheduleContent = (
       <div className='flex flex-col md:gap-24 xl:gap-30'>
-        <section aria-label='체험 선택하기' className='max-w-640'>
+        <section aria-label='체험 선택하기'>
           <Select.Root
             value={
               selectedActivityId
@@ -103,7 +103,7 @@ export default function ReservationsStatusPage() {
             }
             onChangeValue={handleActivityChange}
           >
-            <Select.Trigger className='h-54 max-w-640'>
+            <Select.Trigger className='h-54'>
               <Select.Value placeholder='내 체험 선택하기' />
             </Select.Trigger>
             <Select.Content>
@@ -138,14 +138,14 @@ export default function ReservationsStatusPage() {
   }
   return (
     <div className='flex flex-col md:gap-24 xl:gap-30'>
-      <header className='mb-18 flex flex-col gap-10 p-1 md:mb-0'>
-        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
-          <Button className='h-fit w-fit' variant='none' onClick={() => navigate('/mypage')}>
+      <header className='mb-16 flex flex-col gap-12'>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-8 md:pb-12'>
+          <Button className='w-30 p-0' size='sm' variant='none' onClick={() => navigate('/mypage')}>
             <ChevronIcon color='var(--color-gray-300)' direction='left' />
           </Button>
-          <h1 className='text-xl font-bold text-gray-950'>예약 현황</h1>
+          <h1 className='subtitle-text'>예약 현황</h1>
         </div>
-        <p className='text-md pt-10 font-medium text-gray-500'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
+        <p className='body-text text-gray-400 md:pt-10'>내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.</p>
       </header>
       {scheduleContent}
     </div>
