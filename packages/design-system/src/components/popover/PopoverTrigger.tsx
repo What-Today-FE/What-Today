@@ -59,7 +59,7 @@ function PopoverTrigger({ children, className, asChild = false }: PopoverTrigger
 
   return (
     <div ref={triggerRef} className='relative w-full'>
-      <button className={twMerge('w-full cursor-pointer', className)} onClick={handleClick}>
+      <button className={twMerge('w-full cursor-pointer', className)} type='button' onClick={handleClick}>
         {children}
       </button>
     </div>
