@@ -136,7 +136,7 @@ export default function ProfileImageInput({ src, initial = src, onChange }: Prof
     <div className='flex flex-col items-center gap-16'>
       <label className='relative rounded-full border border-gray-50 p-8'>
         {shouldShowDeleteButton && (
-          <div className='absolute top-16 right-8 z-10'>
+          <div className='absolute top-16 right-8 z-3'>
             <DeleteButton onDelete={handleDelete} />
           </div>
         )}
