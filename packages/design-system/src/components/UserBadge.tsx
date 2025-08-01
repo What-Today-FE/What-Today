@@ -31,7 +31,8 @@ const reservationStatus: Record<ReservationStatus, { label: string; style: strin
 export default function UserBadge({ status }: UserBadgeProps) {
   const { label, style } = reservationStatus[status];
 
-  const baseClass = ' flex items-center justify-center gap-2 w-63 rounded-full px-6 py-1 text-center text-sm font-bold';
+  const baseClass =
+    ' flex items-center justify-center gap-2 w-auto rounded-full px-6 py-1 text-center caption-text font-bold';
 
   return (
     <span className={twMerge(baseClass, style)} role='status'>

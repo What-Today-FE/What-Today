@@ -13,11 +13,12 @@ const BUTTON_VARIANTS = {
 };
 
 const BUTTON_SIZE = {
-  xl: 'w-640 h-54 px-40 py-14 text-lg font-bold rounded-2xl',
-  lg: 'w-410 h-51 px-12 py-16 text-lg rounded-xl',
-  md: 'w-232 h-37 px-10 py-10 text-md rounded-lg',
-  sm: 'w-138 h-47 px-40 py-14 text-lg rounded-[14px]',
-  xs: 'w-120 h-41 px-40 py-12 text-md font-bold rounded-xl',
+  xl: 'w-640 h-54 px-40 py-14 ',
+  lg: 'w-410 h-51 px-12 py-16',
+  md: 'w-232 h-37 px-10 py-10',
+  sm: 'w-138 h-47 px-40 py-14',
+  xs: 'w-120 h-41 px-40 py-12',
+  none: 'w-fit h-fit p-0',
 };
 
 function LoadingButton({ className, children }: { className: string; children: React.ReactNode }) {
@@ -53,7 +54,7 @@ export default function Button({
   };
 
   const buttonClassNames = twMerge(
-    'inline-flex cursor-pointer items-center justify-center rounded-sm font-medium whitespace-nowrap gap-6',
+    'inline-flex cursor-pointer items-center justify-center rounded-xl whitespace-nowrap gap-6',
     'disabled:cursor-not-allowed disabled:border-none disabled:bg-gray-200 disabled:text-gray-50',
     BUTTON_VARIANTS[variant],
     BUTTON_SIZE[size],

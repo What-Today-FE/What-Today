@@ -64,17 +64,17 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
     <nav
       className={twMerge(
         // 공통 스타일
-        'fixed z-50 max-w-200 min-w-200 rounded-xl border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition duration-300 md:static md:h-fit xl:w-280',
+        'fixed z-50 max-w-200 min-w-200 rounded-2xl border border-gray-50 bg-white transition duration-300 md:static md:h-fit xl:w-280',
         // 모바일에서 Drawer 위치
-        isOpen ? 'h-474 translate-x-0' : 'h-50 -translate-x-full border-gray-200 bg-gray-200',
+        isOpen ? 'h-474 translate-x-0' : 'h-50 -translate-x-full bg-gray-200',
         'md:translate-x-0',
-        'md:border-gray-50 md:bg-white',
+        'md:bg-white',
       )}
     >
       {/* 콘텐츠: PC는 항상, 모바일은 isOpen일 때만 */}
       <div
         className={twMerge(
-          'flex h-full flex-col items-center gap-24 rounded-xl px-14 pt-24 pb-12',
+          'flex h-full flex-col items-center gap-24 px-14 pt-24 pb-12',
           isOpen ? 'flex' : 'hidden',
           'md:flex',
         )}
@@ -102,7 +102,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
                   <div className='flex size-24 items-center justify-center'>
                     <Icon color={`${iconColor}`} />
                   </div>
-                  <div className='text-lg font-medium'>{label}</div>
+                  <div className='body-text font-medium'>{label}</div>
                 </Link>
               </li>
             );

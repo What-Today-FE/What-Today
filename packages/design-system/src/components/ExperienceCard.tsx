@@ -1,5 +1,7 @@
 import { StarIcon } from '@components/icons';
 
+import Button from './button';
+
 interface ExperienceCardProps {
   /**
    * 체험 제목
@@ -69,8 +71,6 @@ export default function ExperienceCard({
   onNavigate,
 }: ExperienceCardProps) {
   const formatPrice = (value: number) => value.toLocaleString('ko');
-  const buttonClass =
-    'h-29 cursor-pointer rounded-lg border border-gray-50 px-9 py-4 leading-none hover:outline-2 hover:outline-gray-200';
 
   const handleClickStop = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -83,16 +83,16 @@ export default function ExperienceCard({
     >
       <div className='flex flex-col gap-12 xl:gap-14'>
         <header className='flex flex-col gap-6 xl:gap-8'>
-          <h3 className='xl:text-2lg text-lg font-bold text-gray-950'>{title}</h3>
-          <div className='flex items-center gap-2 text-sm text-gray-500 xl:text-lg'>
+          <h3 className='text-2lg font-bold'>{title}</h3>
+          <div className='caption-text flex items-center gap-2 text-gray-400'>
             <StarIcon filled className='size-14 xl:size-16' />
             <span>{rating}</span>
             <span>({reviewCount})</span>
           </div>
         </header>
         <div className='flex items-center gap-4'>
-          <span className='xl:text-2lg text-lg font-bold text-gray-950'>₩{formatPrice(price)}</span>
-          <span className='text-md font-medium text-gray-400 xl:text-lg'>/인</span>
+          <span className='font-bold'>₩{formatPrice(price)}</span>
+          <span className='text-gray-400'>/인</span>
         </div>
         <div className='text-md flex gap-8 text-gray-600' role='group'>
           <button
@@ -112,10 +112,10 @@ export default function ExperienceCard({
             }}
           >
             삭제하기
-          </button>
+          </Button>
         </div>
       </div>
-      <img alt='체험 배너 이미지' className='size-82 rounded-[20px] xl:size-142' src={bannerImageUrl} />
+      <img alt='체험 배너 이미지' className='size-82 rounded-xl md:size-132 xl:size-142' src={bannerImageUrl} />
     </article>
   );
 }

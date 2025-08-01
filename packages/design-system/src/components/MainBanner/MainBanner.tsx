@@ -42,7 +42,7 @@ export default function MainBanner() {
 
   return (
     <div className='relative h-500 w-full overflow-hidden'>
-      <div className='relative h-full w-full overflow-hidden rounded-xl'>
+      <div className='relative h-full w-full overflow-hidden rounded-2xl'>
         <motion.div
           animate={{ x: `-${currentSlide * 100}%` }}
           className='flex h-full w-full'
@@ -62,8 +62,8 @@ export default function MainBanner() {
               />
               <div className='absolute inset-0 flex items-center justify-center bg-black/30 text-white'>
                 <div className='px-6 text-center'>
-                  <h2 className='text-xl font-semibold drop-shadow-md sm:text-3xl'>{banner.title}</h2>
-                  <p className='mt-2 text-sm text-white/80 sm:text-base'>이달의 인기 체험 BEST 🔥</p>
+                  <h2 className='subtitle-text drop-shadow-md sm:text-3xl'>{banner.title}</h2>
+                  <p className='body-text mt-2 text-white/80'>이달의 인기 체험 BEST 🔥</p>
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function MainBanner() {
       </div>
 
       {/* Pagination */}
-      <div className='absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-4'>
+      <div className='absolute bottom-12 left-1/2 z-10 flex -translate-x-1/2 gap-4'>
         {dummyBanners.map((_, i) => (
           <button
             key={i}

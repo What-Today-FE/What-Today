@@ -87,7 +87,7 @@ export default function ActivityDetailPage() {
               <Divider />
               <ActivitiesMap address={activity.address} />
               <Divider />
-              <ReviewSection />
+              <ReviewSection activityId={activity.id} />
             </div>
             <div className='sticky top-16 flex h-fit flex-col gap-38'>
               <ActivitiesInformation
@@ -120,7 +120,7 @@ export default function ActivityDetailPage() {
             <Divider className='border-t border-gray-200' />
             <ActivitiesMap address={activity.address} className='h-415' />
             <Divider className='border-t border-gray-200' />
-            <ReviewSection />
+            <ReviewSection activityId={activity.id} />
           </div>
         )}
       </main>
