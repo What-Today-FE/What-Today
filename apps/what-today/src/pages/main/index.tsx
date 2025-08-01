@@ -103,7 +103,7 @@ export default function MainPage() {
       <div className='flex flex-col gap-20'>
         {/* 제목 + 가격 드롭다운 */}
         <div className='flex flex-wrap items-center justify-between gap-12'>
-          <h2 className='title-text flex items-center gap-12 text-gray-950'>🛼 모든 체험</h2>
+          <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
 
           <Select.Root
             value={selectedValue}
