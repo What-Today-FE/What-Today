@@ -11,6 +11,7 @@ export default function ReservationBottomBar({
   onSelectDate,
   onReserve,
   isSubmitting = false,
+  isAuthor = false,
 }: ReservationBottomBarProps) {
   const totalPrice = reservation ? price * reservation.headCount : price;
   const formattedDateTime = reservation ? `${reservation.date} ${reservation.startTime} ~ ${reservation.endTime}` : '';
@@ -35,8 +36,14 @@ export default function ReservationBottomBar({
         </Button>
       </div>
 
-      <Button className='w-full' disabled={!reservation || isSubmitting} size='lg' variant='fill' onClick={onReserve}>
-        {isSubmitting ? '예약 중...' : '예약하기'}
+      <Button
+        className='w-full'
+        disabled={!reservation || isSubmitting || isAuthor}
+        size='lg'
+        variant='fill'
+        onClick={onReserve}
+      >
+        {isSubmitting ? '예약 중...' : isAuthor ? '내가 만든 체험이에요' : '예약하기'}
       </Button>
     </div>
   );

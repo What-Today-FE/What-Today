@@ -12,6 +12,7 @@ export default function TabletReservationSheet({
   isOpen,
   onClose,
   onConfirm,
+  isAuthor = false,
 }: TabletReservationSheetProps) {
   const {
     selectedDate,
@@ -67,7 +68,7 @@ export default function TabletReservationSheet({
         <div className='px-20 pt-8 pb-24'>
           <Button
             className='w-full'
-            disabled={!isReadyToReserve}
+            disabled={!isReadyToReserve || isAuthor}
             size='lg'
             variant='fill'
             onClick={() => {
@@ -85,7 +86,7 @@ export default function TabletReservationSheet({
               }
             }}
           >
-            확인
+            {isAuthor ? '내가 만든 체험이에요' : '확인'}
           </Button>
         </div>
       </BottomSheet.Content>

@@ -13,6 +13,7 @@ export default function ReservationForm({
   onSubmit,
   showSubmitButton = false,
   isSubmitting: externalIsSubmitting,
+  isAuthor = false,
 }: ReservationFormProps) {
   const reservation = useReservation(schedules, price, {
     onReservationChange,
@@ -77,8 +78,13 @@ export default function ReservationForm({
         </p>
 
         {showSubmitButton && (
-          <Button disabled={!isReadyToReserve || isSubmitting} size='sm' variant='fill' onClick={handleSubmit}>
-            {isSubmitting ? '예약 중...' : '예약하기'}
+          <Button
+            disabled={!isReadyToReserve || isSubmitting || isAuthor}
+            size='sm'
+            variant='fill'
+            onClick={handleSubmit}
+          >
+            {isSubmitting ? '예약 중...' : isAuthor ? '내가 만든 체험' : '예약하기'}
           </Button>
         )}
       </div>

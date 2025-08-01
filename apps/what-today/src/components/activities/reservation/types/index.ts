@@ -56,12 +56,14 @@ export interface ReservationFormProps {
   onSubmit?: (request: ReservationRequest) => Promise<void>;
   showSubmitButton?: boolean;
   isSubmitting?: boolean;
+  isAuthor?: boolean;
 }
 
 export interface DesktopReservationProps {
   activityId: number;
   price: number;
   schedules: Schedule[];
+  isAuthor?: boolean;
 }
 
 export interface TabletReservationSheetProps {
@@ -70,6 +72,7 @@ export interface TabletReservationSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (summary: ReservationSummary) => void;
+  isAuthor?: boolean;
 }
 
 export interface ReservationBottomBarProps {
@@ -78,4 +81,5 @@ export interface ReservationBottomBarProps {
   onSelectDate: () => void;
   onReserve: () => void;
   isSubmitting?: boolean;
+  isAuthor?: boolean;
 }

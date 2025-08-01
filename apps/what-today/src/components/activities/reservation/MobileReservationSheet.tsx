@@ -16,6 +16,7 @@ export default function MobileReservationSheet({
   isOpen,
   onClose,
   onConfirm,
+  isAuthor = false,
 }: TabletReservationSheetProps) {
   const [currentStep, setCurrentStep] = useState<MobileStep>('dateTime');
 
@@ -102,12 +103,12 @@ export default function MobileReservationSheet({
             <div className='pt-8'>
               <Button
                 className='w-full'
-                disabled={!selectedScheduleId}
+                disabled={!selectedScheduleId || isAuthor}
                 size='lg'
                 variant='fill'
                 onClick={handleNextStep}
               >
-                확인
+                {isAuthor ? '내가 만든 체험이에요' : '확인'}
               </Button>
             </div>
           </div>
@@ -154,8 +155,14 @@ export default function MobileReservationSheet({
 
             {/* 확인 버튼 */}
             <div className='pt-8'>
-              <Button className='w-full' disabled={!isReadyToReserve} size='lg' variant='fill' onClick={handleConfirm}>
-                확인
+              <Button
+                className='w-full'
+                disabled={!isReadyToReserve || isAuthor}
+                size='lg'
+                variant='fill'
+                onClick={handleConfirm}
+              >
+                {isAuthor ? '내가 만든 체험이에요' : '확인'}
               </Button>
             </div>
           </div>

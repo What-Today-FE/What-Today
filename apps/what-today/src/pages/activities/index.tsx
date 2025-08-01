@@ -99,7 +99,12 @@ export default function ActivityDetailPage() {
                 reviewCount={activity.reviewCount}
                 title={activity.title}
               />
-              <DesktopReservation activityId={activity.id} price={activity.price} schedules={activity.schedules} />
+              <DesktopReservation
+                activityId={activity.id}
+                isAuthor={user?.id ? activity?.userId === user.id : false}
+                price={activity.price}
+                schedules={activity.schedules}
+              />
             </div>
           </div>
         ) : (
@@ -128,6 +133,7 @@ export default function ActivityDetailPage() {
       {!isDesktop && (
         <>
           <ReservationBottomBar
+            isAuthor={user?.id ? activity?.userId === user.id : false}
             isSubmitting={createReservationMutation.isPending}
             price={activity.price}
             reservation={
@@ -150,6 +156,7 @@ export default function ActivityDetailPage() {
           {/* 태블릿 바텀시트 */}
           {isTablet && (
             <TabletReservationSheet
+              isAuthor={user?.id ? activity?.userId === user.id : false}
               isOpen={isTabletSheetOpen}
               price={activity.price}
               schedules={activity.schedules}
@@ -161,6 +168,7 @@ export default function ActivityDetailPage() {
           {/* 모바일 바텀시트 */}
           {isMobile && (
             <MobileReservationSheet
+              isAuthor={user?.id ? activity?.userId === user.id : false}
               isOpen={isMobileSheetOpen}
               price={activity.price}
               schedules={activity.schedules}
