@@ -82,7 +82,7 @@ export default function MainPage() {
   const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <div className='relative z-10 mt-40 flex h-auto flex-col gap-60 overflow-x-hidden'>
+    <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
       <MainBanner />
       <div className='flex flex-col gap-20'>
         <h2 className='subtitle-text md:title-text'>🔥 인기 체험</h2>
