@@ -184,7 +184,9 @@ export default function MainPage() {
           )}
         </div>
 
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        {filteredItems.length > 0 && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        )}
       </div>
     </div>
   );
