@@ -71,6 +71,8 @@ export default function ExperienceCard({
   onNavigate,
 }: ExperienceCardProps) {
   const formatPrice = (value: number) => value.toLocaleString('ko');
+  const buttonClass =
+    'h-29 cursor-pointer rounded-lg border border-gray-50 px-9 py-4 leading-none hover:outline-2 hover:outline-gray-200';
 
   const handleClickStop = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -83,7 +85,7 @@ export default function ExperienceCard({
     >
       <div className='flex flex-col gap-12 xl:gap-14'>
         <header className='flex flex-col gap-6 xl:gap-8'>
-          <h3 className='text-2lg font-bold'>{title}</h3>
+          <h3 className='section-text'>{title}</h3>
           <div className='caption-text flex items-center gap-2 text-gray-400'>
             <StarIcon filled className='size-14 xl:size-16' />
             <span>{rating}</span>
@@ -94,18 +96,22 @@ export default function ExperienceCard({
           <span className='font-bold'>₩{formatPrice(price)}</span>
           <span className='text-gray-400'>/인</span>
         </div>
-        <div className='text-md flex gap-8 text-gray-600' role='group'>
-          <button
+        <div className='caption-text flex gap-8 text-gray-400' role='group'>
+          <Button
             className={`${buttonClass} bg-white`}
+            size='none'
+            variant='outline'
             onClick={(e) => {
               handleClickStop(e);
               onEdit();
             }}
           >
             수정하기
-          </button>
-          <button
+          </Button>
+          <Button
             className={`${buttonClass} bg-gray-50`}
+            size='none'
+            variant='outline'
             onClick={(e) => {
               handleClickStop(e);
               onDelete();
