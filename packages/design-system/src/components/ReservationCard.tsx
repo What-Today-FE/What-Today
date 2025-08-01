@@ -97,7 +97,7 @@ export default function ReservationCard({
         <div className='body-text text-gray-400'>
           <time>{startTime}</time>-<time>{endTime}</time>
         </div>
-        <div className='body-text mt-10 flex items-center gap-4 md:mt-0'>
+        <div className='body-text mt-10 flex flex-wrap items-center gap-4 md:mt-0'>
           <div className='font-bold'>₩{formatPrice(totalPrice)}</div>
           <div className='text-gray-400'>{formatPrice(headCount)}명</div>
         </div>
