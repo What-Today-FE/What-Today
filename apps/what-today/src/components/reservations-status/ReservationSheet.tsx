@@ -12,78 +12,47 @@ interface ReservationSheetProps {
   activityId: number;
   selectedDate: string;
 }
-
-interface ReservationSheetState {
-  dailySchedule: dailyScheduleResponse;
-  selectedScheduleId: number | null;
-  selectedStatus: ManageableReservationStatus;
-  selectedSchedule: { value: string; label: ReactNode } | null;
-  selectedCount: { pending: number; confirmed: number; declined: number };
-  reservations: timeSlotReservationResponse | null;
-  isLoading: {
-    schedule: boolean;
-    reservation: boolean;
-  };
-}
 export default function ReservationSheet({ activityId, selectedDate }: ReservationSheetProps) {
-  const [state, setState] = useState<ReservationSheetState>({
-    dailySchedule: [],
-    selectedScheduleId: null,
-    selectedStatus: 'pending',
-    selectedSchedule: null,
-    selectedCount: { pending: 0, confirmed: 0, declined: 0 },
-    reservations: null,
-    isLoading: {
-      schedule: false,
-      reservation: false,
-    },
-  });
+  // 상태 분리
+  const [dailySchedule, setDailySchedule] = useState<dailyScheduleResponse>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<{ value: string; label: ReactNode } | null>(null);
+  const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
+  const [selectedCount, setSelectedCount] = useState({ pending: 0, confirmed: 0, declined: 0 });
+  const [selectedStatus, setSelectedStatus] = useState<ManageableReservationStatus>('pending');
+  const [reservations, setReservations] = useState<timeSlotReservationResponse | null>(null);
+
+  const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const [loadingReservation, setLoadingReservation] = useState(false);
 
   const tabData: { key: ManageableReservationStatus; label: string }[] = [
     { key: 'pending', label: '신청' },
     { key: 'confirmed', label: '승인' },
     { key: 'declined', label: '거절' },
   ];
-  // const calcCount = (reservations: timeSlotReservationResponse | null) => {
-  //   if (!reservations) return { pending: 0, confirmed: 0, declined: 0 };
 
-  //   return reservations.reservations.reduce(
-  //     (acc, cur) => {
-  //       acc[cur.status] = (acc[cur.status] ?? 0) + 1;
-  //       return acc;
-  //     },
-  //     { pending: 0, confirmed: 0, declined: 0 },
-  //   );
-  // };
   const fetchDailySchedule = async () => {
     try {
       const result = await getDailySchedule(activityId, { date: selectedDate });
-      setState((prev) => ({
-        ...prev,
-        dailySchedule: result,
-        isLoading: { ...prev.isLoading, schedule: false },
-      }));
+      setDailySchedule(result);
     } catch (err) {
       console.error('일자별 스케줄 조회 실패:', err);
-      setState((prev) => ({ ...prev, isLoading: { ...prev.isLoading, schedule: false } }));
+    } finally {
+      setLoadingSchedule(false);
     }
   };
 
   const fetchReservations = async () => {
-    if (!state.selectedScheduleId) return;
+    if (!selectedScheduleId) return;
     try {
       const result = await getReservation(activityId, {
-        scheduleId: state.selectedScheduleId,
-        status: state.selectedStatus,
+        scheduleId: selectedScheduleId,
+        status: selectedStatus,
       });
-      setState((prev) => ({
-        ...prev,
-        reservations: result,
-        isLoading: { ...prev.isLoading, reservation: false },
-      }));
+      setReservations(result);
     } catch (err) {
       console.error('스케줄별 예약현황 조회 실패:', err);
-      setState((prev) => ({ ...prev, isLoading: { ...prev.isLoading, reservation: false } }));
+    } finally {
+      setLoadingReservation(false);
     }
   };
 
@@ -92,54 +61,38 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
   }, [activityId, selectedDate]);
 
   useEffect(() => {
-    if (!state.selectedScheduleId) return;
+    if (!selectedScheduleId) return;
 
-    setState((prev) => ({
-      ...prev,
-      isLoading: { ...prev.isLoading, reservation: true },
-    }));
     fetchReservations();
-  }, [state.selectedScheduleId, state.selectedStatus]);
+  }, [selectedScheduleId, selectedStatus]);
 
   useEffect(() => {
     // 날짜가 바뀔 때마다 예약 상태 초기화
-    setState((prev) => ({
-      ...prev,
-      selectedStatus: 'pending',
-      selectedSchedule: null,
-      selectedCount: { pending: 0, confirmed: 0, declined: 0 },
-      reservations: null,
-    }));
+    setSelectedStatus('pending');
+    setSelectedSchedule(null);
+    setSelectedCount({ pending: 0, confirmed: 0, declined: 0 });
+    setReservations(null);
   }, [selectedDate]);
 
   const handleSelectSchedule = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
     if (typeof value === 'function') return;
 
     if (!value) {
-      setState((prev) => ({
-        ...prev,
-        selectedScheduleId: null,
-        selectedSchedule: null,
-        selectedCount: { pending: 0, confirmed: 0, declined: 0 },
-      }));
+      setSelectedScheduleId(null);
+      setSelectedSchedule(null);
+      setSelectedCount({ pending: 0, confirmed: 0, declined: 0 });
       return;
     }
 
-    const matched = state.dailySchedule.find((schedule) => String(schedule.scheduleId) === value.value);
+    const matched = dailySchedule.find((schedule) => String(schedule.scheduleId) === value.value);
 
-    setState((prev) => ({
-      ...prev,
-      selectedSchedule: value,
-      selectedScheduleId: Number(value.value),
-      selectedCount: matched?.count ?? { pending: 0, confirmed: 0, declined: 0 },
-    }));
+    setSelectedSchedule(value);
+    setSelectedScheduleId(Number(value.value));
+    setSelectedCount(matched?.count ?? { pending: 0, confirmed: 0, declined: 0 });
   };
 
   const handleTabChange = (status: ManageableReservationStatus) => {
-    setState((prev) => ({
-      ...prev,
-      selectedStatus: status,
-    }));
+    setSelectedStatus(status);
   };
 
   const handleApprove = async (id: number) => {
@@ -162,14 +115,14 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       <section className='flex flex-col gap-20 md:flex-row'>
         <div className='flex grow flex-col gap-12'>
           <h3 className='body-text font-bold'>예약 시간</h3>
-          <Select.Root value={state.selectedSchedule} onChangeValue={handleSelectSchedule}>
+          <Select.Root value={selectedSchedule} onChangeValue={handleSelectSchedule}>
             <Select.Trigger className='h-54'>
               <Select.Value placeholder='예약 시간 선택하기' />
             </Select.Trigger>
             <Select.Content className='z-50'>
               <Select.Group>
                 <Select.Label>시간대별 예약</Select.Label>
-                {state.dailySchedule.map(({ scheduleId, startTime, endTime }) => {
+                {dailySchedule.map(({ scheduleId, startTime, endTime }) => {
                   return (
                     <Select.Item key={scheduleId} value={String(scheduleId)}>
                       {startTime}~{endTime}
@@ -184,21 +137,21 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       <div className='body-text flex'>
         {tabData.map(({ key, label }) => {
           const selectedStyle =
-            state.selectedStatus === key ? '  text-primary-500 bg-primary-100 border-primary-500' : 'text-gray-400';
+            selectedStatus === key ? '  text-primary-500 bg-primary-100 border-primary-500' : 'text-gray-400';
           return (
             <button
               key={key}
               className={twMerge('w-full cursor-pointer rounded-t-xl border-b border-gray-100 py-6', selectedStyle)}
               onClick={() => handleTabChange(key)}
             >
-              {label} {state.selectedCount[key]}
+              {label} {selectedCount[key]}
             </button>
           );
         })}
       </div>
       <ReservationTabPanel
-        ownerStatus={state.selectedStatus}
-        reservationData={state.reservations?.reservations ?? []}
+        ownerStatus={selectedStatus}
+        reservationData={reservations?.reservations ?? []}
         onApprove={handleApprove}
         onReject={handleReject}
       />

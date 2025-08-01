@@ -1,4 +1,5 @@
 import { BottomSheet, Calendar, type CalendarReservationStatus, Popover } from '@what-today/design-system';
+import dayjs from 'dayjs';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useResponsive } from '@/hooks/useResponsive';
@@ -18,6 +19,7 @@ export default function ReservationCalendar({
   onMonthChange,
   activityId,
 }: ReservationCalendarProps) {
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format('YYYY-MM-DD'));
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedDayNode, setSelectedDayNode] = useState<HTMLDivElement | null>(null);
   const [isReservationSheetOpen, setIsReservationSheetOpen] = useState(false);
@@ -80,11 +82,14 @@ export default function ReservationCalendar({
     <div ref={calendarRef}>
       <Calendar.Root
         className='gap-8 rounded-2xl border border-gray-50 pt-20 pb-10 md:gap-30'
+        initialDate={currentMonth}
         onDateChange={(date) => {
           handleDateSelect(date);
           onChange?.(date);
         }}
-        onMonthChange={onMonthChange}
+        onMonthChange={(newMonth) => {
+          setCurrentMonth(dayjs(newMonth).format('YYYY-MM-DD'));
+        }}
       >
         <Calendar.Header headerClass='py-6' titleClass='md:text-xl' />
         <Calendar.Grid divider weekdayClass='text-sm font-bold md:text-lg' weekdayType='long'>

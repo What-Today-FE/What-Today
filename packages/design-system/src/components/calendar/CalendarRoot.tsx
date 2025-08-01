@@ -59,7 +59,7 @@ export default function CalendarRoot({
   onMonthChange,
   className,
 }: CalendarRootProps) {
-  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
+  const [currentMonth, setCurrentMonth] = useState<Dayjs>(initialDate ? dayjs(initialDate) : dayjs());
   const [selectedDate, setSelectedDate] = useState<string>(initialDate || '');
 
   const handleSelectDate = (date: string) => {
