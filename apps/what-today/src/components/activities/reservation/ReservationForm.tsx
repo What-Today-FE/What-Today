@@ -48,12 +48,11 @@ export default function ReservationForm({
   };
 
   // 버튼 텍스트 결정
-  const getButtonText = () => {
-    if (isSubmitting) return '예약 중...';
-    if (!isLoggedIn) return '로그인 필요';
-    if (isAuthor) return '예약 불가';
-    return '예약하기';
-  };
+  let buttonText = '';
+  if (isSubmitting) buttonText = '예약 중...';
+  else if (!isLoggedIn) buttonText = '로그인 필요';
+  else if (isAuthor) buttonText = '예약 불가';
+  else buttonText = '예약하기';
 
   return (
     <div className='flex flex-col gap-24'>
@@ -93,7 +92,7 @@ export default function ReservationForm({
             variant='fill'
             onClick={handleSubmit}
           >
-            {getButtonText()}
+            {buttonText}
           </Button>
         )}
       </div>

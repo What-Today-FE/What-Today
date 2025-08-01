@@ -66,19 +66,11 @@ export default function MobileReservationSheet({
     }
   };
 
-  // 1단계 버튼 텍스트 결정
-  const getFirstStepButtonText = () => {
-    if (!isLoggedIn) return '로그인 필요';
-    if (isAuthor) return '예약 불가';
-    return '확인';
-  };
-
-  // 2단계 버튼 텍스트 결정
-  const getSecondStepButtonText = () => {
-    if (!isLoggedIn) return '로그인 필요';
-    if (isAuthor) return '예약 불가';
-    return '확인';
-  };
+  // 버튼 텍스트 결정 (1단계, 2단계 공통)
+  let buttonText = '';
+  if (!isLoggedIn) buttonText = '로그인 필요';
+  else if (isAuthor) buttonText = '예약 불가';
+  else buttonText = '확인';
 
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={handleClose}>
@@ -123,7 +115,7 @@ export default function MobileReservationSheet({
                 variant='fill'
                 onClick={handleNextStep}
               >
-                {getFirstStepButtonText()}
+                {buttonText}
               </Button>
             </div>
           </div>
@@ -177,7 +169,7 @@ export default function MobileReservationSheet({
                 variant='fill'
                 onClick={handleConfirm}
               >
-                {getSecondStepButtonText()}
+                {buttonText}
               </Button>
             </div>
           </div>
