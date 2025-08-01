@@ -84,7 +84,7 @@ export default function ReservationForm({
             variant='fill'
             onClick={handleSubmit}
           >
-            {isSubmitting ? '예약 중...' : isAuthor ? '내가 만든 체험' : '예약하기'}
+            {isSubmitting ? '예약 중...' : isAuthor ? '예약 불가' : '예약하기'}
           </Button>
         )}
       </div>

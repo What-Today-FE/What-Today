@@ -108,7 +108,7 @@ export default function MobileReservationSheet({
                 variant='fill'
                 onClick={handleNextStep}
               >
-                {isAuthor ? '내가 만든 체험이에요' : '확인'}
+                {isAuthor ? '예약 불가' : '확인'}
               </Button>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function MobileReservationSheet({
                 variant='fill'
                 onClick={handleConfirm}
               >
-                {isAuthor ? '내가 만든 체험이에요' : '확인'}
+                {isAuthor ? '예약 불가' : '확인'}
               </Button>
             </div>
           </div>

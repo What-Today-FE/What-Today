@@ -86,7 +86,7 @@ export default function TabletReservationSheet({
               }
             }}
           >
-            {isAuthor ? '내가 만든 체험이에요' : '확인'}
+            {isAuthor ? '예약 불가' : '확인'}
           </Button>
         </div>
       </BottomSheet.Content>

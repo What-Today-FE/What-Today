@@ -43,7 +43,7 @@ export default function ReservationBottomBar({
         variant='fill'
         onClick={onReserve}
       >
-        {isSubmitting ? '예약 중...' : isAuthor ? '내가 만든 체험이에요' : '예약하기'}
+        {isSubmitting ? '예약 중...' : isAuthor ? '예약 불가' : '예약하기'}
       </Button>
     </div>
   );
