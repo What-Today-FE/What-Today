@@ -275,7 +275,7 @@ export default function CreateExperience() {
                 <Select.Content>
                   <Select.Group>
                     <Select.Label>카테고리</Select.Label>
-                    <Select.Item value='문화 · 예술'>문화예술</Select.Item>
+                    <Select.Item value='문화 · 예술'>문화 예술</Select.Item>
                     <Select.Item value='식음료'>식음료</Select.Item>
                     <Select.Item value='스포츠'>스포츠</Select.Item>
                     <Select.Item value='투어'>투어</Select.Item>

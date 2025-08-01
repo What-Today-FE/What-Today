@@ -139,25 +139,25 @@ export default function MainPage() {
                 <ArtIcon className='size-15' />
                 문화 예술
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='음식'>
+              <RadioGroup.Radio value='식음료'>
                 <FoodIcon className='size-15' />
-                음식
+                식음료
               </RadioGroup.Radio>
               <RadioGroup.Radio value='스포츠'>
                 <SportIcon className='size-15' />
                 스포츠
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='웰빙'>
-                <WellbeingIcon className='size-15' />
-                웰빙
-              </RadioGroup.Radio>
-              <RadioGroup.Radio value='버스'>
-                <BusIcon className='size-15' />
-                버스
-              </RadioGroup.Radio>
               <RadioGroup.Radio value='투어'>
+                <WellbeingIcon className='size-15' />
+                투어
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='관광'>
+                <BusIcon className='size-15' />
+                관광
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='웰빙'>
                 <TourIcon className='size-15' />
-                여행
+                웰빙
               </RadioGroup.Radio>
             </RadioGroup>
           </div>
