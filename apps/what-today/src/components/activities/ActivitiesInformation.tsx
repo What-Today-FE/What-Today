@@ -39,6 +39,11 @@ export default function ActivitiesInformation({
       deleteActivity(Number(id), {
         onSuccess: () => {
           setIsDeleteOpen(false);
+          toast({
+            title: '삭제 성공',
+            description: '체험이 성공적으로 삭제되었습니다.',
+            type: 'success',
+          });
           navigate('/');
         },
         onError: (error) => {
@@ -60,7 +65,7 @@ export default function ActivitiesInformation({
           <p className='text-md text-gray-950'>{category}</p>
           {isAuthor && (
             <Dropdown.Root>
-              <Dropdown.Trigger />
+              <Dropdown.Trigger className='flex size-24 items-center justify-center' />
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => navigate(`/experiences/create/${id}`)}>수정하기</Dropdown.Item>
                 <Dropdown.Item onClick={() => setIsDeleteOpen(true)}>삭제하기</Dropdown.Item>
