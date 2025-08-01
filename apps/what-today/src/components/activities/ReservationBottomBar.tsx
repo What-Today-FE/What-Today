@@ -17,6 +17,14 @@ export default function ReservationBottomBar({
   const totalPrice = reservation ? price * reservation.headCount : price;
   const formattedDateTime = reservation ? `${reservation.date} ${reservation.startTime} ~ ${reservation.endTime}` : '';
 
+  // 버튼 텍스트 결정
+  const getButtonText = () => {
+    if (isSubmitting) return '예약 중...';
+    if (!isLoggedIn) return '로그인 필요';
+    if (isAuthor) return '예약 불가';
+    return '예약하기';
+  };
+
   return (
     <div className='fixed bottom-0 left-0 z-50 w-full border-t border-[#E6E6E6] bg-white px-48 pt-18 pb-18 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'>
       <div className='mb-12 flex items-center justify-between'>
@@ -44,12 +52,7 @@ export default function ReservationBottomBar({
         variant='fill'
         onClick={onReserve}
       >
-        {(() => {
-          if (isSubmitting) return '예약 중...';
-          if (!isLoggedIn) return '로그인 필요';
-          if (isAuthor) return '예약 불가';
-          return '예약하기';
-        })()}
+        {getButtonText()}
       </Button>
     </div>
   );

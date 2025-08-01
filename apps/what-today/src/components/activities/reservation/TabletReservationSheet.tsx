@@ -29,6 +29,13 @@ export default function TabletReservationSheet({
     reservableDates,
   } = useReservation(schedules, price);
 
+  // 버튼 텍스트 결정
+  const getButtonText = () => {
+    if (!isLoggedIn) return '로그인 필요';
+    if (isAuthor) return '예약 불가';
+    return '확인';
+  };
+
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={onClose}>
       <BottomSheet.Content>
@@ -87,11 +94,7 @@ export default function TabletReservationSheet({
               }
             }}
           >
-            {(() => {
-              if (!isLoggedIn) return '로그인 필요';
-              if (isAuthor) return '예약 불가';
-              return '확인';
-            })()}
+            {getButtonText()}
           </Button>
         </div>
       </BottomSheet.Content>

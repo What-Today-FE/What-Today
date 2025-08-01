@@ -47,6 +47,14 @@ export default function ReservationForm({
     });
   };
 
+  // 버튼 텍스트 결정
+  const getButtonText = () => {
+    if (isSubmitting) return '예약 중...';
+    if (!isLoggedIn) return '로그인 필요';
+    if (isAuthor) return '예약 불가';
+    return '예약하기';
+  };
+
   return (
     <div className='flex flex-col gap-24'>
       {/* 가격 표시 */}
@@ -85,12 +93,7 @@ export default function ReservationForm({
             variant='fill'
             onClick={handleSubmit}
           >
-            {(() => {
-              if (isSubmitting) return '예약 중...';
-              if (!isLoggedIn) return '로그인 필요';
-              if (isAuthor) return '예약 불가';
-              return '예약하기';
-            })()}
+            {getButtonText()}
           </Button>
         )}
       </div>
