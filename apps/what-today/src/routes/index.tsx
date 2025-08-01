@@ -13,6 +13,7 @@ import EditProfilePage from '@/pages/mypage/edit-profile';
 import ManageActivitiesPage from '@/pages/mypage/manage-activities';
 import ReservationsListPage from '@/pages/mypage/reservations-list';
 import ReservationsStatusPage from '@/pages/mypage/reservations-status';
+import NotFoundPage from '@/pages/not-found-page';
 import SignupPage from '@/pages/signup';
 
 import { authGuardLoader, redirectIfLoggedInLoader } from './authGuardLoader';
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);
