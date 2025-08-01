@@ -200,14 +200,16 @@ export default function ReservationsListPage() {
       </header>
 
       <section className='mb-10'>
-        <RadioGroup selectedValue={selectedStatus} onSelect={(value) => setSelectedStatus(String(value))}>
-          <div className='flex flex-wrap gap-6'>
-            <RadioGroup.Radio value='pending'>예약 대기</RadioGroup.Radio>
-            <RadioGroup.Radio value='confirmed'>예약 승인</RadioGroup.Radio>
-            <RadioGroup.Radio value='declined'>예약 거절</RadioGroup.Radio>
-            <RadioGroup.Radio value='canceled'>예약 취소</RadioGroup.Radio>
-            <RadioGroup.Radio value='completed'>체험 완료</RadioGroup.Radio>
-          </div>
+        <RadioGroup
+          radioGroupClassName='flex flex-nowrap gap-6 overflow-x-auto no-scrollbar'
+          selectedValue={selectedStatus}
+          onSelect={(value) => setSelectedStatus(String(value))}
+        >
+          <RadioGroup.Radio value='pending'>예약 대기</RadioGroup.Radio>
+          <RadioGroup.Radio value='confirmed'>예약 승인</RadioGroup.Radio>
+          <RadioGroup.Radio value='declined'>예약 거절</RadioGroup.Radio>
+          <RadioGroup.Radio value='canceled'>예약 취소</RadioGroup.Radio>
+          <RadioGroup.Radio value='completed'>체험 완료</RadioGroup.Radio>
         </RadioGroup>
       </section>
 
