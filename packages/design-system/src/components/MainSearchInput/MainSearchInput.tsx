@@ -26,7 +26,7 @@ export default function MainSearchInput({ onClick }: MainSearchInputProps) {
 
   return (
     <div className='relative flex w-full items-center justify-between bg-white'>
-      <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-28'>
+      <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-32'>
         <SearchIcon className='cursor-pointer text-gray-400' onClick={handleFocusInput} />
       </div>
       <input
