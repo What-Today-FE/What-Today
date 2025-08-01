@@ -42,7 +42,7 @@ export default function MyPageLayout() {
         onLogoutClick={handleLogout}
       />
       <Button
-        className={twMerge('fixed top-68 left-4 z-60 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
+        className={twMerge('fixed top-68 left-4 z-55 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
         size='xs'
         variant='none'
         onClick={() => setSidebarOpen(true)}

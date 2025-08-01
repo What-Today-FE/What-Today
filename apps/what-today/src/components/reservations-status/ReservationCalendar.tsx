@@ -131,7 +131,7 @@ export default function ReservationCalendar({
         onOpenChange={setIsReservationSheetOpen}
       >
         <Popover.Content
-          className='z-50 rounded-2xl border border-gray-50 bg-white px-24 py-30'
+          className='rounded-2xl border border-gray-50 bg-white px-24 py-30'
           style={reservationPopupPosition}
         >
           <div className='h-460 w-292'>

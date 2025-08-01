@@ -42,10 +42,10 @@ function ModalContent({ children, className }: ModalContentProps) {
   return (
     <Portal>
       {/* 오버레이 */}
-      <div className='fixed inset-0 z-40 bg-black/30' />
+      <div className='fixed inset-0 z-65 bg-black/30' />
 
       {/* 모달 컨텐츠 */}
-      <div className='fixed inset-0 z-50 flex items-center justify-center'>
+      <div className='fixed inset-0 z-70 flex items-center justify-center'>
         <div
           ref={modalRef}
           aria-modal='true'
