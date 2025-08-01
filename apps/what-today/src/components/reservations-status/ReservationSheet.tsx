@@ -1,10 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { type ManageableReservationStatus, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { type ReactNode, type SetStateAction, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { getDailySchedule, getReservation, patchReservationStatus } from '@/apis/myActivities';
-import type { dailyScheduleResponse, timeSlotReservationResponse } from '@/schemas/myActivities';
+import { patchReservationStatus } from '@/apis/myActivities';
+import { useDailyScheduleQuery } from '@/hooks/myReservation/useDailyScheduleQuery';
+import { useReservationQuery } from '@/hooks/myReservation/useReservationQuery';
 
 import ReservationTabPanel from './ReservationTabPanel';
 
@@ -12,101 +14,99 @@ interface ReservationSheetProps {
   activityId: number;
   selectedDate: string;
 }
+
+const tabData: { key: ManageableReservationStatus; label: string }[] = [
+  { key: 'pending', label: '신청' },
+  { key: 'confirmed', label: '승인' },
+  { key: 'declined', label: '거절' },
+];
+
 export default function ReservationSheet({ activityId, selectedDate }: ReservationSheetProps) {
   // 상태 분리
-  const [dailySchedule, setDailySchedule] = useState<dailyScheduleResponse>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
-  const [selectedCount, setSelectedCount] = useState({ pending: 0, confirmed: 0, declined: 0 });
   const [selectedStatus, setSelectedStatus] = useState<ManageableReservationStatus>('pending');
-  const [reservations, setReservations] = useState<timeSlotReservationResponse | null>(null);
 
-  const [loadingSchedule, setLoadingSchedule] = useState(false);
-  const [loadingReservation, setLoadingReservation] = useState(false);
+  // 날짜별 스케줄 가져오기
+  const {
+    data: dailySchedule = [],
+    isLoading: loadingSchedule,
+    refetch: refetchDailySchedule,
+  } = useDailyScheduleQuery(activityId, selectedDate);
 
-  const tabData: { key: ManageableReservationStatus; label: string }[] = [
-    { key: 'pending', label: '신청' },
-    { key: 'confirmed', label: '승인' },
-    { key: 'declined', label: '거절' },
-  ];
+  // 예약 정보 가져오기 (스케줄 ID와 상태 기반)
+  const {
+    data: reservations,
+    isLoading: loadingReservation,
+    refetch: refetchReservations,
+  } = useReservationQuery(activityId, selectedScheduleId ?? 0, selectedStatus);
 
-  const fetchDailySchedule = async () => {
-    try {
-      const result = await getDailySchedule(activityId, { date: selectedDate });
-      setDailySchedule(result);
-    } catch (err) {
-      console.error('일자별 스케줄 조회 실패:', err);
-    } finally {
-      setLoadingSchedule(false);
-    }
-  };
-
-  const fetchReservations = async () => {
-    if (!selectedScheduleId) return;
-    try {
-      const result = await getReservation(activityId, {
-        scheduleId: selectedScheduleId,
-        status: selectedStatus,
-      });
-      setReservations(result);
-    } catch (err) {
-      console.error('스케줄별 예약현황 조회 실패:', err);
-    } finally {
-      setLoadingReservation(false);
-    }
-  };
-
+  // 날짜 바뀌면 상태 초기화
   useEffect(() => {
-    fetchDailySchedule();
-  }, [activityId, selectedDate]);
-
-  useEffect(() => {
-    if (!selectedScheduleId) return;
-
-    fetchReservations();
-  }, [selectedScheduleId, selectedStatus]);
-
-  useEffect(() => {
-    // 날짜가 바뀔 때마다 예약 상태 초기화
     setSelectedStatus('pending');
     setSelectedSchedule(null);
-    setSelectedCount({ pending: 0, confirmed: 0, declined: 0 });
-    setReservations(null);
+    setSelectedScheduleId(null);
   }, [selectedDate]);
 
-  const handleSelectSchedule = (value: SetStateAction<{ value: string; label: ReactNode } | null>) => {
-    if (typeof value === 'function') return;
-
-    if (!value) {
-      setSelectedScheduleId(null);
-      setSelectedSchedule(null);
-      setSelectedCount({ pending: 0, confirmed: 0, declined: 0 });
-      return;
-    }
-
-    const matched = dailySchedule.find((schedule) => String(schedule.scheduleId) === value.value);
-
-    setSelectedSchedule(value);
-    setSelectedScheduleId(Number(value.value));
-    setSelectedCount(matched?.count ?? { pending: 0, confirmed: 0, declined: 0 });
-  };
-
+  // 탭 변경
   const handleTabChange = (status: ManageableReservationStatus) => {
     setSelectedStatus(status);
   };
 
+  // 시간 선택
+  const handleSelectSchedule = (value: { value: string; label: React.ReactNode } | null) => {
+    if (!value) {
+      setSelectedSchedule(null);
+      setSelectedScheduleId(null);
+      return;
+    }
+    setSelectedSchedule(value);
+    setSelectedScheduleId(Number(value.value));
+  };
+  const queryClient = useQueryClient();
+
   const handleApprove = async (id: number) => {
-    await patchReservationStatus(activityId, id, 'confirmed');
-    await fetchReservations();
-    await fetchDailySchedule(); // 숫자 갱신용
+    try {
+      await patchReservationStatus(activityId, id, 'confirmed');
+      await queryClient.invalidateQueries({ queryKey: ['reservation'] });
+      await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
+    } catch (error) {
+      console.error('Error in handleApprove:', error);
+      console.error({ title: '승인 처리에 실패했어요' });
+      console.error('Error in handleApprove:', error);
+    }
   };
 
   const handleReject = async (id: number) => {
-    await patchReservationStatus(activityId, id, 'declined');
-    await fetchReservations();
-    await fetchDailySchedule(); // 숫자 갱신용
+    try {
+      await patchReservationStatus(activityId, id, 'declined');
+      await queryClient.invalidateQueries({ queryKey: ['reservation'] });
+      await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
+    } catch (error) {
+      console.error('Error in handleApprove:', error);
+      console.error({ title: '거절 처리에 실패했어요' });
+      console.error('Error in handleApprove:', error);
+    }
   };
+  // 승인/거절
+  // const handleApprove = async (id: number) => {
+  //   await patchReservationStatus(activityId, id, 'confirmed');
+  //   await refetchReservations();
+  //   await refetchDailySchedule();
+  // };
 
+  // const handleReject = async (id: number) => {
+  //   await patchReservationStatus(activityId, id, 'declined');
+  //   await refetchReservations();
+  //   await refetchDailySchedule();
+  // };
+
+  // 선택된 시간대의 예약 수
+  const selectedCount = dailySchedule.find((s) => s.scheduleId === selectedScheduleId)?.count ?? {
+    pending: 0,
+    confirmed: 0,
+    declined: 0,
+  };
   return (
     <div className='flex h-full flex-col gap-20 bg-white'>
       <section className='flex flex-col gap-12'>

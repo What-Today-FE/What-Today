@@ -1,6 +1,6 @@
 import { Button, type CalendarReservationStatus, ChevronIcon, NoResult, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
@@ -12,22 +12,28 @@ export default function ReservationsStatusPage() {
 
   const [calendarYear, setCalendarYear] = useState(dayjs().format('YYYY'));
   const [calendarMonth, setCalendarMonth] = useState(dayjs().format('MM'));
+  const [selectedActivityId, setSelectedActivityId] = useState(0);
 
   // 체험 목록 조회 (초기 1페이지만 사용)
   const { data: activityData, isLoading: isLoadingActivities } = useInfiniteMyActivitiesQuery(10);
 
-  const activityList = activityData?.pages[0]?.activities ?? [];
-
-  // 선택된 체험 ID
-  const [selectedActivityId, setSelectedActivityId] = useState(() => {
-    return activityList.length > 0 ? activityList[0].id : 0;
-  });
+  // const activityList = activityData?.pages[0]?.activities ?? [];
+  const activityList = useMemo(() => {
+    return activityData?.pages[0]?.activities ?? [];
+  }, [activityData]);
 
   const { data: monthlyReservations = [], isLoading: isLoadingCalendar } = useMonthlyScheduleQuery({
     activityId: selectedActivityId,
     year: calendarYear,
     month: calendarMonth,
   });
+
+  // activityList가 로드된 후 첫 번째 아이템을 자동 선택
+  useEffect(() => {
+    if (activityList.length > 0 && selectedActivityId === 0) {
+      setSelectedActivityId(activityList[0].id);
+    }
+  }, [activityList, selectedActivityId]);
 
   const handleActivityChange = (value: { value: string; label: ReactNode } | null) => {
     if (!value) return;
