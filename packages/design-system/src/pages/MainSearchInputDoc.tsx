@@ -4,7 +4,7 @@ import MainSearchInput from '../components/MainSearchInput/MainSearchInput';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground에서 사용할 예시 코드 */
-const code = `<MainSearchInput onClick={}/> `;
+const code = `<MainSearchInput /> `;
 
 export default function MainSearchInputDoc() {
   return (

@@ -1,51 +1,46 @@
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import Button from '../button';
 import { SearchIcon } from '../icons';
+import { Input } from '../input';
 import type { MainSearchInputProps } from './types';
 
 export default function MainSearchInput({ onClick }: MainSearchInputProps) {
-  const [keyword, setKeyword] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState('');
+  const [hasSearched, setHasSearched] = useState(false); // 검색 실행 여부
 
-  const handleSubmit = () => {
-    const trimmed = keyword.trim();
-    if (!trimmed) return;
-    onClick(trimmed);
-    setKeyword('');
-  };
+  useEffect(() => {
+    const trimmed = value.trim();
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
+    if (trimmed === '') {
+      // 검색을 한 상태에서만 초기화 실행
+      if (hasSearched) {
+        onClick(''); // 초기 데이터로 복원
+        setHasSearched(false);
+      }
+      return;
     }
-  };
-  const handleFocusInput = () => {
-    inputRef.current?.focus(); // 아이콘 클릭시 input에 포커스
-  };
+
+    const timer = setTimeout(() => {
+      onClick(trimmed);
+      setHasSearched(true); // 검색 실행 기록
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [value, onClick, hasSearched]);
 
   return (
     <div className='relative flex w-full items-center justify-between bg-white'>
       <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-32'>
-        <SearchIcon className='cursor-pointer text-gray-400' onClick={handleFocusInput} />
+        <SearchIcon className='cursor-pointer text-gray-400' />
       </div>
-      <input
-        ref={inputRef}
-        className='md:text-2lg text-md w-full rounded-xl border border-gray-300 px-50 py-15 text-gray-400 focus:inset-ring-2 focus:inset-ring-blue-500 md:px-60 md:py-22'
-        placeholder='내가 원하는 체험은'
-        type='text'
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      <Button
-        className='body-text absolute top-1/2 right-12 h-38 w-85 -translate-y-1/2 md:h-50 md:w-120'
-        size='lg'
-        variant='fill'
-        onClick={handleSubmit}
-      >
-        검색하기
-      </Button>
+
+      <Input.Root className='w-full'>
+        <Input.Wrapper className='body-textn rounded-3xl border-none py-20 shadow-sm'>
+          <Input.Icon className='cursor-pointer'>🔎</Input.Icon>
+          <Input.Field placeholder='내가 원하는 체험은...' value={value} onChange={(e) => setValue(e.target.value)} />
+        </Input.Wrapper>
+        <Input.ErrorMessage />
+      </Input.Root>
     </div>
   );
 }
