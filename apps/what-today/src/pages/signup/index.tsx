@@ -1,24 +1,31 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Button, ImageLogo, KaKaoIcon, TextLogo, useToast } from '@what-today/design-system';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { signup } from '@/apis/auth';
+import AgreeCheckbox from '@/components/auth/AgreeCheckbox';
 import EmailInput from '@/components/auth/EmailInput';
 import NicknameInput from '@/components/auth/NicknameInput';
 import PasswordConfirmInput from '@/components/auth/PasswordConfirmInput';
 import PasswordInput from '@/components/auth/PasswordInput';
 import { signUpFormSchema, type SignUpFormValues } from '@/schemas/auth';
 
+import { locationTermsContent, privacyPolicyContent, termsOfServiceContent } from '../../components/auth/AgreeContent';
+
 export default function SignupPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  // const [isSignupLoading, setIsSignupLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
+    watch,
+    setValue,
+    trigger,
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpFormSchema),
     mode: 'onChange',
@@ -82,6 +89,12 @@ export default function SignupPage() {
     window.location.href = kakaoAuthUrl;
   };
 
+  useEffect(() => {
+    const allChecked = watch('agreeToTerms') && watch('agreeToPrivacy') && watch('agreeToLocation');
+
+    setValue('agreeToAll', allChecked);
+  }, [setValue, watch]);
+
   return (
     <div className='flex min-h-screen w-screen min-w-300 flex-col items-center justify-center px-[5vw] py-50 md:py-80'>
       <div className='flex h-fit w-full flex-col items-center justify-center gap-32 md:w-500'>
@@ -96,6 +109,50 @@ export default function SignupPage() {
             <NicknameInput {...register('nickname')} error={errors.nickname?.message} />
             <PasswordInput {...register('password')} error={errors.password?.message} />
             <PasswordConfirmInput {...register('passwordConfirm')} error={errors.passwordConfirm?.message} />
+
+            <div className='flex w-full flex-col items-start justify-center gap-2'>
+              <label className='mb-4 flex cursor-pointer gap-8'>
+                <input
+                  checked={
+                    (watch('agreeToTerms') ?? false) &&
+                    (watch('agreeToPrivacy') ?? false) &&
+                    (watch('agreeToLocation') ?? false)
+                  }
+                  className='cursor-pointer'
+                  type='checkbox'
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+
+                    setValue('agreeToTerms', checked as true, { shouldValidate: true });
+                    setValue('agreeToPrivacy', checked as true, { shouldValidate: true });
+                    setValue('agreeToLocation', checked as true, { shouldValidate: true });
+                    setValue('agreeToAll', checked, { shouldValidate: true });
+                  }}
+                />
+                <p className='caption-text'>전체 동의</p>
+              </label>
+              <AgreeCheckbox
+                {...register('agreeToTerms')}
+                required
+                content={termsOfServiceContent}
+                error={errors.agreeToTerms?.message}
+                label='이용약관에 동의합니다'
+              />
+              <AgreeCheckbox
+                {...register('agreeToPrivacy')}
+                required
+                content={privacyPolicyContent}
+                error={errors.agreeToPrivacy?.message}
+                label='개인정보 수집 및 이용에 동의합니다'
+              />
+              <AgreeCheckbox
+                {...register('agreeToLocation')}
+                required
+                content={locationTermsContent}
+                error={errors.agreeToLocation?.message}
+                label='위치정보 서비스 이용약관에 동의합니다'
+              />
+            </div>
           </div>
 
           <div className='flex w-full flex-col gap-12'>
