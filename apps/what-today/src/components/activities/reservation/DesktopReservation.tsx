@@ -6,7 +6,13 @@ import Divider from '../Divider';
 import ReservationForm from './ReservationForm';
 import type { DesktopReservationProps, ReservationRequest } from './types';
 
-export default function DesktopReservation({ activityId, price, schedules }: DesktopReservationProps) {
+export default function DesktopReservation({
+  activityId,
+  price,
+  schedules,
+  isAuthor = false,
+  isLoggedIn = true,
+}: DesktopReservationProps) {
   const { toast } = useToast();
   const createReservationMutation = useCreateReservation(activityId);
 
@@ -35,6 +41,8 @@ export default function DesktopReservation({ activityId, price, schedules }: Des
     <section className='flex flex-col justify-between rounded-3xl border border-[#DDDDDD] p-30 shadow-sm'>
       <ReservationForm
         showSubmitButton
+        isAuthor={isAuthor}
+        isLoggedIn={isLoggedIn}
         isSubmitting={createReservationMutation.isPending}
         price={price}
         schedules={schedules}

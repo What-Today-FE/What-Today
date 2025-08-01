@@ -16,6 +16,8 @@ export default function MobileReservationSheet({
   isOpen,
   onClose,
   onConfirm,
+  isAuthor = false,
+  isLoggedIn = true,
 }: TabletReservationSheetProps) {
   const [currentStep, setCurrentStep] = useState<MobileStep>('dateTime');
 
@@ -64,6 +66,12 @@ export default function MobileReservationSheet({
     }
   };
 
+  // 버튼 텍스트 결정 (1단계, 2단계 공통)
+  let buttonText = '';
+  if (!isLoggedIn) buttonText = '로그인 필요';
+  else if (isAuthor) buttonText = '예약 불가';
+  else buttonText = '확인';
+
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={handleClose}>
       {/* 1단계: 날짜/시간 선택 */}
@@ -102,12 +110,12 @@ export default function MobileReservationSheet({
             <div className='pt-8'>
               <Button
                 className='w-full'
-                disabled={!selectedScheduleId}
+                disabled={!selectedScheduleId || isAuthor || !isLoggedIn}
                 size='lg'
                 variant='fill'
                 onClick={handleNextStep}
               >
-                확인
+                {buttonText}
               </Button>
             </div>
           </div>
@@ -154,8 +162,14 @@ export default function MobileReservationSheet({
 
             {/* 확인 버튼 */}
             <div className='pt-8'>
-              <Button className='w-full' disabled={!isReadyToReserve} size='lg' variant='fill' onClick={handleConfirm}>
-                확인
+              <Button
+                className='w-full'
+                disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
+                size='lg'
+                variant='fill'
+                onClick={handleConfirm}
+              >
+                {buttonText}
               </Button>
             </div>
           </div>

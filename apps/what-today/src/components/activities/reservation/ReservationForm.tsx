@@ -13,6 +13,8 @@ export default function ReservationForm({
   onSubmit,
   showSubmitButton = false,
   isSubmitting: externalIsSubmitting,
+  isAuthor = false,
+  isLoggedIn = true,
 }: ReservationFormProps) {
   const reservation = useReservation(schedules, price, {
     onReservationChange,
@@ -44,6 +46,13 @@ export default function ReservationForm({
       headCount,
     });
   };
+
+  // 버튼 텍스트 결정
+  let buttonText = '';
+  if (isSubmitting) buttonText = '예약 중...';
+  else if (!isLoggedIn) buttonText = '로그인 필요';
+  else if (isAuthor) buttonText = '예약 불가';
+  else buttonText = '예약하기';
 
   return (
     <div className='flex flex-col gap-24'>
@@ -77,8 +86,13 @@ export default function ReservationForm({
         </p>
 
         {showSubmitButton && (
-          <Button disabled={!isReadyToReserve || isSubmitting} size='sm' variant='fill' onClick={handleSubmit}>
-            {isSubmitting ? '예약 중...' : '예약하기'}
+          <Button
+            disabled={!isReadyToReserve || isSubmitting || isAuthor || !isLoggedIn}
+            size='sm'
+            variant='fill'
+            onClick={handleSubmit}
+          >
+            {buttonText}
           </Button>
         )}
       </div>
