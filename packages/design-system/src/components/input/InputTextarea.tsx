@@ -19,7 +19,10 @@ import type { InputTextareaProps } from './type';
  *   autoHeight
  * />
  */
-function InputTextarea({ autoHeight = false, value, onChange, ref, className, ...props }: InputTextareaProps) {
+function InputTextarea(
+  { autoHeight = false, value, onChange, className, ...props }: InputTextareaProps,
+  ref?: React.Ref<HTMLTextAreaElement>,
+) {
   const { error, id, setIsFocused, disabled } = useInputContext();
   // 내부 ref를 생성
   const innerRef = useRef<HTMLTextAreaElement>(null);
@@ -41,13 +44,22 @@ function InputTextarea({ autoHeight = false, value, onChange, ref, className, ..
       ref={innerRef}
       aria-describedby={error ? `${id}-error` : undefined}
       aria-invalid={!!error}
-      className={twMerge('min-h-[40px] flex-1 resize-none placeholder:text-gray-400 focus:outline-none', className)}
+      className={twMerge(
+        'min-h-[40px] min-w-50 flex-1 resize-none placeholder:text-gray-400 focus:outline-none',
+        className,
+      )}
       disabled={disabled}
       id={id}
       value={value}
-      onBlur={() => setIsFocused?.(false)}
+      onBlur={(e) => {
+        setIsFocused?.(false);
+        props.onBlur?.(e);
+      }}
       onChange={autoHeight ? handleInputChange : onChange}
-      onFocus={() => setIsFocused?.(true)}
+      onFocus={(e) => {
+        setIsFocused?.(true);
+        props.onFocus?.(e);
+      }}
       {...props}
     />
   );

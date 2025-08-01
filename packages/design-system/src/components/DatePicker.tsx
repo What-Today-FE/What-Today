@@ -1,7 +1,6 @@
 import dayjs, { type Dayjs } from 'dayjs';
 
 import { Calendar } from './calendar';
-import DayCell from './calendar/DayCell';
 import { CalendarIcon } from './icons';
 import { Input } from './input';
 import { Popover } from './popover';
@@ -9,47 +8,50 @@ import { Popover } from './popover';
 interface DatePickerProps {
   value: Dayjs | null;
   onChange: (newDate: Dayjs) => void;
+  disabled?: boolean;
 }
 
-export default function DatePicker({ value, onChange }: DatePickerProps) {
+export default function DatePicker({ value, onChange, disabled }: DatePickerProps) {
   const formattedDate = value ? value.format('YY/MM/DD') : '';
   const today = dayjs().format('YYYY-MM-DD');
 
   return (
     <div className='relative flex flex-col gap-12 md:flex-row'>
       <div className='relative w-full'>
-        <Input.Root className='w-full'>
-          <Input.Wrapper className='relative'>
-            <Input.Field
-              readOnly
-              aria-describedby='date-picker-help'
-              aria-label='선택된 날짜'
-              className='md:text-md text-sm text-gray-950'
-              placeholder='yy/mm/dd'
-              value={formattedDate}
-            />
+        <Popover.Root direction='bottom' disabled={disabled}>
+          <Popover.Trigger>
+            <Input.Root className='w-full' disabled={disabled}>
+              <Input.Wrapper>
+                <Input.Field readOnly placeholder='년 / 월 / 일' value={formattedDate} />
+                <span className='cursor-pointer'>
+                  <Input.Icon>
+                    <CalendarIcon className='size-20' />
+                  </Input.Icon>
+                </span>
+              </Input.Wrapper>
+              <Input.ErrorMessage />
+            </Input.Root>
+          </Popover.Trigger>
 
-            <Popover.Root direction='left'>
-              <Popover.Trigger className='absolute top-1/2 right-16 -translate-y-1/2 cursor-pointer'>
-                <CalendarIcon className='size-15 md:size-20' />
-              </Popover.Trigger>
+          <Popover.Content className='mt-8 w-fit rounded-xl border border-gray-100 bg-white p-12'>
+            <Calendar.Root initialDate={today} onDateChange={(newDate) => onChange(dayjs(newDate))}>
+              <Calendar.Header headerClass='my-12' />
+              <Calendar.Grid divider weekdayType='short'>
+                {(day) => {
+                  const isBeforeToday = day.isBefore(dayjs(), 'day');
 
-              <Popover.Content className='mt-50 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
-                <Calendar.Root
-                  className='w-250 md:w-300'
-                  initialDate={today}
-                  onDateChange={(newDate) => onChange(dayjs(newDate))}
-                >
-                  <Calendar.Header />
-                  <Calendar.Grid divider weekdayType='short'>
-                    {(day) => <DayCell day={day} />}
-                  </Calendar.Grid>
-                </Calendar.Root>
-              </Popover.Content>
-            </Popover.Root>
-          </Input.Wrapper>
-          <Input.ErrorMessage />
-        </Input.Root>
+                  return (
+                    <Calendar.DayCell
+                      dateClass={!isBeforeToday ? 'hover:bg-gray-50' : undefined}
+                      day={day}
+                      dayCellClass={isBeforeToday ? 'opacity-30 pointer-events-none cursor-not-allowed' : undefined}
+                    />
+                  );
+                }}
+              </Calendar.Grid>
+            </Calendar.Root>
+          </Popover.Content>
+        </Popover.Root>
       </div>
     </div>
   );

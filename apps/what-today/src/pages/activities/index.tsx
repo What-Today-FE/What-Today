@@ -15,10 +15,12 @@ import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useActivityDetail, useCreateReservation } from '@/hooks/activityDetail';
 import { useResponsive } from '@/hooks/useResponsive';
+import { useWhatTodayStore } from '@/stores';
 
 export default function ActivityDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
+  const { user } = useWhatTodayStore();
 
   const [isTabletSheetOpen, setIsTabletSheetOpen] = useState(false);
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
@@ -91,6 +93,8 @@ export default function ActivityDetailPage() {
               <ActivitiesInformation
                 address={activity.address}
                 category={activity.category}
+                id={id}
+                isAuthor={user?.id ? activity?.userId === user.id : false}
                 rating={activity.rating}
                 reviewCount={activity.reviewCount}
                 title={activity.title}
@@ -105,6 +109,8 @@ export default function ActivityDetailPage() {
             <ActivitiesInformation
               address={activity.address}
               category={activity.category}
+              id={id}
+              isAuthor={user?.id ? activity?.userId === user.id : false}
               rating={activity.rating}
               reviewCount={activity.reviewCount}
               title={activity.title}

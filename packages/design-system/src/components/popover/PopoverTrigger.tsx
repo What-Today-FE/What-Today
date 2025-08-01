@@ -28,12 +28,18 @@ export interface PopoverTriggerProps extends BaseProp {
  * ```
  */
 function PopoverTrigger({ children, className, asChild = false }: PopoverTriggerProps) {
-  const { isControlled, triggerRef, open, setOpen } = usePopoverContext();
+  const { isControlled, triggerRef, open, setOpen, disabled } = usePopoverContext();
   // Trigger도 Overlay 위쪽으로 올라와야 하면 아래 overlayClass 사용
   // const zIndex = open && 'z-[910]';
   // const overlayClass = twMerge('relative w-full', zIndex);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (disabled) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
     if (!isControlled) {
       setOpen(!open);
     }
@@ -59,7 +65,12 @@ function PopoverTrigger({ children, className, asChild = false }: PopoverTrigger
 
   return (
     <div ref={triggerRef} className='relative w-full'>
-      <button className={twMerge('w-full cursor-pointer', className)} onClick={handleClick}>
+      <button
+        className={twMerge('w-full cursor-pointer', className)}
+        disabled={disabled}
+        type='button'
+        onClick={handleClick}
+      >
         {children}
       </button>
     </div>

@@ -1,331 +1,369 @@
-import {
-  AddressInput,
-  BannerInput,
-  Button,
-  DatePicker,
-  Input,
-  IntroduceInput,
-  MinusIcon,
-  PlusIcon,
-  Select,
-  TimePicker,
-} from '@what-today/design-system';
-import { type Dayjs } from 'dayjs';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AddressInput, Button, Select, type SelectItem, useToast } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import axiosInstance from '@/apis/axiosInstance';
-import { createActivity, patchActivity } from '@/apis/experiences';
-import { activityWithSchedulesResponseSchema, categoryEnum, createActivityBodySchema } from '@/schemas/experiences';
-
-type Schedule = {
-  date: Dayjs | null;
-  startTime: { hour: string; minute: string } | null;
-  endTime: { hour: string; minute: string } | null;
-};
-
-const formatTime = (time: { hour: string | number; minute: string | number } | null): string => {
-  if (!time || time.hour == null || time.minute == null) return '00:00';
-  return `${String(time.hour).padStart(2, '0')}:${String(time.minute).padStart(2, '0')}`;
-};
+import { fetchActivityDetail } from '@/apis/activityDetail';
+import { patchExperiences, postExperiences, uploadImage } from '@/apis/experiences';
+import DescriptionTextarea from '@/components/experiences/DescriptionTextarea';
+import ImageInput from '@/components/experiences/ImageInput';
+import PriceInput from '@/components/experiences/PriceInput';
+import ScheduleInput, { type Schedule } from '@/components/experiences/ScheduleInput';
+import TitleInput from '@/components/experiences/TitleInput';
+import { type createExperienceForm, createExperienceFormSchema } from '@/schemas/experiences';
 
 export default function CreateExperience() {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const isEdit = !!id;
+  const { id: activityId } = useParams();
+  const isEdit = !!activityId;
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const [title, setTitle] = useState('');
-  const [selectedValue, setSelectedValue] = useState<{ value: string; label: React.ReactNode } | null>(null);
-  const [text, setText] = useState('');
-  const [price, setPrice] = useState('');
-  const [address, setAddress] = useState('');
-  const [schedules, setSchedules] = useState<Schedule[]>([{ date: null, startTime: null, endTime: null }]);
-  const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
-  const [bannerImageUrl, setBannerImageUrl] = useState(''); // ✅ 배너 미리보기
-  const [subImageUrls, setSubImageUrls] = useState<string[]>([]); // ✅ 서브 이미지 미리보기
-  const [loading, setLoading] = useState(false);
+  const originalSubImageIdsRef = useRef<number[]>([]);
+  const originalSubImageUrlsRef = useRef<string[]>([]);
+
+  const originalScheduleIdsRef = useRef<number[]>([]);
+  const originalSchedulesRef = useRef<string[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<createExperienceForm>({
+    resolver: zodResolver(createExperienceFormSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      title: '',
+      category: {},
+      description: '',
+      price: 0,
+      address: '',
+      schedules: [],
+      bannerFile: '',
+      subImageFiles: [],
+    },
+  });
+
+  // 시간 문자열 → { hour, minute } 객체로 변환
+  function parseTimeToObject(time: string) {
+    const [hour, minute] = time.split(':');
+    return { hour, minute };
+  }
+
+  // 체험 상세 데이터 불러오기 및 RHF 초기값 세팅
+  const loadExperienceDetail = useCallback(
+    async (activityId: string) => {
+      try {
+        const { title, category, description, price, address, schedules, bannerImageUrl, subImages } =
+          await fetchActivityDetail(activityId);
+        const subImageUrls = subImages.map((img) => img.imageUrl);
+
+        originalSubImageIdsRef.current = subImages.map((img) => img.id);
+        originalSubImageUrlsRef.current = subImages.map((img) => img.imageUrl);
+
+        originalScheduleIdsRef.current = schedules.map((s) => s.id);
+        originalSchedulesRef.current = schedules.map((s) => `${s.date}_${s.startTime}_${s.endTime}`);
+
+        reset({
+          title,
+          category: { value: category, label: category }, // Select 컴포넌트용
+          description,
+          price: price, // RHF에서는 문자열일 수 있음
+          address,
+          schedules: schedules.map((s) => ({
+            date: dayjs(s.date),
+            startTime: parseTimeToObject(s.startTime),
+            endTime: parseTimeToObject(s.endTime),
+          })),
+          bannerFile: bannerImageUrl,
+          subImageFiles: subImageUrls,
+        });
+      } catch (err) {
+        console.error('체험 상세 로딩 실패:', err);
+        toast({
+          title: '불러오기 실패',
+          description: `체험 정보를 불러오지 못했습니다.`,
+          type: 'error',
+        });
+      }
+    },
+    [reset],
+  );
 
   useEffect(() => {
-    if (!isEdit) return;
+    if (!isEdit || !activityId) return;
+    loadExperienceDetail(activityId);
+  }, [isEdit, activityId, loadExperienceDetail]);
 
-    const fetch = async () => {
-      try {
-        const res = await axiosInstance.get(`/activities/${id}`);
-        const safeData = {
-          ...res.data,
-          // 🚨 사용자님의 요청에 따라 이 부분의 `any`만 수정합니다.
-          // activityWithSchedulesResponseSchema의 schedules 내부에 있는 schedule 타입에 맞게 명시합니다.
-          schedules: res.data.schedules.map(
-            (s: { date: string; times?: Array<{ startTime: string; endTime: string; id: number }> }) => ({
-              ...s,
-              times: s.times ?? [], // times가 없을 경우 빈 배열로 처리
-            }),
-          ),
-        };
+  async function blobUrlToFile(blobUrl: string, fileName: string): Promise<File> {
+    const res = await fetch(blobUrl);
+    const blob = await res.blob();
+    return new File([blob], fileName, { type: blob.type });
+  }
 
-        const parsed = activityWithSchedulesResponseSchema.parse(safeData);
+  const createExperienceMutation = useMutation({
+    mutationFn: async (data: createExperienceForm) => {
+      const bannerFile = await blobUrlToFile(data.bannerFile, 'banner.png');
+      const bannerImageUrl = (await uploadImage(bannerFile)).file;
 
-        setTitle(parsed.title);
-        setText(parsed.description);
-        setPrice(String(parsed.price));
-        setAddress(parsed.address);
-        setSelectedValue({ value: parsed.category, label: parsed.category });
-        setBannerImageUrl(parsed.bannerImageUrl);
-        setSubImageUrls(parsed.subImages.map((img) => img.imageUrl));
+      const subImageUrlResponses = await Promise.all(
+        data.subImageFiles.map((blobUrl, index) =>
+          blobUrlToFile(blobUrl, `sub_${index}.png`).then((file) => uploadImage(file)),
+        ),
+      );
+      const subImageUrls = subImageUrlResponses.map((res) => res.file);
 
-        // ✅ 수정 모드일 때 기존 등록 스케줄 그대로 매핑
-        const loadedSchedules: Schedule[] = [];
-        parsed.schedules.forEach((schedule) => {
-          schedule.times.forEach((time) => {
-            loadedSchedules.push({
-              date: dayjs(schedule.date), // 날짜 그대로 변환
-              startTime: {
-                hour: time.startTime.split(':')[0],
-                minute: time.startTime.split(':')[1],
-              },
-              endTime: {
-                hour: time.endTime.split(':')[0],
-                minute: time.endTime.split(':')[1],
-              },
-            });
-          });
+      const finalData = {
+        title: data.title,
+        category: data.category.value as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
+        description: data.description,
+        price: Number(data.price),
+        address: data.address,
+        schedules: data.schedules
+          .filter((s) => s.date && s.startTime && s.endTime)
+          .map((s) => ({
+            date: s.date!.format('YYYY-MM-DD'),
+            startTime: `${s.startTime!.hour}:${s.startTime!.minute}`,
+            endTime: `${s.endTime!.hour}:${s.endTime!.minute}`,
+          })),
+        bannerImageUrl,
+        subImageUrls,
+      };
+
+      return postExperiences(finalData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
+      });
+      toast({
+        title: '체험 등록 성공',
+        description: `성공적으로 체험을 등록했습니다.`,
+        type: 'success',
+      });
+      navigate('/');
+    },
+    onError: (error) => {
+      console.error('체험 등록 실패:', error);
+      toast({
+        title: '체험 등록 실패',
+        description: `체험 등록에 실패했습니다.`,
+        type: 'error',
+      });
+    },
+  });
+
+  const editExperienceMutation = useMutation({
+    mutationFn: async (params: { activityId: string; data: createExperienceForm }) => {
+      const { activityId, data } = params;
+
+      const bannerImageUrl = data.bannerFile.startsWith('blob:')
+        ? await blobUrlToFile(data.bannerFile, 'banner.png')
+            .then(uploadImage)
+            .then((res) => res.file)
+        : data.bannerFile;
+
+      const subImageUrlsToAdd = await Promise.all(
+        data.subImageFiles
+          .filter((url) => !originalSubImageUrlsRef.current.includes(url))
+          .map((url, index) => blobUrlToFile(url, `sub_${index}.png`).then((file) => uploadImage(file))),
+      ).then((resList) => resList.map((r) => r.file));
+
+      const subImageIdsToRemove = originalSubImageUrlsRef.current
+        .filter((url) => !data.subImageFiles.includes(url))
+        .map((url) => {
+          const index = originalSubImageUrlsRef.current.indexOf(url);
+          return originalSubImageIdsRef.current[index];
         });
 
-        setSchedules(loadedSchedules.length > 0 ? loadedSchedules : [{ date: null, startTime: null, endTime: null }]);
-      } catch (err) {
-        console.error('체험 수정 데이터 불러오기 실패:', err);
-      }
-    };
+      const schedulesToAdd = data.schedules
+        .filter((s) => {
+          if (!s.date || !s.startTime || !s.endTime) return false;
+          const key = `${s.date.format('YYYY-MM-DD')}_${s.startTime.hour}:${s.startTime.minute}_${s.endTime.hour}:${s.endTime.minute}`;
+          return !originalSchedulesRef.current.includes(key);
+        })
+        .map((s) => ({
+          date: s.date!.format('YYYY-MM-DD'),
+          startTime: `${s.startTime!.hour}:${s.startTime!.minute}`,
+          endTime: `${s.endTime!.hour}:${s.endTime!.minute}`,
+        }));
 
-    fetch();
-  }, [id]);
-  const handleAddSchedule = () => {
-    setSchedules((prev) => [...prev, { date: null, startTime: null, endTime: null }]);
-  };
+      const scheduleIdsToRemove = originalSchedulesRef.current
+        .filter((key) => {
+          return !data.schedules.some((s) => {
+            const currentKey = `${s.date!.format('YYYY-MM-DD')}_${s.startTime!.hour}:${s.startTime!.minute}_${s.endTime!.hour}:${s.endTime!.minute}`;
+            return currentKey === key;
+          });
+        })
+        .map((key) => {
+          const index = originalSchedulesRef.current.indexOf(key);
+          return originalScheduleIdsRef.current[index];
+        });
 
-  const handleRemoveSchedule = (indexToRemove: number) => {
-    setSchedules((prev) => prev.filter((_, i) => i !== indexToRemove));
-  };
+      const body = {
+        title: data.title,
+        category: data.category.value as '문화 · 예술' | '식음료' | '스포츠' | '투어' | '관광' | '웰빙',
+        description: data.description,
+        price: Number(data.price),
+        address: data.address,
+        bannerImageUrl,
+        subImageUrlsToAdd,
+        subImageIdsToRemove,
+        schedulesToAdd,
+        scheduleIdsToRemove,
+      };
 
-  const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('image', file);
-    const res = await axiosInstance.post(`/activities/image`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return res.data.activityImageUrl;
-  };
+      return patchExperiences(body, activityId);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['activities'] });
+      queryClient.invalidateQueries({ queryKey: ['activity', variables.activityId] });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'myActivitiesInfinite',
+      });
 
-  const handleSubmit = async () => {
-    try {
-      if (!selectedValue) {
-        alert('카테고리를 선택해주세요.');
-        return;
-      }
+      toast({
+        title: '체험 수정 성공',
+        description: `성공적으로 체험을 수정했습니다.`,
+        type: 'success',
+      });
 
-      for (const s of schedules) {
-        if (!s.date || !s.startTime?.hour || !s.startTime?.minute || !s.endTime?.hour || !s.endTime?.minute) {
-          alert('날짜와 시작/종료 시간을 모두 정확히 입력해주세요.');
-          return;
-        }
-      }
-
-      setLoading(true);
-
-      const newBannerUrl = bannerFile ? await uploadImage(bannerFile) : undefined;
-      const newSubImageUrls = await Promise.all(subImageFiles.map(uploadImage));
-
-      const flattenedSchedules = schedules.map((s) => ({
-        date: dayjs(s.date).format('YYYY-MM-DD'),
-        startTime: formatTime(s.startTime),
-        endTime: formatTime(s.endTime),
-      }));
-
-      if (isEdit) {
-        const updatePayload = {
-          ...(title && { title }),
-          ...(selectedValue && { category: categoryEnum.parse(selectedValue.value) }),
-          ...(text && { description: text }),
-          ...(address && { address }),
-          ...(price && { price: Number(price.trim()) }),
-          ...(newBannerUrl && { bannerImageUrl: newBannerUrl }),
-          subImageUrlsToAdd: newSubImageUrls,
-          schedulesToAdd: flattenedSchedules,
-          subImageIdsToRemove: [],
-          scheduleIdsToRemove: [],
-        };
-
-        await patchActivity(Number(id), updatePayload);
-      } else {
-        const payload = {
-          title,
-          category: selectedValue.value,
-          description: text,
-          address,
-          price: Number(price.trim()),
-          schedules: flattenedSchedules,
-          bannerImageUrl: newBannerUrl!,
-          subImageUrls: newSubImageUrls,
-        };
-        createActivityBodySchema.parse(payload);
-        await createActivity(payload);
-        console.log('📦 payload:', payload);
-      }
-
-      navigate(`/`);
-    } catch (err) {
-      console.error(isEdit ? '체험 수정 실패:' : '체험 등록 실패:', err);
-      alert(isEdit ? '수정에 실패했습니다.' : '등록에 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      navigate(`/activities/${variables.activityId}`);
+    },
+    onError: (error) => {
+      console.error('체험 수정 실패:', error);
+      toast({
+        title: '체험 수정 실패',
+        description: `체험 수정에 실패했습니다.`,
+        type: 'error',
+      });
+    },
+  });
 
   return (
-    <div className='mt-40'>
-      <div className='flex flex-col gap-40'>
-        {/* 제목 */}
-        <Input.Root className='w-full gap-10'>
-          <Input.Label>제목</Input.Label>
-          <Input.Wrapper>
-            <Input.Field
-              className='py-5'
-              placeholder='제목을 입력해 주세요'
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </Input.Wrapper>
-        </Input.Root>
+    <div className='m-auto w-full max-w-700'>
+      <h1 className='my-36 text-2xl font-bold md:text-3xl'>내 체험 {isEdit ? '수정' : '등록'}</h1>
 
-        {/* 카테고리 */}
-        <Select.Root className='flex flex-col gap-10' value={selectedValue} onChangeValue={setSelectedValue}>
-          <Select.Title className='font-normal'>카테고리</Select.Title>
-          <Select.Trigger className='py-15'>
-            <Select.Value className='flex' placeholder='카테고리를 선택해 주세요' />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Group>
-              <Select.Label>카테고리</Select.Label>
-              <Select.Item value='문화 · 예술'>문화예술</Select.Item>
-              <Select.Item value='식음료'>식음료</Select.Item>
-              <Select.Item value='스포츠'>스포츠</Select.Item>
-              <Select.Item value='투어'>투어</Select.Item>
-              <Select.Item value='관광'>관광</Select.Item>
-              <Select.Item value='웰빙'>웰빙</Select.Item>
-            </Select.Group>
-          </Select.Content>
-        </Select.Root>
+      <form
+        className='flex flex-col gap-24'
+        onSubmit={handleSubmit((data) => {
+          if (isEdit && activityId) {
+            editExperienceMutation.mutate({ activityId, data });
+          } else {
+            createExperienceMutation.mutate(data);
+          }
+        })}
+      >
+        <TitleInput {...register('title')} error={errors.title?.message} />
 
-        {/* 설명 */}
-        <Input.Root className='flex w-full gap-10' size='md'>
-          <Input.Label>설명</Input.Label>
-          <Input.Wrapper>
-            <Input.Textarea
-              autoHeight
-              className='min-h-200'
-              placeholder='체험에 대한 설명을 입력해 주세요.'
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-          </Input.Wrapper>
-        </Input.Root>
-
-        {/* 가격 */}
-        <Input.Root className='flex w-full gap-10'>
-          <Input.Label>가격</Input.Label>
-          <Input.Wrapper>
-            <Input.Field
-              className='p-5'
-              placeholder='가격을 입력해주세요'
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </Input.Wrapper>
-        </Input.Root>
-
-        {/* 주소 */}
-        <AddressInput value={address} onChange={setAddress} />
-
-        {/* 날짜/시간 반복 */}
-        <div className='flex flex-col gap-20'>
-          {schedules.map((schedule, index) => (
-            <div key={index} className='grid grid-cols-1 gap-10 md:grid-cols-[2fr_1fr_auto]'>
-              <DatePicker
-                value={schedule.date}
-                onChange={(newDate) =>
-                  setSchedules((prev) => prev.map((s, i) => (i === index ? { ...s, date: newDate } : s)))
-                }
-              />
-              <div className='flex items-center gap-10'>
-                <TimePicker
-                  value={schedule.startTime}
-                  onChange={(newVal) =>
-                    setSchedules((prev) =>
-                      prev.map((s, i) =>
-                        i === index
-                          ? {
-                              ...s,
-                              startTime: typeof newVal === 'function' ? newVal(s.startTime) : newVal,
-                            }
-                          : s,
-                      ),
-                    )
-                  }
-                />
-                <TimePicker
-                  value={schedule.endTime}
-                  onChange={(newVal) =>
-                    setSchedules((prev) =>
-                      prev.map((s, i) =>
-                        i === index
-                          ? {
-                              ...s,
-                              endTime: typeof newVal === 'function' ? newVal(s.endTime) : newVal,
-                            }
-                          : s,
-                      ),
-                    )
-                  }
-                />
-                <div className='flex justify-center'>
-                  {index === 0 ? (
-                    <Button
-                      className='flex h-fit w-fit cursor-pointer items-center rounded-full bg-blue-400 p-10'
-                      size='xs'
-                      variant='none'
-                      onClick={handleAddSchedule}
-                    >
-                      <PlusIcon className='size-20' color='white' />
-                    </Button>
-                  ) : (
-                    <Button
-                      className='flex h-fit w-fit cursor-pointer items-center rounded-full bg-gray-300 p-10'
-                      size='xs'
-                      variant='none'
-                      onClick={() => handleRemoveSchedule(index)}
-                    >
-                      <MinusIcon className='size-20' color='white' />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+        <div>
+          <Controller
+            control={control}
+            name='category'
+            render={({ field }) => (
+              <Select.Root value={field.value} onChangeValue={(value: SelectItem) => field.onChange(value)}>
+                <Select.Title className='font-normal'>카테고리</Select.Title>
+                <Select.Trigger className={errors.category && 'border border-red-500'}>
+                  <Select.Value className='flex' placeholder='카테고리를 선택해 주세요' />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Group>
+                    <Select.Label>카테고리</Select.Label>
+                    <Select.Item value='문화 · 예술'>문화예술</Select.Item>
+                    <Select.Item value='식음료'>식음료</Select.Item>
+                    <Select.Item value='스포츠'>스포츠</Select.Item>
+                    <Select.Item value='투어'>투어</Select.Item>
+                    <Select.Item value='관광'>관광</Select.Item>
+                    <Select.Item value='웰빙'>웰빙</Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            )}
+          />
+          <p className='text-sm text-red-500'>{errors.category?.message}</p>
         </div>
 
-        {/* 이미지 업로드 */}
-        <BannerInput defaultImageUrl={bannerImageUrl} onChange={setBannerFile} />
-        <IntroduceInput defaultImageUrls={subImageUrls} onChange={setSubImageFiles} />
+        <DescriptionTextarea {...register('description')} error={errors.description?.message} />
 
-        {/* 등록 버튼 */}
-        <div className='flex justify-center'>
-          <Button className='w-138' disabled={loading} size='sm' variant='fill' onClick={handleSubmit}>
-            {loading ? (isEdit ? '수정 중...' : '등록 중...') : isEdit ? '수정하기' : '등록하기'}
+        <PriceInput
+          {...register('price', {
+            valueAsNumber: true,
+          })}
+          error={errors.price?.message}
+        />
+
+        <Controller
+          control={control}
+          name='address'
+          render={({ field, fieldState }) => (
+            <AddressInput
+              error={fieldState.error?.message}
+              value={field.value}
+              onChange={(value: string) => field.onChange(value)}
+            />
+          )}
+        />
+
+        <div>
+          <p className='mb-4 block'>예약 가능한 시간대</p>
+          <Controller
+            control={control}
+            name='schedules'
+            render={({ field, fieldState }) => (
+              <>
+                <ScheduleInput value={field.value} onChange={(value: Schedule[]) => field.onChange(value)} />
+                {fieldState.error && <p className='text-sm text-red-500'>{fieldState.error.message}</p>}
+              </>
+            )}
+          />
+        </div>
+
+        <div>
+          <p className='mb-4 block'>배너 이미지 등록</p>
+          <Controller
+            control={control}
+            name='bannerFile'
+            render={({ field, fieldState }) => (
+              <>
+                <ImageInput max={1} value={field.value} onChange={(value: string) => field.onChange(value)} />
+                {fieldState.error && <p className='text-sm text-red-500'>{fieldState.error.message}</p>}
+              </>
+            )}
+          />
+        </div>
+
+        <div>
+          <p className='mb-4 block'>소개 이미지 등록</p>
+          <Controller
+            control={control}
+            name='subImageFiles'
+            render={({ field, fieldState }) => (
+              <>
+                <ImageInput max={4} value={field.value} onChange={(value: string[]) => field.onChange(value)} />
+                {fieldState.error && <p className='text-sm text-red-500'>{fieldState.error.message}</p>}
+              </>
+            )}
+          />
+        </div>
+
+        <div className='mt-36 flex justify-center'>
+          <Button
+            loading={isEdit ? editExperienceMutation.isPending : createExperienceMutation.isPending}
+            size='sm'
+            type='submit'
+            variant='fill'
+            onClick={() => {}}
+          >
+            {isEdit ? '수정하기' : '등록하기'}
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

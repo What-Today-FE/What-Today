@@ -9,6 +9,7 @@ export interface RootProps {
   onChangeValue?: (selected: SelectItem) => void;
   value: SelectItem;
   children?: ReactNode;
+  disabled?: boolean;
 }
 
 /** SelectRoot
@@ -34,7 +35,7 @@ export interface RootProps {
  * </Select.Root>
  * ```
  */
-function SelectRoot({ children, onChangeValue, value, className }: RootProps) {
+function SelectRoot({ children, onChangeValue, value, className, disabled = false }: RootProps) {
   const [selectedItem, setSelectedItem] = useState<SelectItem | null>(value ?? null);
   const [open, setOpen] = useState(false);
 
@@ -52,8 +53,16 @@ function SelectRoot({ children, onChangeValue, value, className }: RootProps) {
   }, [value]);
 
   return (
-    <SelectContext.Provider value={{ handleClickItem, selectedItem, open, setOpen }}>
-      <Popover.Root className={className} direction='bottom' open={open} onOpenChange={setOpen}>
+    <SelectContext.Provider value={{ handleClickItem, selectedItem, open, setOpen, disabled }}>
+      <Popover.Root
+        className={className}
+        direction='bottom'
+        disabled={disabled}
+        open={disabled ? false : open}
+        onOpenChange={(next) => {
+          if (!disabled) setOpen(next);
+        }}
+      >
         {children}
       </Popover.Root>
     </SelectContext.Provider>

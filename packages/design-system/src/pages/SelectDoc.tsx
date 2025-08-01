@@ -49,6 +49,9 @@ export default function SelectDoc() {
   - \`<Select.Value>\`을 생략하면 외부에서 직접 값을 사용해 Trigger 내부를 커스텀해야 합니다.
 - \`<Select.Title>\`: Content 영역 최상단에 들어갈 타이틀 영역입니다.
 
+### new
+Select.Root에 disabled를 true로 전달하면 Select가 비활성화 처리됩니다.
+
 
         `}
         propsDescription={`
