@@ -7,7 +7,10 @@ export default function Footer() {
       <div className='mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-[5vw] text-center md:grid-cols-2 md:text-left'>
         {/* 🔹 왼쪽: 비전 메시지 + 로고 */}
         <div className='flex flex-col items-center gap-4 md:items-start'>
-          <a className='flex items-center gap-2 transition hover:scale-105' href='/'>
+          <a
+            className='flex items-center gap-2 transition hover:scale-105'
+            href='https://what-today-design-system.vercel.app/docs'
+          >
             <ImageLogo className='size-36' />
             <TextLogo className='size-80 text-sky-500' />
           </a>

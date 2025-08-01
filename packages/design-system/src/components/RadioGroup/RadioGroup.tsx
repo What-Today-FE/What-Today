@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { createContext, useContext } from 'react';
 import { cloneElement, isValidElement, type ReactElement } from 'react';
 import React from 'react';
@@ -97,7 +98,19 @@ export default function RadioGroup({
       }}
     >
       {title && <RadioGroup.Title />}
-      <div className={twMerge('flex flex-col gap-2', radioGroupClassName)}>{children}</div>
+      <motion.div
+        animate={{ x: 0, opacity: 1 }}
+        className={twMerge('no-scrollbar flex flex-nowrap gap-4 overflow-x-auto scroll-smooth', radioGroupClassName)}
+        initial={{ x: -20, opacity: 0 }}
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          scrollPaddingLeft: '1rem', // 첫 아이템 여백
+        }}
+        transition={{ duration: 0.4 }}
+      >
+        {children}
+      </motion.div>
     </RadioContext.Provider>
   );
 }
@@ -143,7 +156,7 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
   };
 
   const BASE_STYLE =
-    'flex gap-8 text-md md:text-lg  cursor-pointer items-center rounded-full border  px-12 py-6 md:px-18 md:py-9 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
+    'flex gap-8 text-sm md:text-md cursor-pointer items-center rounded-full border px-10 py-6 md:px-14 md:py-6 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
   const SELECTED_STYLE = 'bg-black text-white hover:scale-110 active:scale-95';
   const UNSELECTED_STYLE = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
 
