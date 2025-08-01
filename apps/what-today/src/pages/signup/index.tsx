@@ -35,7 +35,6 @@ export default function SignupPage() {
       passwordConfirm: '',
     },
   });
-  const watchedPassword = watch('password');
 
   /** handleSignup
    * @description 회원가입 요청을 보내고, 성공시 로그인 페이지로 리다이렉트합니다.
