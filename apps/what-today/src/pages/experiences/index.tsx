@@ -276,11 +276,11 @@ export default function CreateExperience() {
                   <Select.Group>
                     <Select.Label>카테고리</Select.Label>
                     <Select.Item value='문화 · 예술'>문화 예술</Select.Item>
-                    <Select.Item value='음식'>음식</Select.Item>
+                    <Select.Item value='식음료'>식음료</Select.Item>
                     <Select.Item value='스포츠'>스포츠</Select.Item>
+                    <Select.Item value='투어'>투어</Select.Item>
+                    <Select.Item value='관광'>관광</Select.Item>
                     <Select.Item value='웰빙'>웰빙</Select.Item>
-                    <Select.Item value='버스'>버스</Select.Item>
-                    <Select.Item value='여행'>여행</Select.Item>
                   </Select.Group>
                 </Select.Content>
               </Select.Root>
