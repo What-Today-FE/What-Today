@@ -8,6 +8,6 @@ import type { BottomSheetOverlayProps } from './types';
  */
 export function BottomSheetOverlay({ onClick, className }: BottomSheetOverlayProps) {
   return (
-    <div className={twMerge('fixed inset-0 z-40 bg-black/5 backdrop-brightness-50', className)} onClick={onClick} />
+    <div className={twMerge('fixed inset-0 z-60 bg-black/5 backdrop-brightness-50', className)} onClick={onClick} />
   );
 }

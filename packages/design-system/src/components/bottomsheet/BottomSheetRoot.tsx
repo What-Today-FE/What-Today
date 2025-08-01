@@ -38,7 +38,7 @@ export function BottomSheetRoot({ isOpen, onClose, children, className }: Bottom
         <div
           ref={sheetRef}
           className={twMerge(
-            'fixed right-0 bottom-0 left-0 z-50 flex flex-col rounded-t-2xl bg-white',
+            'fixed right-0 bottom-0 left-0 z-65 flex flex-col rounded-t-2xl bg-white',
             'transition-transform duration-300 ease-out',
             isOpen ? 'translate-y-0' : 'translate-y-full',
             className,

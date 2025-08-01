@@ -60,10 +60,10 @@ function PopoverContent({
 
   return (
     <Portal>
-      {overlay && <div className='fixed inset-0 z-99 bg-black/30' />}
+      {overlay && <div className='fixed inset-0 z-60 bg-black/30' />}
       <div
         ref={handleContentRef}
-        className={twMerge('absolute top-0 left-0 z-50', className)}
+        className={twMerge('absolute top-0 left-0 z-65', className)}
         style={{
           position: direction.startsWith('fixed-') ? 'fixed' : 'absolute', // Trigger의 위치에 따르지 않고, 뷰포트가 기준인 경우에는 fixed로 고정 (ex. Modal은 화면 정중앙에)
           top: `${contentCoords.top}px`,

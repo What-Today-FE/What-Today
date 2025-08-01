@@ -57,7 +57,7 @@ export const useToast = () => {
             <motion.div
               animate={{ opacity: 1, y: 0 }}
               className={twMerge(
-                'fixed top-28 left-1/2 z-50 flex w-320 -translate-x-1/2 items-center gap-12 rounded-lg p-10 text-white shadow',
+                'fixed top-28 left-1/2 z-80 flex w-320 -translate-x-1/2 items-center gap-12 rounded-lg p-10 text-white shadow',
                 statusStyle.className,
               )}
               exit={{ opacity: 0, y: -20 }}

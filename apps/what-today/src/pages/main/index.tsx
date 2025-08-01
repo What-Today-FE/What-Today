@@ -82,112 +82,115 @@ export default function MainPage() {
   const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
-      <MainBanner />
-      <div className='flex flex-col gap-20'>
-        <h2 className='title-text'>🔥 인기 체험</h2>
-        <div className='-mx-15 flex'>
-          <Carousel
-            items={popularActivities}
-            itemsPerPage={itemsPerPage}
-            onClick={(id) => navigate(`/activities/${id}`)}
-          />
-        </div>
-      </div>
-
-      <div className='flex flex-col gap-20'>
-        <h2 className='title-text flex justify-center'>무엇을 체험하고 싶으신가요?</h2>
-        <MainSearchInput onClick={handleSearch} />
-      </div>
-
-      <div className='flex flex-col gap-20'>
-        {/* 제목 + 가격 드롭다운 */}
-        <div className='flex flex-wrap items-center justify-between gap-12'>
-          <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
-
-          <Select.Root
-            value={selectedValue}
-            onChangeValue={(item) => {
-              setSelectedValue(item);
-              if (item) {
-                setSortOrder(item.value as 'asc' | 'desc');
-              }
-            }}
-          >
-            <Select.Trigger className='text-2lg flex min-w-fit gap-6 border-none bg-white px-15 py-10'>
-              <Select.Value className='text-gray-950' placeholder='가격' />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Group className='body-text text-center whitespace-nowrap'>
-                <Select.Item value='desc'> 높은순</Select.Item>
-                <Select.Item value='asc'> 낮은순</Select.Item>
-              </Select.Group>
-            </Select.Content>
-          </Select.Root>
+    <>
+      <div className='to-primary-500/40 absolute top-0 left-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
+      <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
+        <MainBanner />
+        <div className='flex flex-col gap-20'>
+          <h2 className='title-text'>🔥 인기 체험</h2>
+          <div className='-mx-15 flex'>
+            <Carousel
+              items={popularActivities}
+              itemsPerPage={itemsPerPage}
+              onClick={(id) => navigate(`/activities/${id}`)}
+            />
+          </div>
         </div>
 
-        {/* 라디오 버튼 가로 스크롤 */}
-        <div className='overflow-x-hidden'>
-          <RadioGroup
-            radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
-            selectedValue={selectedCategory}
-            onSelect={setSelectedCategory}
-          >
-            <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
-              <ArtIcon className='size-15' />
-              문화 예술
-            </RadioGroup.Radio>
-            <RadioGroup.Radio value='음식'>
-              <FoodIcon className='size-15' />
-              음식
-            </RadioGroup.Radio>
-            <RadioGroup.Radio value='스포츠'>
-              <SportIcon className='size-15' />
-              스포츠
-            </RadioGroup.Radio>
-            <RadioGroup.Radio value='웰빙'>
-              <WellbeingIcon className='size-15' />
-              웰빙
-            </RadioGroup.Radio>
-            <RadioGroup.Radio value='버스'>
-              <BusIcon className='size-15' />
-              버스
-            </RadioGroup.Radio>
-            <RadioGroup.Radio value='투어'>
-              <TourIcon className='size-15' />
-              여행
-            </RadioGroup.Radio>
-          </RadioGroup>
+        <div className='flex flex-col gap-20'>
+          <h2 className='title-text flex justify-center'>무엇을 체험하고 싶으신가요?</h2>
+          <MainSearchInput onClick={handleSearch} />
         </div>
 
-        {/* 카드 리스트 */}
-        <div className='grid grid-cols-2 gap-12 md:grid-cols-2 lg:grid-cols-4'>
-          {filteredItems.length === 0 ? (
-            <div className='col-span-full flex justify-center py-40'>
-              <NoResult />
-            </div>
-          ) : (
-            pagedItems.map((item) => (
-              <MainCard.Root
-                key={item.id}
-                bannerImageUrl={item.bannerImageUrl}
-                price={item.price}
-                rating={item.rating}
-                reviewCount={item.reviewCount}
-                title={item.title}
-                onClick={() => navigate(`/activities/${item.id}`)}
-              >
-                <MainCard.Image />
-                <MainCard.Content />
-              </MainCard.Root>
-            ))
+        <div className='flex flex-col gap-20'>
+          {/* 제목 + 가격 드롭다운 */}
+          <div className='flex flex-wrap items-center justify-between gap-12'>
+            <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
+
+            <Select.Root
+              value={selectedValue}
+              onChangeValue={(item) => {
+                setSelectedValue(item);
+                if (item) {
+                  setSortOrder(item.value as 'asc' | 'desc');
+                }
+              }}
+            >
+              <Select.Trigger className='text-2lg flex min-w-fit gap-6 border-none bg-white px-15 py-10'>
+                <Select.Value className='text-gray-950' placeholder='가격' />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Group className='body-text text-center whitespace-nowrap'>
+                  <Select.Item value='desc'> 높은순</Select.Item>
+                  <Select.Item value='asc'> 낮은순</Select.Item>
+                </Select.Group>
+              </Select.Content>
+            </Select.Root>
+          </div>
+
+          {/* 라디오 버튼 가로 스크롤 */}
+          <div className='overflow-x-hidden'>
+            <RadioGroup
+              radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
+              selectedValue={selectedCategory}
+              onSelect={setSelectedCategory}
+            >
+              <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
+                <ArtIcon className='size-15' />
+                문화 예술
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='음식'>
+                <FoodIcon className='size-15' />
+                음식
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='스포츠'>
+                <SportIcon className='size-15' />
+                스포츠
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='웰빙'>
+                <WellbeingIcon className='size-15' />
+                웰빙
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='버스'>
+                <BusIcon className='size-15' />
+                버스
+              </RadioGroup.Radio>
+              <RadioGroup.Radio value='투어'>
+                <TourIcon className='size-15' />
+                여행
+              </RadioGroup.Radio>
+            </RadioGroup>
+          </div>
+
+          {/* 카드 리스트 */}
+          <div className='grid grid-cols-2 gap-12 md:grid-cols-2 lg:grid-cols-4'>
+            {filteredItems.length === 0 ? (
+              <div className='col-span-full flex justify-center py-40'>
+                <NoResult />
+              </div>
+            ) : (
+              pagedItems.map((item) => (
+                <MainCard.Root
+                  key={item.id}
+                  bannerImageUrl={item.bannerImageUrl}
+                  price={item.price}
+                  rating={item.rating}
+                  reviewCount={item.reviewCount}
+                  title={item.title}
+                  onClick={() => navigate(`/activities/${item.id}`)}
+                >
+                  <MainCard.Image />
+                  <MainCard.Content />
+                </MainCard.Root>
+              ))
+            )}
+          </div>
+
+          {filteredItems.length > 0 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           )}
         </div>
-
-        {filteredItems.length > 0 && (
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-        )}
       </div>
-    </div>
+    </>
   );
 }
