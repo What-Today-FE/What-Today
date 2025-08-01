@@ -85,7 +85,7 @@ export default function MainPage() {
     <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
       <MainBanner />
       <div className='flex flex-col gap-20'>
-        <h2 className='subtitle-text md:title-text'>🔥 인기 체험</h2>
+        <h2 className='title-text'>🔥 인기 체험</h2>
         <div className='-mx-15 flex'>
           <Carousel
             items={popularActivities}
@@ -96,14 +96,14 @@ export default function MainPage() {
       </div>
 
       <div className='flex flex-col gap-20'>
-        <h2 className='subtitle-text md:title-text flex justify-center'>무엇을 체험하고 싶으신가요?</h2>
+        <h2 className='title-text flex justify-center'>무엇을 체험하고 싶으신가요?</h2>
         <MainSearchInput onClick={handleSearch} />
       </div>
 
       <div className='flex flex-col gap-20'>
         {/* 제목 + 가격 드롭다운 */}
         <div className='flex flex-wrap items-center justify-between gap-12'>
-          <h2 className='subtitle-text md:title-text flex items-center gap-12 text-gray-950'>🛼 모든 체험</h2>
+          <h2 className='title-text flex items-center gap-12 text-gray-950'>🛼 모든 체험</h2>
 
           <Select.Root
             value={selectedValue}
