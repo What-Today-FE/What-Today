@@ -8,7 +8,7 @@ import type { BaseLogoProps } from './types';
  * - 기본 크기는 993px입니다.
  *
  * @component
- * @param {number} [size=993] - 로고의 가로/세로 크기 (기본값: 291)
+ * @param {number} [size=993] - 로고의 가로/세로 크기 (기본값: 993)
  * @param {React.SVGProps<SVGSVGElement>} ...rest - 기타 SVG 속성 (예: className, aria-label 등)
  *
  * @example
