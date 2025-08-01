@@ -13,6 +13,7 @@ export default function TabletReservationSheet({
   onClose,
   onConfirm,
   isAuthor = false,
+  isLoggedIn = true,
 }: TabletReservationSheetProps) {
   const {
     selectedDate,
@@ -68,7 +69,7 @@ export default function TabletReservationSheet({
         <div className='px-20 pt-8 pb-24'>
           <Button
             className='w-full'
-            disabled={!isReadyToReserve || isAuthor}
+            disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
             size='lg'
             variant='fill'
             onClick={() => {
@@ -86,7 +87,11 @@ export default function TabletReservationSheet({
               }
             }}
           >
-            {isAuthor ? '예약 불가' : '확인'}
+            {(() => {
+              if (!isLoggedIn) return '로그인 필요';
+              if (isAuthor) return '예약 불가';
+              return '확인';
+            })()}
           </Button>
         </div>
       </BottomSheet.Content>

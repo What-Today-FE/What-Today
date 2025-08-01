@@ -102,6 +102,7 @@ export default function ActivityDetailPage() {
               <DesktopReservation
                 activityId={activity.id}
                 isAuthor={user?.id ? activity?.userId === user.id : false}
+                isLoggedIn={!!user}
                 price={activity.price}
                 schedules={activity.schedules}
               />
@@ -134,6 +135,7 @@ export default function ActivityDetailPage() {
         <>
           <ReservationBottomBar
             isAuthor={user?.id ? activity?.userId === user.id : false}
+            isLoggedIn={!!user}
             isSubmitting={createReservationMutation.isPending}
             price={activity.price}
             reservation={
@@ -157,6 +159,7 @@ export default function ActivityDetailPage() {
           {isTablet && (
             <TabletReservationSheet
               isAuthor={user?.id ? activity?.userId === user.id : false}
+              isLoggedIn={!!user}
               isOpen={isTabletSheetOpen}
               price={activity.price}
               schedules={activity.schedules}
@@ -169,6 +172,7 @@ export default function ActivityDetailPage() {
           {isMobile && (
             <MobileReservationSheet
               isAuthor={user?.id ? activity?.userId === user.id : false}
+              isLoggedIn={!!user}
               isOpen={isMobileSheetOpen}
               price={activity.price}
               schedules={activity.schedules}

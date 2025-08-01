@@ -17,6 +17,7 @@ export default function MobileReservationSheet({
   onClose,
   onConfirm,
   isAuthor = false,
+  isLoggedIn = true,
 }: TabletReservationSheetProps) {
   const [currentStep, setCurrentStep] = useState<MobileStep>('dateTime');
 
@@ -103,12 +104,16 @@ export default function MobileReservationSheet({
             <div className='pt-8'>
               <Button
                 className='w-full'
-                disabled={!selectedScheduleId || isAuthor}
+                disabled={!selectedScheduleId || isAuthor || !isLoggedIn}
                 size='lg'
                 variant='fill'
                 onClick={handleNextStep}
               >
-                {isAuthor ? '예약 불가' : '확인'}
+                {(() => {
+                  if (!isLoggedIn) return '로그인 필요';
+                  if (isAuthor) return '예약 불가';
+                  return '확인';
+                })()}
               </Button>
             </div>
           </div>
@@ -157,12 +162,16 @@ export default function MobileReservationSheet({
             <div className='pt-8'>
               <Button
                 className='w-full'
-                disabled={!isReadyToReserve || isAuthor}
+                disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
                 size='lg'
                 variant='fill'
                 onClick={handleConfirm}
               >
-                {isAuthor ? '예약 불가' : '확인'}
+                {(() => {
+                  if (!isLoggedIn) return '로그인 필요';
+                  if (isAuthor) return '예약 불가';
+                  return '확인';
+                })()}
               </Button>
             </div>
           </div>

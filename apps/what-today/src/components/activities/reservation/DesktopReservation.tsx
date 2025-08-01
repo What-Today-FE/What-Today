@@ -11,6 +11,7 @@ export default function DesktopReservation({
   price,
   schedules,
   isAuthor = false,
+  isLoggedIn = true,
 }: DesktopReservationProps) {
   const { toast } = useToast();
   const createReservationMutation = useCreateReservation(activityId);
@@ -41,6 +42,7 @@ export default function DesktopReservation({
       <ReservationForm
         showSubmitButton
         isAuthor={isAuthor}
+        isLoggedIn={isLoggedIn}
         isSubmitting={createReservationMutation.isPending}
         price={price}
         schedules={schedules}
