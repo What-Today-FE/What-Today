@@ -25,7 +25,6 @@ export default function SignupPage() {
     formState: { errors, isSubmitting, isValid },
     watch,
     setValue,
-    trigger,
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpFormSchema),
     mode: 'onChange',
@@ -36,6 +35,7 @@ export default function SignupPage() {
       passwordConfirm: '',
     },
   });
+  const watchedPassword = watch('password');
 
   /** handleSignup
    * @description 회원가입 요청을 보내고, 성공시 로그인 페이지로 리다이렉트합니다.
@@ -108,7 +108,9 @@ export default function SignupPage() {
             <EmailInput {...register('email')} error={errors.email?.message} />
             <NicknameInput {...register('nickname')} error={errors.nickname?.message} />
             <PasswordInput {...register('password')} error={errors.password?.message} />
-            <PasswordConfirmInput {...register('passwordConfirm')} error={errors.passwordConfirm?.message} />
+            {watch('password') && !errors.password && (
+              <PasswordConfirmInput {...register('passwordConfirm')} error={errors.passwordConfirm?.message} />
+            )}
 
             <div className='flex w-full flex-col items-start justify-center gap-2'>
               <label className='mb-4 flex cursor-pointer gap-8'>
