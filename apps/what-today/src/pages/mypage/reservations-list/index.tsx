@@ -7,6 +7,7 @@ import {
   NoResult,
   RadioGroup,
   ReservationCard,
+  SpinIcon,
   StarRating,
 } from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
@@ -19,12 +20,25 @@ import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/m
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import type { MyReservationsResponse, Reservation, ReservationStatus } from '@/schemas/myReservations';
 
+// 필터링 가능한 상태 타입 (전체 상태 + 빈 문자열)
+type FilterStatus = ReservationStatus | '';
+
+// 예약 상태별 NoResult 메시지 상수 (컴포넌트 외부에 정의하여 최적화)
+const NO_RESULT_MESSAGES: Record<FilterStatus, string> = {
+  '': '예약한 체험이',
+  pending: '대기 중인 예약이',
+  confirmed: '승인된 예약이',
+  declined: '거절된 예약이',
+  canceled: '취소된 예약이',
+  completed: '완료된 체험이',
+};
+
 export default function ReservationsListPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<FilterStatus>('');
 
   const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
   const isDeleteOpen = cancelTarget !== null;
@@ -53,6 +67,8 @@ export default function ReservationsListPage() {
   });
 
   const reservations = data?.pages.flatMap((page) => page.reservations) ?? [];
+
+  const noResultMessage = NO_RESULT_MESSAGES[selectedStatus];
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useIntersectionObserver(
@@ -182,13 +198,17 @@ export default function ReservationsListPage() {
 
   let content;
   if (isLoading) {
-    content = <div className='flex justify-center p-40 text-gray-400'>로딩 중...</div>;
+    content = (
+      <div className='flex items-center justify-center p-40'>
+        <SpinIcon className='size-200' color='var(--color-gray-100)' />
+      </div>
+    );
   } else if (reservations.length > 0) {
     content = <div className='space-y-10'>{renderGroupedReservations(reservations)}</div>;
   } else {
     content = (
       <div className='flex justify-center p-40'>
-        <NoResult dataName='예약한 체험이' />
+        <NoResult dataName={noResultMessage} />
       </div>
     );
   }
@@ -209,7 +229,7 @@ export default function ReservationsListPage() {
         <RadioGroup
           radioGroupClassName='flex flex-nowrap gap-6 overflow-x-auto no-scrollbar'
           selectedValue={selectedStatus}
-          onSelect={(value) => setSelectedStatus(String(value))}
+          onSelect={(value) => setSelectedStatus(value as FilterStatus)}
         >
           <RadioGroup.Radio value='pending'>예약 대기</RadioGroup.Radio>
           <RadioGroup.Radio value='confirmed'>예약 승인</RadioGroup.Radio>
