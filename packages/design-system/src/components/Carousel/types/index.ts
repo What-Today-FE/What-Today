@@ -28,4 +28,5 @@ export interface CarouselProps {
   rating: number;
   reviewCount: number;
   bannerImageUrl: string;
+  category: string;
 }
