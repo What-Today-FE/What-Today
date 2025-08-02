@@ -10,8 +10,8 @@ import { useMonthlyScheduleQuery } from '@/hooks/myReservation/useMonthlySchedul
 export default function ReservationsStatusPage() {
   const navigate = useNavigate();
 
-  const [calendarYear, setCalendarYear] = useState(dayjs().format('YYYY'));
-  const [calendarMonth, setCalendarMonth] = useState(dayjs().format('MM'));
+  const [calendarYear] = useState(dayjs().format('YYYY'));
+  const [calendarMonth] = useState(dayjs().format('MM'));
   const [selectedActivityId, setSelectedActivityId] = useState(0);
 
   // 체험 목록 조회 (초기 1페이지만 사용)
@@ -40,11 +40,11 @@ export default function ReservationsStatusPage() {
     setSelectedActivityId(Number(value.value));
   };
 
-  const handleMonthChange = (year: string, month: string) => {
-    if (calendarYear === year && calendarMonth === month) return;
-    setCalendarYear(year);
-    setCalendarMonth(month);
-  };
+  // const handleMonthChange = (year: string, month: string) => {
+  //   if (calendarYear === year && calendarMonth === month) return;
+  //   setCalendarYear(year);
+  //   setCalendarMonth(month);
+  // };
 
   const reservationMap = monthlyReservations.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
     (acc, cur) => {
@@ -93,7 +93,7 @@ export default function ReservationsStatusPage() {
           <ReservationCalendar
             activityId={selectedActivityId}
             reservationsByDate={reservationMap}
-            onMonthChange={handleMonthChange}
+            // onMonthChange={handleMonthChange}
           />
         </section>
       </div>

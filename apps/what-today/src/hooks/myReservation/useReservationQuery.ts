@@ -12,6 +12,6 @@ export function useReservationQuery(activityId: number, scheduleId: number, stat
         scheduleId,
         status,
       }),
-    enabled: !!activityId && !!scheduleId && !!status,
+    enabled: !!activityId && scheduleId > 0 && !!status,
   });
 }
