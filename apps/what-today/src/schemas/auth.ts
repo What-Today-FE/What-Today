@@ -31,6 +31,16 @@ export const signUpFormSchema = z
       .min(1, { message: '비밀번호를 입력해 주세요.' })
       .min(8, { message: '비밀번호는 8자 이상이어야 합니다.' }),
     passwordConfirm: z.string().min(1, { message: '비밀번호 확인을 입력해 주세요.' }),
+    agreeToTerms: z.boolean().refine((val) => val === true, {
+      message: '이용약관에 동의해야 회원가입이 가능합니다.',
+    }),
+    agreeToPrivacy: z.boolean().refine((val) => val === true, {
+      message: '개인정보 수집 및 이용에 동의해야 합니다.',
+    }),
+    agreeToLocation: z.boolean().refine((val) => val === true, {
+      message: '위치정보 서비스 이용약관에 동의해야 합니다.',
+    }),
+    agreeToAll: z.boolean().optional(),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: '비밀번호가 일치하지 않습니다.',

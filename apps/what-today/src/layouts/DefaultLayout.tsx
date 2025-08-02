@@ -1,6 +1,7 @@
 import { Footer } from '@what-today/design-system';
 import { Outlet, useLocation } from 'react-router-dom';
 
+import FloatingTranslateButton from '@/components/FloatingTranslateButton';
 import Header from '@/components/Header';
 import { useResponsive } from '@/hooks/useResponsive';
 
@@ -11,8 +12,11 @@ export default function DefaultLayout() {
 
   const footerMarginBottom = isActivityDetailPage && !isDesktop ? 'w-full mb-125' : 'w-full';
 
+  // FloatingTranslateButton의 bottom 위치 조건부 설정
+  const floatingButtonClass = !isDesktop && isActivityDetailPage ? 'bottom-140' : undefined;
+
   return (
-    <div className='flex w-full flex-col items-center gap-8 bg-white'>
+    <div className='flex w-full flex-col items-center gap-8 overflow-x-hidden'>
       <header className='w-full max-w-7xl px-[5vw]'>
         <Header />
       </header>
@@ -29,6 +33,9 @@ export default function DefaultLayout() {
       <div className={footerMarginBottom}>
         <Footer />
       </div>
+
+      {/* 플로팅 번역 버튼 */}
+      <FloatingTranslateButton className={floatingButtonClass} />
     </div>
   );
 }

@@ -86,3 +86,121 @@
     @apply text-[0.75rem] font-normal md:text-[0.875rem]; /* 12px → 14px */
   }
 }
+
+/* === Google Translate 숨김 스타일 === */
+/* 모든 Google Translate 관련 요소 숨기기 */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner,
+.goog-te-banner * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Google 로고와 관련 링크 숨기기 */
+.goog-logo-link,
+.goog-te-gadget .goog-te-gadget-simple,
+.goog-te-menu-value,
+.goog-te-gadget-simple,
+.goog-te-menu-value span,
+.goog-te-menu-value:before {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* 기본 select 요소와 gadget 완전 숨기기 */
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.goog-te-gadget-icon {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* iframe 숨기기 */
+iframe.goog-te-banner-frame,
+iframe.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* 페이지 상단 여백 제거 및 위치 고정 */
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+/* body에 추가되는 translated 클래스 스타일 보정 */
+body.translated {
+  top: 0px !important;
+  position: static !important;
+}
+
+/* Google Translate에서 추가하는 상단 여백 제거 */
+html {
+  margin-top: 0px !important;
+}
+
+/* 추가적인 Google Translate 요소들 숨기기 */
+#goog-gt-,
+[id^='goog-gt-'],
+.goog-te-spinner-pos,
+.goog-te-spinner,
+.goog-te-ftab,
+.goog-te-ftab-float,
+.goog-te-loading,
+.goog-te-ballon-frame,
+.goog-te-ballon,
+.goog-te-combo-loader,
+.goog-te-progress,
+.skiptranslate,
+#google_translate_element .goog-te-gadget-simple,
+#google_translate_element .goog-te-gadget,
+#google_translate_element > div {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  z-index: -1 !important;
+}
+
+/* select 요소는 숨기되 기능은 유지 */
+#google_translate_element select.goog-te-combo {
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  pointer-events: none !important;
+}
+
+/* VoiceOver와 접근성을 위한 스크린 리더 전용 텍스트 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
