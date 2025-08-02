@@ -37,7 +37,7 @@ export default function MyPageLayout() {
       )}
       <MypageSidebar
         isOpen={isSidebarOpen}
-        profileImgUrl={user?.profileImageUrl ?? ''}
+        // profileImgUrl={user?.profileImageUrl ?? ''}
         onClick={() => setSidebarOpen((prev) => !prev)}
         onLogoutClick={handleLogout}
       />

@@ -49,7 +49,7 @@ export default function UpcomingSchedule({ className, reservation }: UpcomingSch
       </div> */}
       <div className='flex flex-col gap-8'>
         {reservation.length === 0 ? (
-          <div className='flex flex-col items-center justify-center gap-8 pb-24'>
+          <div className='flex flex-col items-center justify-center gap-12 pb-24'>
             <EmptyLogo size={80} />
             <Button className='text-md w-auto font-semibold' variant='outline'>
               체험 예약하러 가기
