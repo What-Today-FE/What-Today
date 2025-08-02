@@ -8,7 +8,7 @@ function DescriptionTextarea({ error, ...props }: InputProps) {
     <Input.Root className='w-full' error={error}>
       <Input.Label>설명</Input.Label>
       <Input.Wrapper>
-        <Input.Textarea autoHeight className='min-h-100' placeholder='체험에 대한 설명을 입력해 주세요.' {...props} />
+        <Input.Textarea autoHeight className='min-h-300' placeholder='체험에 대한 설명을 입력해 주세요.' {...props} />
       </Input.Wrapper>
       <Input.ErrorMessage />
     </Input.Root>
