@@ -77,6 +77,44 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
     setSelectedDays((prev) => (prev.includes(dayValue) ? prev.filter((d) => d !== dayValue) : [...prev, dayValue]));
   };
 
+  const handleStartTimeChange = (time: Time | null) => {
+    setStartTime(time);
+
+    // 시작 시간이 설정되고 종료 시간이 있을 때 검증
+    if (time && endTime) {
+      const startMinutes = timeToMinutes(time);
+      const endMinutes = timeToMinutes(endTime);
+
+      if (startMinutes >= endMinutes) {
+        toast({
+          title: '시간 설정 오류',
+          description: '시작 시간은 종료 시간보다 빨라야 합니다.',
+          type: 'error',
+        });
+        setEndTime(null); // 종료 시간 초기화
+      }
+    }
+  };
+
+  const handleEndTimeChange = (time: Time | null) => {
+    // 종료 시간이 설정되고 시작 시간이 있을 때 검증
+    if (time && startTime) {
+      const startMinutes = timeToMinutes(startTime);
+      const endMinutes = timeToMinutes(time);
+
+      if (startMinutes >= endMinutes) {
+        toast({
+          title: '시간 설정 오류',
+          description: '종료 시간은 시작 시간보다 늦어야 합니다.',
+          type: 'error',
+        });
+        return; // 변경사항 적용하지 않음
+      }
+    }
+
+    setEndTime(time);
+  };
+
   const generateSchedules = () => {
     if (!startTime || !endTime || !startDate || !endDate || selectedDays.length === 0) {
       toast({
@@ -96,7 +134,7 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
 
       // 무한루프 방지
       if (loopCount > 1000) {
-        console.error('❌ 무한루프 감지! 중단합니다.');
+        console.error('무한루프 감지! 중단합니다.');
         break;
       }
 
@@ -267,11 +305,11 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
               <div className='grid grid-cols-2 gap-4'>
                 <div>
                   <label className='mb-2 block text-sm font-medium'>시작 시간</label>
-                  <TimePicker className='w-full' value={startTime} onChange={setStartTime} />
+                  <TimePicker className='w-full' value={startTime} onChange={handleStartTimeChange} />
                 </div>
                 <div>
                   <label className='mb-2 block text-sm font-medium'>종료 시간</label>
-                  <TimePicker className='w-full' value={endTime} onChange={setEndTime} />
+                  <TimePicker className='w-full' value={endTime} onChange={handleEndTimeChange} />
                 </div>
               </div>
 
