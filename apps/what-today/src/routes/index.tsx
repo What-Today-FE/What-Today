@@ -40,13 +40,13 @@ export const router = createBrowserRouter([
           { path: 'activities/:id', element: <ActivityDetailPage /> },
           { path: 'experiences/create', element: <CreateExperience /> },
           { path: 'experiences/create/:id', element: <CreateExperience /> },
-          { path: 'mypage', element: <MyPage /> }, // ✅ 여기만 별도로
+          // { path: 'mypage', element: <MyPage /> }, // ✅ 여기만 별도로(다시 변경)
           {
             path: 'mypage',
             loader: authGuardLoader,
             element: <MyPageLayout />,
             children: [
-              // { index: true, element: <MyPage /> },
+              { index: true, element: <MyPage /> },
               { path: 'edit-profile', element: <EditProfilePage /> },
               { path: 'reservations-list', element: <ReservationsListPage /> },
               { path: 'manage-activities', element: <ManageActivitiesPage /> },

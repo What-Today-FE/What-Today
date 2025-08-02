@@ -13,7 +13,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { fetchMyReservations } from '@/apis/myReservations';
-import MypageMainSidebar from '@/components/MypageMainSideBar';
 import useAuth from '@/hooks/useAuth';
 import { useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
 import type { MyReservationsResponse } from '@/schemas/myReservations';
@@ -60,7 +59,7 @@ export default function MyPage() {
   };
   return (
     <div className='flex gap-30'>
-      <MypageMainSidebar />
+      {/* <MypageMainSidebar /> */}
       <div className='flex w-full flex-col gap-24'>
         <MypageProfileHeader
           name={user?.nickname}
