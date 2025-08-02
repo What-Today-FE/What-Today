@@ -1,5 +1,16 @@
-import { Button, DatePicker, MinusIcon, PlusIcon, TimePicker, useToast } from '@what-today/design-system';
+import {
+  Button,
+  DatePicker,
+  MinusIcon,
+  PlusIcon,
+  Popover,
+  Select,
+  type SelectItem,
+  TimePicker,
+  useToast,
+} from '@what-today/design-system';
 import type { Dayjs } from 'dayjs';
+import { useState } from 'react';
 
 interface Time {
   hour: string;
@@ -38,6 +49,89 @@ function isOverlappingSchedule(a: Required<Schedule>, b: Required<Schedule>): bo
 
 export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   const { toast } = useToast();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [repeatType, setRepeatType] = useState<SelectItem>({ value: 'weekly', label: '매주' });
+  const [selectedDays, setSelectedDays] = useState<number[]>([]);
+  const [startTime, setStartTime] = useState<Time | null>(null);
+  const [endTime, setEndTime] = useState<Time | null>(null);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
+  const weekdays = [
+    { value: 1, label: '월' },
+    { value: 2, label: '화' },
+    { value: 3, label: '수' },
+    { value: 4, label: '목' },
+    { value: 5, label: '금' },
+    { value: 6, label: '토' },
+    { value: 0, label: '일' },
+  ];
+
+  const toggleDay = (dayValue: number) => {
+    setSelectedDays((prev) => (prev.includes(dayValue) ? prev.filter((d) => d !== dayValue) : [...prev, dayValue]));
+  };
+
+  const generateSchedules = () => {
+    if (!startTime || !endTime || !startDate || !endDate || selectedDays.length === 0 || !repeatType) {
+      toast({
+        title: '입력 오류',
+        description: '모든 필드를 입력해주세요.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const newSchedules: Schedule[] = [];
+    let current = startDate.clone();
+    let loopCount = 0;
+
+    while (current.isBefore(endDate) || current.isSame(endDate, 'day')) {
+      loopCount++;
+
+      // 무한루프 방지
+      if (loopCount > 1000) {
+        console.error('❌ 무한루프 감지! 중단합니다.');
+        break;
+      }
+
+      const currentDayOfWeek = current.day();
+
+      if (selectedDays.includes(currentDayOfWeek)) {
+        newSchedules.push({
+          date: current.clone(),
+          startTime: { ...startTime },
+          endTime: { ...endTime },
+        });
+      }
+      // 매주면 1일씩, 매월이면 해당 요일만 찾아서 추가
+      if (repeatType.value === 'weekly') {
+        current = current.add(1, 'day');
+      } else {
+        // 매월인 경우 - 다음 달의 같은 요일로 이동
+        current = current.add(1, 'month');
+      }
+    }
+
+    // 기존 스케줄과 새 스케줄 합치기 (빈 행 제외)
+    const existingSchedules = value.filter((s) => s.date && s.startTime && s.endTime);
+    const allSchedules = [...existingSchedules, ...newSchedules];
+
+    onChange(allSchedules);
+    setIsPopoverOpen(false);
+
+    // 입력 필드 초기화
+    setSelectedDays([]);
+    setStartTime(null);
+    setEndTime(null);
+    setStartDate(null);
+    setEndDate(null);
+
+    toast({
+      title: '일정 생성 완료',
+      description: `${newSchedules.length}개의 일정이 추가되었습니다.`,
+      type: 'success',
+    });
+  };
 
   const handleScheduleChange = (index: number, field: keyof Schedule, newValue: Dayjs | Time | null) => {
     const updated = [...value];
@@ -123,57 +217,138 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   })();
 
   return (
-    <div className='flex flex-col gap-12'>
-      {schedules.map((schedule, idx) => {
-        const isLast = idx === schedules.length - 1;
-        const scheduleKey =
-          schedule?.date && schedule?.startTime && schedule?.endTime
-            ? `${schedule.date.format?.('YYYY-MM-DD') ?? 'no-date'}-${schedule.startTime.hour}:${schedule.startTime.minute}-${schedule.endTime.hour}:${schedule.endTime.minute}`
-            : `empty-schedule-${idx}`;
-        const isComplete = schedule.date && schedule.startTime && schedule.endTime;
+    <div>
+      <div className='mb-4 flex items-center justify-between'>
+        <p className='mb-4 block'>예약 가능한 시간대</p>
+        <Popover.Root direction='fixed-center-center' open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <Popover.Trigger asChild>
+            <Button
+              className='caption-text h-fit border-gray-100 px-10 py-4'
+              size='sm'
+              variant='outline'
+              onClick={() => setIsPopoverOpen(true)}
+            >
+              반복 일정 추가
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content overlay preventInteraction className='rounded-2xl border-gray-50 bg-white p-24'>
+            <div className='flex w-300 flex-col gap-16 md:w-500 xl:w-700'>
+              <div>
+                <label className='mb-2 block text-sm font-medium'>반복 유형</label>
+                <Select.Root value={repeatType} onChangeValue={(selected) => setRepeatType(selected)}>
+                  <Select.Trigger className='w-full'>
+                    <Select.Value placeholder='반복 유형 선택' />
+                  </Select.Trigger>
+                  <Select.Content>
+                    <Select.Item value='weekly'>매주</Select.Item>
+                    <Select.Item value='monthly'>매월</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+              </div>
 
-        return (
-          <div key={scheduleKey} className='flex flex-col items-center gap-8 md:flex-row'>
-            <div className='w-full flex-1'>
-              <DatePicker value={schedule?.date || null} onChange={(date) => handleScheduleChange(idx, 'date', date)} />
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <label className='mb-2 block text-sm font-medium'>시작 날짜</label>
+                  <DatePicker value={startDate} onChange={setStartDate} />
+                </div>
+                <div>
+                  <label className='mb-2 block text-sm font-medium'>종료 날짜</label>
+                  <DatePicker value={endDate} onChange={setEndDate} />
+                </div>
+              </div>
+
+              <div>
+                <label className='mb-2 block text-sm font-medium'>요일 선택</label>
+                <div className='flex flex-wrap gap-4'>
+                  {weekdays.map((day) => (
+                    <button
+                      key={day.value}
+                      className={`body-text flex size-32 cursor-pointer items-center justify-center rounded-lg border border-gray-100 transition-colors ${
+                        selectedDays.includes(day.value) ? 'bg-gray-50' : ''
+                      }`}
+                      type='button'
+                      onClick={() => toggleDay(day.value)}
+                    >
+                      {day.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <label className='mb-2 block text-sm font-medium'>시작 시간</label>
+                  <TimePicker className='w-full' value={startTime} onChange={setStartTime} />
+                </div>
+                <div>
+                  <label className='mb-2 block text-sm font-medium'>종료 시간</label>
+                  <TimePicker className='w-full' value={endTime} onChange={setEndTime} />
+                </div>
+              </div>
+
+              <Button className='w-full' size='sm' onClick={generateSchedules}>
+                일정 생성
+              </Button>
             </div>
-            <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
-              <div className='flex-1'>
-                <TimePicker
-                  className='w-full md:w-120'
-                  value={schedule?.startTime || null}
-                  onChange={(time) => handleScheduleChange(idx, 'startTime', time)}
+          </Popover.Content>
+        </Popover.Root>
+      </div>
+
+      <div className='flex flex-col gap-12'>
+        {schedules.map((schedule, idx) => {
+          const isLast = idx === schedules.length - 1;
+          const scheduleKey =
+            schedule?.date && schedule?.startTime && schedule?.endTime
+              ? `${schedule.date.format?.('YYYY-MM-DD') ?? 'no-date'}-${schedule.startTime.hour}:${schedule.startTime.minute}-${schedule.endTime.hour}:${schedule.endTime.minute}`
+              : `empty-schedule-${idx}`;
+          const isComplete = schedule.date && schedule.startTime && schedule.endTime;
+
+          return (
+            <div key={scheduleKey} className='flex flex-col items-center gap-8 md:flex-row'>
+              <div className='w-full flex-1'>
+                <DatePicker
+                  value={schedule?.date || null}
+                  onChange={(date) => handleScheduleChange(idx, 'date', date)}
                 />
               </div>
-              <div className='flex-1'>
-                <TimePicker
-                  className='w-full md:w-120'
-                  value={schedule?.endTime || null}
-                  onChange={(time) => handleScheduleChange(idx, 'endTime', time)}
-                />
+              <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
+                <div className='flex-1'>
+                  <TimePicker
+                    className='w-full md:w-120'
+                    value={schedule?.startTime || null}
+                    onChange={(time) => handleScheduleChange(idx, 'startTime', time)}
+                  />
+                </div>
+                <div className='flex-1'>
+                  <TimePicker
+                    className='w-full md:w-120'
+                    value={schedule?.endTime || null}
+                    onChange={(time) => handleScheduleChange(idx, 'endTime', time)}
+                  />
+                </div>
+
+                {/* 마지막 행이 아니거나, 완성된 행이면 삭제 버튼 표시 */}
+                {(!isLast || isComplete) && (
+                  <Button
+                    className='aspect-square w-fit rounded-full bg-gray-200'
+                    variant='none'
+                    onClick={() => handleRemoveSchedule(idx)}
+                  >
+                    <MinusIcon color='white' />
+                  </Button>
+                )}
+
+                {/* 마지막 행이고 비어있으면 플레이스홀더 */}
+                {isLast && (
+                  <Button className='bg-primary-500 aspect-square w-fit rounded-full' variant='none'>
+                    <PlusIcon color='white' />
+                  </Button>
+                )}
               </div>
-
-              {/* 마지막 행이 아니거나, 완성된 행이면 삭제 버튼 표시 */}
-              {(!isLast || isComplete) && (
-                <Button
-                  className='aspect-square w-fit rounded-full bg-gray-200'
-                  variant='none'
-                  onClick={() => handleRemoveSchedule(idx)}
-                >
-                  <MinusIcon color='white' />
-                </Button>
-              )}
-
-              {/* 마지막 행이고 비어있으면 플레이스홀더 */}
-              {isLast && (
-                <Button className='bg-primary-500 aspect-square w-fit rounded-full' variant='none'>
-                  <PlusIcon color='white' />
-                </Button>
-              )}
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

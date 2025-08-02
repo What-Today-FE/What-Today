@@ -33,7 +33,7 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
             </Input.Root>
           </Popover.Trigger>
 
-          <Popover.Content className='mt-8 w-fit rounded-xl border border-gray-100 bg-white p-12'>
+          <Popover.Content className='date-picker mt-8 w-fit rounded-xl border border-gray-100 bg-white p-12'>
             <Calendar.Root initialDate={today} onDateChange={(newDate) => onChange(dayjs(newDate))}>
               <Calendar.Header headerClass='my-12' />
               <Calendar.Grid divider weekdayType='short'>

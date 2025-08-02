@@ -311,7 +311,7 @@ export default function CreateExperience() {
         />
 
         <div>
-          <p className='mb-4 block'>예약 가능한 시간대</p>
+          {/* <p className='mb-4 block'>예약 가능한 시간대</p> */}
           <Controller
             control={control}
             name='schedules'
