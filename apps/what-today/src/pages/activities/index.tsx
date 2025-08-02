@@ -1,4 +1,4 @@
-import { useToast } from '@what-today/design-system';
+import { SpinIcon, useToast } from '@what-today/design-system';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
 import { useActivityDetail, useCreateReservation } from '@/hooks/activityDetail';
 import { useResponsive } from '@/hooks/useResponsive';
+import NotFoundPage from '@/pages/not-found-page';
 import { useWhatTodayStore } from '@/stores';
 
 export default function ActivityDetailPage() {
@@ -32,10 +33,14 @@ export default function ActivityDetailPage() {
 
   const createReservationMutation = useCreateReservation(Number(id));
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error)
-    return <p>오류: {error instanceof Error ? error.message : '활동 정보를 불러오는 중 오류가 발생했습니다.'}</p>;
-  if (!activity) return <p>데이터 없음</p>;
+  if (loading)
+    return (
+      <div className='flex h-screen items-center justify-center p-40'>
+        <SpinIcon className='size-200' color='var(--color-gray-100)' />
+      </div>
+    );
+  if (error) return <NotFoundPage />;
+  if (!activity) return <NotFoundPage />;
 
   const handleConfirmTabletReservation = (reservation: ReservationSummary) => {
     setReservationSummary(reservation);
