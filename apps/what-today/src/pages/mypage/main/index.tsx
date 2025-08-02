@@ -6,11 +6,13 @@ import {
   UpcomingSchedule,
   useToast,
 } from '@what-today/design-system';
+import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchMyReservations } from '@/apis/myReservations';
+import { useInfiniteMyActivitiesQuery } from '@/hooks/myActivity/useMyActivitiesQuery';
+import { useMonthlyScheduleQuery } from '@/hooks/myReservation/useMonthlyScheduleQuery';
 import useAuth from '@/hooks/useAuth';
-import { useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
 import type { MyReservationsResponse } from '@/schemas/myReservations';
 import { useWhatTodayStore } from '@/stores';
 
@@ -23,12 +25,17 @@ export default function MyPage() {
   const { data: activityData } = useInfiniteMyActivitiesQuery(1000);
   const totalActivity = activityData?.pages[0]?.totalCount;
   // 예약 승인 대기 갯수
-  const activityIds = activityData?.pages.flatMap((page) => page.activities.map((activity) => activity.id)) ?? [];
-  // const { data: monthlyReservations = [] } = useMonthlyScheduleQuery({
-  //   activityId: activityIds[0],
-  //   year: calendarYear,
-  //   month: calendarMonth,
-  // });
+  const activityIds =
+    activityData?.pages.flatMap((page: { activities: { id: number }[] }) =>
+      page.activities.map((activity) => activity.id),
+    ) ?? [];
+  const { data: monthlyReservations = [] } = useMonthlyScheduleQuery({
+    activityId: activityIds[0],
+    year: dayjs().format('YYYY'),
+    month: dayjs().format('MM'),
+  });
+  const totalPending = monthlyReservations.reduce((sum, item) => sum + item.reservations.pending, 0);
+  console.log(monthlyReservations);
   // 완료한 체험 갯수
   const { data: completedData } = useQuery<MyReservationsResponse>({
     queryKey: ['reservations', 'completed'],
@@ -78,7 +85,7 @@ export default function MyPage() {
         <div className='flex gap-24'>
           <MypageSummaryCard.Root>
             <MypageSummaryCard.Item count={totalActivity || 0} label='등록한 체험' />
-            <MypageSummaryCard.Item count={100} label='승인 대기' />
+            <MypageSummaryCard.Item count={totalPending} label={`${dayjs().format('M')}월 승인 대기`} />
           </MypageSummaryCard.Root>
           <MypageSummaryCard.Root className='bg-[#4D6071]'>
             <MypageSummaryCard.Item
@@ -95,7 +102,7 @@ export default function MyPage() {
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='flex h-540 flex-col gap-16 rounded-3xl border border-gray-50 px-32 pt-24'>
+        <div className='flex max-h-540 flex-col gap-16 rounded-3xl border border-gray-50 px-32 pt-24'>
           <p className='body-text font-bold'>다가오는 일정</p>
           <UpcomingSchedule className='w-full overflow-scroll' reservation={confirmedData?.reservations || []} />
         </div>
