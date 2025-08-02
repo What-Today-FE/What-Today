@@ -128,6 +128,7 @@ export default function ReservationsListPage() {
           {group.map((res) => {
             const showCancelButton = res.status === 'pending';
             const showReviewButton = res.status === 'completed' && !res.reviewSubmitted;
+            const shoowReviewCompletedButton = res.status === 'completed' && res.reviewSubmitted;
 
             return (
               <li key={res.id} className='mb-24'>
@@ -142,7 +143,7 @@ export default function ReservationsListPage() {
                   onClick={() => navigate(`/activities/${res.activity.id}`)}
                 />
 
-                {(showCancelButton || showReviewButton) && (
+                {(showCancelButton || showReviewButton || shoowReviewCompletedButton) && (
                   <div className='mt-8 mb-24'>
                     {showCancelButton && (
                       <Button
@@ -162,6 +163,11 @@ export default function ReservationsListPage() {
                         onClick={() => setReviewTarget(res)}
                       >
                         후기 작성
+                      </Button>
+                    )}
+                    {shoowReviewCompletedButton && (
+                      <Button disabled className='caption-text w-full' size='md' variant='fill'>
+                        후기 작성 완료
                       </Button>
                     )}
                   </div>
