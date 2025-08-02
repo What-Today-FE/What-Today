@@ -26,7 +26,7 @@ export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [searchResult, setSearchResult] = useState<Activity[]>([]);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest'); // 기본값 최신순
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
@@ -44,29 +44,54 @@ export default function MainPage() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // react-query로 활동 리스트 요청
+  // 활동 리스트 요청
   const { data: activities = [] } = useQuery({
     queryKey: ['activities'],
     queryFn: () => getActivities(),
-    staleTime: 1000 * 60 * 5, // 5분 캐싱
+    staleTime: 1000 * 60 * 5,
   });
 
-  const popularActivities = [...activities].sort((a, b) => b.reviewCount - a.reviewCount).slice(0, 12);
+  // ✅ 인기 체험: 리뷰 많은 순
+  const popularActivities = [...activities]
+    .sort((a, b) => {
+      if (b.reviewCount === a.reviewCount) {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return b.reviewCount - a.reviewCount;
+    })
+    .slice(0, 12);
 
-  // activities가 바뀔 때 초기 상태 설정
+  // ✅ 모든 체험 초기값: 최신순
   useEffect(() => {
-    if (activities.length > 0) {
-      setSearchResult(activities);
+    if (activities.length > 0 && searchResult.length === 0) {
+      const latestSorted = [...activities].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+      setSearchResult(latestSorted);
     }
   }, [activities]);
 
-  // 검색 핸들러
+  // 검색
   const handleSearch = (keyword: string) => {
+    const sortedLatest = (list: Activity[]) =>
+      [...list].sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
+
+    if (keyword === '') {
+      setSearchResult(sortedLatest(activities));
+      setCurrentPage(1);
+      setSortOrder('latest');
+      setSelectedValue(null);
+      setSelectedCategory('');
+      return;
+    }
+
     const result = activities.filter((item) => item.title.toLowerCase().includes(keyword.toLowerCase()));
-    setSearchResult(result);
+
+    setSearchResult(sortedLatest(result)); // ✅ 검색 후에도 최신순 유지
     setCurrentPage(1);
-    setSortOrder('asc');
+    setSortOrder('latest');
     setSelectedValue(null);
+    setSelectedCategory('');
   };
 
   // 정렬 변경 시 페이지 초기화
@@ -77,7 +102,13 @@ export default function MainPage() {
   const filteredItems =
     selectedCategory !== '' ? searchResult.filter((item) => item.category === selectedCategory) : searchResult;
 
-  const sortedItems = [...filteredItems].sort((a, b) => (sortOrder === 'asc' ? a.price - b.price : b.price - a.price));
+  // 정렬 로직
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (sortOrder === 'asc') return a.price - b.price;
+    if (sortOrder === 'desc') return b.price - a.price;
+    return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime(); // 최신순
+  });
+
   const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
   const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -86,6 +117,8 @@ export default function MainPage() {
       <div className='to-primary-500/40 absolute top-0 left-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
       <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
         <MainBanner />
+
+        {/* 인기 체험 */}
         <div className='flex flex-col gap-20'>
           <h2 className='title-text'>🔥 인기 체험</h2>
           <div className='-mx-15 flex'>
@@ -97,11 +130,13 @@ export default function MainPage() {
           </div>
         </div>
 
+        {/* 검색 */}
         <div className='flex flex-col gap-20'>
           <h2 className='title-text flex justify-center'>무엇을 체험하고 싶으신가요?</h2>
           <MainSearchInput onClick={handleSearch} />
         </div>
 
+        {/* 모든 체험 */}
         <div className='flex flex-col gap-20'>
           {/* 제목 + 가격 드롭다운 */}
           <div className='flex flex-wrap items-center justify-between gap-12'>
@@ -116,19 +151,23 @@ export default function MainPage() {
                 }
               }}
             >
-              <Select.Trigger className='text-2lg flex min-w-fit gap-6 border-none bg-white px-15 py-10'>
-                <Select.Value className='text-gray-950' placeholder='가격' />
+              <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
+                <Select.Value className='body-text text-gray-950' placeholder='가격' />
               </Select.Trigger>
               <Select.Content>
-                <Select.Group className='body-text text-center whitespace-nowrap'>
-                  <Select.Item value='desc'> 높은순</Select.Item>
-                  <Select.Item value='asc'> 낮은순</Select.Item>
+                <Select.Group className='caption-text text-center whitespace-nowrap'>
+                  <Select.Item className='flex justify-center' value='desc'>
+                    높은순
+                  </Select.Item>
+                  <Select.Item className='flex justify-center' value='asc'>
+                    낮은순
+                  </Select.Item>
                 </Select.Group>
               </Select.Content>
             </Select.Root>
           </div>
 
-          {/* 라디오 버튼 가로 스크롤 */}
+          {/* 카테고리 라디오 버튼 */}
           <div className='overflow-x-hidden'>
             <RadioGroup
               radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
@@ -136,27 +175,27 @@ export default function MainPage() {
               onSelect={setSelectedCategory}
             >
               <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
-                <ArtIcon className='size-15' />
+                <ArtIcon className='size-12' />
                 문화 예술
               </RadioGroup.Radio>
               <RadioGroup.Radio value='식음료'>
-                <FoodIcon className='size-15' />
+                <FoodIcon className='size-12' />
                 식음료
               </RadioGroup.Radio>
               <RadioGroup.Radio value='스포츠'>
-                <SportIcon className='size-15' />
+                <SportIcon className='size-12' />
                 스포츠
               </RadioGroup.Radio>
               <RadioGroup.Radio value='투어'>
-                <WellbeingIcon className='size-15' />
+                <WellbeingIcon className='size-12' />
                 투어
               </RadioGroup.Radio>
               <RadioGroup.Radio value='관광'>
-                <BusIcon className='size-15' />
+                <BusIcon className='size-12' />
                 관광
               </RadioGroup.Radio>
               <RadioGroup.Radio value='웰빙'>
-                <TourIcon className='size-15' />
+                <TourIcon className='size-12' />
                 웰빙
               </RadioGroup.Radio>
             </RadioGroup>
