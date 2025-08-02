@@ -50,7 +50,7 @@ export default function MainPage() {
 
   // ✅ 데이터 불러오기
   const { data: activities = [] } = useQuery<Activity[]>({
-    queryKey: ['activities-all'],
+    queryKey: ['activities'],
     queryFn: () => getActivities({ size: 100 }),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
