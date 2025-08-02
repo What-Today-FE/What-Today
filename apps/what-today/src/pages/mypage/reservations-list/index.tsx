@@ -273,7 +273,7 @@ export default function ReservationsListPage() {
           <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
             <Modal.CloseButton />
             <h2 className='section-text mt-22 font-bold'>{reviewTarget.activity.title}</h2>
-            <p className='caption-text text-gray-400'>
+            <p className='caption-text mb-6 text-gray-400'>
               {reviewTarget.date}/ {reviewTarget.startTime} ~ {reviewTarget.endTime} ({reviewTarget.headCount}명)
             </p>
 
