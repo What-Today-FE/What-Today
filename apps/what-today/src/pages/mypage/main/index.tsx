@@ -1,13 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import {
-  CalendarIcon,
-  ListIcon,
   MypageProfileHeader,
   MypageSummaryCard,
   OngoingExperienceCard,
-  SettingIcon,
   UpcomingSchedule,
-  UserIcon,
   useToast,
 } from '@what-today/design-system';
 import { useNavigate } from 'react-router-dom';
@@ -18,27 +14,24 @@ import { useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
 import type { MyReservationsResponse } from '@/schemas/myReservations';
 import { useWhatTodayStore } from '@/stores';
 
-/**
- * 사이드바에 표시할 고정 메뉴 항목 목록
- * 각 항목은 라벨, 아이콘 컴포넌트, 이동 경로로 구성됩니다.
- */
-const items = [
-  { icon: UserIcon, label: '내 정보', to: '/mypage/edit-profile' },
-  { icon: ListIcon, label: '예약 내역', to: '/mypage/reservations-list' },
-  { icon: SettingIcon, label: '내 체험 관리', to: '/mypage/manage-activities' },
-  { icon: CalendarIcon, label: '예약 현황', to: '/mypage/reservations-status' },
-];
-
 export default function MyPage() {
   const navigate = useNavigate();
   const { logoutUser } = useAuth();
   const { user } = useWhatTodayStore();
   const { toast } = useToast();
   // 등록한 체험 갯수
-  const { data: activityData } = useInfiniteMyActivitiesQuery(1);
+  const { data: activityData } = useInfiniteMyActivitiesQuery(1000);
+  const totalActivity = activityData?.pages[0]?.totalCount;
+  // 예약 승인 대기 갯수
+  const activityIds = activityData?.pages.flatMap((page) => page.activities.map((activity) => activity.id)) ?? [];
+  // const { data: monthlyReservations = [] } = useMonthlyScheduleQuery({
+  //   activityId: activityIds[0],
+  //   year: calendarYear,
+  //   month: calendarMonth,
+  // });
   // 완료한 체험 갯수
   const { data: completedData } = useQuery<MyReservationsResponse>({
-    queryKey: ['reservations'],
+    queryKey: ['reservations', 'completed'],
     queryFn: () =>
       fetchMyReservations({
         cursorId: null, // 첫 페이지부터 가져옴
@@ -47,6 +40,22 @@ export default function MyPage() {
       }),
     staleTime: 1000 * 30,
   });
+  // 완료한 체험 중 리뷰 미작성 갯수
+  const reviewRequired = completedData?.reservations.filter((res) => res.reviewSubmitted === false).length ?? 0;
+
+  // 다가오는 체험 데이터
+  const { data: confirmedData } = useQuery<MyReservationsResponse>({
+    queryKey: ['reservations', 'confirmed'],
+    queryFn: () =>
+      fetchMyReservations({
+        cursorId: null, // 첫 페이지부터 가져옴
+        size: 1000, // 충분히 큰 숫자로 설정 (전체 데이터 한 번에)
+        status: 'confirmed', // 확정된 체험만 받아오기
+      }),
+    staleTime: 1000 * 30,
+  });
+  console.log(activityData);
+  console.log(activityIds);
 
   const handleLogout = () => {
     logoutUser();
@@ -68,7 +77,7 @@ export default function MyPage() {
         />
         <div className='flex gap-24'>
           <MypageSummaryCard.Root>
-            <MypageSummaryCard.Item count={activityData?.pages[0]?.totalCount || 0} label='등록한 체험' />
+            <MypageSummaryCard.Item count={totalActivity || 0} label='등록한 체험' />
             <MypageSummaryCard.Item count={100} label='승인 대기' />
           </MypageSummaryCard.Root>
           <MypageSummaryCard.Root className='bg-[#4D6071]'>
@@ -79,18 +88,18 @@ export default function MyPage() {
               labelClassName='text-gray-200'
             />
             <MypageSummaryCard.Item
-              count={100}
+              count={reviewRequired}
               countClassName='text-white'
               label='리뷰 대기'
               labelClassName='text-gray-200'
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='flex h-540 flex-col gap-16 overflow-hidden rounded-3xl border border-gray-50 px-40 pt-32'>
+        <div className='flex h-540 flex-col gap-16 rounded-3xl border border-gray-50 px-32 pt-24'>
           <p className='body-text font-bold'>다가오는 일정</p>
-          <UpcomingSchedule className='pl-32' />
+          <UpcomingSchedule className='w-full overflow-scroll' reservation={confirmedData?.reservations || []} />
         </div>
-        <div className='flex flex-col gap-16 pt-20'>
+        <div className='flex h-300 flex-col gap-16 rounded-3xl border border-gray-50 px-40 py-24'>
           <p className='body-text font-bold'>모집 중인 체험</p>
           <OngoingExperienceCard />
         </div>
