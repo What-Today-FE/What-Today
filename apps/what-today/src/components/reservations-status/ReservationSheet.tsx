@@ -28,18 +28,14 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
   const [selectedStatus, setSelectedStatus] = useState<ManageableReservationStatus>('pending');
 
   // 날짜별 스케줄 가져오기
-  const {
-    data: dailySchedule = [],
-    isLoading: loadingSchedule,
-    refetch: refetchDailySchedule,
-  } = useDailyScheduleQuery(activityId, selectedDate);
+  const { data: dailySchedule = [], isLoading: loadingSchedule } = useDailyScheduleQuery(activityId, selectedDate);
 
   // 예약 정보 가져오기 (스케줄 ID와 상태 기반)
-  const {
-    data: reservations,
-    isLoading: loadingReservation,
-    refetch: refetchReservations,
-  } = useReservationQuery(activityId, selectedScheduleId ?? 0, selectedStatus);
+  const { data: reservations, isLoading: loadingReservation } = useReservationQuery(
+    activityId,
+    selectedScheduleId ?? 0,
+    selectedStatus,
+  );
 
   // 날짜 바뀌면 상태 초기화
   useEffect(() => {
@@ -72,8 +68,6 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
     } catch (error) {
       console.error('Error in handleApprove:', error);
-      console.error({ title: '승인 처리에 실패했어요' });
-      console.error('Error in handleApprove:', error);
     }
   };
 
@@ -84,22 +78,8 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
     } catch (error) {
       console.error('Error in handleApprove:', error);
-      console.error({ title: '거절 처리에 실패했어요' });
-      console.error('Error in handleApprove:', error);
     }
   };
-  // 승인/거절
-  // const handleApprove = async (id: number) => {
-  //   await patchReservationStatus(activityId, id, 'confirmed');
-  //   await refetchReservations();
-  //   await refetchDailySchedule();
-  // };
-
-  // const handleReject = async (id: number) => {
-  //   await patchReservationStatus(activityId, id, 'declined');
-  //   await refetchReservations();
-  //   await refetchDailySchedule();
-  // };
 
   // 선택된 시간대의 예약 수
   const selectedCount = dailySchedule.find((s) => s.scheduleId === selectedScheduleId)?.count ?? {
