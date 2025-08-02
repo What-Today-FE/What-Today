@@ -7,8 +7,8 @@ import ActivitiesInformation from '@/components/activities/ActivitiesInformation
 import ActivitiesMap from '@/components/activities/ActivitiesMap';
 import ActivityImages from '@/components/activities/ActivityImages';
 import Divider from '@/components/activities/Divider';
-import DesktopReservation from '@/components/activities/reservation/DesktopReservation';
 import MobileReservationSheet from '@/components/activities/reservation/MobileReservationSheet';
+import ReservationForm from '@/components/activities/reservation/ReservationForm';
 import TabletReservationSheet from '@/components/activities/reservation/TabletReservationSheet';
 import type { ReservationSummary } from '@/components/activities/reservation/types';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
@@ -99,7 +99,7 @@ export default function ActivityDetailPage() {
                 reviewCount={activity.reviewCount}
                 title={activity.title}
               />
-              <DesktopReservation
+              <ReservationForm
                 activityId={activity.id}
                 isAuthor={user?.id ? activity?.userId === user.id : false}
                 isLoggedIn={!!user}

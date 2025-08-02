@@ -50,20 +50,13 @@ export interface UseReservationReturn {
 }
 
 export interface ReservationFormProps {
+  activityId: number;
   schedules: Schedule[];
   price: number;
   onReservationChange?: (summary: ReservationSummary | null) => void;
   onSubmit?: (request: ReservationRequest) => Promise<void>;
   showSubmitButton?: boolean;
   isSubmitting?: boolean;
-  isAuthor?: boolean;
-  isLoggedIn?: boolean;
-}
-
-export interface DesktopReservationProps {
-  activityId: number;
-  price: number;
-  schedules: Schedule[];
   isAuthor?: boolean;
   isLoggedIn?: boolean;
 }
