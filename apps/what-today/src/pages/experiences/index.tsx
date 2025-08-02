@@ -153,7 +153,7 @@ export default function CreateExperience() {
       const message = error instanceof Error ? error.message : '체험 등록에 실패했습니다.';
       toast({
         title: '체험 등록 실패',
-        description: `체험 등록에 실패했습니다.`,
+        description: message,
         type: 'error',
       });
     },
