@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
-import { useDeleteMyActivityMutation } from '@/hooks/useMyActivitiesQuery';
+import { useDeleteMyActivityMutation } from '@/hooks/myActivity/useDeleteMyActivityMutation';
 
 interface ActivitiesInformationProps {
   category: string;
