@@ -138,6 +138,7 @@ export default function MainPage() {
       <MemoizedMainCard
         key={`${item.id}-${currentPage}-${index}`}
         bannerImageUrl={item.bannerImageUrl}
+        category={item.category}
         price={item.price}
         rating={item.rating}
         reviewCount={item.reviewCount}
@@ -159,7 +160,7 @@ export default function MainPage() {
         {/* 인기 체험 */}
         <div className='flex flex-col gap-20'>
           <h2 className='title-text'>🔥 인기 체험</h2>
-          <div className='-mx-15 flex'>
+          <div className='flex'>
             <Carousel items={popularActivities} itemsPerPage={4} onClick={(id) => navigate(`/activities/${id}`)} />
           </div>
         </div>
