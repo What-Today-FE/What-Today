@@ -9,16 +9,10 @@ import ReservationSheet from './ReservationSheet';
 interface ReservationCalendarProps {
   reservationsByDate: Record<string, Record<CalendarReservationStatus, number>>;
   onChange?: (date: string) => void;
-  onMonthChange?: (year: string, month: string) => void;
   activityId: number;
 }
 
-export default function ReservationCalendar({
-  reservationsByDate,
-  onChange,
-  onMonthChange,
-  activityId,
-}: ReservationCalendarProps) {
+export default function ReservationCalendar({ reservationsByDate, onChange, activityId }: ReservationCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(dayjs().format('YYYY-MM-DD'));
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedDayNode, setSelectedDayNode] = useState<HTMLDivElement | null>(null);

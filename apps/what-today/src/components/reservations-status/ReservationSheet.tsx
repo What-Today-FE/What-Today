@@ -28,14 +28,10 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
   const [selectedStatus, setSelectedStatus] = useState<ManageableReservationStatus>('pending');
 
   // 날짜별 스케줄 가져오기
-  const { data: dailySchedule = [], isLoading: loadingSchedule } = useDailyScheduleQuery(activityId, selectedDate);
+  const { data: dailySchedule = [] } = useDailyScheduleQuery(activityId, selectedDate);
 
   // 예약 정보 가져오기 (스케줄 ID와 상태 기반)
-  const { data: reservations, isLoading: loadingReservation } = useReservationQuery(
-    activityId,
-    selectedScheduleId ?? 0,
-    selectedStatus,
-  );
+  const { data: reservations } = useReservationQuery(activityId, selectedScheduleId ?? 0, selectedStatus);
 
   // 날짜 바뀌면 상태 초기화
   useEffect(() => {
