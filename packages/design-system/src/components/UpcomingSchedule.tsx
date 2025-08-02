@@ -39,19 +39,27 @@ function ScheduleItem({
 interface UpcomingScheduleProps {
   className?: string;
   reservation: Record<string, any>[];
+  onClickReservation: (id: number) => void;
+  onClick?: () => void;
 }
-export default function UpcomingSchedule({ className, reservation }: UpcomingScheduleProps) {
+export default function UpcomingSchedule({
+  className,
+  reservation,
+  onClickReservation,
+  onClick,
+}: UpcomingScheduleProps) {
+  const flex = reservation.length === 0 ? 'justify-center' : '';
   return (
-    <div className={twMerge('flex justify-center gap-16', className)}>
+    <div className={twMerge('flex gap-16', flex, className)}>
       {/* <div className='flex flex-col items-center'>
         <div className='size-12 shrink-0 rounded-full bg-gray-300' />
         <div className='h-full w-3 bg-gray-300' />
       </div> */}
       <div className='flex flex-col gap-8'>
         {reservation.length === 0 ? (
-          <div className='flex flex-col items-center justify-center gap-12 pb-24'>
+          <div className='flex flex-col items-center justify-center gap-20 pt-32'>
             <EmptyLogo size={80} />
-            <Button className='text-md w-auto font-semibold' variant='outline'>
+            <Button className='text-md w-auto font-semibold' variant='outline' onClick={onClick}>
               체험 예약하러 가기
             </Button>
           </div>
@@ -63,7 +71,11 @@ export default function UpcomingSchedule({ className, reservation }: UpcomingSch
               const isLast = idx === reservation.length - 1;
               prevDate = res.date;
               return (
-                <div key={res.id} className={twMerge('flex flex-col gap-4', isLast && 'pb-32')}>
+                <div
+                  key={res.id}
+                  className={twMerge('flex flex-col gap-4', isLast && 'pb-32')}
+                  onClick={() => onClickReservation(res.activity.id)}
+                >
                   {showDateLabel && <ScheduleDateLabel date={res.date} />}
                   <ScheduleItem
                     headCount={res.headCount}

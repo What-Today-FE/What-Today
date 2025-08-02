@@ -81,15 +81,11 @@ export default function MyPage() {
     queries: activityIds.map((id) => ({
       queryKey: ['availableSchedule', id, year, month],
       queryFn: () => {
-        console.log('fetchReservationAvailableSchedule 실행됨', id, year, month);
         return fetchReservationAvailableSchedule(id, { year, month });
       },
       enabled: !!id,
     })),
   });
-  const reservationAvailableDataList = reservationAvailableResults
-    .map((result) => result.data) // result: { data, isLoading, isError, ... }
-    .filter(Boolean); // undefined 제거
   const availableActivityIds = reservationAvailableResults
     .map((result, index) => ({ data: result.data, activityId: activityIds[index] }))
     .filter(({ data }) => Array.isArray(data) && data.length > 0)
@@ -99,11 +95,6 @@ export default function MyPage() {
 
   // 2. 예약 가능 activityId와 일치하는 항목만 필터링
   const availableActivities = allActivities.filter((activity) => availableActivityIds.includes(activity.id));
-
-  console.log(activityIds);
-  console.log(reservationAvailableDataList);
-  console.log(availableActivityIds);
-  console.log(availableActivities);
 
   const handleLogout = () => {
     logoutUser();
@@ -143,13 +134,22 @@ export default function MyPage() {
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='flex max-h-540 flex-col gap-16 rounded-3xl border border-gray-50 px-32 pt-24'>
+        <div className='flex max-h-540 min-h-300 flex-col gap-16 rounded-3xl border border-gray-50 px-32 pt-24'>
           <p className='body-text font-bold'>다가오는 일정</p>
-          <UpcomingSchedule className='w-full overflow-y-scroll' reservation={confirmedData?.reservations || []} />
+          <UpcomingSchedule
+            className='w-full overflow-y-scroll'
+            reservation={confirmedData?.reservations || []}
+            onClick={() => navigate('/')}
+            onClickReservation={(id) => navigate(`/activities/${id}`)}
+          />
         </div>
         <div className='flex h-300 w-full flex-col gap-16 overflow-hidden rounded-3xl border border-gray-50 px-40 py-24'>
           <p className='body-text font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
-          <OngoingExperienceCard activities={availableActivities} className='' />
+          <OngoingExperienceCard
+            activities={availableActivities}
+            onClick={() => navigate('/experiences/create')}
+            onClickActivity={(id) => navigate(`/activities/${id}`)}
+          />
         </div>
       </div>
     </div>
