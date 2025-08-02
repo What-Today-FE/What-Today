@@ -113,10 +113,10 @@ export default function ReservationsListPage() {
       setStarRating(0);
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: '후기 작성 실패',
-        description: '후기 작성 중 문제가 발생했습니다.',
+        description: error instanceof Error ? error.message : '후기 작성 중 문제가 발생했습니다.',
         type: 'error',
       });
     },
