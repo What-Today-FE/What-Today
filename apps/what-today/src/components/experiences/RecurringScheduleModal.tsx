@@ -21,7 +21,7 @@ interface RecurringScheduleModalProps {
 
 function timeToMinutes(time: { hour: string; minute: string } | null): number {
   if (!time) return -1;
-  return parseInt(time.hour) * 60 + parseInt(time.minute);
+  return parseInt(time.hour, 10) * 60 + parseInt(time.minute, 10);
 }
 
 export default function RecurringScheduleModal({
