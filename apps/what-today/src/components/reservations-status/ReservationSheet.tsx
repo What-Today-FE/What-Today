@@ -73,7 +73,7 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await queryClient.invalidateQueries({ queryKey: ['reservation'] });
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
     } catch (error) {
-      console.error('Error in handleApprove:', error);
+      console.error('Error in handleReject:', error);
     }
   };
 
