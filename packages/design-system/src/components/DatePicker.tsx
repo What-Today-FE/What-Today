@@ -1,5 +1,6 @@
 import dayjs, { type Dayjs } from 'dayjs';
 import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 import { Calendar } from './calendar';
 import { CalendarIcon } from './icons';
@@ -49,10 +50,16 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
                 <Calendar.Grid divider weekdayType='short'>
                   {(day) => {
                     const isBeforeToday = day.isBefore(dayjs(), 'day');
+                    const isSelected = value && day.isSame(value, 'day');
+                    const isToday = day.isSame(dayjs(), 'day');
 
                     return (
                       <Calendar.DayCell
-                        dateClass={!isBeforeToday ? 'hover:bg-gray-50' : undefined}
+                        dateClass={twMerge(
+                          !isBeforeToday && 'hover:bg-gray-50',
+                          isToday && 'bg-transparent text-gray-800 hover:bg-gray-50',
+                          isSelected && 'bg-primary-500 text-white',
+                        )}
                         day={day}
                         dayCellClass={isBeforeToday ? 'opacity-30 pointer-events-none cursor-not-allowed' : undefined}
                       />
