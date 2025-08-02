@@ -3,7 +3,7 @@ import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
 /* Playground에서 사용할 예시 코드를 작성해주세요. */
-const code = `예시 코드를 작성해주세요.`;
+// const code = `예시 코드를 작성해주세요.`;
 
 export default function MypageSummaryCardDoc() {
   return (
