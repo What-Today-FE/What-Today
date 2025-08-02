@@ -150,7 +150,7 @@ export default function CreateExperience() {
       navigate('/');
     },
     onError: (error) => {
-      console.error('체험 등록 실패:', error);
+      const message = error instanceof Error ? error.message : '체험 등록에 실패했습니다.';
       toast({
         title: '체험 등록 실패',
         description: `체험 등록에 실패했습니다.`,
@@ -237,10 +237,10 @@ export default function CreateExperience() {
       navigate(`/activities/${variables.activityId}`);
     },
     onError: (error) => {
-      console.error('체험 수정 실패:', error);
+      const message = error instanceof Error ? error.message : '체험 수정에 실패했습니다.';
       toast({
         title: '체험 수정 실패',
-        description: `체험 수정에 실패했습니다.`,
+        description: message,
         type: 'error',
       });
     },
