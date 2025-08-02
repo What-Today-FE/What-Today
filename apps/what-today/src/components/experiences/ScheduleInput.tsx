@@ -1,14 +1,4 @@
-import {
-  Button,
-  DatePicker,
-  MinusIcon,
-  PlusIcon,
-  Popover,
-  Select,
-  type SelectItem,
-  TimePicker,
-  useToast,
-} from '@what-today/design-system';
+import { Button, DatePicker, MinusIcon, PlusIcon, Popover, TimePicker, useToast } from '@what-today/design-system';
 import type { Dayjs } from 'dayjs';
 import { useState } from 'react';
 
@@ -50,12 +40,28 @@ function isOverlappingSchedule(a: Required<Schedule>, b: Required<Schedule>): bo
 export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   const { toast } = useToast();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [repeatType, setRepeatType] = useState<SelectItem>({ value: 'weekly', label: '매주' });
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
   const [startTime, setStartTime] = useState<Time | null>(null);
   const [endTime, setEndTime] = useState<Time | null>(null);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
+  const resetForm = () => {
+    setSelectedDays([]);
+    setStartTime(null);
+    setEndTime(null);
+    setStartDate(null);
+    setEndDate(null);
+  };
+
+  const handlePopoverChange = (open: boolean) => {
+    setIsPopoverOpen(open);
+
+    // 팝오버가 닫힐 때 폼 초기화
+    if (!open) {
+      resetForm();
+    }
+  };
 
   const weekdays = [
     { value: 1, label: '월' },
@@ -72,7 +78,7 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   };
 
   const generateSchedules = () => {
-    if (!startTime || !endTime || !startDate || !endDate || selectedDays.length === 0 || !repeatType) {
+    if (!startTime || !endTime || !startDate || !endDate || selectedDays.length === 0) {
       toast({
         title: '입력 오류',
         description: '모든 필드를 입력해주세요.',
@@ -103,13 +109,9 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
           endTime: { ...endTime },
         });
       }
-      // 매주면 1일씩, 매월이면 해당 요일만 찾아서 추가
-      if (repeatType.value === 'weekly') {
-        current = current.add(1, 'day');
-      } else {
-        // 매월인 경우 - 다음 달의 같은 요일로 이동
-        current = current.add(1, 'month');
-      }
+
+      // 매주 반복: 하루씩 증가
+      current = current.add(1, 'day');
     }
 
     // 기존 스케줄과 새 스케줄 합치기 (빈 행 제외)
@@ -118,13 +120,6 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
 
     onChange(allSchedules);
     setIsPopoverOpen(false);
-
-    // 입력 필드 초기화
-    setSelectedDays([]);
-    setStartTime(null);
-    setEndTime(null);
-    setStartDate(null);
-    setEndDate(null);
 
     toast({
       title: '일정 생성 완료',
@@ -220,7 +215,7 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
     <div>
       <div className='mb-4 flex items-center justify-between'>
         <p className='mb-4 block'>예약 가능한 시간대</p>
-        <Popover.Root direction='fixed-center-center' open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <Popover.Root direction='fixed-center-center' open={isPopoverOpen} onOpenChange={handlePopoverChange}>
           <Popover.Trigger asChild>
             <Button
               className='caption-text h-fit border-gray-100 px-10 py-4'
@@ -235,15 +230,9 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
             <div className='flex w-300 flex-col gap-16 md:w-500 xl:w-700'>
               <div>
                 <label className='mb-2 block text-sm font-medium'>반복 유형</label>
-                <Select.Root value={repeatType} onChangeValue={(selected) => setRepeatType(selected)}>
-                  <Select.Trigger className='w-full'>
-                    <Select.Value placeholder='반복 유형 선택' />
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.Item value='weekly'>매주</Select.Item>
-                    <Select.Item value='monthly'>매월</Select.Item>
-                  </Select.Content>
-                </Select.Root>
+                <div className='flex items-center gap-8 rounded-xl border border-gray-100 bg-white px-20 py-10'>
+                  매주
+                </div>
               </div>
 
               <div className='grid grid-cols-2 gap-4'>

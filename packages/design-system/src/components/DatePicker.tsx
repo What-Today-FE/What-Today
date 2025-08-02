@@ -18,7 +18,7 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
   return (
     <div className='relative flex flex-col gap-12 md:flex-row'>
       <div className='relative w-full'>
-        <Popover.Root direction='bottom' disabled={disabled}>
+        <Popover.Root direction='bottom-right' disabled={disabled}>
           <Popover.Trigger>
             <Input.Root className='w-full' disabled={disabled}>
               <Input.Wrapper>
@@ -33,23 +33,25 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
             </Input.Root>
           </Popover.Trigger>
 
-          <Popover.Content className='date-picker mt-8 w-fit rounded-xl border border-gray-100 bg-white p-12'>
-            <Calendar.Root initialDate={today} onDateChange={(newDate) => onChange(dayjs(newDate))}>
-              <Calendar.Header headerClass='my-12' />
-              <Calendar.Grid divider weekdayType='short'>
-                {(day) => {
-                  const isBeforeToday = day.isBefore(dayjs(), 'day');
+          <Popover.Content className='date-picker mt-8 flex justify-end'>
+            <div className='w-300 rounded-xl border border-gray-100 bg-white p-12'>
+              <Calendar.Root initialDate={today} onDateChange={(newDate) => onChange(dayjs(newDate))}>
+                <Calendar.Header headerClass='my-12' />
+                <Calendar.Grid divider weekdayType='short'>
+                  {(day) => {
+                    const isBeforeToday = day.isBefore(dayjs(), 'day');
 
-                  return (
-                    <Calendar.DayCell
-                      dateClass={!isBeforeToday ? 'hover:bg-gray-50' : undefined}
-                      day={day}
-                      dayCellClass={isBeforeToday ? 'opacity-30 pointer-events-none cursor-not-allowed' : undefined}
-                    />
-                  );
-                }}
-              </Calendar.Grid>
-            </Calendar.Root>
+                    return (
+                      <Calendar.DayCell
+                        dateClass={!isBeforeToday ? 'hover:bg-gray-50' : undefined}
+                        day={day}
+                        dayCellClass={isBeforeToday ? 'opacity-30 pointer-events-none cursor-not-allowed' : undefined}
+                      />
+                    );
+                  }}
+                </Calendar.Grid>
+              </Calendar.Root>
+            </div>
           </Popover.Content>
         </Popover.Root>
       </div>
