@@ -235,12 +235,12 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
                 </div>
               </div>
 
-              <div className='grid grid-cols-2 gap-4'>
-                <div>
+              <div className='flex flex-col gap-4 md:flex-row'>
+                <div className='flex-1'>
                   <label className='mb-2 block text-sm font-medium'>시작 날짜</label>
                   <DatePicker value={startDate} onChange={setStartDate} />
                 </div>
-                <div>
+                <div className='flex-1'>
                   <label className='mb-2 block text-sm font-medium'>종료 날짜</label>
                   <DatePicker value={endDate} onChange={setEndDate} />
                 </div>
