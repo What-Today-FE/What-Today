@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 function ScheduleDateLabel({ date }: { date: string }) {
   return <p className='text-gray-500'>{date}</p>;
 }
@@ -25,12 +27,15 @@ function ScheduleItem({
   );
 }
 
-export default function UpcomingSchedule() {
+interface UpcomingScheduleProps {
+  className?: string;
+}
+export default function UpcomingSchedule({ className }: UpcomingScheduleProps) {
   return (
-    <div className='flex gap-12'>
+    <div className={twMerge('flex gap-12', className)}>
       <div className='flex flex-col items-center'>
-        <div className='size-16 rounded-full bg-gray-300' />
-        <div className='h-full w-4 bg-gray-300' />
+        <div className='size-12 rounded-full bg-gray-300' />
+        <div className='h-full w-3 bg-gray-300' />
       </div>
 
       <div className='flex flex-col gap-12'>

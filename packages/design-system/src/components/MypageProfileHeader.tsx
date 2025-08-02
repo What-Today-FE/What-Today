@@ -10,7 +10,7 @@ interface MypageProfileHeaderProps {
 
 export default function MypageProfileHeader({ name, profileImageUrl, onLogoutClick }: MypageProfileHeaderProps) {
   return (
-    <div className='flex items-center gap-24 rounded-3xl border bg-white px-36 py-24'>
+    <div className='flex items-center gap-24 rounded-3xl border border-gray-50 bg-white px-36 py-24'>
       <div className='flex size-100 items-center justify-center rounded-full border border-gray-50 bg-white'>
         {profileImageUrl ? (
           <img
