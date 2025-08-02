@@ -70,6 +70,13 @@ export default function ReservationsListPage() {
 
   const noResultMessage = NO_RESULT_MESSAGES[selectedStatus];
 
+  // 리뷰 모달 닫기 핸들러
+  const handleCloseReviewModal = () => {
+    setReviewTarget(null);
+    setReviewContent('');
+    setStarRating(0);
+  };
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useIntersectionObserver(
     fetchNextPage,
@@ -109,8 +116,6 @@ export default function ReservationsListPage() {
         type: 'success',
       });
       setReviewTarget(null);
-      setReviewContent('');
-      setStarRating(0);
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
     },
     onError: (error) => {
@@ -263,7 +268,7 @@ export default function ReservationsListPage() {
         </Modal.Content>
       </Modal.Root>
 
-      <Modal.Root open={isReviewOpen} onClose={() => setReviewTarget(null)}>
+      <Modal.Root open={isReviewOpen} onClose={handleCloseReviewModal}>
         {reviewTarget && (
           <Modal.Content className='flex max-w-385 flex-col items-center gap-6 text-center'>
             <Modal.CloseButton />
