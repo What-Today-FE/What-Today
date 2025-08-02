@@ -61,10 +61,10 @@ export default function ActivityDetailPage() {
         headCount: reservationSummary.headCount,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           toast({
             title: '예약 완료',
-            description: `예약 ID: ${data.id}`,
+            description: '마이페이지에서 예약을 확인해보세요!',
             type: 'success',
           });
           setReservationSummary(null); // 예약 완료 후 상태 초기화

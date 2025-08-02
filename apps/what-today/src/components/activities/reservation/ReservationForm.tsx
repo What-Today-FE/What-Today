@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, useToast } from '@what-today/design-system';
 
 import CalendarSelector from './CalendarSelector';
@@ -18,13 +19,18 @@ export default function ReservationForm({
   isLoggedIn = true,
 }: ReservationFormProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const reservation = useReservation(schedules, price, {
     onReservationChange,
-    onSuccess: (data) => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['reservations'],
+      });
+
       toast({
         title: '예약 완료',
-        description: `예약 ID: ${data.id}`,
+        description: '마이페이지에서 예약을 확인해보세요!',
         type: 'success',
       });
     },
