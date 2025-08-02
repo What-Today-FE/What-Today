@@ -10,6 +10,7 @@ import KakaoCallbackSignup from '@/pages/kakao-callback-signup';
 import LoginPage from '@/pages/login';
 import MainPage from '@/pages/main';
 import EditProfilePage from '@/pages/mypage/edit-profile';
+import MyPage from '@/pages/mypage/main';
 import ManageActivitiesPage from '@/pages/mypage/manage-activities';
 import ReservationsListPage from '@/pages/mypage/reservations-list';
 import ReservationsStatusPage from '@/pages/mypage/reservations-status';
@@ -39,12 +40,13 @@ export const router = createBrowserRouter([
           { path: 'activities/:id', element: <ActivityDetailPage /> },
           { path: 'experiences/create', element: <CreateExperience /> },
           { path: 'experiences/create/:id', element: <CreateExperience /> },
+          { path: 'mypage', element: <MyPage /> }, // ✅ 여기만 별도로
           {
             path: 'mypage',
             loader: authGuardLoader,
             element: <MyPageLayout />,
             children: [
-              { index: true, element: <EditProfilePage /> },
+              // { index: true, element: <MyPage /> },
               { path: 'edit-profile', element: <EditProfilePage /> },
               { path: 'reservations-list', element: <ReservationsListPage /> },
               { path: 'manage-activities', element: <ManageActivitiesPage /> },
