@@ -64,7 +64,7 @@ export default function StarRating({ value, onChange, max = 5, className }: Star
             onClick={() => onChange(starValue)}
             onMouseEnter={() => setHoverValue(starValue)}
           >
-            <StarIcon className={twMerge('size-42', !isLast && 'mr-12')} filled={isFilled} hover={isHover} />
+            <StarIcon className={twMerge('size-35', !isLast && 'mr-5')} filled={isFilled} hover={isHover} />
           </Button>
         );
       })}
