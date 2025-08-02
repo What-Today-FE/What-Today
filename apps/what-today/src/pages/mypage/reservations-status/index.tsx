@@ -1,81 +1,50 @@
 import { Button, type CalendarReservationStatus, ChevronIcon, NoResult, Select } from '@what-today/design-system';
 import dayjs from 'dayjs';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getMonthlySchedule, getMyActivities } from '@/apis/myActivities';
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
-import type { monthlyScheduleResponse, myActivitiesResponse } from '@/schemas/myActivities';
+import { useInfiniteMyActivitiesQuery } from '@/hooks/myActivity/useMyActivitiesQuery';
+import { useMonthlyScheduleQuery } from '@/hooks/myReservation/useMonthlyScheduleQuery';
 
 export default function ReservationsStatusPage() {
   const navigate = useNavigate();
 
-  const [activityList, setActivityList] = useState<myActivitiesResponse | null>(null);
-  const [selectedActivityId, setSelectedActivityId] = useState<number>(0);
+  const [calendarYear] = useState(dayjs().format('YYYY'));
+  const [calendarMonth] = useState(dayjs().format('MM'));
+  const [selectedActivityId, setSelectedActivityId] = useState(0);
 
-  const [calendarYear, setCalendarYear] = useState(dayjs().format('YYYY'));
-  const [calendarMonth, setCalendarMonth] = useState(dayjs().format('MM'));
-  const [monthlyReservations, setMonthlyReservations] = useState<monthlyScheduleResponse>([]);
+  // 체험 목록 조회 (초기 1페이지만 사용)
+  const { data: activityData, isLoading: isLoadingActivities } = useInfiniteMyActivitiesQuery(10);
 
-  const [isLoadingActivities, setIsLoadingActivities] = useState(true);
-  const [isLoadingCalendar, setIsLoadingCalendar] = useState(true);
+  // const activityList = activityData?.pages[0]?.activities ?? [];
+  const activityList = useMemo(() => {
+    return activityData?.pages[0]?.activities ?? [];
+  }, [activityData]);
 
-  // 내 체험 목록 조회
-  const fetchMyActivities = async () => {
-    try {
-      const result = await getMyActivities({ size: 10 });
-      setActivityList(result);
-      if (result.activities.length > 0) {
-        setSelectedActivityId(result.activities[0].id);
-      } else {
-        setSelectedActivityId(0);
-      }
-    } catch (err) {
-      console.error('내 체험 조회 실패:', err);
-    } finally {
-      setIsLoadingActivities(false);
-    }
-  };
+  const { data: monthlyReservations = [], isLoading: isLoadingCalendar } = useMonthlyScheduleQuery({
+    activityId: selectedActivityId,
+    year: calendarYear,
+    month: calendarMonth,
+  });
 
-  // 체험 선택 시 월별 예약 스케줄 조회
-  const fetchMonthlySchedule = async () => {
-    if (!selectedActivityId) {
-      setIsLoadingCalendar(false);
-      return;
-    }
-    try {
-      const result = await getMonthlySchedule(selectedActivityId, {
-        year: calendarYear,
-        month: calendarMonth,
-      });
-      setMonthlyReservations(result);
-    } catch (err) {
-      console.error('월별 예약현황 조회 실패:', err);
-    } finally {
-      setIsLoadingCalendar(false);
-    }
-  };
-
-  // 페이지 진입 시 내 체험목록 조회
+  // activityList가 로드된 후 첫 번째 아이템을 자동 선택
   useEffect(() => {
-    fetchMyActivities();
-  }, []);
-
-  // 체험 선택, 캘린더 월 선택 시 월별 스케줄 조회
-  useEffect(() => {
-    fetchMonthlySchedule();
-  }, [selectedActivityId, calendarYear, calendarMonth]);
+    if (activityList.length > 0 && selectedActivityId === 0) {
+      setSelectedActivityId(activityList[0].id);
+    }
+  }, [activityList, selectedActivityId]);
 
   const handleActivityChange = (value: { value: string; label: ReactNode } | null) => {
     if (!value) return;
     setSelectedActivityId(Number(value.value));
   };
 
-  const handleMonthChange = (year: string, month: string) => {
-    if (calendarYear === year && calendarMonth === month) return;
-    setCalendarYear(year);
-    setCalendarMonth(month);
-  };
+  // const handleMonthChange = (year: string, month: string) => {
+  //   if (calendarYear === year && calendarMonth === month) return;
+  //   setCalendarYear(year);
+  //   setCalendarMonth(month);
+  // };
 
   const reservationMap = monthlyReservations.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
     (acc, cur) => {
@@ -88,7 +57,7 @@ export default function ReservationsStatusPage() {
   let scheduleContent;
   if (isLoadingActivities || isLoadingCalendar) {
     scheduleContent = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
-  } else if (activityList && activityList.activities.length > 0) {
+  } else if (activityList.length > 0) {
     scheduleContent = (
       <div className='flex flex-col md:gap-24 xl:gap-30'>
         <section aria-label='체험 선택하기'>
@@ -97,7 +66,7 @@ export default function ReservationsStatusPage() {
               selectedActivityId
                 ? {
                     value: String(selectedActivityId),
-                    label: activityList.activities.find((a) => a.id === selectedActivityId)?.title ?? '',
+                    label: activityList.find((a) => a.id === selectedActivityId)?.title ?? '',
                   }
                 : null
             }
@@ -109,7 +78,7 @@ export default function ReservationsStatusPage() {
             <Select.Content>
               <Select.Group>
                 <Select.Label>내 체험 목록</Select.Label>
-                {activityList.activities.map(({ id, title }) => {
+                {activityList.map(({ id, title }) => {
                   return (
                     <Select.Item key={id} value={String(id)}>
                       {title}
@@ -124,7 +93,7 @@ export default function ReservationsStatusPage() {
           <ReservationCalendar
             activityId={selectedActivityId}
             reservationsByDate={reservationMap}
-            onMonthChange={handleMonthChange}
+            // onMonthChange={handleMonthChange}
           />
         </section>
       </div>

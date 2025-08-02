@@ -7,8 +7,6 @@ import {
   type monthlyScheduleParam,
   type monthlyScheduleResponse,
   monthlyScheduleResponseSchema,
-  type reservation,
-  reservationSchema,
   type timeSlotReservationParam,
   type timeSlotReservationResponse,
   timeSlotReservationResponseSchema,
@@ -50,9 +48,8 @@ export async function patchReservationStatus(
   activityId: number,
   reservationId: number,
   status: ManageableReservationStatus,
-): Promise<reservation> {
-  const response = await axiosInstance.patch(`/my-activities/${activityId}/reservations/${reservationId}`, { status });
-  return reservationSchema.parse(response.data);
+): Promise<void> {
+  await axiosInstance.patch(`/my-activities/${activityId}/reservations/${reservationId}`, { status });
 }
 
 export const deleteMyActivity = async (activityId: number) => {

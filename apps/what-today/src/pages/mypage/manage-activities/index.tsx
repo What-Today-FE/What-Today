@@ -2,7 +2,8 @@ import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } fro
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useDeleteMyActivityMutation, useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
+import { useDeleteMyActivityMutation } from '@/hooks/myActivity/useDeleteMyActivityMutation';
+import { useInfiniteMyActivitiesQuery } from '@/hooks/myActivity/useMyActivitiesQuery';
 
 export default function ManageActivitiesPage() {
   const navigate = useNavigate();
