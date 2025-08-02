@@ -16,104 +16,139 @@ import {
   TourIcon,
   WellbeingIcon,
 } from '@what-today/design-system';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import type { Activity } from '@/apis/activities';
-import { getActivities } from '@/apis/activities';
+import { type Activity, getActivities } from '@/apis/activities';
 
-// ... import 생략
+// React.memo로 MainCard 최적화
+const MemoizedMainCard = React.memo(MainCard.Root);
 
 export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8); // 데스크탑 기본 8
-  const [searchResult, setSearchResult] = useState<Activity[]>([]);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest');
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
 
-  // 반응형 카드 수 조정 (모든 체험)
+  // ✅ 반응형 카드 수
+  const handleResize = useCallback(() => {
+    const width = window.innerWidth;
+    if (width < 790) setItemsPerPage(6);
+    else if (width < 1024) setItemsPerPage(4);
+    else setItemsPerPage(8);
+  }, []);
+
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 790)
-        setItemsPerPage(6); // 모바일
-      else if (width < 1024)
-        setItemsPerPage(4); // 태블릿
-      else setItemsPerPage(8); // 데스크탑
-    };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [handleResize]);
 
-  // 활동 리스트 요청
-  const { data: activities = [] } = useQuery({
-    queryKey: ['activities'],
+  // ✅ 데이터 불러오기
+  const { data: activities = [] } = useQuery<Activity[]>({
+    queryKey: ['activities-all'],
     queryFn: () => getActivities({ size: 100 }),
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
-  // ✅ 인기 체험
-  const popularActivities = [...activities].sort((a, b) => {
-    if (b.reviewCount === a.reviewCount) {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }
-    return b.reviewCount - a.reviewCount;
-  });
-
-  // ✅ 모든 체험 초기값: 최신순
-  useEffect(() => {
-    if (activities.length > 0 && searchResult.length === 0) {
-      const latestSorted = [...activities].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-      setSearchResult(latestSorted);
-    }
+  // 인기 체험
+  const popularActivities = useMemo(() => {
+    if (!activities.length) return [];
+    return activities
+      .slice()
+      .sort((a, b) => {
+        if (b.reviewCount === a.reviewCount) {
+          return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
+        }
+        return b.reviewCount - a.reviewCount;
+      })
+      .slice(0, 12);
   }, [activities]);
 
-  // 검색
-  const handleSearch = (keyword: string) => {
-    const sortedLatest = (list: Activity[]) =>
-      [...list].sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
+  // 1단계: 필터링
+  const filteredItems = useMemo(() => {
+    if (!searchKeyword && selectedCategory === '') return activities;
+    return activities.filter((item) => {
+      const matchesSearch = !searchKeyword || item.title.toLowerCase().includes(searchKeyword.toLowerCase());
+      const matchesCategory = selectedCategory === '' || item.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [activities, searchKeyword, selectedCategory]);
 
-    if (keyword === '') {
-      setSearchResult(sortedLatest(activities));
-      setCurrentPage(1);
-      setSortOrder('latest');
-      setSelectedValue(null);
-      setSelectedCategory('');
-      return;
+  // 2단계: 정렬
+  const sortedItems = useMemo(() => {
+    if (sortOrder === 'latest') {
+      return [...filteredItems].sort(
+        (a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime(),
+      );
     }
+    return [...filteredItems].sort((a, b) => {
+      if (sortOrder === 'asc') return a.price - b.price;
+      return b.price - a.price;
+    });
+  }, [filteredItems, sortOrder]);
 
-    const result = activities.filter((item) => item.title.toLowerCase().includes(keyword.toLowerCase()));
+  // 3단계: 페이지 아이템
+  const pagedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return sortedItems.slice(startIndex, endIndex);
+  }, [sortedItems, currentPage, itemsPerPage]);
 
-    setSearchResult(sortedLatest(result));
+  const totalPages = useMemo(() => Math.ceil(sortedItems.length / itemsPerPage), [sortedItems.length, itemsPerPage]);
+
+  // 이벤트 핸들러
+  const handlePageChange = useCallback(
+    (page: number) => {
+      if (page === currentPage) return;
+      setCurrentPage(page);
+    },
+    [currentPage],
+  );
+
+  const handleSearch = useCallback((keyword: string) => {
+    setSearchKeyword(keyword);
     setCurrentPage(1);
     setSortOrder('latest');
     setSelectedValue(null);
     setSelectedCategory('');
-  };
+  }, []);
 
-  // 정렬 변경 시 페이지 초기화
-  useEffect(() => {
+  const handleSortChange = useCallback((item: SelectItem | null) => {
+    setSelectedValue(item);
+    if (item) setSortOrder(item.value as 'asc' | 'desc');
     setCurrentPage(1);
-  }, [sortOrder]);
+  }, []);
 
-  const filteredItems =
-    selectedCategory !== '' ? searchResult.filter((item) => item.category === selectedCategory) : searchResult;
+  const handleCategoryChange = useCallback((category: string | number) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  }, []);
 
-  // 정렬 로직
-  const sortedItems = [...filteredItems].sort((a, b) => {
-    if (sortOrder === 'asc') return a.price - b.price;
-    if (sortOrder === 'desc') return b.price - a.price;
-    return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
-  });
-
-  // 페이지네이션
-  const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
-  const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // 카드 렌더링 최적화
+  const renderCards = useCallback(() => {
+    return pagedItems.map((item, index) => (
+      <MemoizedMainCard
+        key={`${item.id}-${currentPage}-${index}`}
+        bannerImageUrl={item.bannerImageUrl}
+        price={item.price}
+        rating={item.rating}
+        reviewCount={item.reviewCount}
+        title={item.title}
+        onClick={() => navigate(`/activities/${item.id}`)}
+      >
+        <MainCard.Image />
+        <MainCard.Content />
+      </MemoizedMainCard>
+    ));
+  }, [pagedItems, currentPage, navigate]);
 
   return (
     <>
@@ -125,11 +160,7 @@ export default function MainPage() {
         <div className='flex flex-col gap-20'>
           <h2 className='title-text'>🔥 인기 체험</h2>
           <div className='-mx-15 flex'>
-            <Carousel
-              items={popularActivities}
-              itemsPerPage={4} //캐러셀 4개 기준
-              onClick={(id) => navigate(`/activities/${id}`)}
-            />
+            <Carousel items={popularActivities} itemsPerPage={4} onClick={(id) => navigate(`/activities/${id}`)} />
           </div>
         </div>
 
@@ -145,15 +176,7 @@ export default function MainPage() {
           <div className='flex flex-wrap items-center justify-between gap-12'>
             <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
 
-            <Select.Root
-              value={selectedValue}
-              onChangeValue={(item) => {
-                setSelectedValue(item);
-                if (item) {
-                  setSortOrder(item.value as 'asc' | 'desc');
-                }
-              }}
-            >
+            <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
               <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
               </Select.Trigger>
@@ -170,12 +193,12 @@ export default function MainPage() {
             </Select.Root>
           </div>
 
-          {/* 카테고리 라디오 버튼 */}
+          {/* 카테고리 */}
           <div className='overflow-x-hidden'>
             <RadioGroup
               radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
               selectedValue={selectedCategory}
-              onSelect={setSelectedCategory}
+              onSelect={handleCategoryChange}
             >
               <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
                 <ArtIcon className='size-12' />
@@ -211,25 +234,12 @@ export default function MainPage() {
                 <NoResult />
               </div>
             ) : (
-              pagedItems.map((item) => (
-                <MainCard.Root
-                  key={item.id}
-                  bannerImageUrl={item.bannerImageUrl}
-                  price={item.price}
-                  rating={item.rating}
-                  reviewCount={item.reviewCount}
-                  title={item.title}
-                  onClick={() => navigate(`/activities/${item.id}`)}
-                >
-                  <MainCard.Image />
-                  <MainCard.Content />
-                </MainCard.Root>
-              ))
+              renderCards()
             )}
           </div>
 
           {filteredItems.length > 0 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
           )}
         </div>
       </div>
