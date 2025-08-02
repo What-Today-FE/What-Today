@@ -22,22 +22,26 @@ import { useNavigate } from 'react-router-dom';
 import type { Activity } from '@/apis/activities';
 import { getActivities } from '@/apis/activities';
 
+// ... import 생략
+
 export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [itemsPerPage, setItemsPerPage] = useState(8); // 데스크탑 기본 8
   const [searchResult, setSearchResult] = useState<Activity[]>([]);
-  const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest'); // 기본값 최신순
+  const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest');
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
 
-  // 반응형 카드 수 조정
+  // 반응형 카드 수 조정 (모든 체험)
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width < 790) setItemsPerPage(6);
-      else if (width < 1024) setItemsPerPage(4);
-      else setItemsPerPage(8);
+      if (width < 790)
+        setItemsPerPage(6); // 모바일
+      else if (width < 1024)
+        setItemsPerPage(4); // 태블릿
+      else setItemsPerPage(8); // 데스크탑
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -47,19 +51,17 @@ export default function MainPage() {
   // 활동 리스트 요청
   const { data: activities = [] } = useQuery({
     queryKey: ['activities'],
-    queryFn: () => getActivities(),
+    queryFn: () => getActivities({ size: 100 }),
     staleTime: 1000 * 60 * 5,
   });
 
-  // ✅ 인기 체험: 리뷰 많은 순
-  const popularActivities = [...activities]
-    .sort((a, b) => {
-      if (b.reviewCount === a.reviewCount) {
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      }
-      return b.reviewCount - a.reviewCount;
-    })
-    .slice(0, 12);
+  // ✅ 인기 체험
+  const popularActivities = [...activities].sort((a, b) => {
+    if (b.reviewCount === a.reviewCount) {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }
+    return b.reviewCount - a.reviewCount;
+  });
 
   // ✅ 모든 체험 초기값: 최신순
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function MainPage() {
 
     const result = activities.filter((item) => item.title.toLowerCase().includes(keyword.toLowerCase()));
 
-    setSearchResult(sortedLatest(result)); // ✅ 검색 후에도 최신순 유지
+    setSearchResult(sortedLatest(result));
     setCurrentPage(1);
     setSortOrder('latest');
     setSelectedValue(null);
@@ -106,9 +108,10 @@ export default function MainPage() {
   const sortedItems = [...filteredItems].sort((a, b) => {
     if (sortOrder === 'asc') return a.price - b.price;
     if (sortOrder === 'desc') return b.price - a.price;
-    return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime(); // 최신순
+    return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
   });
 
+  // 페이지네이션
   const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
   const pagedItems = sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -124,7 +127,7 @@ export default function MainPage() {
           <div className='-mx-15 flex'>
             <Carousel
               items={popularActivities}
-              itemsPerPage={itemsPerPage}
+              itemsPerPage={4} //캐러셀 4개 기준
               onClick={(id) => navigate(`/activities/${id}`)}
             />
           </div>
