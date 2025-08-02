@@ -67,6 +67,38 @@ export default function RecurringScheduleModal({
     setSelectedDays((prev) => (prev.includes(dayValue) ? prev.filter((d) => d !== dayValue) : [...prev, dayValue]));
   };
 
+  const handleStartDateChange = (date: Dayjs | null) => {
+    setStartDate(date);
+
+    // 시작 날짜가 설정되고 종료 날짜가 있을 때 검증
+    if (date && endDate) {
+      if (date.isAfter(endDate, 'day')) {
+        toast({
+          title: '날짜 설정 오류',
+          description: '시작 날짜는 종료 날짜보다 빨라야 합니다.',
+          type: 'error',
+        });
+        setEndDate(null); // 종료 날짜 초기화
+      }
+    }
+  };
+
+  const handleEndDateChange = (date: Dayjs | null) => {
+    // 종료 날짜가 설정되고 시작 날짜가 있을 때 검증
+    if (date && startDate) {
+      if (startDate.isAfter(date, 'day')) {
+        toast({
+          title: '날짜 설정 오류',
+          description: '종료 날짜는 시작 날짜보다 늦어야 합니다.',
+          type: 'error',
+        });
+        return; // 변경사항 적용하지 않음
+      }
+    }
+
+    setEndDate(date);
+  };
+
   const handleStartTimeChange = (time: Time | null) => {
     setStartTime(time);
 
@@ -176,11 +208,11 @@ export default function RecurringScheduleModal({
           <div className='flex flex-col gap-4 md:flex-row'>
             <div className='flex-1'>
               <label className='mb-2 block text-sm font-medium'>시작 날짜</label>
-              <DatePicker value={startDate} onChange={setStartDate} />
+              <DatePicker value={startDate} onChange={handleStartDateChange} />
             </div>
             <div className='flex-1'>
               <label className='mb-2 block text-sm font-medium'>종료 날짜</label>
-              <DatePicker value={endDate} onChange={setEndDate} />
+              <DatePicker value={endDate} onChange={handleEndDateChange} />
             </div>
           </div>
 
