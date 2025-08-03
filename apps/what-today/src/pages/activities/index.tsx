@@ -96,7 +96,7 @@ export default function ActivityDetailPage() {
     <>
       <main className='p-4'>
         {isDesktop ? (
-          <div className='grid grid-cols-[1fr_410px] gap-40'>
+          <div className='grid grid-cols-[1fr_350px] gap-40'>
             <div className='flex flex-col gap-40'>
               <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
               <ActivitiesDescription description={activity.description} />
