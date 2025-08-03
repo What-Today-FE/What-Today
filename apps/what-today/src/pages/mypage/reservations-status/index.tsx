@@ -59,7 +59,7 @@ export default function ReservationsStatusPage() {
   let scheduleContent;
   if (isLoadingActivities || isLoadingCalendar) {
     scheduleContent = (
-      <div>
+      <div className='flex flex-col md:gap-24 xl:gap-30'>
         <ReservationSelectSkeleton />
         <ReservationCalendarSkeleton />
       </div>
