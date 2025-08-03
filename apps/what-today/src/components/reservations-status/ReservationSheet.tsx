@@ -22,7 +22,7 @@ const tabData: { key: ManageableReservationStatus; label: string }[] = [
 ];
 
 export default function ReservationSheet({ activityId, selectedDate }: ReservationSheetProps) {
-  const toast = useToast();
+  const { toast } = useToast();
   // 상태 분리
   const [selectedSchedule, setSelectedSchedule] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
@@ -63,14 +63,17 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await patchReservationStatus(activityId, id, 'confirmed');
       await queryClient.invalidateQueries({ queryKey: ['reservation'] });
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
-      toast.toast({
+      await queryClient.invalidateQueries({
+        queryKey: ['monthlySchedule', activityId, selectedDate.slice(0, 4), selectedDate.slice(5, 7)],
+      });
+      toast({
         title: '예약 승인 성공',
         description: '정상적으로 처리되었습니다.',
         type: 'success',
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '승인 중 오류가 발생했습니다.';
-      toast.toast({
+      toast({
         title: '예약 승인 실패',
         description: errorMessage,
         type: 'error',
@@ -83,14 +86,17 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await patchReservationStatus(activityId, id, 'declined');
       await queryClient.invalidateQueries({ queryKey: ['reservation'] });
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
-      toast.toast({
+      await queryClient.invalidateQueries({
+        queryKey: ['monthlySchedule', activityId, selectedDate.slice(0, 4), selectedDate.slice(5, 7)],
+      });
+      toast({
         title: '예약 거절 성공',
         description: '정상적으로 처리되었습니다.',
         type: 'success',
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '거절 중 오류가 발생했습니다.';
-      toast.toast({
+      toast({
         title: '예약 거절 실패',
         description: errorMessage,
         type: 'error',
