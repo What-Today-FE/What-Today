@@ -73,7 +73,7 @@ export default function ActivitiesInformation({
           {isAuthor && (
             <Dropdown.Root>
               <Dropdown.Trigger className='flex size-24 items-center justify-center' />
-              <Dropdown.Menu>
+              <Dropdown.Menu className='-left-95'>
                 <Dropdown.Item onClick={() => navigate(`/experiences/create/${id}`)}>수정하기</Dropdown.Item>
                 <Dropdown.Item onClick={() => setIsDeleteOpen(true)}>삭제하기</Dropdown.Item>
               </Dropdown.Menu>
