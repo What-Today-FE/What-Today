@@ -1,4 +1,4 @@
-import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } from '@what-today/design-system';
+import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, useToast, WarningLogo } from '@what-today/design-system';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import { useInfiniteMyActivitiesQuery } from '@/hooks/myActivity/useMyActivities
 
 export default function ManageActivitiesPage() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
@@ -19,10 +20,24 @@ export default function ManageActivitiesPage() {
         onSuccess: () => {
           setIsDeleteOpen(false);
           setDeleteTargetId(null);
+          toast({
+            title: '체험 삭제 성공',
+            description: '체험이 삭제되었습니다.',
+            type: 'success',
+          });
+        },
+        onError: (err) => {
+          const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
+          toast({
+            title: '삭제 실패',
+            description: errorMessage,
+            type: 'error',
+          });
         },
       });
     }
   };
+
   const observerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!observerRef.current || !hasNextPage) return;
