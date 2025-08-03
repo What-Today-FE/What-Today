@@ -98,7 +98,7 @@ export default function ReservationForm({
       {/* 시간 선택 */}
       {selectedDate && (
         <>
-          <p className='text-lg font-bold text-gray-950'>예약 가능한 시간</p>
+          <p className='section-text'>예약 가능한 시간</p>
           <TimeSelector
             availableTimes={availableTimes}
             selectedScheduleId={selectedScheduleId}
@@ -112,8 +112,8 @@ export default function ReservationForm({
 
       {/* 총 합계 */}
       <div className='flex items-center justify-between'>
-        <p className='text-xl font-medium text-[#79747E]'>
-          총 합계 <span className='font-bold text-gray-950'>₩ {totalPrice.toLocaleString()}</span>
+        <p className='section-text flex flex-col'>
+          총 합계 <span>₩ {totalPrice.toLocaleString()}</span>
         </p>
 
         {showSubmitButton && (
@@ -130,9 +130,5 @@ export default function ReservationForm({
     </div>
   );
 
-  return (
-    <section className='flex flex-col justify-between rounded-3xl border border-[#DDDDDD] p-30 shadow-sm'>
-      {content}
-    </section>
-  );
+  return <section className='flex flex-col justify-between rounded-xl border border-gray-50 p-20'>{content}</section>;
 }
