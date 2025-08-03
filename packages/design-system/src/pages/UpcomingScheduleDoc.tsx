@@ -26,7 +26,7 @@ export default function UpcomingScheduleDoc() {
       {/* 예시 코드 */}
       <DocCode code={`<UpcomingSchedule variant="primary">Click me</UpcomingSchedule>`} />
 
-      <UpcomingSchedule />
+      <UpcomingSchedule reservation={[]} onClickReservation={() => {}} />
     </>
   );
 }

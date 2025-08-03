@@ -1,69 +1,104 @@
+import { twMerge } from 'tailwind-merge';
+
+import Button from './button';
+import { EmptyLogo } from './logos';
+
 function ScheduleDateLabel({ date }: { date: string }) {
   return <p className='text-gray-500'>{date}</p>;
 }
 
 function ScheduleItem({
   title,
-  date,
-  location,
+  price,
+  headCount,
+  time,
   src,
 }: {
   title: string;
-  date: string;
-  location?: string;
+  price: number;
+  headCount: number;
+  time: string;
   src?: string;
 }) {
   return (
     <div className='flex h-120 w-full cursor-pointer items-center justify-between'>
       <div className='flex h-full flex-1 flex-col justify-center rounded-l-2xl rounded-r-none border border-r-0 border-gray-100 p-16 px-24'>
         <p className='mb-4 line-clamp-1 font-bold'>{title}</p>
-        <p className='text-md text-gray-500'>{date}</p>
-        <p className='text-md text-gray-500'>{location}</p>
+
+        <p className='text-md text-gray-500'>{time}</p>
+        <div className='flex gap-6'>
+          <p className='text-md font-bold'>₩{price.toLocaleString()}</p>
+          <p className='text-md text-gray-500'>{headCount}명</p>
+        </div>
       </div>
-      <img className='h-full w-140 rounded-l-none rounded-r-2xl object-cover' src={src} />
+      <img alt='체험 베너 이미지' className='h-full w-140 rounded-l-none rounded-r-2xl object-cover' src={src} />
     </div>
   );
 }
 
-export default function UpcomingSchedule() {
-  return (
-    <div className='flex gap-12'>
-      <div className='flex flex-col items-center'>
-        <div className='size-16 rounded-full bg-gray-300' />
-        <div className='h-full w-4 bg-gray-300' />
-      </div>
+interface Reservation {
+  id: number;
+  activity: { id: number; title: string; bannerImageUrl: string };
+  date: string;
+  headCount: number;
+  totalPrice: number;
+  startTime: string;
+  endTime: string;
+}
 
-      <div className='flex flex-col gap-12'>
-        <div className='flex flex-col gap-8'>
-          <ScheduleDateLabel date='2025.08.09' />
-          <ScheduleItem
-            date='2025.08.03 13:00~15:00'
-            location='서울시 노원구'
-            src='https://flexible.img.hani.co.kr/flexible/normal/970/647/imgdb/original/2023/0830/20230830503692.jpg'
-            title='대나무 헬리콥터 도라메옴 도라에몽ㅇ옹오'
-          />
-          <ScheduleItem
-            date='2025.08.03 13:00~15:00'
-            location='서울시 중랑구'
-            src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEMdx3CrKnCMVOWbQeiKMkqaucWI2GVNBlcA&s'
-            title='대나무 헬리콥터'
-          />
-          <ScheduleItem
-            date='2025.08.03 13:00~15:00'
-            location='서울시 도봉구'
-            src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/19/9d/02/camel-herder-in-mongolia.jpg?w=1400&h=1400&s=1'
-            title='대나무 헬리콥터'
-          />
-        </div>
-        <div className='flex flex-col gap-8'>
-          <ScheduleDateLabel date='2025.08.09' />
-          <ScheduleItem
-            date='2025.08.03 13:00~15:00'
-            location='서울시 광진구'
-            src='https://cdn.ntoday.co.kr/news/photo/202502/113360_93208_3113.jpg'
-            title='대나무 헬리콥터'
-          />
-        </div>
+interface UpcomingScheduleProps {
+  className?: string;
+  reservation: Reservation[];
+  onClickReservation: (id: number) => void;
+  onClick?: () => void;
+}
+export default function UpcomingSchedule({
+  className,
+  reservation,
+  onClickReservation,
+  onClick,
+}: UpcomingScheduleProps) {
+  const flex = reservation.length === 0 ? 'justify-center' : '';
+  return (
+    <div className={twMerge('flex gap-16', flex, className)}>
+      {/* <div className='flex flex-col items-center'>
+        <div className='size-12 shrink-0 rounded-full bg-gray-300' />
+        <div className='h-full w-3 bg-gray-300' />
+      </div> */}
+      <div className='flex flex-col gap-8'>
+        {reservation.length === 0 ? (
+          <div className='flex flex-col items-center justify-center gap-20 pt-32'>
+            <EmptyLogo size={80} />
+            <Button className='text-md w-auto font-semibold' variant='outline' onClick={onClick}>
+              체험 예약하러 가기
+            </Button>
+          </div>
+        ) : (
+          (() => {
+            let prevDate: string | null = null;
+            return reservation.map((res, idx) => {
+              const showDateLabel = res.date !== prevDate;
+              const isLast = idx === reservation.length - 1;
+              prevDate = res.date;
+              return (
+                <div
+                  key={res.id}
+                  className={twMerge('flex flex-col gap-4', isLast && 'pb-32')}
+                  onClick={() => onClickReservation(res.activity.id)}
+                >
+                  {showDateLabel && <ScheduleDateLabel date={res.date} />}
+                  <ScheduleItem
+                    headCount={res.headCount}
+                    price={res.totalPrice}
+                    src={res.activity.bannerImageUrl}
+                    time={`${res.startTime}~${res.endTime}`}
+                    title={res.activity.title}
+                  />
+                </div>
+              );
+            });
+          })()
+        )}
       </div>
     </div>
   );
