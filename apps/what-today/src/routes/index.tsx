@@ -38,9 +38,14 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <MainPage /> },
           { path: 'activities/:id', element: <ActivityDetailPage /> },
-          { path: 'experiences/create', element: <CreateExperience /> },
-          { path: 'experiences/create/:id', element: <CreateExperience /> },
-          // { path: 'mypage', element: <MyPage /> }, // ✅ 여기만 별도로(다시 변경)
+          {
+            loader: authGuardLoader,
+            children: [
+              { path: 'experiences/create', element: <CreateExperience /> },
+              { path: 'experiences/create/:id', element: <CreateExperience /> },
+              // { path: 'mypage', element: <MyPage /> }, // ✅ 여기만 별도로(다시 변경)
+            ],
+          },
           {
             path: 'mypage',
             loader: authGuardLoader,

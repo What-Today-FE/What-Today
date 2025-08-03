@@ -5,7 +5,7 @@ import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
 /* Playground에서 사용할 예시 코드를 작성해주세요. */
-const code = `<MainCard
+const code = `<MainCard.Root
   title='스카이다이빙'
   price={200000}
   bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
@@ -15,7 +15,7 @@ const code = `<MainCard
 >
   <MainCard.Image />
   <MainCard.Content />
-</MainCard>`;
+</MainCard.Root>`;
 
 export default function MainCardDoc() {
   return (
@@ -59,24 +59,26 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
       </div>
       <h3 className='text-2xl'>기본 MainCard 예시 입니다.</h3>
       <DocCode
-        code={`        <MainCard
+        code={`        <MainCard.Root
         title='스카이다이빙'
         price={200000}
         bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
         rating={4.8}
         reviewCount={121}
+        category="식음료"
         className='w-[265px]'
       >
         <MainCard.Image />
         <MainCard.Content />
-      </MainCard>`}
+      </MainCard.Root>`}
       />
 
       <h3 className='text-2xl'>커스텀 MainCard 예시 입니다.</h3>
 
-      <div>
+      <div className='flex gap-20'>
         <MainCard.Root
           bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
+          category='식음료'
           className='w-[265px]'
           price={200000}
           rating={4.8}
@@ -85,22 +87,35 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
         >
           <MainCard.Image className='rounded-t-3xl brightness-90 contrast-125' />
           <MainCard.Content
-            className='rounded-b-3xl border-t border-white/10 bg-gradient-to-t from-black/60 to-transparent px-16 py-12 shadow-xl'
+            className='rounded-b-3xl border-t border-white/10 bg-gradient-to-t from-black/60 to-transparent px-16 py-12 text-white shadow-xl'
             iconColor='#FFD700' // 골드 컬러
             priceClassName='text-pink-400 font-bold text-lg'
             ratingClassName='text-emerald-300 font-semibold'
             titleClassName='text-white font-extrabold tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.7)]'
           />
         </MainCard.Root>
+        <MainCard.Root
+          bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
+          category='식음료'
+          className='w-[265px]'
+          price={200000}
+          rating={4.8}
+          reviewCount={121}
+          title='스카이다이빙'
+        >
+          <MainCard.Image className='rounded-t-3xl brightness-90 contrast-125' />
+          <MainCard.Content />
+        </MainCard.Root>
       </div>
 
       <DocCode
-        code={`         <MainCard
+        code={`         <MainCard.Root
           bannerImageUrl='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80'
           className='w-[265px]'
           price={200000}
           rating={4.8}
           reviewCount={121}
+          category="식음료"
           title='스카이다이빙'
         >
           <MainCard.Image className='rounded-t-3xl brightness-90 contrast-125' />
@@ -111,7 +126,7 @@ Main에서 쓰이는 인기체험 모든체험 Card입니다.
             ratingClassName='text-emerald-300 font-semibold'
             priceClassName='text-pink-400 font-bold text-lg'
           />
-        </MainCard>`}
+        </MainCard.Root>`}
       />
     </>
   );

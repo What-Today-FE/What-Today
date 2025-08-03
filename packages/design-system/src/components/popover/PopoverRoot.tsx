@@ -150,8 +150,9 @@ function PopoverRoot({
       const isInContent = contentElementRef.current?.contains(target);
       const isInTrigger = triggerRef.current?.contains(target);
       const isInSelectContent = document.querySelector('.select-content')?.contains(target); // popover위에 Select가 있을 때 항목이 선택되어도 팝오버까지 꺼지지 않도록
+      const isInDatePicker = document.querySelector('.date-picker')?.contains(target); // popover위에 datepicker가 있을 때 항목이 선택되어도 팝오버까지 꺼지지 않도록
 
-      if (!isInContent && !isInTrigger && !isInSelectContent) {
+      if (!isInContent && !isInTrigger && !isInSelectContent && !isInDatePicker) {
         internalSetOpen(false);
       }
     };

@@ -1,5 +1,8 @@
 import { Button, DatePicker, MinusIcon, PlusIcon, TimePicker, useToast } from '@what-today/design-system';
 import type { Dayjs } from 'dayjs';
+import { useState } from 'react';
+
+import RecurringScheduleModal from './RecurringScheduleModal';
 
 interface Time {
   hour: string;
@@ -38,6 +41,21 @@ function isOverlappingSchedule(a: Required<Schedule>, b: Required<Schedule>): bo
 
 export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   const { toast } = useToast();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  // 반복 일정으로 생성된 스케줄들을 기존 스케줄에 추가하는 함수
+  const handleSchedulesGenerated = (newSchedules: Schedule[]) => {
+    // 기존 스케줄과 새 스케줄 합치기 (빈 행 제외)
+    const existingSchedules = value.filter((s) => s.date && s.startTime && s.endTime);
+    const allSchedules = [...existingSchedules, ...newSchedules];
+    onChange(allSchedules);
+
+    toast({
+      title: '일정 생성 완료',
+      description: `${newSchedules.length}개의 일정이 추가되었습니다.`,
+      type: 'success',
+    });
+  };
 
   const handleScheduleChange = (index: number, field: keyof Schedule, newValue: Dayjs | Time | null) => {
     const updated = [...value];
@@ -123,57 +141,71 @@ export default function ScheduleInput({ value, onChange }: ScheduleInputProps) {
   })();
 
   return (
-    <div className='flex flex-col gap-12'>
-      {schedules.map((schedule, idx) => {
-        const isLast = idx === schedules.length - 1;
-        const scheduleKey =
-          schedule?.date && schedule?.startTime && schedule?.endTime
-            ? `${schedule.date.format?.('YYYY-MM-DD') ?? 'no-date'}-${schedule.startTime.hour}:${schedule.startTime.minute}-${schedule.endTime.hour}:${schedule.endTime.minute}`
-            : `empty-schedule-${idx}`;
-        const isComplete = schedule.date && schedule.startTime && schedule.endTime;
+    <div>
+      <div className='mb-4 flex items-center justify-between'>
+        <p className='mb-4 block'>예약 가능한 시간대</p>
+        <RecurringScheduleModal
+          isOpen={isPopoverOpen}
+          onOpenChange={setIsPopoverOpen}
+          onSchedulesGenerated={handleSchedulesGenerated}
+        />
+      </div>
 
-        return (
-          <div key={scheduleKey} className='flex flex-col items-center gap-8 md:flex-row'>
-            <div className='w-full flex-1'>
-              <DatePicker value={schedule?.date || null} onChange={(date) => handleScheduleChange(idx, 'date', date)} />
-            </div>
-            <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
-              <div className='flex-1'>
-                <TimePicker
-                  className='w-full md:w-120'
-                  value={schedule?.startTime || null}
-                  onChange={(time) => handleScheduleChange(idx, 'startTime', time)}
+      <div className='flex flex-col gap-12'>
+        {schedules.map((schedule, idx) => {
+          const isLast = idx === schedules.length - 1;
+          const scheduleKey =
+            schedule?.date && schedule?.startTime && schedule?.endTime
+              ? `${schedule.date.format?.('YYYY-MM-DD') ?? 'no-date'}-${schedule.startTime.hour}:${schedule.startTime.minute}-${schedule.endTime.hour}:${schedule.endTime.minute}`
+              : `empty-schedule-${idx}`;
+          const isComplete = schedule.date && schedule.startTime && schedule.endTime;
+
+          return (
+            <div key={scheduleKey} className='flex flex-col items-center gap-8 md:flex-row'>
+              <div className='w-full flex-1'>
+                <DatePicker
+                  value={schedule?.date || null}
+                  onChange={(date) => handleScheduleChange(idx, 'date', date)}
                 />
               </div>
-              <div className='flex-1'>
-                <TimePicker
-                  className='w-full md:w-120'
-                  value={schedule?.endTime || null}
-                  onChange={(time) => handleScheduleChange(idx, 'endTime', time)}
-                />
+              <div className='flex w-full flex-wrap items-center gap-8 md:w-auto'>
+                <div className='flex-1'>
+                  <TimePicker
+                    className='w-full md:w-120'
+                    value={schedule?.startTime || null}
+                    onChange={(time) => handleScheduleChange(idx, 'startTime', time)}
+                  />
+                </div>
+                <div className='flex-1'>
+                  <TimePicker
+                    className='w-full md:w-120'
+                    value={schedule?.endTime || null}
+                    onChange={(time) => handleScheduleChange(idx, 'endTime', time)}
+                  />
+                </div>
+
+                {/* 마지막 행이 아니거나, 완성된 행이면 삭제 버튼 표시 */}
+                {(!isLast || isComplete) && (
+                  <Button
+                    className='aspect-square w-fit rounded-full bg-gray-200'
+                    variant='none'
+                    onClick={() => handleRemoveSchedule(idx)}
+                  >
+                    <MinusIcon color='white' />
+                  </Button>
+                )}
+
+                {/* 마지막 행이고 비어있으면 플레이스홀더 */}
+                {isLast && (
+                  <Button className='bg-primary-500 aspect-square w-fit rounded-full' variant='none'>
+                    <PlusIcon color='white' />
+                  </Button>
+                )}
               </div>
-
-              {/* 마지막 행이 아니거나, 완성된 행이면 삭제 버튼 표시 */}
-              {(!isLast || isComplete) && (
-                <Button
-                  className='aspect-square w-fit rounded-full bg-gray-200'
-                  variant='none'
-                  onClick={() => handleRemoveSchedule(idx)}
-                >
-                  <MinusIcon color='white' />
-                </Button>
-              )}
-
-              {/* 마지막 행이고 비어있으면 플레이스홀더 */}
-              {isLast && (
-                <Button className='bg-primary-500 aspect-square w-fit rounded-full' variant='none'>
-                  <PlusIcon color='white' />
-                </Button>
-              )}
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

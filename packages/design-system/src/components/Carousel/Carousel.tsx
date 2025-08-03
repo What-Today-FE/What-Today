@@ -30,7 +30,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
 
   return (
     <div className='relative w-full overflow-visible'>
-      <div className='relative mx-auto flex max-w-6xl items-center justify-center'>
+      <div className='relative mx-auto flex items-center justify-center'>
         {/* 왼쪽 버튼 */}
         <NavigationButton direction='left' disabled={page === 0} onClick={handlePrev} />
 
@@ -50,6 +50,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
               >
                 <MainCard.Root
                   bannerImageUrl={item.bannerImageUrl}
+                  category={item.category}
                   price={item.price}
                   rating={item.rating}
                   reviewCount={item.reviewCount}
@@ -77,6 +78,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
             <MainCard.Root
               key={item.id}
               bannerImageUrl={item.bannerImageUrl}
+              category={item.category}
               className='w-265 shrink-0'
               price={item.price}
               rating={item.rating}
