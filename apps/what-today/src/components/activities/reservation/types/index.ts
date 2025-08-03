@@ -75,7 +75,7 @@ export interface ReservationBottomBarProps {
   price: number;
   reservation: Pick<ReservationSummary, 'date' | 'startTime' | 'endTime' | 'headCount'> | null;
   onSelectDate: () => void;
-  onReserve: () => void;
+  onReserve?: () => void;
   isSubmitting?: boolean;
   isAuthor?: boolean;
   isLoggedIn?: boolean;

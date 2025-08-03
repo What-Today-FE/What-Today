@@ -6,15 +6,23 @@ import { useReservation } from '@/components/activities/reservation/hooks/useRes
 import TimeSelector from '@/components/activities/reservation/TimeSelector';
 import type { TabletReservationSheetProps } from '@/components/activities/reservation/types';
 
+interface ExtendedTabletReservationSheetProps extends Omit<TabletReservationSheetProps, 'onConfirm'> {
+  activityId: number;
+  onReservationSuccess?: () => void;
+  onReservationError?: (error: Error) => void;
+}
+
 export default function TabletReservationSheet({
   schedules,
   price,
   isOpen,
   onClose,
-  onConfirm,
+  activityId,
+  onReservationSuccess,
+  onReservationError,
   isAuthor = false,
   isLoggedIn = true,
-}: TabletReservationSheetProps) {
+}: ExtendedTabletReservationSheetProps) {
   const {
     selectedDate,
     setSelectedDate,
@@ -27,13 +35,24 @@ export default function TabletReservationSheet({
     availableTimes,
     totalPrice,
     reservableDates,
-  } = useReservation(schedules, price);
+    submitReservation,
+    isSubmitting,
+  } = useReservation(schedules, price, {
+    onSuccess: () => {
+      onClose(); // 시트 닫기
+      onReservationSuccess?.(); // 성공 콜백 호출
+    },
+    onError: (error) => {
+      onReservationError?.(error); // 에러 콜백 호출
+    },
+  });
 
   // 버튼 텍스트 결정
   let buttonText = '';
-  if (!isLoggedIn) buttonText = '로그인 필요';
+  if (isSubmitting) buttonText = '예약 중...';
+  else if (!isLoggedIn) buttonText = '로그인 필요';
   else if (isAuthor) buttonText = '예약 불가';
-  else buttonText = '확인';
+  else buttonText = '예약하기';
 
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={onClose}>
@@ -75,21 +94,12 @@ export default function TabletReservationSheet({
         <div className='px-20 pt-8 pb-24'>
           <Button
             className='w-full'
-            disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
+            disabled={!isReadyToReserve || isAuthor || !isLoggedIn || isSubmitting}
             size='lg'
             variant='fill'
-            onClick={() => {
-              if (selectedScheduleId && selectedDate) {
-                const selectedSchedule = schedules.find((s) => s.id === selectedScheduleId);
-                if (selectedSchedule) {
-                  onConfirm({
-                    date: selectedSchedule.date,
-                    startTime: selectedSchedule.startTime,
-                    endTime: selectedSchedule.endTime,
-                    headCount,
-                    scheduleId: selectedScheduleId,
-                  });
-                }
+            onClick={async () => {
+              if (selectedScheduleId) {
+                await submitReservation(activityId);
               }
             }}
           >

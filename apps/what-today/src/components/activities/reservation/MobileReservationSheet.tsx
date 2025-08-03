@@ -10,15 +10,23 @@ import type { TabletReservationSheetProps } from './types';
 
 type MobileStep = 'dateTime' | 'headCount';
 
+interface MobileReservationSheetProps extends Omit<TabletReservationSheetProps, 'onConfirm'> {
+  activityId: number;
+  onReservationSuccess?: () => void;
+  onReservationError?: (error: Error) => void;
+}
+
 export default function MobileReservationSheet({
   schedules,
   price,
   isOpen,
   onClose,
-  onConfirm,
+  activityId,
+  onReservationSuccess,
+  onReservationError,
   isAuthor = false,
   isLoggedIn = true,
-}: TabletReservationSheetProps) {
+}: MobileReservationSheetProps) {
   const [currentStep, setCurrentStep] = useState<MobileStep>('dateTime');
 
   const {
@@ -33,7 +41,18 @@ export default function MobileReservationSheet({
     availableTimes,
     totalPrice,
     reservableDates,
-  } = useReservation(schedules, price);
+    submitReservation,
+    isSubmitting,
+  } = useReservation(schedules, price, {
+    onSuccess: () => {
+      setCurrentStep('dateTime'); // 첫 번째 단계로 리셋
+      onClose(); // 시트 닫기
+      onReservationSuccess?.(); // 성공 콜백 호출
+    },
+    onError: (error) => {
+      onReservationError?.(error); // 에러 콜백 호출
+    },
+  });
 
   const handleClose = () => {
     setCurrentStep('dateTime');
@@ -50,27 +69,19 @@ export default function MobileReservationSheet({
     setCurrentStep('dateTime');
   };
 
-  const handleConfirm = () => {
-    if (selectedScheduleId && selectedDate) {
-      const selectedSchedule = schedules.find((s) => s.id === selectedScheduleId);
-      if (selectedSchedule) {
-        onConfirm({
-          date: selectedSchedule.date,
-          startTime: selectedSchedule.startTime,
-          endTime: selectedSchedule.endTime,
-          headCount,
-          scheduleId: selectedScheduleId,
-        });
-        setCurrentStep('dateTime'); // 완료 후 초기 단계로 리셋
-      }
+  const handleConfirm = async () => {
+    if (selectedScheduleId) {
+      await submitReservation(activityId);
     }
   };
 
   // 버튼 텍스트 결정 (1단계, 2단계 공통)
   let buttonText = '';
-  if (!isLoggedIn) buttonText = '로그인 필요';
+  if (isSubmitting) buttonText = '예약 중...';
+  else if (!isLoggedIn) buttonText = '로그인 필요';
   else if (isAuthor) buttonText = '예약 불가';
-  else buttonText = '확인';
+  else if (currentStep === 'dateTime') buttonText = '다음';
+  else buttonText = '예약하기';
 
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={handleClose}>
@@ -110,7 +121,7 @@ export default function MobileReservationSheet({
             <div className='pt-8'>
               <Button
                 className='w-full'
-                disabled={!selectedScheduleId || isAuthor || !isLoggedIn}
+                disabled={!selectedScheduleId || isAuthor || !isLoggedIn || isSubmitting}
                 size='lg'
                 variant='fill'
                 onClick={handleNextStep}
@@ -164,7 +175,7 @@ export default function MobileReservationSheet({
             <div className='pt-8'>
               <Button
                 className='w-full'
-                disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
+                disabled={!isReadyToReserve || isAuthor || !isLoggedIn || isSubmitting}
                 size='lg'
                 variant='fill'
                 onClick={handleConfirm}

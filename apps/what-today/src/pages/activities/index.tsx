@@ -10,10 +10,9 @@ import Divider from '@/components/activities/Divider';
 import MobileReservationSheet from '@/components/activities/reservation/MobileReservationSheet';
 import ReservationForm from '@/components/activities/reservation/ReservationForm';
 import TabletReservationSheet from '@/components/activities/reservation/TabletReservationSheet';
-import type { ReservationSummary } from '@/components/activities/reservation/types';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
-import { useActivityDetail, useCreateReservation } from '@/hooks/activityDetail';
+import { useActivityDetail } from '@/hooks/activityDetail';
 import { useResponsive } from '@/hooks/useResponsive';
 import NotFoundPage from '@/pages/not-found-page';
 import { useWhatTodayStore } from '@/stores';
@@ -25,13 +24,10 @@ export default function ActivityDetailPage() {
 
   const [isTabletSheetOpen, setIsTabletSheetOpen] = useState(false);
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
-  const [reservationSummary, setReservationSummary] = useState<ReservationSummary | null>(null);
 
   const { isMobile, isTablet, isDesktop } = useResponsive();
 
   const { data: activity, isLoading: loading, error } = useActivityDetail(id);
-
-  const createReservationMutation = useCreateReservation(Number(id));
 
   if (loading)
     return (
@@ -42,43 +38,21 @@ export default function ActivityDetailPage() {
   if (error) return <NotFoundPage />;
   if (!activity) return <NotFoundPage />;
 
-  const handleConfirmTabletReservation = (reservation: ReservationSummary) => {
-    setReservationSummary(reservation);
-    setIsTabletSheetOpen(false);
+  const handleReservationSuccess = () => {
+    toast({
+      title: '예약 완료',
+      description: '마이페이지에서 예약을 확인해보세요!',
+      type: 'success',
+    });
   };
 
-  const handleConfirmMobileReservation = (reservation: ReservationSummary) => {
-    setReservationSummary(reservation);
-    setIsMobileSheetOpen(false);
-  };
-
-  const handleSubmitReservation = async () => {
-    if (!reservationSummary) return;
-
-    createReservationMutation.mutate(
-      {
-        scheduleId: reservationSummary.scheduleId,
-        headCount: reservationSummary.headCount,
-      },
-      {
-        onSuccess: () => {
-          toast({
-            title: '예약 완료',
-            description: '마이페이지에서 예약을 확인해보세요!',
-            type: 'success',
-          });
-          setReservationSummary(null); // 예약 완료 후 상태 초기화
-        },
-        onError: (error) => {
-          const errorMessage = error instanceof Error ? error.message : '예약 중 오류가 발생했습니다.';
-          toast({
-            title: '예약 실패',
-            description: errorMessage,
-            type: 'error',
-          });
-        },
-      },
-    );
+  const handleReservationError = (error: Error) => {
+    const errorMessage = error instanceof Error ? error.message : '예약 중 오류가 발생했습니다.';
+    toast({
+      title: '예약 실패',
+      description: errorMessage,
+      type: 'error',
+    });
   };
 
   return (
@@ -141,19 +115,8 @@ export default function ActivityDetailPage() {
           <ReservationBottomBar
             isAuthor={user?.id ? activity?.userId === user.id : false}
             isLoggedIn={!!user}
-            isSubmitting={createReservationMutation.isPending}
             price={activity.price}
-            reservation={
-              reservationSummary
-                ? {
-                    date: reservationSummary.date,
-                    startTime: reservationSummary.startTime,
-                    endTime: reservationSummary.endTime,
-                    headCount: reservationSummary.headCount,
-                  }
-                : null
-            }
-            onReserve={handleSubmitReservation}
+            reservation={null}
             onSelectDate={() => {
               if (isMobile) setIsMobileSheetOpen(true);
               else if (isTablet) setIsTabletSheetOpen(true);
@@ -163,26 +126,30 @@ export default function ActivityDetailPage() {
           {/* 태블릿 바텀시트 */}
           {isTablet && (
             <TabletReservationSheet
+              activityId={activity.id}
               isAuthor={user?.id ? activity?.userId === user.id : false}
               isLoggedIn={!!user}
               isOpen={isTabletSheetOpen}
               price={activity.price}
               schedules={activity.schedules}
               onClose={() => setIsTabletSheetOpen(false)}
-              onConfirm={handleConfirmTabletReservation}
+              onReservationError={handleReservationError}
+              onReservationSuccess={handleReservationSuccess}
             />
           )}
 
           {/* 모바일 바텀시트 */}
           {isMobile && (
             <MobileReservationSheet
+              activityId={activity.id}
               isAuthor={user?.id ? activity?.userId === user.id : false}
               isLoggedIn={!!user}
               isOpen={isMobileSheetOpen}
               price={activity.price}
               schedules={activity.schedules}
               onClose={() => setIsMobileSheetOpen(false)}
-              onConfirm={handleConfirmMobileReservation}
+              onReservationError={handleReservationError}
+              onReservationSuccess={handleReservationSuccess}
             />
           )}
         </>
