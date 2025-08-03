@@ -117,7 +117,7 @@ export default function ManageActivitiesPage() {
         <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
           <div className='flex flex-col items-center gap-6 text-center'>
             <WarningLogo className='md:size-110 lg:size-150' size={88} />
-            <p className='subtitle-text'>체험을 삭제하시겠습니까?</p>
+            <p className='text-2lg font-bold'>체험을 삭제하시겠습니까?</p>
           </div>
           <Modal.Actions>
             <Modal.CancelButton>아니요</Modal.CancelButton>
