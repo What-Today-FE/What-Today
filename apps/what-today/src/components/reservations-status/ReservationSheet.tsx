@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { type ManageableReservationStatus, Select } from '@what-today/design-system';
+import { type ManageableReservationStatus, Select, useToast } from '@what-today/design-system';
 import dayjs from 'dayjs';
 import { type ReactNode, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -22,6 +22,7 @@ const tabData: { key: ManageableReservationStatus; label: string }[] = [
 ];
 
 export default function ReservationSheet({ activityId, selectedDate }: ReservationSheetProps) {
+  const toast = useToast();
   // 상태 분리
   const [selectedSchedule, setSelectedSchedule] = useState<{ value: string; label: ReactNode } | null>(null);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
@@ -62,8 +63,18 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await patchReservationStatus(activityId, id, 'confirmed');
       await queryClient.invalidateQueries({ queryKey: ['reservation'] });
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
-    } catch (error) {
-      console.error('Error in handleApprove:', error);
+      toast.toast({
+        title: '예약 승인 성공',
+        description: '정상적으로 처리되었습니다.',
+        type: 'success',
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '승인 중 오류가 발생했습니다.';
+      toast.toast({
+        title: '예약 승인 실패',
+        description: errorMessage,
+        type: 'error',
+      });
     }
   };
 
@@ -72,8 +83,18 @@ export default function ReservationSheet({ activityId, selectedDate }: Reservati
       await patchReservationStatus(activityId, id, 'declined');
       await queryClient.invalidateQueries({ queryKey: ['reservation'] });
       await queryClient.invalidateQueries({ queryKey: ['dailySchedule'] });
-    } catch (error) {
-      console.error('Error in handleReject:', error);
+      toast.toast({
+        title: '예약 거절 성공',
+        description: '정상적으로 처리되었습니다.',
+        type: 'success',
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '거절 중 오류가 발생했습니다.';
+      toast.toast({
+        title: '예약 거절 실패',
+        description: errorMessage,
+        type: 'error',
+      });
     }
   };
 

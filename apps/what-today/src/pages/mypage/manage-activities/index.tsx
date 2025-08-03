@@ -29,7 +29,7 @@ export default function ManageActivitiesPage() {
         onError: (err) => {
           const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
           toast({
-            title: '삭제 실패',
+            title: '체험 삭제 실패',
             description: errorMessage,
             type: 'error',
           });
