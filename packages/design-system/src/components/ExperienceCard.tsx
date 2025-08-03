@@ -80,7 +80,7 @@ export default function ExperienceCard({
 
   return (
     <article
-      className='flex w-full cursor-pointer justify-between gap-22 rounded-3xl p-24 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] xl:p-30'
+      className='flex w-full cursor-pointer justify-between gap-22 rounded-3xl border border-gray-50 p-24 xl:p-30'
       onClick={onNavigate}
     >
       <div className='flex flex-col gap-12 xl:gap-14'>

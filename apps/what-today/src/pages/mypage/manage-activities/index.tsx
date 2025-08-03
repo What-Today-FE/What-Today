@@ -1,4 +1,12 @@
-import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } from '@what-today/design-system';
+import {
+  Button,
+  ChevronIcon,
+  ExperienceCard,
+  ExperienceCardSkeleton,
+  Modal,
+  NoResult,
+  WarningLogo,
+} from '@what-today/design-system';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -45,7 +53,14 @@ export default function ManageActivitiesPage() {
 
   let content;
   if (isLoading) {
-    content = <div className='flex justify-center p-40 text-gray-400'>로딩 중...</div>;
+    content = (
+      <div className='flex flex-col gap-12'>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <ExperienceCardSkeleton key={i} />
+        ))}
+        ;
+      </div>
+    );
   } else if (isError) {
     content = <div className='flex justify-center p-40 text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   } else if (allActivities.length === 0) {
