@@ -5,14 +5,12 @@ import { twMerge } from 'tailwind-merge';
 
 import MypageSidebar from '@/components/MypageSidebar';
 import useAuth from '@/hooks/useAuth';
-import { useWhatTodayStore } from '@/stores';
 
 export default function MyPageLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const { logoutUser } = useAuth();
-  const { user } = useWhatTodayStore();
   const { toast } = useToast();
 
   const handleLogout = () => {
