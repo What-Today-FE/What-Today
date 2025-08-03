@@ -31,7 +31,7 @@ export default function Header() {
 
           <div className='mx-12 h-16 w-px bg-gray-100' />
 
-          <Link className='flex items-center gap-8 hover:opacity-60' to='/mypage/edit-profile'>
+          <Link className='flex items-center gap-8 hover:opacity-60' to='/mypage'>
             {user?.profileImageUrl ? (
               <img
                 alt='프로필 이미지'

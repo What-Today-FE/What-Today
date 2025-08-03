@@ -26,9 +26,9 @@ export default function OngoingExperienceCardDoc() {
       <DocCode code={`<OngoingExperienceCard variant="primary">Click me</OngoingExperienceCard>`} />
 
       <div className='flex gap-12'>
-        <OngoingExperienceCard />
-        <OngoingExperienceCard />
-        <OngoingExperienceCard />
+        <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
+        <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
+        <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
       </div>
     </>
   );

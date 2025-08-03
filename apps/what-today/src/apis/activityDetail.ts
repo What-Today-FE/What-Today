@@ -1,4 +1,9 @@
-import { type ActivityWithSubImagesAndSchedules, activityWithSubImagesAndSchedulesSchema } from '@/schemas/activities';
+import {
+  type ActivityWithSubImagesAndSchedules,
+  activityWithSubImagesAndSchedulesSchema,
+  type Schedules,
+  schedulesSchema,
+} from '@/schemas/activities';
 import { type ActivityReviewsResponse, activityReviewsResponseSchema } from '@/schemas/activityReview';
 import {
   type CreateReservationBodyDto,
@@ -54,4 +59,23 @@ export const createReservation = async (
 ): Promise<ReservationResponse> => {
   const response = await axiosInstance.post(`/activities/${activityId}/reservations`, body);
   return reservationResponseSchema.parse(response.data);
+};
+
+// ✅ 체험 예약 가능일 리스트 조회 시 사용되는 파라미터 타입
+export interface ReservationAvailableScheduleParams {
+  year: string;
+  month: string;
+}
+
+/**
+ * @description 체험 예약 가능일 리스트를 불러옵니다.
+ * @param activityId 체험 ID
+ * @returns ActivityWithSubImagesAndSchedules 타입의 체험 상세 데이터
+ */
+export const fetchReservationAvailableSchedule = async (
+  activityId: number,
+  params: ReservationAvailableScheduleParams,
+): Promise<Schedules> => {
+  const response = await axiosInstance.get(`/activities/${activityId}/available-schedule`, { params });
+  return schedulesSchema.parse(response.data);
 };

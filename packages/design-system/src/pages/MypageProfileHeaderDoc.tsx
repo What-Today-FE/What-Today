@@ -25,7 +25,7 @@ export default function MypageProfileHeaderDoc() {
       {/* 예시 코드 */}
       <DocCode code={`<MypageProfileHeader variant="primary">Click me</MypageProfileHeader>`} />
 
-      <MypageProfileHeader />
+      <MypageProfileHeader onLogoutClick={() => {}} />
     </>
   );
 }
