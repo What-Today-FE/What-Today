@@ -1,6 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, useToast } from '@what-today/design-system';
 
+import Divider from '@/components/activities/Divider';
+
 import CalendarSelector from './CalendarSelector';
 import HeadCountSelector from './HeadCountSelector';
 import { useReservation } from './hooks/useReservation';
@@ -111,11 +113,11 @@ export default function ReservationForm({
 
       {/* 인원 선택 */}
       <HeadCountSelector headCount={headCount} onDecrease={decreaseHeadCount} onIncrease={increaseHeadCount} />
-
+      <Divider />
       {/* 총 합계 */}
       <div className='flex items-center justify-between'>
-        <p className='section-text flex flex-col'>
-          총 합계 <span>₩ {totalPrice.toLocaleString()}</span>
+        <p className='section-text flex max-w-155 flex-col'>
+          총 합계 <span className='inline-block max-w-full truncate'>₩ {totalPrice.toLocaleString()}</span>
         </p>
 
         {showSubmitButton && (
