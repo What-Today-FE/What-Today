@@ -43,7 +43,6 @@ export const router = createBrowserRouter([
             children: [
               { path: 'experiences/create', element: <CreateExperience /> },
               { path: 'experiences/create/:id', element: <CreateExperience /> },
-              // { path: 'mypage', element: <MyPage /> }, // ✅ 여기만 별도로(다시 변경)
             ],
           },
           {
