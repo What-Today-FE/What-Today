@@ -58,7 +58,6 @@ export default function ManageActivitiesPage() {
         {Array.from({ length: 5 }).map((_, i) => (
           <ExperienceCardSkeleton key={i} />
         ))}
-        ;
       </div>
     );
   } else if (isError) {
