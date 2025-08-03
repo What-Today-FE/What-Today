@@ -10,6 +10,8 @@ import type { TabletReservationSheetProps } from './types';
 
 type MobileStep = 'dateTime' | 'headCount';
 
+type MobileReservationSheetProps = TabletReservationSheetProps;
+
 export default function MobileReservationSheet({
   schedules,
   price,
@@ -18,7 +20,7 @@ export default function MobileReservationSheet({
   onConfirm,
   isAuthor = false,
   isLoggedIn = true,
-}: TabletReservationSheetProps) {
+}: MobileReservationSheetProps) {
   const [currentStep, setCurrentStep] = useState<MobileStep>('dateTime');
 
   const {
@@ -52,16 +54,17 @@ export default function MobileReservationSheet({
 
   const handleConfirm = () => {
     if (selectedScheduleId && selectedDate) {
-      const selectedSchedule = schedules.find((s) => s.id === selectedScheduleId);
-      if (selectedSchedule) {
+      const selectedTime = availableTimes.find((t) => t.id === selectedScheduleId);
+      if (selectedTime) {
         onConfirm({
-          date: selectedSchedule.date,
-          startTime: selectedSchedule.startTime,
-          endTime: selectedSchedule.endTime,
+          date: selectedDate,
+          startTime: selectedTime.startTime,
+          endTime: selectedTime.endTime,
           headCount,
           scheduleId: selectedScheduleId,
         });
-        setCurrentStep('dateTime'); // 완료 후 초기 단계로 리셋
+        setCurrentStep('dateTime'); // 첫 번째 단계로 리셋
+        onClose(); // 시트 닫기
       }
     }
   };
@@ -70,7 +73,8 @@ export default function MobileReservationSheet({
   let buttonText = '';
   if (!isLoggedIn) buttonText = '로그인 필요';
   else if (isAuthor) buttonText = '예약 불가';
-  else buttonText = '확인';
+  else if (currentStep === 'dateTime') buttonText = '다음';
+  else buttonText = '다음';
 
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={handleClose}>

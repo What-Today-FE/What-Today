@@ -33,7 +33,7 @@ export default function TabletReservationSheet({
   let buttonText = '';
   if (!isLoggedIn) buttonText = '로그인 필요';
   else if (isAuthor) buttonText = '예약 불가';
-  else buttonText = '확인';
+  else buttonText = '다음';
 
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={onClose}>
@@ -80,15 +80,16 @@ export default function TabletReservationSheet({
             variant='fill'
             onClick={() => {
               if (selectedScheduleId && selectedDate) {
-                const selectedSchedule = schedules.find((s) => s.id === selectedScheduleId);
-                if (selectedSchedule) {
+                const selectedTime = availableTimes.find((t) => t.id === selectedScheduleId);
+                if (selectedTime) {
                   onConfirm({
-                    date: selectedSchedule.date,
-                    startTime: selectedSchedule.startTime,
-                    endTime: selectedSchedule.endTime,
+                    date: selectedDate,
+                    startTime: selectedTime.startTime,
+                    endTime: selectedTime.endTime,
                     headCount,
                     scheduleId: selectedScheduleId,
                   });
+                  onClose(); // 시트 닫기
                 }
               }
             }}

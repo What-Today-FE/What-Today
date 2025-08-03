@@ -13,7 +13,7 @@ export default function DefaultLayout() {
   const footerMarginBottom = isActivityDetailPage && !isDesktop ? 'w-full mb-125' : 'w-full';
 
   // FloatingTranslateButton의 bottom 위치 조건부 설정
-  const floatingButtonClass = !isDesktop && isActivityDetailPage ? 'bottom-140' : undefined;
+  const floatingButtonClass = !isDesktop && isActivityDetailPage ? 'bottom-160' : undefined;
 
   return (
     <div className='flex w-full flex-col items-center gap-8 overflow-x-hidden'>
