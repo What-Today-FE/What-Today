@@ -111,6 +111,7 @@ export default function ActivityDetailPage() {
                 category={activity.category}
                 id={id}
                 isAuthor={user?.id ? activity?.userId === user.id : false}
+                price={activity.price}
                 rating={activity.rating}
                 reviewCount={activity.reviewCount}
                 title={activity.title}
@@ -133,6 +134,7 @@ export default function ActivityDetailPage() {
               category={activity.category}
               id={id}
               isAuthor={user?.id ? activity?.userId === user.id : false}
+              price={activity.price}
               rating={activity.rating}
               reviewCount={activity.reviewCount}
               title={activity.title}

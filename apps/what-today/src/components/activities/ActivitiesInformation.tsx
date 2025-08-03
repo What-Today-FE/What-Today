@@ -14,6 +14,7 @@ interface ActivitiesInformationProps {
   className?: string;
   id?: string;
   isAuthor: boolean;
+  price: number;
 }
 
 /**
@@ -28,6 +29,7 @@ export default function ActivitiesInformation({
   address,
   className,
   isAuthor,
+  price,
 }: ActivitiesInformationProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -83,6 +85,11 @@ export default function ActivitiesInformation({
         <div className='mt-2 ml-2 flex items-center gap-4 text-base text-gray-700'>
           <LocationIcon />
           <span>{address}</span>
+        </div>
+        <div className='mt-2 ml-2 flex items-center gap-4 text-base text-gray-700'>
+          <p className='text-xl text-[#79747E]'>
+            <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
+          </p>
         </div>
       </section>
       <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>

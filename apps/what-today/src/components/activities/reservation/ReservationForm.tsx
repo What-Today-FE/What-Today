@@ -88,9 +88,9 @@ export default function ReservationForm({
   const content = (
     <div className='flex flex-col gap-24'>
       {/* 가격 표시 */}
-      <p className='text-xl text-[#79747E]'>
+      {/* <p className='text-xl text-[#79747E]'>
         <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
-      </p>
+      </p> */}
 
       {/* 캘린더 */}
       <CalendarSelector reservableDates={reservableDates} selectedDate={selectedDate} onDateChange={setSelectedDate} />
