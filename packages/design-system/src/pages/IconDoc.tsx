@@ -5,6 +5,7 @@ import {
   BusIcon,
   CalendarIcon,
   ChevronIcon,
+  CloudIcon,
   DeleteIcon,
   DotIcon,
   EditIcon,
@@ -77,6 +78,7 @@ const colorIcons = [
   { name: 'SuccessIcon', component: SuccessIcon },
   { name: 'InfoIcon', component: InfoIcon },
   { name: 'ErrorIcon', component: ErrorIcon },
+  { name: 'CloudIcon', component: CloudIcon, props: { color: 'var(--color-primary-500)' } },
 ];
 
 const ColorIconPropsCode = `<LocationIcon className="size-50" color="var(--color-blue-500)" />`;
@@ -116,6 +118,7 @@ const iconScope = {
   ErrorIcon,
   SuccessIcon,
   InfoIcon,
+  CloudIcon,
 };
 
 export default function IconDoc() {
