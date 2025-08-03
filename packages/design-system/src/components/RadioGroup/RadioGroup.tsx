@@ -101,7 +101,6 @@ export default function RadioGroup({
       <motion.div
         animate={{ x: 0, opacity: 1 }}
         className={twMerge('no-scrollbar flex flex-nowrap gap-4 overflow-x-auto scroll-smooth', radioGroupClassName)}
-        initial={{ x: -20, opacity: 0 }}
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
