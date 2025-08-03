@@ -99,11 +99,13 @@ export default function ReservationForm({
       {selectedDate && (
         <>
           <p className='section-text'>예약 가능한 시간</p>
-          <TimeSelector
-            availableTimes={availableTimes}
-            selectedScheduleId={selectedScheduleId}
-            onSelect={setSelectedScheduleId}
-          />
+          <div className='max-h-350 overflow-y-auto pr-4'>
+            <TimeSelector
+              availableTimes={availableTimes}
+              selectedScheduleId={selectedScheduleId}
+              onSelect={setSelectedScheduleId}
+            />
+          </div>
         </>
       )}
 
