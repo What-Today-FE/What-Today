@@ -3,9 +3,16 @@ import { twMerge } from 'tailwind-merge';
 import Button from './button';
 import { EmptyLogo } from './logos';
 
+interface Activity {
+  id: number;
+  bannerImageUrl: string;
+  title: string;
+  price: number;
+}
+
 interface OngoingExperienceCardProps {
   className?: string;
-  activities: Record<string, any>[];
+  activities: Activity[];
   onClickActivity: (id: number) => void;
   onClick: () => void;
 }

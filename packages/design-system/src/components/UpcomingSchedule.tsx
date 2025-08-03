@@ -16,7 +16,7 @@ function ScheduleItem({
 }: {
   title: string;
   price: number;
-  headCount: string;
+  headCount: number;
   time: string;
   src?: string;
 }) {
@@ -31,14 +31,24 @@ function ScheduleItem({
           <p className='text-md text-gray-500'>{headCount}명</p>
         </div>
       </div>
-      <img className='h-full w-140 rounded-l-none rounded-r-2xl object-cover' src={src} />
+      <img alt='체험 베너 이미지' className='h-full w-140 rounded-l-none rounded-r-2xl object-cover' src={src} />
     </div>
   );
 }
 
+interface Reservation {
+  id: number;
+  activity: { id: number; title: string; bannerImageUrl: string };
+  date: string;
+  headCount: number;
+  totalPrice: number;
+  startTime: string;
+  endTime: string;
+}
+
 interface UpcomingScheduleProps {
   className?: string;
-  reservation: Record<string, any>[];
+  reservation: Reservation[];
   onClickReservation: (id: number) => void;
   onClick?: () => void;
 }

@@ -24,11 +24,12 @@ export default function MyPage() {
   const { user } = useWhatTodayStore();
   const { toast } = useToast();
 
+  const MAX_PAGE_SIZE = 1000;
   const year = dayjs().format('YYYY');
   const month = dayjs().format('MM');
 
   // 등록한 체험 갯수
-  const { data: activityData } = useInfiniteMyActivitiesQuery(1000);
+  const { data: activityData } = useInfiniteMyActivitiesQuery(MAX_PAGE_SIZE);
   const totalActivity = activityData?.pages[0]?.totalCount;
 
   // 이번달 예약 승인 대기 갯수
@@ -47,7 +48,7 @@ export default function MyPage() {
   const monthlyReservations = monthlyReservationsResults
     .map((result) => result.data)
     .filter(Boolean) as monthlyScheduleResponse[];
-  const totalPending = monthlyReservations.flat().reduce((sum, item) => sum + item.reservations.pending, 0);
+  const totalPending = monthlyReservations.flat().reduce((sum, item) => sum + item.reservations.pending || 0, 0);
 
   // 완료한 체험 갯수
   const { data: completedData } = useQuery<MyReservationsResponse>({
@@ -55,7 +56,7 @@ export default function MyPage() {
     queryFn: () =>
       fetchMyReservations({
         cursorId: null, // 첫 페이지부터 가져옴
-        size: 1000, // 충분히 큰 숫자로 설정 (전체 데이터 한 번에)
+        size: MAX_PAGE_SIZE, // 충분히 큰 숫자로 설정 (전체 데이터 한 번에)
         status: 'completed', // 완료된 체험만 받아오기
       }),
     staleTime: 1000 * 30,
@@ -70,7 +71,7 @@ export default function MyPage() {
     queryFn: () =>
       fetchMyReservations({
         cursorId: null, // 첫 페이지부터 가져옴
-        size: 1000, // 충분히 큰 숫자로 설정 (전체 데이터 한 번에)
+        size: MAX_PAGE_SIZE, // 충분히 큰 숫자로 설정 (전체 데이터 한 번에)
         status: 'confirmed', // 확정된 체험만 받아오기
       }),
     staleTime: 1000 * 30,
@@ -92,7 +93,6 @@ export default function MyPage() {
     .map(({ activityId }) => activityId);
   // 1. useInfiniteMyActivitiesQuery에서 받은 모든 pages를 펼침
   const allActivities = activityData?.pages.flatMap((page) => page.activities) ?? [];
-
   // 2. 예약 가능 activityId와 일치하는 항목만 필터링
   const availableActivities = allActivities.filter((activity) => availableActivityIds.includes(activity.id));
 
