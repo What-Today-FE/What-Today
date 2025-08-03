@@ -6,23 +6,15 @@ import { useReservation } from '@/components/activities/reservation/hooks/useRes
 import TimeSelector from '@/components/activities/reservation/TimeSelector';
 import type { TabletReservationSheetProps } from '@/components/activities/reservation/types';
 
-interface ExtendedTabletReservationSheetProps extends Omit<TabletReservationSheetProps, 'onConfirm'> {
-  activityId: number;
-  onReservationSuccess?: () => void;
-  onReservationError?: (error: Error) => void;
-}
-
 export default function TabletReservationSheet({
   schedules,
   price,
   isOpen,
   onClose,
-  activityId,
-  onReservationSuccess,
-  onReservationError,
+  onConfirm,
   isAuthor = false,
   isLoggedIn = true,
-}: ExtendedTabletReservationSheetProps) {
+}: TabletReservationSheetProps) {
   const {
     selectedDate,
     setSelectedDate,
@@ -35,24 +27,13 @@ export default function TabletReservationSheet({
     availableTimes,
     totalPrice,
     reservableDates,
-    submitReservation,
-    isSubmitting,
-  } = useReservation(schedules, price, {
-    onSuccess: () => {
-      onClose(); // 시트 닫기
-      onReservationSuccess?.(); // 성공 콜백 호출
-    },
-    onError: (error) => {
-      onReservationError?.(error); // 에러 콜백 호출
-    },
-  });
+  } = useReservation(schedules, price);
 
   // 버튼 텍스트 결정
   let buttonText = '';
-  if (isSubmitting) buttonText = '예약 중...';
-  else if (!isLoggedIn) buttonText = '로그인 필요';
+  if (!isLoggedIn) buttonText = '로그인 필요';
   else if (isAuthor) buttonText = '예약 불가';
-  else buttonText = '예약하기';
+  else buttonText = '다음';
 
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={onClose}>
@@ -94,12 +75,22 @@ export default function TabletReservationSheet({
         <div className='px-20 pt-8 pb-24'>
           <Button
             className='w-full'
-            disabled={!isReadyToReserve || isAuthor || !isLoggedIn || isSubmitting}
+            disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
             size='lg'
             variant='fill'
-            onClick={async () => {
-              if (selectedScheduleId) {
-                await submitReservation(activityId);
+            onClick={() => {
+              if (selectedScheduleId && selectedDate) {
+                const selectedTime = availableTimes.find((t) => t.id === selectedScheduleId);
+                if (selectedTime) {
+                  onConfirm({
+                    date: selectedDate,
+                    startTime: selectedTime.startTime,
+                    endTime: selectedTime.endTime,
+                    headCount,
+                    scheduleId: selectedScheduleId,
+                  });
+                  onClose(); // 시트 닫기
+                }
               }
             }}
           >
