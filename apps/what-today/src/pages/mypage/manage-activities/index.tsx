@@ -8,6 +8,7 @@ import {
   useToast,
   WarningLogo,
 } from '@what-today/design-system';
+import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -88,20 +89,27 @@ export default function ManageActivitiesPage() {
     content = (
       <>
         {allActivities.map(({ id, title, price, bannerImageUrl, rating, reviewCount }) => (
-          <ExperienceCard
+          <motion.div
             key={id}
-            bannerImageUrl={bannerImageUrl}
-            price={price}
-            rating={rating}
-            reviewCount={reviewCount}
-            title={title}
-            onDelete={() => {
-              setDeleteTargetId(id);
-              setIsDeleteOpen(true);
-            }}
-            onEdit={() => navigate(`/experiences/create/${id}`)}
-            onNavigate={() => navigate(`/activities/${id}`)}
-          />
+            initial={{ opacity: 0, y: 80 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            whileInView={{ opacity: 1, y: 0 }}
+          >
+            <ExperienceCard
+              bannerImageUrl={bannerImageUrl}
+              price={price}
+              rating={rating}
+              reviewCount={reviewCount}
+              title={title}
+              onDelete={() => {
+                setDeleteTargetId(id);
+                setIsDeleteOpen(true);
+              }}
+              onEdit={() => navigate(`/experiences/create/${id}`)}
+              onNavigate={() => navigate(`/activities/${id}`)}
+            />
+          </motion.div>
         ))}
         <div ref={observerRef} />
         {isFetchingNextPage && <div className='text-center text-gray-400'>체험목록 불러오는 중...</div>}
@@ -125,7 +133,7 @@ export default function ManageActivitiesPage() {
           </Button>
         </div>
       </header>
-      <section aria-label='체험 카드 목록' className='flex flex-col gap-12'>
+      <section aria-label='체험 카드 목록' className='flex flex-col gap-12 overflow-y-hidden'>
         {content}
       </section>
       <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
