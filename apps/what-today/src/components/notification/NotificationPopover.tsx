@@ -2,7 +2,6 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import {
   BellIcon,
   Button,
-  DotIcon,
   NotificationCard,
   NotificationCardSkeleton,
   Popover,
@@ -127,12 +126,12 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
           variant='none'
           onClick={() => setOpen((prev) => !prev)}
         >
-          <DotIcon
+          {/* <DotIcon
             aria-label='새 알림 있음'
             className='absolute top-2 left-12 size-8'
             color='var(--color-red-500)'
             id='notification-dot'
-          />
+          /> */}
           <BellIcon className='size-20' color={open ? 'var(--color-primary-500)' : 'var(--color-gray-600)'} />
         </Button>
       </Popover.Trigger>
