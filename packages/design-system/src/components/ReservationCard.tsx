@@ -1,3 +1,5 @@
+import UserBadge from './UserBadge';
+
 interface ReservationCardProps {
   /**
    * 체험 제목
@@ -73,26 +75,16 @@ export default function ReservationCard({
   onClick,
 }: ReservationCardProps) {
   const formatPrice = (value: number) => value.toLocaleString('ko');
-  // badge 컴포넌트로 수정 예정
-  const reservationStatus = {
-    pending: { badge: '신청 완료', style: 'bg-[#DAF0FF] text-[#0D6CD1]' },
-    confirmed: { badge: '예약 승인', style: 'bg-[#DDF9F9] text-[#1790A0]' },
-    declined: { badge: '예약 거절', style: 'bg-[#FCECEA] text-[#F96767]' },
-    canceled: { badge: '예약 취소', style: 'bg-[#E0E0E5] text-[#707177]' },
-    completed: { badge: '체험 완료', style: 'bg-[#E9FBE4] text-[#2BA90D]' },
-  };
-  const { badge, style } = reservationStatus[status];
 
   return (
     <article
-      className='flex h-150 cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:h-160 md:-space-x-20 xl:-space-x-26'
+      className='flex h-fit cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:-space-x-20 xl:-space-x-26'
       onClick={onClick}
     >
       <section className='z-5 flex w-full flex-col justify-between rounded-l-2xl rounded-r-3xl bg-white p-20 xl:gap-6'>
         <div className='flex flex-col gap-4 xl:gap-6'>
-          {/* badge 컴포넌트로 수정 예정 */}
-          <span className={`caption-text w-fit rounded-full px-8 py-2 text-center font-bold ${style}`}>{badge}</span>
-          <h3 className='section-text'>{title}</h3>
+          <UserBadge status={status} />
+          <h3 className='section-text line-clamp-7 md:line-clamp-3'>{title}</h3>
         </div>
         <div className='body-text text-gray-400'>
           <time>{startTime}</time>-<time>{endTime}</time>
