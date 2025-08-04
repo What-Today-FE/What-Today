@@ -58,10 +58,11 @@ export default function MypageSidebar({ onLogoutClick, onClick, isOpen }: Mypage
         // 공통 스타일
         'fixed z-50 max-w-200 min-w-200 rounded-2xl border border-gray-50 bg-white transition duration-300 md:static md:h-fit xl:w-280',
         // 모바일에서 Drawer 위치
-        isOpen ? 'translate-x-0' : 'h-50 -translate-x-full bg-gray-200',
+        isOpen ? 'translate-x-0' : 'h-100 -translate-x-full bg-gray-200',
         'md:translate-x-0',
         'md:bg-white',
       )}
+      onClick={onClick}
     >
       {/* 콘텐츠: PC는 항상, 모바일은 isOpen일 때만 */}
       <div
