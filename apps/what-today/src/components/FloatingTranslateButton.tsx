@@ -330,7 +330,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
       <div ref={containerRef} className={twMerge('fixed right-10 bottom-10 z-45', className)}>
         {/* 언어 선택 드롭다운 */}
         {isOpen && (
-          <div className='absolute right-0 bottom-50 flex h-300 w-160 transform flex-col rounded-xl border border-gray-50 bg-white p-10 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all duration-200 ease-out'>
+          <div className='absolute right-0 bottom-50 flex h-300 w-170 transform flex-col rounded-xl border border-gray-50 bg-white p-10 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all duration-200 ease-out'>
             <div className='caption-text mb-2 p-2 text-gray-400'>언어 선택</div>
             <div className='mr-4 flex-1 space-y-4 overflow-y-auto px-3 py-2'>
               {languages.map((language) => (
