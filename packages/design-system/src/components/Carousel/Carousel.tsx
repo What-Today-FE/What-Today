@@ -1,26 +1,12 @@
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { MainCard } from '../MainCard';
 import NavigationButton from './NavigationButton';
 import type { CarouselProps, Props } from './types';
 
-export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4, onClick }: Props<CarouselProps>) {
+export default function Carousel({ items, itemsPerPage, onClick }: Props<CarouselProps>) {
   const [page, setPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) return;
-      else if (width < 1024) setItemsPerPage(2);
-      else setItemsPerPage(4);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const itemWidthPercent = 100 / itemsPerPage;

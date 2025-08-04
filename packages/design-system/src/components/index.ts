@@ -14,6 +14,7 @@ export * from './input';
 export * from './logos';
 export { default as MainBanner } from './MainBanner/MainBanner';
 export * from './MainCard';
+export * from './MainPageSkeleton';
 export { default as MainSearchInput } from './MainSearchInput/MainSearchInput';
 export * from './modal';
 export { default as MypageProfileHeader } from './MypageProfileHeader';

@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import type { SelectItem } from '@what-today/design-system';
 import {
+  ActivityCardGridSkeleton,
   ArtIcon,
   BusIcon,
   Carousel,
+  CarouselSkeleton,
   FoodIcon,
   MainBanner,
   MainCard,
@@ -22,24 +24,28 @@ import { useNavigate } from 'react-router-dom';
 
 import { type Activity, getActivities } from '@/apis/activities';
 
-// React.memo로 MainCard 최적화
 const MemoizedMainCard = React.memo(MainCard.Root);
+
+// ✅ 화면 너비에 따른 카드 개수
+const getCount = () => {
+  const w = window.innerWidth;
+  if (w < 768) return 6; // 모바일
+  if (w < 1280) return 4; // 태블릿
+  return 8; // 데스크탑
+};
 
 export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [itemsPerPage, setItemsPerPage] = useState(() => getCount());
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest');
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
 
-  // ✅ 반응형 카드 수
+  //  반응형 카드 수
   const handleResize = useCallback(() => {
-    const width = window.innerWidth;
-    if (width < 790) setItemsPerPage(6);
-    else if (width < 1024) setItemsPerPage(4);
-    else setItemsPerPage(8);
+    setItemsPerPage(getCount());
   }, []);
 
   useEffect(() => {
@@ -49,13 +55,16 @@ export default function MainPage() {
   }, [handleResize]);
 
   // ✅ 데이터 불러오기
-  const { data: activities = [] } = useQuery<Activity[]>({
+  const {
+    data: activities = [],
+    isLoading,
+    isFetching,
+  } = useQuery<Activity[]>({
     queryKey: ['activities'],
     queryFn: () => getActivities({ size: 100 }),
-    staleTime: 1000 * 60 * 10,
+    refetchOnMount: 'always',
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 
   // 인기 체험
@@ -63,12 +72,11 @@ export default function MainPage() {
     if (!activities.length) return [];
     return activities
       .slice()
-      .sort((a, b) => {
-        if (b.reviewCount === a.reviewCount) {
-          return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
-        }
-        return b.reviewCount - a.reviewCount;
-      })
+      .sort((a, b) =>
+        b.reviewCount === a.reviewCount
+          ? new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
+          : b.reviewCount - a.reviewCount,
+      )
       .slice(0, 12);
   }, [activities]);
 
@@ -89,17 +97,13 @@ export default function MainPage() {
         (a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime(),
       );
     }
-    return [...filteredItems].sort((a, b) => {
-      if (sortOrder === 'asc') return a.price - b.price;
-      return b.price - a.price;
-    });
+    return [...filteredItems].sort((a, b) => (sortOrder === 'asc' ? a.price - b.price : b.price - a.price));
   }, [filteredItems, sortOrder]);
 
   // 3단계: 페이지 아이템
   const pagedItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return sortedItems.slice(startIndex, endIndex);
+    const start = (currentPage - 1) * itemsPerPage;
+    return sortedItems.slice(start, start + itemsPerPage);
   }, [sortedItems, currentPage, itemsPerPage]);
 
   const totalPages = useMemo(() => Math.ceil(sortedItems.length / itemsPerPage), [sortedItems.length, itemsPerPage]);
@@ -107,8 +111,7 @@ export default function MainPage() {
   // 이벤트 핸들러
   const handlePageChange = useCallback(
     (page: number) => {
-      if (page === currentPage) return;
-      setCurrentPage(page);
+      if (page !== currentPage) setCurrentPage(page);
     },
     [currentPage],
   );
@@ -134,9 +137,9 @@ export default function MainPage() {
 
   // 카드 렌더링 최적화
   const renderCards = useCallback(() => {
-    return pagedItems.map((item, index) => (
+    return pagedItems.map((item, idx) => (
       <MemoizedMainCard
-        key={`${item.id}-${currentPage}-${index}`}
+        key={`${item.id}-${currentPage}-${idx}`}
         bannerImageUrl={item.bannerImageUrl}
         category={item.category}
         price={item.price}
@@ -160,9 +163,11 @@ export default function MainPage() {
         {/* 인기 체험 */}
         <div className='flex flex-col gap-20'>
           <h2 className='title-text'>🔥 인기 체험</h2>
-          <div className='flex'>
+          {isLoading ? (
+            <CarouselSkeleton />
+          ) : (
             <Carousel items={popularActivities} itemsPerPage={4} onClick={(id) => navigate(`/activities/${id}`)} />
-          </div>
+          )}
         </div>
 
         {/* 검색 */}
@@ -176,7 +181,6 @@ export default function MainPage() {
           {/* 제목 + 가격 드롭다운 */}
           <div className='flex flex-wrap items-center justify-between gap-12'>
             <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
-
             <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
               <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
@@ -202,35 +206,31 @@ export default function MainPage() {
               onSelect={handleCategoryChange}
             >
               <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
-                <ArtIcon className='size-12' />
-                문화 예술
+                <ArtIcon className='size-12' /> 문화 예술
               </RadioGroup.Radio>
               <RadioGroup.Radio value='식음료'>
-                <FoodIcon className='size-12' />
-                식음료
+                <FoodIcon className='size-12' /> 식음료
               </RadioGroup.Radio>
               <RadioGroup.Radio value='스포츠'>
-                <SportIcon className='size-12' />
-                스포츠
+                <SportIcon className='size-12' /> 스포츠
               </RadioGroup.Radio>
               <RadioGroup.Radio value='투어'>
-                <WellbeingIcon className='size-12' />
-                투어
+                <WellbeingIcon className='size-12' /> 투어
               </RadioGroup.Radio>
               <RadioGroup.Radio value='관광'>
-                <BusIcon className='size-12' />
-                관광
+                <BusIcon className='size-12' /> 관광
               </RadioGroup.Radio>
               <RadioGroup.Radio value='웰빙'>
-                <TourIcon className='size-12' />
-                웰빙
+                <TourIcon className='size-12' /> 웰빙
               </RadioGroup.Radio>
             </RadioGroup>
           </div>
 
           {/* 카드 리스트 */}
-          <div className='grid grid-cols-2 gap-12 md:grid-cols-2 lg:grid-cols-4'>
-            {filteredItems.length === 0 ? (
+          <div className='grid grid-cols-2 gap-12 md:grid-cols-2 xl:grid-cols-4'>
+            {isLoading || isFetching ? (
+              <ActivityCardGridSkeleton />
+            ) : filteredItems.length === 0 ? (
               <div className='col-span-full flex justify-center py-40'>
                 <NoResult />
               </div>
@@ -239,7 +239,7 @@ export default function MainPage() {
             )}
           </div>
 
-          {filteredItems.length > 0 && (
+          {!isLoading && filteredItems.length > 0 && (
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
           )}
         </div>

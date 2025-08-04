@@ -14,6 +14,7 @@ import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
 import MainCardDoc from '@pages/MainCardDoc';
+import MainPageSkeletonDoc from '@pages/MainPageSkeletonDoc';
 import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
 import MypageProfileHeaderDoc from '@pages/MypageProfileHeaderDoc';
@@ -195,6 +196,10 @@ const router = createBrowserRouter([
       {
         path: 'AddressInput',
         element: <AddressInputDoc />,
+      },
+      {
+        path: 'MainPageSkeleton',
+        element: <MainPageSkeletonDoc />,
       },
     ],
   },

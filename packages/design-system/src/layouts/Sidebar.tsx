@@ -47,6 +47,7 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='MypageSummaryCard' to='/docs/MypageSummaryCard' />
             <SidebarNavItem label='UpcomingSchedule' to='/docs/UpcomingSchedule' />
             <SidebarNavItem label='OngoingExperienceCard' to='/docs/OngoingExperienceCard' />
+            <SidebarNavItem label='MainPageSkeleton' to='/docs/MainPageSkeleton' />
           </ul>
         </nav>
       </aside>
