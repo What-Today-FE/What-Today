@@ -17,8 +17,8 @@ export default function OngoingExperienceCard({
   onClickActivity,
 }: OngoingExperienceCardProps) {
   return (
-    <div key={id} className='relative h-170 w-150 shrink-0 cursor-pointer' onClick={() => onClickActivity(id)}>
-      <img className='h-full w-full rounded-t-2xl rounded-b-3xl object-cover' src={bannerImageUrl} />
+    <div className='relative h-170 w-150 shrink-0 cursor-pointer' onClick={() => onClickActivity(id)}>
+      <img alt={title} className='h-full w-full rounded-t-2xl rounded-b-3xl object-cover' src={bannerImageUrl} />
       <div className='absolute bottom-0 w-full translate-y-[40px] cursor-pointer rounded-2xl border border-gray-50 bg-white px-12 py-12'>
         <p className='caption-text line-clamp-2 font-semibold'>{title}</p>
         <p className='caption-text text-gray-500'>₩ {price.toLocaleString()} / 인</p>

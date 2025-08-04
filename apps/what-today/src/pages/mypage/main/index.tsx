@@ -7,7 +7,7 @@ import {
   OngoingExperienceCard,
   OngoingExperienceCardSkeleton,
   UpcomingSchedule,
-  UpcomingScheduleSkeleton,
+  UpcomingScheduleItemSkeleton,
   useToast,
 } from '@what-today/design-system';
 import dayjs from 'dayjs';
@@ -124,9 +124,9 @@ export default function MyPage() {
     // 1. 로딩 중: 스켈레톤 3개
     upcomingScheduleContent = (
       <>
-        <UpcomingScheduleSkeleton />
-        <UpcomingScheduleSkeleton />
-        <UpcomingScheduleSkeleton />
+        <UpcomingScheduleItemSkeleton />
+        <UpcomingScheduleItemSkeleton />
+        <UpcomingScheduleItemSkeleton />
       </>
     );
   } else if (sortedReservations.length > 0) {
