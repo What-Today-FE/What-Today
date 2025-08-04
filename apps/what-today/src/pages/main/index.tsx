@@ -18,7 +18,8 @@ import {
   TourIcon,
   WellbeingIcon,
 } from '@what-today/design-system';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,6 +55,17 @@ export default function MainPage() {
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
+
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  // 페이지 마운트 시 무조건 맨 위로
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
 
   // 반응형 카드 수
   const handleResize = useCallback(() => {
@@ -124,7 +136,9 @@ export default function MainPage() {
   // 이벤트 핸들러
   const handlePageChange = useCallback(
     (page: number) => {
-      if (page !== currentPage) setCurrentPage(page);
+      if (page !== currentPage) {
+        setCurrentPage(page);
+      }
     },
     [currentPage],
   );
@@ -147,25 +161,6 @@ export default function MainPage() {
     setSelectedCategory(category);
     setCurrentPage(1);
   }, []);
-
-  // 카드 렌더링 최적화
-  const renderCards = useCallback(() => {
-    return pagedItems.map((item, idx) => (
-      <MemoizedMainCard
-        key={`${item.id}-${currentPage}-${idx}`}
-        bannerImageUrl={item.bannerImageUrl}
-        category={item.category}
-        price={item.price}
-        rating={item.rating}
-        reviewCount={item.reviewCount}
-        title={item.title}
-        onClick={() => navigate(`/activities/${item.id}`)}
-      >
-        <MainCard.Image />
-        <MainCard.Content />
-      </MemoizedMainCard>
-    ));
-  }, [pagedItems, currentPage, navigate]);
 
   return (
     <>
@@ -195,11 +190,32 @@ export default function MainPage() {
 
         {/* 모든 체험 */}
         <div className='flex flex-col gap-20'>
-          {/* 제목  */}
-          <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
+          {/* 제목 */}
+          <div className='flex flex-wrap items-center justify-between gap-12 md:hidden'>
+            <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
+            {/* 모바일에서만 보이는 가격 드롭다운 */}
+            <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
+               <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
+                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
+               </Select.Trigger>
+               <Select.Content>
+                 <Select.Group className='text-center whitespace-nowrap'>
+                   <Select.Item className='flex justify-center' value='desc'>
+                     높은순
+                    </Select.Item>
+                    <Select.Item className='flex justify-center' value='asc'>
+                      낮은순
+                    </Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+          </div>
 
-          {/* 카테고리 + 필터링 드롭다운 */}
-          <div className='flex items-center justify-between gap-24'>
+          {/* 데스크톱/태블릿에서만 보이는 제목 */}
+          <h2 className='title-text hidden items-center gap-12 md:flex'>🛼 모든 체험</h2>
+
+          {/* 카테고리 + 가격 드롭다운 */}
+          <div className='flex items-center justify-between gap-12 overflow-x-hidden'>
             <RadioGroup
               radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
               selectedValue={selectedCategory}
@@ -224,22 +240,25 @@ export default function MainPage() {
                 <TourIcon className='size-12' /> 웰빙
               </RadioGroup.Radio>
             </RadioGroup>
-
-            <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
-              <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
-                <Select.Value className='body-text text-gray-950' placeholder='가격' />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Group className='text-center whitespace-nowrap'>
-                  <Select.Item className='flex justify-center' value='desc'>
-                    높은순
-                  </Select.Item>
-                  <Select.Item className='flex justify-center' value='asc'>
-                    낮은순
-                  </Select.Item>
-                </Select.Group>
-              </Select.Content>
-            </Select.Root>
+            
+            {/* 데스크톱/태블릿에서만 보이는 가격 드롭다운 */}
+            <div className='hidden md:block'>
+              <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
+                <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
+                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
+               </Select.Trigger>
+               <Select.Content>
+                 <Select.Group className='text-center whitespace-nowrap'>
+                   <Select.Item className='flex justify-center' value='desc'>
+                     높은순
+                    </Select.Item>
+                    <Select.Item className='flex justify-center' value='asc'>
+                      낮은순
+                    </Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            </div>
           </div>
 
           {/* 카드 리스트 */}
@@ -251,7 +270,28 @@ export default function MainPage() {
                 <NoResult />
               </div>
             ) : (
-              renderCards()
+              pagedItems.map((item) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 100 }}
+                  transition={{ duration: 1 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                >
+                  <MemoizedMainCard
+                    bannerImageUrl={item.bannerImageUrl}
+                    category={item.category}
+                    price={item.price}
+                    rating={item.rating}
+                    reviewCount={item.reviewCount}
+                    title={item.title}
+                    onClick={() => navigate(`/activities/${item.id}`)}
+                  >
+                    <MainCard.Image />
+                    <MainCard.Content />
+                  </MemoizedMainCard>
+                </motion.div>
+              ))
             )}
           </div>
 

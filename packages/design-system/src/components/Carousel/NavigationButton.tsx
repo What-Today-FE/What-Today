@@ -34,7 +34,7 @@ export default function NavigationButton({ direction, onClick, disabled, classNa
 
   return (
     <button
-      className={`z-10 ${marginClass} hidden size-40 cursor-pointer items-center justify-center rounded-full border border-gray-50 bg-white text-xl hover:bg-gray-50 disabled:opacity-0 md:flex ${className}`}
+      className={`z-10 ${marginClass} hidden size-40 cursor-pointer items-center justify-center rounded-full border border-gray-50 bg-white text-xl shadow-[0_4px_24px_rgba(156,180,202,0.2)] hover:bg-gray-50 disabled:opacity-0 md:flex ${className}`}
       disabled={disabled}
       onClick={onClick}
     >

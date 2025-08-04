@@ -52,7 +52,7 @@ export default function TabletReservationSheet({
           {/* 우측: 시간 & 인원 */}
           <div className='flex flex-col justify-between'>
             <div className='flex flex-col gap-20'>
-              <p className='section-text'>예약 가능한 시간</p>
+              <p className='body-text font-bold'>예약 가능한 시간</p>
               {selectedDate ? (
                 <div className='max-h-290 overflow-y-auto pr-4'>
                   <TimeSelector
@@ -67,8 +67,8 @@ export default function TabletReservationSheet({
 
               <HeadCountSelector headCount={headCount} onDecrease={decreaseHeadCount} onIncrease={increaseHeadCount} />
 
-              <p className='section-text'>
-                총 합계 <span>₩ {totalPrice.toLocaleString()}</span>
+              <p className='section-text flex items-center gap-6'>
+                <span className='body-text font-bold'>총 합계</span> <span>₩ {totalPrice.toLocaleString()}</span>
               </p>
             </div>
           </div>

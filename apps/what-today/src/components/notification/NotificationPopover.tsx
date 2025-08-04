@@ -135,7 +135,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
           <BellIcon className='size-20' color={open ? 'var(--color-primary-500)' : 'var(--color-gray-600)'} />
         </Button>
       </Popover.Trigger>
-      <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
+      <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-[0_4px_24px_rgba(156,180,202,0.2)]'>
         <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount ?? 0}개</h1>
 
         <section ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-auto'>

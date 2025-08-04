@@ -1,4 +1,4 @@
-import OngoingExperienceCard from '../components/OngoingExperienceCard';
+// import OngoingExperienceCard from '../components/OngoingExperienceCard';
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
 /* Playground는 편집 가능한 코드 블록입니다. */
@@ -26,9 +26,9 @@ export default function OngoingExperienceCardDoc() {
       <DocCode code={`<OngoingExperienceCard variant="primary">Click me</OngoingExperienceCard>`} />
 
       <div className='flex gap-12'>
+        {/* <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
         <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
-        <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
-        <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} />
+        <OngoingExperienceCard activities={[]} onClick={() => {}} onClickActivity={() => {}} /> */}
       </div>
     </>
   );

@@ -43,7 +43,7 @@ export default function DatePicker({ value, onChange, disabled }: DatePickerProp
             </div>
           </Popover.Trigger>
 
-          <Popover.Content className='date-picker mt-8 flex justify-end'>
+          <Popover.Content className='date-picker mt-8 flex justify-end shadow-[0_4px_24px_rgba(156,180,202,0.2)]'>
             <div className='w-300 rounded-xl border border-gray-100 bg-white p-12'>
               <Calendar.Root initialDate={today} onDateChange={handleDateChange}>
                 <Calendar.Header headerClass='my-12' />
