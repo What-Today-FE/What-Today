@@ -66,7 +66,7 @@ export default function KakaoMap({ address }: MapProps) {
 
     const places = new window.kakao.maps.services.Places();
 
-    const placeMarker = (lat: number, lng: number, label: string) => {
+    const placeMarker = (lat: number, lng: number, label: string, placeUrl?: string) => {
       const coords = new window.kakao.maps.LatLng(lat, lng);
 
       map.setCenter(coords);
@@ -78,16 +78,24 @@ export default function KakaoMap({ address }: MapProps) {
       });
 
       const overlayHTML = `
-        <div style="
-          background: white;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          padding: 4px 8px;
-          font-size: 16px;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-          white-space: nowrap;
-        ">
-          ${label}
+        <div style="pointer-events: auto; cursor: pointer;">
+          <a href="${placeUrl ?? '#'}" target="_blank" rel="noopener noreferrer"
+            style="
+              display: inline-block;
+              background: white;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              padding: 4px 8px;
+              font-size: 16px;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+              white-space: nowrap;
+              color: black;
+              text-decoration: none;
+              cursor: pointer;
+            "
+          >
+            ${label}
+          </a>
         </div>
       `;
 
@@ -102,16 +110,16 @@ export default function KakaoMap({ address }: MapProps) {
 
     places.keywordSearch(targetAddress, (data: KakaoMapDatas, status: KakaoMapStatus) => {
       if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
-        const { y, x, place_name } = data[0];
-        placeMarker(Number(y), Number(x), place_name);
+        const { y, x, place_name, place_url } = data[0];
+        placeMarker(Number(y), Number(x), place_name, place_url);
       } else {
         const fallbackKeyword = targetAddress.replace(/\s\d+(-\d+)?$/g, '').trim();
 
         if (fallbackKeyword !== targetAddress) {
           places.keywordSearch(fallbackKeyword, (retryData: KakaoMapDatas, retryStatus: KakaoMapStatus) => {
             if (retryStatus === window.kakao.maps.services.Status.OK && retryData.length > 0) {
-              const { y, x, place_name } = retryData[0];
-              placeMarker(Number(y), Number(x), place_name);
+              const { y, x, place_name, place_url } = retryData[0];
+              placeMarker(Number(y), Number(x), place_name, place_url);
             } else {
               console.warn('2차 주소 검색 실패. 기본 위치로 이동합니다.');
               placeMarker(FALLBACK_LOCATION.lat, FALLBACK_LOCATION.lng, FALLBACK_LOCATION.label);
