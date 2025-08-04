@@ -10,7 +10,7 @@ interface HeadCountSelectorProps {
 export default function HeadCountSelector({ headCount, onIncrease, onDecrease }: HeadCountSelectorProps) {
   return (
     <div className='flex items-center justify-between'>
-      <p className='section-text'>참여 인원 수</p>
+      <p className='body-text font-bold'>참여 인원 수</p>
 
       <div className='flex items-center gap-23 rounded-3xl border border-gray-50 px-15'>
         <Button size='none' variant='none' onClick={onDecrease}>

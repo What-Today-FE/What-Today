@@ -88,7 +88,7 @@ export default function ReservationForm({
   else buttonText = '예약하기';
 
   const content = (
-    <div className='flex flex-col gap-24'>
+    <div className='flex flex-col gap-16'>
       {/* 가격 표시 */}
       {/* <p className='text-xl text-[#79747E]'>
         <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
@@ -100,7 +100,7 @@ export default function ReservationForm({
       {/* 시간 선택 */}
       {selectedDate && (
         <>
-          <p className='section-text'>예약 가능한 시간</p>
+          <p className='body-text mt-8 font-bold'>예약 가능한 시간</p>
           <div className='max-h-350 overflow-y-auto pr-4'>
             <TimeSelector
               availableTimes={availableTimes}
@@ -117,7 +117,8 @@ export default function ReservationForm({
       {/* 총 합계 */}
       <div className='flex items-center justify-between'>
         <p className='section-text flex max-w-155 flex-col'>
-          총 합계 <span className='inline-block max-w-full truncate'>₩ {totalPrice.toLocaleString()}</span>
+          <span className='body-text font-bold'>총 합계</span>
+          <span className='inline-block max-w-full truncate'>₩ {totalPrice.toLocaleString()}</span>
         </p>
 
         {showSubmitButton && (
