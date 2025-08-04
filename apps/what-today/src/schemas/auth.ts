@@ -1,6 +1,16 @@
 import { z } from 'zod';
 
 /**
+ * 공통 비밀번호 정책
+ * - 8자 이상
+ * - 숫자 1자 이상
+ * - 영문 대/소문자 1자 이상
+ * - 특수문자 1자 이상
+ */
+export const PASSWORD_REGEX = /^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const PASSWORD_POLICY_MSG = '비밀번호는 영문 대/소문자, 숫자, 특수문자 포함 8자 이상입니다.';
+
+/**
  * From server
  * @description 사용자 정보 스키마
  */
@@ -29,7 +39,8 @@ export const signUpFormSchema = z
     password: z
       .string()
       .min(1, { message: '비밀번호를 입력해 주세요.' })
-      .min(8, { message: '비밀번호는 8자 이상이어야 합니다.' }),
+      // .min(8, { message: '비밀번호는 8자 이상이어야 합니다.' }),
+      .refine((val) => PASSWORD_REGEX.test(val), { message: PASSWORD_POLICY_MSG }),
     passwordConfirm: z.string().min(1, { message: '비밀번호 확인을 입력해 주세요.' }),
     agreeToTerms: z.boolean().refine((val) => val === true, {
       message: '이용약관에 동의해야 회원가입이 가능합니다.',
@@ -129,14 +140,11 @@ export const updateMyProfileSchema = z
 
     // password가 1글자 이상 입력된 경우만 검사
     if (password && password.length > 0) {
-      if (password.length < 8) {
+      if (!PASSWORD_REGEX.test(password)) {
         ctx.addIssue({
           path: ['password'],
-          code: z.ZodIssueCode.too_small,
-          minimum: 8,
-          type: 'string',
-          inclusive: true,
-          message: '비밀번호는 8자 이상이어야 합니다.',
+          code: z.ZodIssueCode.custom,
+          message: PASSWORD_POLICY_MSG,
         });
       }
 
