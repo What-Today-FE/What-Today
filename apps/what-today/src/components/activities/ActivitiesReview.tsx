@@ -1,4 +1,5 @@
 import { StarIcon } from '@what-today/design-system';
+import { motion } from 'motion/react';
 
 import { type ActivityReview } from '@/schemas/activityReview';
 interface ActivitiesReviewProps {
@@ -20,16 +21,25 @@ export default function ActivitiesReview({ review }: ActivitiesReviewProps) {
   });
 
   return (
-    <div className='rounded-xl border border-gray-50 px-20 py-20'>
-      <div className='mb-4 flex items-center gap-8'>
-        <div className='body-text font-bold'>{user.nickname}</div>
-        <div className='caption-text text-gray-400'>{formattedDate}</div>
+    <motion.div
+      key={review.id}
+      initial={{ opacity: 0, y: 80 }}
+      transition={{ duration: 1 }}
+      viewport={{ once: true, amount: 0.1 }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
+      <div className='mb-20 rounded-xl border border-gray-50 px-20 py-20'>
+        <div className='mb-4 flex items-center gap-8'>
+          <div className='body-text font-bold'>{user.nickname}</div>
+          <div className='caption-text text-gray-400'>{formattedDate}</div>
+        </div>
+        <div className='mb-12'>
+          <RatingStars rating={rating} />
+        </div>
+        <p className='body-text whitespace-pre-wrap'>{content}</p>
+
       </div>
-      <div className='mb-12'>
-        <RatingStars rating={rating} />
-      </div>
-      <p className='body-text whitespace-pre-wrap'>{content}</p>
-    </div>
+    </motion.div>
   );
 }
 
