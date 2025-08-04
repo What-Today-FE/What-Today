@@ -1,5 +1,6 @@
-import { Button, StarIcon } from '@what-today/design-system';
+import { StarIcon } from '@what-today/design-system';
 
+import { ReviewCardSkeleton } from '@/components/skeletons/activities';
 import { useActivityReviews } from '@/hooks/activityDetail';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import type { ActivityReview } from '@/schemas/activityReview';
@@ -87,18 +88,10 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
       {/* 무한스크롤 트리거 */}
       <div ref={observerRef} className='h-4' />
 
-      {/* 더보기 버튼 (옵션) */}
-      {hasNextPage && (
-        <div className='flex justify-center'>
-          <Button className='px-6 py-2' disabled={isFetchingNextPage} variant='outline' onClick={() => fetchNextPage()}>
-            {isFetchingNextPage ? '로딩 중...' : '더 많은 후기 보기'}
-          </Button>
-        </div>
-      )}
-
       {isFetchingNextPage && (
-        <div className='py-4 text-center'>
-          <p className='text-gray-500'>후기를 더 불러오는 중...</p>
+        <div className='flex flex-col gap-16'>
+          <ReviewCardSkeleton />
+          <ReviewCardSkeleton />
         </div>
       )}
     </section>

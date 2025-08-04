@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { SpinIcon, useToast } from '@what-today/design-system';
+import { useToast } from '@what-today/design-system';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import TabletReservationSheet from '@/components/activities/reservation/TabletRe
 import type { ReservationSummary } from '@/components/activities/reservation/types';
 import ReservationBottomBar from '@/components/activities/ReservationBottomBar';
 import ReviewSection from '@/components/activities/ReviewSection';
+import { ActivityDetailPageSkeleton } from '@/components/skeletons/activities';
 import { useActivityDetail } from '@/hooks/activityDetail';
 import { useResponsive } from '@/hooks/useResponsive';
 import NotFoundPage from '@/pages/not-found-page';
@@ -36,12 +37,7 @@ export default function ActivityDetailPage() {
 
   const { data: activity, isLoading: loading, error } = useActivityDetail(id);
 
-  if (loading)
-    return (
-      <div className='flex h-screen items-center justify-center p-40'>
-        <SpinIcon className='size-200' color='var(--color-gray-100)' />
-      </div>
-    );
+  if (loading) return <ActivityDetailPageSkeleton />;
   if (error) return <NotFoundPage />;
   if (!activity) return <NotFoundPage />;
 

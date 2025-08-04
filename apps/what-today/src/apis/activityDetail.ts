@@ -19,6 +19,7 @@ import axiosInstance from './axiosInstance';
  * @returns ActivityWithSubImagesAndSchedules 타입의 체험 상세 데이터
  */
 export const fetchActivityDetail = async (activityId: number | string): Promise<ActivityWithSubImagesAndSchedules> => {
+  await new Promise((resolve) => setTimeout(resolve, 20000));
   const response = await axiosInstance.get(`/activities/${activityId}`);
   return activityWithSubImagesAndSchedulesSchema.parse(response.data);
 };
