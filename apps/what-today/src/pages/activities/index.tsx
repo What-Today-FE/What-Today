@@ -139,11 +139,11 @@ export default function ActivityDetailPage() {
               reviewCount={activity.reviewCount}
               title={activity.title}
             />
-            <Divider className='border-t border-gray-200' />
+            <Divider />
             <ActivitiesDescription description={activity.description} />
-            <Divider className='border-t border-gray-200' />
+            <Divider />
             <ActivitiesMap address={activity.address} className='h-415' />
-            <Divider className='border-t border-gray-200' />
+            <Divider />
             <ReviewSection activityId={activity.id} />
           </div>
         )}
