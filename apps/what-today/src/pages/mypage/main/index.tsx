@@ -20,6 +20,7 @@ import { useWhatTodayStore } from '@/stores';
 
 export default function MyPage() {
   const navigate = useNavigate();
+
   const { logoutUser } = useAuth();
   const { user } = useWhatTodayStore();
   const { toast } = useToast();
@@ -112,11 +113,12 @@ export default function MyPage() {
       {/* <MypageMainSidebar /> */}
       <div className='flex w-full flex-col gap-24'>
         <MypageProfileHeader
+          email={user?.email}
           name={user?.nickname}
           profileImageUrl={user?.profileImageUrl ?? undefined}
           onLogoutClick={handleLogout}
         />
-        <div className='flex gap-24'>
+        <div className='flex flex-col gap-24 md:flex-row'>
           <MypageSummaryCard.Root>
             <MypageSummaryCard.Item count={totalActivity || 0} label='등록한 체험' />
             <MypageSummaryCard.Item count={totalPending} label={`${dayjs().format('M')}월 승인 대기`} />
@@ -136,21 +138,21 @@ export default function MyPage() {
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='flex max-h-540 min-h-300 flex-col gap-16 rounded-3xl border border-gray-50 px-32 pt-24'>
-          <p className='body-text font-bold'>다가오는 일정</p>
-          <UpcomingSchedule
-            className='w-full overflow-y-scroll'
-            reservation={confirmedData?.reservations || []}
-            onClick={() => navigate('/')}
-            onClickReservation={(id) => navigate(`/activities/${id}`)}
-          />
-        </div>
-        <div className='flex h-300 w-full flex-col gap-16 overflow-hidden rounded-3xl border border-gray-50 px-40 py-24'>
-          <p className='body-text font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
+        <div className='flex h-248 w-full flex-col gap-8 rounded-3xl border-gray-50 md:h-300 md:gap-16 md:border md:px-40 md:py-24'>
+          <p className='text-lg font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
           <OngoingExperienceCard
             activities={availableActivities}
             onClick={() => navigate('/experiences/create')}
             onClickActivity={(id) => navigate(`/activities/${id}`)}
+          />
+        </div>
+        <div className='flex min-h-300 flex-col gap-8 rounded-3xl border-gray-50 md:max-h-540 md:gap-16 md:border md:px-32 md:pt-24'>
+          <p className='text-lg font-bold'>다가오는 일정</p>
+          <UpcomingSchedule
+            className='w-full md:overflow-y-auto'
+            reservation={confirmedData?.reservations || []}
+            onClick={() => navigate('/')}
+            onClickReservation={(id) => navigate(`/activities/${id}`)}
           />
         </div>
       </div>

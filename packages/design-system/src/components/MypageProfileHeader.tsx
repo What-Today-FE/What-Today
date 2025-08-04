@@ -4,11 +4,12 @@ import { ProfileLogo } from './logos';
 
 interface MypageProfileHeaderProps {
   name?: string;
+  email?: string;
   profileImageUrl?: string;
   onLogoutClick: () => void;
 }
 
-export default function MypageProfileHeader({ name, profileImageUrl, onLogoutClick }: MypageProfileHeaderProps) {
+export default function MypageProfileHeader({ name, email, profileImageUrl, onLogoutClick }: MypageProfileHeaderProps) {
   return (
     <div className='flex items-center gap-24 rounded-3xl border border-gray-50 bg-white px-36 py-24'>
       <div className='flex size-100 items-center justify-center rounded-full border border-gray-50 bg-white'>
@@ -23,8 +24,11 @@ export default function MypageProfileHeader({ name, profileImageUrl, onLogoutCli
         )}
       </div>
 
-      <div className='flex h-80 flex-col justify-between text-gray-950'>
-        <p className='text-2xl font-bold'>{name}</p>
+      <div className='flex h-80 flex-col justify-center gap-8 text-gray-950'>
+        <div className='flex flex-col'>
+          <p className='text-2xl font-bold'>{name}</p>
+          <p className='text-lg text-gray-400'>{email}</p>
+        </div>
         <Button
           className='h-auto w-auto justify-start p-0 text-gray-400'
           size='lg'
