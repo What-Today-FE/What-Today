@@ -64,7 +64,7 @@ export default function ActivitiesInformation({
     <>
       <section
         className={twMerge(
-          'flex h-fit w-full flex-col items-start gap-8 rounded-xl border border-gray-50 p-20',
+          'bg-gray-25 flex h-fit w-full flex-col items-start gap-8 rounded-xl border border-gray-50 p-20',
           className,
         )}
       >
@@ -88,12 +88,13 @@ export default function ActivitiesInformation({
           </span>
         </div>
         <div className='body-text mt-2 ml-2 flex items-center gap-4'>
-          <LocationIcon className='shrink-0' />
+          <LocationIcon className='shrink-0' color='var(--color-gray-400)' />
           <span className='break-words'>{address}</span>
         </div>
         <div className='body-text mt-2 ml-2 flex items-center gap-4'>
           <p className='body-text text-gray-400'>
-            <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
+            <span className='font-bold text-gray-400'>₩</span>
+            <span className='font-bold text-gray-950'> {price.toLocaleString()}</span> / 인
           </p>
         </div>
       </section>
