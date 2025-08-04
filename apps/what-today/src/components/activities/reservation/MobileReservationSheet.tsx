@@ -139,7 +139,7 @@ export default function MobileReservationSheet({
             <div className='flex flex-col gap-20'>
               {/* 선택된 날짜/시간 요약 */}
               {selectedDate && selectedScheduleId && (
-                <div className='rounded-lg bg-gray-50 p-16'>
+                <div className='bg-gray-25 rounded-lg p-16'>
                   <p className='caption-text flex items-center gap-4 text-gray-600'>
                     <ClockIcon className='size-14' color='var(--color-gray-600)' />
                     선택된 날짜/시간
