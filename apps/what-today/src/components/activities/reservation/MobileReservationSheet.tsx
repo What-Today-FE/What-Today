@@ -1,5 +1,4 @@
-import { BottomSheet, Button, ClockIcon } from '@what-today/design-system';
-import { ArrowIcon } from '@what-today/design-system';
+import { BottomSheet, Button, ChevronIcon, ClockIcon } from '@what-today/design-system';
 import { useState } from 'react';
 
 import CalendarSelector from './CalendarSelector';
@@ -131,7 +130,7 @@ export default function MobileReservationSheet({
             <div className='mb-20'>
               <div className='flex items-center gap-12'>
                 <Button className='h-fit w-fit p-0' variant='none' onClick={handleBackToDateTime}>
-                  <ArrowIcon />
+                  <ChevronIcon color='var(--color-gray-400)' direction='left' />
                 </Button>
                 <h2 className='subtitle-text text-gray-950'>참여 인원 선택</h2>
               </div>
@@ -159,7 +158,7 @@ export default function MobileReservationSheet({
               {/* 총 금액 */}
 
               <div className='flex items-center justify-between'>
-                <span className='section-text'>총 금액</span>
+                <span className='body-text font-bold'>총 금액</span>
                 <span className='section-text'>₩ {totalPrice.toLocaleString()}</span>
               </div>
             </div>
