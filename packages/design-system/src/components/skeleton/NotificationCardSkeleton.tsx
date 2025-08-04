@@ -1,6 +1,6 @@
 export default function NotificationCardSkeleton() {
   return (
-    <div className='text-md flex animate-pulse cursor-pointer flex-col gap-8 p-16'>
+    <div className='text-md flex animate-pulse cursor-pointer flex-col gap-4 p-16 md:gap-8'>
       {/* 상단: 상태 뱃지 + 문구 + 삭제 버튼 */}
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-8'>

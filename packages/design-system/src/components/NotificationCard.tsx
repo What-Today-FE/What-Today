@@ -83,7 +83,7 @@ export default function NotificationCard({ content, onDelete, onClickDetail }: N
 
   return (
     <div
-      className='text-md flex cursor-pointer flex-col gap-8 p-16'
+      className='text-md flex cursor-pointer flex-col gap-4 p-16 md:gap-8'
       onClick={(e) => {
         handleClickStop(e);
         onClickDetail();
@@ -92,7 +92,7 @@ export default function NotificationCard({ content, onDelete, onClickDetail }: N
       <div className='flex items-center justify-between'>
         <div className='flex gap-8'>
           {confirm ? <UserBadge status='confirmed' /> : <UserBadge status='declined' />}
-          <h1 className='text-md font-semibold text-gray-900 md:text-lg'>
+          <h1 className='body-text font-semibold text-gray-950'>
             {confirm ? '예약이 승인되었어요!' : '예약이 거절되었어요.'}
           </h1>
         </div>
@@ -107,11 +107,11 @@ export default function NotificationCard({ content, onDelete, onClickDetail }: N
           <DeleteIcon className='size-10' color='var(--color-gray-300)' />
         </Button>
       </div>
-      <div className='flex items-center gap-4 text-gray-600'>
+      <div className='caption-text flex items-center gap-4 text-gray-400'>
         <DocumentIcon className='size-14' />
         <p>{title}</p>
       </div>
-      <div className='flex items-center gap-4 text-gray-600'>
+      <div className='caption-text flex items-center gap-4 text-gray-400'>
         <ClockIcon className='size-14' />
         <p>
           {date.year}년 {date.month}월 {date.day}일 {date.startTime}~{date.endTime}
