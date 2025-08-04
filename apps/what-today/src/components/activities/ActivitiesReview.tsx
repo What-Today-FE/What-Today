@@ -37,7 +37,6 @@ export default function ActivitiesReview({ review }: ActivitiesReviewProps) {
           <RatingStars rating={rating} />
         </div>
         <p className='body-text whitespace-pre-wrap'>{content}</p>
-
       </div>
     </motion.div>
   );

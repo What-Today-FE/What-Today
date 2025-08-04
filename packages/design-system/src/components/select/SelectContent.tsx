@@ -23,7 +23,7 @@ function SelectContent({ className, children }: BaseProps) {
     <Popover.Content
       matchTriggerWidth
       className={twMerge(
-        'select-content mt-4 max-h-300 overflow-y-scroll rounded-2xl border border-gray-100 bg-white p-10',
+        'select-content mt-4 max-h-300 overflow-y-scroll rounded-2xl border border-gray-100 bg-white p-10 shadow-[0_4px_24px_rgba(156,180,202,0.2)]',
         className,
       )}
     >
