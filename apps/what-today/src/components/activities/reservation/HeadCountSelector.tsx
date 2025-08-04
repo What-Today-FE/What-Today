@@ -12,7 +12,7 @@ export default function HeadCountSelector({ headCount, onIncrease, onDecrease }:
     <div className='flex items-center justify-between'>
       <p className='body-text font-bold'>참여 인원 수</p>
 
-      <div className='flex items-center gap-23 rounded-3xl border border-gray-50 px-15'>
+      <div className='flex w-138 items-center justify-between gap-23 rounded-3xl border border-gray-50 px-15'>
         <Button size='none' variant='none' onClick={onDecrease}>
           <MinusIcon className='size-14' color='var(--color-gray-600)' />
         </Button>
