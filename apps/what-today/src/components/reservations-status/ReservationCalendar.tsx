@@ -81,7 +81,7 @@ export default function ReservationCalendar({
   return (
     <div ref={calendarRef}>
       <Calendar.Root
-        className='gap-8 rounded-2xl border border-gray-50 pt-20 pb-10 md:gap-30'
+        className='gap-8 rounded-2xl pt-20 pb-10 md:gap-30 md:border md:border-gray-50'
         initialDate={currentMonth}
         onDateChange={(date) => {
           handleDateSelect(date);

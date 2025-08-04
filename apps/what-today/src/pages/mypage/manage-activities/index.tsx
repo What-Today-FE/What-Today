@@ -1,4 +1,12 @@
-import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } from '@what-today/design-system';
+import {
+  Button,
+  ChevronIcon,
+  ExperienceCard,
+  ExperienceCardSkeleton,
+  Modal,
+  NoResult,
+  WarningLogo,
+} from '@what-today/design-system';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -45,7 +53,13 @@ export default function ManageActivitiesPage() {
 
   let content;
   if (isLoading) {
-    content = <div className='flex justify-center p-40 text-gray-400'>로딩 중...</div>;
+    content = (
+      <div className='flex flex-col gap-12'>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <ExperienceCardSkeleton key={i} />
+        ))}
+      </div>
+    );
   } else if (isError) {
     content = <div className='flex justify-center p-40 text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   } else if (allActivities.length === 0) {
@@ -102,7 +116,7 @@ export default function ManageActivitiesPage() {
         <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
           <div className='flex flex-col items-center gap-6 text-center'>
             <WarningLogo className='md:size-110 lg:size-150' size={88} />
-            <p className='subtitle-text'>체험을 삭제하시겠습니까?</p>
+            <p className='text-2lg font-bold'>체험을 삭제하시겠습니까?</p>
           </div>
           <Modal.Actions>
             <Modal.CancelButton>아니요</Modal.CancelButton>

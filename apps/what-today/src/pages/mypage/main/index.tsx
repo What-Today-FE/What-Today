@@ -60,6 +60,7 @@ export default function MyPage() {
         status: 'completed', // 완료된 체험만 받아오기
       }),
     staleTime: 1000 * 30,
+    enabled: Boolean(user),
   });
 
   // 완료한 체험 중 리뷰 미작성 갯수
@@ -75,6 +76,7 @@ export default function MyPage() {
         status: 'confirmed', // 확정된 체험만 받아오기
       }),
     staleTime: 1000 * 30,
+    enabled: Boolean(user),
   });
 
   // 이번 달 모집 중인 체험
