@@ -7,6 +7,7 @@ export { default as ChevronIcon } from './ChevronIcon';
 export { default as ClockIcon } from './ClockIcon';
 export { default as CloudIcon } from './CloudIcon';
 export { default as DeleteIcon } from './DeleteIcon';
+export { default as DesignIcon } from './DesignIcon';
 export { default as DocumentIcon } from './DocumentIcon';
 export { default as DotIcon } from './DotIcon';
 export { default as EditIcon } from './EditIcon';
