@@ -248,9 +248,9 @@ export default function MainPage() {
                 <NoResult />
               </div>
             ) : (
-              pagedItems.map((item, idx) => (
+              pagedItems.map((item) => (
                 <motion.div
-                  key={`${item.id}-${currentPage}-${idx}`}
+                  key={item.id}
                   initial={{ opacity: 0, y: 100 }}
                   transition={{ duration: 1 }}
                   viewport={{ once: true, amount: 0.1 }}

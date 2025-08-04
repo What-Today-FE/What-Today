@@ -11,7 +11,6 @@ import {
 } from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
-import { motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
@@ -208,14 +207,7 @@ export default function ReservationsListPage() {
 
     // 🎯 날짜별 그룹핑만 하고 정렬 제거 (자연스러운 순서 유지)
     return Object.entries(grouped).map(([date, group], index) => (
-      <motion.section
-        key={date}
-        className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}
-        initial={{ opacity: 0, y: 80 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
-        viewport={{ once: true, amount: 0.2 }}
-        whileInView={{ opacity: 1, y: 0 }}
-      >
+      <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
         <h3 className='section-text'>{date}</h3>
         <ul>
           {group.map((res) => {
@@ -269,7 +261,7 @@ export default function ReservationsListPage() {
             );
           })}
         </ul>
-      </motion.section>
+      </section>
     ));
   };
 

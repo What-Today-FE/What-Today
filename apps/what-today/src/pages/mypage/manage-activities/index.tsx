@@ -133,7 +133,7 @@ export default function ManageActivitiesPage() {
           </Button>
         </div>
       </header>
-      <section aria-label='체험 카드 목록' className='flex flex-col gap-12'>
+      <section aria-label='체험 카드 목록' className='flex flex-col gap-12 overflow-y-hidden'>
         {content}
       </section>
       <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
