@@ -42,12 +42,6 @@ export default function ReservationsStatusPage() {
     setSelectedActivityId(Number(value.value));
   };
 
-  // const handleMonthChange = (year: string, month: string) => {
-  //   if (calendarYear === year && calendarMonth === month) return;
-  //   setCalendarYear(year);
-  //   setCalendarMonth(month);
-  // };
-
   const reservationMap = monthlyReservations.reduce<Record<string, Record<CalendarReservationStatus, number>>>(
     (acc, cur) => {
       acc[cur.date] = cur.reservations;
