@@ -16,7 +16,7 @@ export default function Footer() {
         <div className='flex flex-col justify-between'>
           <div className='flex justify-end gap-12'>
             <a
-              aria-label='GitHub'
+              aria-label='디자인 시스템'
               className='group rounded-full p-2'
               href='https://what-today-design-system.vercel.app/docs'
               rel='noopener noreferrer'
