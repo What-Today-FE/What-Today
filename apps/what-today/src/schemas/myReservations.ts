@@ -88,7 +88,6 @@ export const reviewResponseSchema = z.object({
   content: z.string(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
-  deletedAt: z.string().datetime().nullable(),
 });
 
 /**
