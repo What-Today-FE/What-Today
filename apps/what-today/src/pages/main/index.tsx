@@ -165,8 +165,7 @@ export default function MainPage() {
   return (
     <>
       <div className='to-primary-500/40 absolute top-0 left-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
-
-      <div className='relative z-10 flex h-auto flex-col gap-60'>
+      <div className='relative z-10 flex h-auto flex-col gap-100'>
         <MainBanner />
 
         {/* 인기 체험 */}
@@ -196,20 +195,20 @@ export default function MainPage() {
             <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
             {/* 모바일에서만 보이는 가격 드롭다운 */}
             <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
-              <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
-                <Select.Value className='body-text text-gray-950' placeholder='가격' />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Group className='caption-text text-center whitespace-nowrap'>
-                  <Select.Item className='flex justify-center' value='desc'>
-                    높은순
-                  </Select.Item>
-                  <Select.Item className='flex justify-center' value='asc'>
-                    낮은순
-                  </Select.Item>
-                </Select.Group>
-              </Select.Content>
-            </Select.Root>
+               <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
+                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
+               </Select.Trigger>
+               <Select.Content>
+                 <Select.Group className='text-center whitespace-nowrap'>
+                   <Select.Item className='flex justify-center' value='desc'>
+                     높은순
+                    </Select.Item>
+                    <Select.Item className='flex justify-center' value='asc'>
+                      낮은순
+                    </Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
           </div>
 
           {/* 데스크톱/태블릿에서만 보이는 제목 */}
@@ -222,35 +221,36 @@ export default function MainPage() {
               selectedValue={selectedCategory}
               onSelect={handleCategoryChange}
             >
-              <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
+              <RadioGroup.Radio className='flex gap-8 font-normal' value='문화 · 예술'>
                 <ArtIcon className='size-12' /> 문화 예술
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='식음료'>
+              <RadioGroup.Radio className='font-normal' value='식음료'>
                 <FoodIcon className='size-12' /> 식음료
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='스포츠'>
+              <RadioGroup.Radio className='font-normal' value='스포츠'>
                 <SportIcon className='size-12' /> 스포츠
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='투어'>
+              <RadioGroup.Radio className='font-normal' value='투어'>
                 <WellbeingIcon className='size-12' /> 투어
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='관광'>
+              <RadioGroup.Radio className='font-normal' value='관광'>
                 <BusIcon className='size-12' /> 관광
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='웰빙'>
+              <RadioGroup.Radio className='font-normal' value='웰빙'>
                 <TourIcon className='size-12' /> 웰빙
               </RadioGroup.Radio>
             </RadioGroup>
+            
             {/* 데스크톱/태블릿에서만 보이는 가격 드롭다운 */}
             <div className='hidden md:block'>
               <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
-                <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
-                  <Select.Value className='body-text text-gray-950' placeholder='가격' />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Group className='caption-text text-center whitespace-nowrap'>
-                    <Select.Item className='flex justify-center' value='desc'>
-                      높은순
+                <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
+                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
+               </Select.Trigger>
+               <Select.Content>
+                 <Select.Group className='text-center whitespace-nowrap'>
+                   <Select.Item className='flex justify-center' value='desc'>
+                     높은순
                     </Select.Item>
                     <Select.Item className='flex justify-center' value='asc'>
                       낮은순

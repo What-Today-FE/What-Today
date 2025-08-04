@@ -2,7 +2,6 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import {
   BellIcon,
   Button,
-  DotIcon,
   NotificationCard,
   NotificationCardSkeleton,
   Popover,
@@ -127,19 +126,19 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
           variant='none'
           onClick={() => setOpen((prev) => !prev)}
         >
-          <DotIcon
+          {/* <DotIcon
             aria-label='새 알림 있음'
             className='absolute top-2 left-12 size-8'
             color='var(--color-red-500)'
             id='notification-dot'
-          />
+          /> */}
           <BellIcon className='size-20' color={open ? 'var(--color-primary-500)' : 'var(--color-gray-600)'} />
         </Button>
       </Popover.Trigger>
       <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-[0_4px_24px_rgba(156,180,202,0.2)]'>
         <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount ?? 0}개</h1>
 
-        <section ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-scroll'>
+        <section ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-auto'>
           {isLoading && (
             <>
               <NotificationCardSkeleton />

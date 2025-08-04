@@ -36,7 +36,7 @@ export const termsOfServiceContent = (
 );
 
 export const privacyPolicyContent = (
-  <div className='flex flex-col gap-12'>
+  <div className='body-text flex flex-col gap-12'>
     <div>
       <p className='font-bold'>1. 수집 항목</p>
       <p>회사는 회원 가입 및 서비스 이용을 위해 아래와 같은 개인정보를 수집합니다.</p>
@@ -62,7 +62,7 @@ export const privacyPolicyContent = (
 );
 
 export const locationTermsContent = (
-  <div className='flex flex-col gap-12'>
+  <div className='body-text flex flex-col gap-12'>
     <div>
       <p className='font-bold'>제1조 목적</p>
       <p>본 약관은 위치정보 기반 서비스 이용과 관련한 회원의 권리 및 의무를 규정합니다.</p>
