@@ -50,12 +50,13 @@ const createScheduleBodySchema = z.object({
 // ✅ CreateActivityBodyDto 요청 바디 스키마 (API 전송용)
 export const createActivityBodySchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
-  category: z.string().min(1, '카테고리를 선택해주세요'),
+  category: categoryEnum,
   description: z.string().min(1, '설명을 입력해주세요'),
   price: z
-    .number()
-    .nonnegative()
-    .refine((val) => val >= 0, '가격은 0 이상이어야 합니다'),
+    .string()
+    .min(1)
+    .refine((val) => !isNaN(Number(val)), { message: '숫자를 입력하세요.' })
+    .transform((val) => Number(val)),
   address: z.string().min(1, '주소를 입력해주세요'),
   schedules: z.array(createScheduleBodySchema).default([]),
   bannerImageUrl: z.string().url('배너 이미지 URL이 유효하지 않습니다'),
@@ -108,3 +109,37 @@ export type ActivityWithSchedulesResponse = z.infer<typeof activityWithSchedules
 export type CreateActivityBody = z.infer<typeof createActivityBodySchema>;
 export type UpdateMyActivityBody = z.infer<typeof updateMyActivityBodySchema>;
 export type CreateActivityFormValues = z.infer<typeof createActivityFormSchema>;
+
+// ==========================================================================
+// 등록 폼 유효성 검사 테스트용
+export const createExperienceFormSchema = z.object({
+  title: z.string().min(1, '제목을 입력해주세요'),
+  category: z
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
+    .refine((val) => val !== null, { message: '카테고리를 선택해주세요' }),
+  description: z.string().min(1, '설명을 입력해주세요'),
+  price: z.number({ invalid_type_error: '숫자를 입력해주세요.' }).min(0, { message: '가격은 0 이상이어야 합니다.' }),
+  address: z.string().min(1, '주소를 입력해주세요'),
+  schedules: z
+    .array(
+      z.object({
+        date: z.any().nullable(),
+        startTime: z.any().nullable(),
+        endTime: z.any().nullable(),
+      }),
+    )
+    .transform((schedules) =>
+      // 스키마 검증 전에 완성된 스케줄만 필터링
+      schedules.filter((s) => s.date && s.startTime && s.endTime),
+    )
+    .refine((validSchedules) => validSchedules.length > 0, {
+      message: '최소 하나의 스케줄을 입력해주세요.',
+    }),
+  bannerFile: z.string().min(1, '배너 이미지를 등록해주세요'),
+  subImageFiles: z.array(z.string()),
+});
+
+export type createExperienceForm = z.infer<typeof createExperienceFormSchema>;

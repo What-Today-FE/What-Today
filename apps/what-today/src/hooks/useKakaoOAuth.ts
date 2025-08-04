@@ -55,6 +55,14 @@ export const useKakaoOAuth = ({ mode, onErrorRedirect }: UseKakaoOAuthOptions) =
           type: 'error',
         });
         navigate(onErrorRedirect || '/login');
+      } else if (message === '등록되지 않은 사용자입니다.' && mode === 'login') {
+        // 카카오 회원가입을 하지 않은 상태에서 바로 카카오 로그인을 시도했을 때 403 에러 발생
+        toast({
+          title: '로그인 오류',
+          description: '가입된 계정이 없습니다. 먼저 회원가입을 해주세요!',
+          type: 'error',
+        });
+        navigate('/signup');
       } else {
         console.error('인증 오류 발생:', error);
       }

@@ -15,6 +15,7 @@ export interface MainCardContextType {
   bannerImageUrl: string;
   rating: number;
   reviewCount: number;
+  category: string;
   onClick?: () => void;
 }
 

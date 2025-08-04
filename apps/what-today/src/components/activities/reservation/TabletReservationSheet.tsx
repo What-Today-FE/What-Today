@@ -12,6 +12,8 @@ export default function TabletReservationSheet({
   isOpen,
   onClose,
   onConfirm,
+  isAuthor = false,
+  isLoggedIn = true,
 }: TabletReservationSheetProps) {
   const {
     selectedDate,
@@ -27,65 +29,74 @@ export default function TabletReservationSheet({
     reservableDates,
   } = useReservation(schedules, price);
 
+  // 버튼 텍스트 결정
+  let buttonText = '';
+  if (!isLoggedIn) buttonText = '로그인 필요';
+  else if (isAuthor) buttonText = '예약 불가';
+  else buttonText = '다음';
+
   return (
     <BottomSheet.Root isOpen={isOpen} onClose={onClose}>
       <BottomSheet.Content>
-        <div className='grid min-h-[500px] grid-cols-2 gap-32 px-20 py-24'>
+        <div className='grid min-h-[500px] grid-cols-2 gap-32 px-10 pt-24'>
           {/* 좌측: 캘린더 */}
           <CalendarSelector
             reservableDates={reservableDates}
             selectedDate={selectedDate}
             onDateChange={(date) => {
               setSelectedDate(date);
-              setSelectedScheduleId(null); // 날짜 바뀌면 시간 초기화
+              setSelectedScheduleId(null);
             }}
           />
 
           {/* 우측: 시간 & 인원 */}
           <div className='flex flex-col justify-between'>
             <div className='flex flex-col gap-20'>
-              <p className='text-lg font-bold text-gray-950'>예약 가능한 시간</p>
+              <p className='section-text'>예약 가능한 시간</p>
               {selectedDate ? (
-                <TimeSelector
-                  availableTimes={availableTimes}
-                  selectedScheduleId={selectedScheduleId}
-                  onSelect={setSelectedScheduleId}
-                />
+                <div className='max-h-290 overflow-y-auto pr-4'>
+                  <TimeSelector
+                    availableTimes={availableTimes}
+                    selectedScheduleId={selectedScheduleId}
+                    onSelect={setSelectedScheduleId}
+                  />
+                </div>
               ) : (
-                <div className='text-sm text-gray-400'>날짜를 선택해주세요.</div>
+                <div className='caption-text text-gray-400'>날짜를 선택해주세요.</div>
               )}
 
               <HeadCountSelector headCount={headCount} onDecrease={decreaseHeadCount} onIncrease={increaseHeadCount} />
 
-              <p className='text-xl font-medium text-[#79747E]'>
-                총 합계 <span className='font-bold text-gray-950'>₩ {totalPrice.toLocaleString()}</span>
+              <p className='section-text'>
+                총 합계 <span>₩ {totalPrice.toLocaleString()}</span>
               </p>
             </div>
           </div>
         </div>
 
-        <div className='px-20 pt-8 pb-24'>
+        <div className='px-10 pt-10 pb-10'>
           <Button
             className='w-full'
-            disabled={!isReadyToReserve}
+            disabled={!isReadyToReserve || isAuthor || !isLoggedIn}
             size='lg'
             variant='fill'
             onClick={() => {
               if (selectedScheduleId && selectedDate) {
-                const selectedSchedule = schedules.find((s) => s.id === selectedScheduleId);
-                if (selectedSchedule) {
+                const selectedTime = availableTimes.find((t) => t.id === selectedScheduleId);
+                if (selectedTime) {
                   onConfirm({
-                    date: selectedSchedule.date,
-                    startTime: selectedSchedule.startTime,
-                    endTime: selectedSchedule.endTime,
+                    date: selectedDate,
+                    startTime: selectedTime.startTime,
+                    endTime: selectedTime.endTime,
                     headCount,
                     scheduleId: selectedScheduleId,
                   });
+                  onClose(); // 시트 닫기
                 }
               }
             }}
           >
-            확인
+            {buttonText}
           </Button>
         </div>
       </BottomSheet.Content>

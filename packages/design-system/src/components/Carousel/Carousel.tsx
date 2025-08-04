@@ -1,26 +1,12 @@
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { MainCard } from '../MainCard';
 import NavigationButton from './NavigationButton';
 import type { CarouselProps, Props } from './types';
 
-export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4, onClick }: Props<CarouselProps>) {
+export default function Carousel({ items, itemsPerPage, onClick }: Props<CarouselProps>) {
   const [page, setPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) return;
-      else if (width < 1024) setItemsPerPage(2);
-      else setItemsPerPage(4);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const itemWidthPercent = 100 / itemsPerPage;
@@ -30,7 +16,7 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
 
   return (
     <div className='relative w-full overflow-visible'>
-      <div className='relative mx-auto flex max-w-6xl items-center justify-center'>
+      <div className='relative mx-auto flex items-center justify-center'>
         {/* 왼쪽 버튼 */}
         <NavigationButton direction='left' disabled={page === 0} onClick={handlePrev} />
 
@@ -50,13 +36,14 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
               >
                 <MainCard.Root
                   bannerImageUrl={item.bannerImageUrl}
+                  category={item.category}
                   price={item.price}
                   rating={item.rating}
                   reviewCount={item.reviewCount}
                   title={item.title}
                   onClick={() => onClick?.(item.id)}
                 >
-                  <MainCard.Image className='rounded-t-3xl object-cover' />
+                  <MainCard.Image />
                   <MainCard.Content />
                 </MainCard.Root>
               </div>
@@ -77,14 +64,15 @@ export default function Carousel({ items, itemsPerPage: initialItemsPerPage = 4,
             <MainCard.Root
               key={item.id}
               bannerImageUrl={item.bannerImageUrl}
-              className='w-[265px] shrink-0'
+              category={item.category}
+              className='w-265 shrink-0'
               price={item.price}
               rating={item.rating}
               reviewCount={item.reviewCount}
               title={item.title}
               onClick={() => onClick?.(item.id)}
             >
-              <MainCard.Image className='h-[260px] rounded-t-3xl object-cover brightness-90 contrast-125' />
+              <MainCard.Image className='brightness-90 contrast-125' />
               <MainCard.Content />
             </MainCard.Root>
           ))}

@@ -29,7 +29,7 @@ function SelectValue({ placeholder = '값을 선택해주세요', className }: S
   return selectedItem?.label ? (
     <p>{selectedItem.label}</p>
   ) : (
-    <p className={twMerge('text-gray-300', className)}>{placeholder}</p>
+    <p className={twMerge('text-gray-400', className)}>{placeholder}</p>
   );
 }
 

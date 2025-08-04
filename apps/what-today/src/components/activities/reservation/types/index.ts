@@ -50,18 +50,15 @@ export interface UseReservationReturn {
 }
 
 export interface ReservationFormProps {
+  activityId: number;
   schedules: Schedule[];
   price: number;
   onReservationChange?: (summary: ReservationSummary | null) => void;
   onSubmit?: (request: ReservationRequest) => Promise<void>;
   showSubmitButton?: boolean;
   isSubmitting?: boolean;
-}
-
-export interface DesktopReservationProps {
-  activityId: number;
-  price: number;
-  schedules: Schedule[];
+  isAuthor?: boolean;
+  isLoggedIn?: boolean;
 }
 
 export interface TabletReservationSheetProps {
@@ -70,12 +67,16 @@ export interface TabletReservationSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (summary: ReservationSummary) => void;
+  isAuthor?: boolean;
+  isLoggedIn?: boolean;
 }
 
 export interface ReservationBottomBarProps {
   price: number;
   reservation: Pick<ReservationSummary, 'date' | 'startTime' | 'endTime' | 'headCount'> | null;
   onSelectDate: () => void;
-  onReserve: () => void;
+  onReserve?: () => void;
   isSubmitting?: boolean;
+  isAuthor?: boolean;
+  isLoggedIn?: boolean;
 }

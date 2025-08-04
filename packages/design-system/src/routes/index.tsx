@@ -14,10 +14,14 @@ import LandingPage from '@pages/LandingPage';
 import LogoDoc from '@pages/LogoDoc';
 import MainBannerDoc from '@pages/MainBannerDoc';
 import MainCardDoc from '@pages/MainCardDoc';
+import MainPageSkeletonDoc from '@pages/MainPageSkeletonDoc';
 import MainSearchInputDoc from '@pages/MainSearchInputDoc';
 import ModalDoc from '@pages/ModalDoc';
+import MypageProfileHeaderDoc from '@pages/MypageProfileHeaderDoc';
+import MypageSummaryCardDoc from '@pages/MypageSummaryCardDoc';
 import NoResultDoc from '@pages/NoResultDoc';
 import NotificationCardDoc from '@pages/NotificationCardDoc';
+import OngoingExperienceCardDoc from '@pages/OngoingExperienceCardDoc';
 import PaginationDoc from '@pages/PaginationDoc';
 import PopoverDoc from '@pages/PopoverDoc';
 import ProfileImageInputDoc from '@pages/ProfileImageInputDoc';
@@ -27,11 +31,13 @@ import StarRatingDoc from '@pages/StarRatingDoc';
 import TextareaDoc from '@pages/TextareaDoc';
 import TimePickerDoc from '@pages/TimePickerDoc';
 import ToastDoc from '@pages/ToastDoc';
+import UpcomingScheduleDoc from '@pages/UpcomingScheduleDoc';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import FooterDoc from '@/pages/FooterDoc';
 import OwnerBadgeDoc from '@/pages/OwnerBadgeDoc';
 import ReservationInfoCardDoc from '@/pages/ReservationInfoCardDoc';
+import SelectDoc from '@/pages/SelectDoc';
 import UserBadgeDoc from '@/pages/UserBadgeDoc';
 
 const router = createBrowserRouter([
@@ -48,8 +54,28 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
+        path: 'Select',
+        element: <SelectDoc />,
+      },
+      {
         path: 'TimePicker',
         element: <TimePickerDoc />,
+      },
+      {
+        path: 'OngoingExperienceCard',
+        element: <OngoingExperienceCardDoc />,
+      },
+      {
+        path: 'UpcomingSchedule',
+        element: <UpcomingScheduleDoc />,
+      },
+      {
+        path: 'MypageSummaryCard',
+        element: <MypageSummaryCardDoc />,
+      },
+      {
+        path: 'MypageProfileHeader',
+        element: <MypageProfileHeaderDoc />,
       },
       {
         path: 'ProfileImageInput',
@@ -170,6 +196,10 @@ const router = createBrowserRouter([
       {
         path: 'AddressInput',
         element: <AddressInputDoc />,
+      },
+      {
+        path: 'MainPageSkeleton',
+        element: <MainPageSkeletonDoc />,
       },
     ],
   },

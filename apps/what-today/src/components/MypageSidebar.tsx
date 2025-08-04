@@ -1,12 +1,4 @@
-import {
-  Button,
-  CalendarIcon,
-  ExitIcon,
-  ListIcon,
-  ProfileLogo,
-  SettingIcon,
-  UserIcon,
-} from '@what-today/design-system';
+import { Button, CalendarIcon, ExitIcon, ListIcon, SettingIcon, UserIcon } from '@what-today/design-system';
 import { Link, useLocation } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
@@ -15,7 +7,7 @@ interface MypageSidebarProps {
    * 사용자 프로필 이미지 URL
    * 전달되지 않을 경우 기본 아이콘(ProfileLogo)이 표시됩니다.
    */
-  profileImgUrl?: string;
+  // profileImgUrl?: string;
   /**
    * 로그아웃 버튼 클릭 시 실행되는 콜백 함수(아마 모달을 띄우지 않을까 싶습니다.)
    */
@@ -46,7 +38,7 @@ interface MypageSidebarProps {
  *   onLogoutClick={() => alert('hi')}
  * />
  */
-export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, isOpen }: MypageSidebarProps) {
+export default function MypageSidebar({ onLogoutClick, onClick, isOpen }: MypageSidebarProps) {
   const location = useLocation();
 
   /**
@@ -64,22 +56,22 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
     <nav
       className={twMerge(
         // 공통 스타일
-        'fixed z-50 max-w-200 min-w-200 rounded-xl border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition duration-300 md:static md:h-fit xl:w-280',
+        'fixed z-50 max-w-200 min-w-200 rounded-2xl border border-gray-50 bg-white transition duration-300 md:static md:h-fit xl:w-280',
         // 모바일에서 Drawer 위치
-        isOpen ? 'h-474 translate-x-0' : 'h-50 -translate-x-full border-gray-200 bg-gray-200',
+        isOpen ? 'translate-x-0' : 'h-50 -translate-x-full bg-gray-200',
         'md:translate-x-0',
-        'md:border-gray-50 md:bg-white',
+        'md:bg-white',
       )}
     >
       {/* 콘텐츠: PC는 항상, 모바일은 isOpen일 때만 */}
       <div
         className={twMerge(
-          'flex h-full flex-col items-center gap-24 rounded-xl px-14 pt-24 pb-12',
+          'flex h-full flex-col items-center gap-24 px-14 pt-24 pb-12',
           isOpen ? 'flex' : 'hidden',
           'md:flex',
         )}
       >
-        {profileImgUrl ? (
+        {/* {profileImgUrl ? (
           <img
             alt='프로필 이미지'
             className='bg-white-100 size-120 rounded-full border border-gray-50 object-cover'
@@ -87,7 +79,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
           />
         ) : (
           <ProfileLogo className='rounded-full' size={120} />
-        )}
+        )} */}
         <ul className='flex w-full flex-col justify-center gap-4'>
           {items.map(({ label, icon: Icon, to }) => {
             const isSelected = location.pathname === to;
@@ -102,7 +94,7 @@ export default function MypageSidebar({ profileImgUrl, onLogoutClick, onClick, i
                   <div className='flex size-24 items-center justify-center'>
                     <Icon color={`${iconColor}`} />
                   </div>
-                  <div className='text-lg font-medium'>{label}</div>
+                  <div className='body-text font-medium'>{label}</div>
                 </Link>
               </li>
             );

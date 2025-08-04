@@ -1,11 +1,22 @@
-import { Button, ChevronIcon, ExperienceCard, Modal, NoResult, WarningLogo } from '@what-today/design-system';
+import {
+  Button,
+  ChevronIcon,
+  ExperienceCard,
+  ExperienceCardSkeleton,
+  Modal,
+  NoResult,
+  useToast,
+  WarningLogo,
+} from '@what-today/design-system';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useDeleteMyActivityMutation, useInfiniteMyActivitiesQuery } from '@/hooks/useMyActivitiesQuery';
+import { useDeleteMyActivityMutation } from '@/hooks/myActivity/useDeleteMyActivityMutation';
+import { useInfiniteMyActivitiesQuery } from '@/hooks/myActivity/useMyActivitiesQuery';
 
 export default function ManageActivitiesPage() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
@@ -18,10 +29,24 @@ export default function ManageActivitiesPage() {
         onSuccess: () => {
           setIsDeleteOpen(false);
           setDeleteTargetId(null);
+          toast({
+            title: '체험 삭제 성공',
+            description: '체험이 삭제되었습니다.',
+            type: 'success',
+          });
+        },
+        onError: (err) => {
+          const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
+          toast({
+            title: '체험 삭제 실패',
+            description: errorMessage,
+            type: 'error',
+          });
         },
       });
     }
   };
+
   const observerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!observerRef.current || !hasNextPage) return;
@@ -42,13 +67,15 @@ export default function ManageActivitiesPage() {
 
   const allActivities = data?.pages.flatMap((page) => page.activities) ?? [];
 
-  const handleNavigateToMypage = () => {
-    navigate('/mypage');
-  };
-
   let content;
   if (isLoading) {
-    content = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
+    content = (
+      <div className='flex flex-col gap-12'>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <ExperienceCardSkeleton key={i} />
+        ))}
+      </div>
+    );
   } else if (isError) {
     content = <div className='flex justify-center p-40 text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>;
   } else if (allActivities.length === 0) {
@@ -73,6 +100,7 @@ export default function ManageActivitiesPage() {
               setIsDeleteOpen(true);
             }}
             onEdit={() => navigate(`/experiences/create/${id}`)}
+            onNavigate={() => navigate(`/activities/${id}`)}
           />
         ))}
         <div ref={observerRef} />
@@ -82,22 +110,22 @@ export default function ManageActivitiesPage() {
   }
 
   return (
-    <div className='flex flex-col gap-13 md:gap-30'>
-      <header className='flex flex-col gap-10'>
-        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-20'>
-          <Button className='h-fit w-fit' variant='none' onClick={handleNavigateToMypage}>
+    <div className='flex flex-col gap-13 text-gray-950 md:gap-30'>
+      <header className='mb-16 flex flex-col gap-12'>
+        <div className='flex items-center gap-4 border-b border-b-gray-50 pb-8 md:pb-12'>
+          <Button className='w-30 p-0' size='sm' variant='none' onClick={() => navigate('/mypage')}>
             <ChevronIcon color='var(--color-gray-300)' direction='left' />
           </Button>
-          <h1 className='text-xl font-bold text-gray-950'>내 체험 관리</h1>
+          <h1 className='subtitle-text'>내 체험 관리</h1>
         </div>
-        <div className='flex flex-col justify-between gap-10 pt-10 md:flex-row'>
-          <p className='text-md font-medium text-gray-500'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
-          <Button className='w-full md:w-138' onClick={() => navigate('/experiences/create')}>
+        <div className='flex flex-col justify-between gap-10 md:flex-row'>
+          <p className='body-text text-gray-400 md:pt-10'>체험을 등록하거나 수정 및 삭제가 가능합니다.</p>
+          <Button className='body-text w-full md:w-138' size='xs' onClick={() => navigate('/experiences/create')}>
             체험 등록하기
           </Button>
         </div>
       </header>
-      <section aria-label='체험 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
+      <section aria-label='체험 카드 목록' className='flex flex-col gap-12'>
         {content}
       </section>
       <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>

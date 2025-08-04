@@ -13,6 +13,7 @@ export interface PopoverRootProps extends BaseProp {
   open?: boolean; // 외부에서 제어할 수 있는 open
   onOpenChange?: (open: boolean) => void; // 외부 상태 변경 감지
   externalTriggerRef?: RefObject<HTMLDivElement | null>; // ✅ 외부 Trigger ref 주입
+  disabled?: boolean; // disabled 여부
 }
 
 /**
@@ -26,6 +27,7 @@ function PopoverRoot({
   open: openProp,
   onOpenChange,
   externalTriggerRef,
+  disabled = false,
 }: PopoverRootProps) {
   // Popover의 열고 닫힘 상태 (controlled / uncontrolled 지원)
   const isControlled = openProp !== undefined;
@@ -148,8 +150,9 @@ function PopoverRoot({
       const isInContent = contentElementRef.current?.contains(target);
       const isInTrigger = triggerRef.current?.contains(target);
       const isInSelectContent = document.querySelector('.select-content')?.contains(target); // popover위에 Select가 있을 때 항목이 선택되어도 팝오버까지 꺼지지 않도록
+      const isInDatePicker = document.querySelector('.date-picker')?.contains(target); // popover위에 datepicker가 있을 때 항목이 선택되어도 팝오버까지 꺼지지 않도록
 
-      if (!isInContent && !isInTrigger && !isInSelectContent) {
+      if (!isInContent && !isInTrigger && !isInSelectContent && !isInDatePicker) {
         internalSetOpen(false);
       }
     };
@@ -177,6 +180,7 @@ function PopoverRoot({
         direction,
         triggerWidth,
         isControlled,
+        disabled,
       }}
     >
       <div className={twMerge('relative', className)}>{children}</div>

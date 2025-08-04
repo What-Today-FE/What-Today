@@ -1,4 +1,5 @@
 import { BottomSheet, Calendar, type CalendarReservationStatus, Popover } from '@what-today/design-system';
+import dayjs from 'dayjs';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useResponsive } from '@/hooks/useResponsive';
@@ -8,16 +9,17 @@ import ReservationSheet from './ReservationSheet';
 interface ReservationCalendarProps {
   reservationsByDate: Record<string, Record<CalendarReservationStatus, number>>;
   onChange?: (date: string) => void;
-  onMonthChange?: (year: string, month: string) => void;
+  // onMonthChange?: (year: string, month: string) => void;
   activityId: number;
 }
 
 export default function ReservationCalendar({
   reservationsByDate,
   onChange,
-  onMonthChange,
+  // onMonthChange,
   activityId,
 }: ReservationCalendarProps) {
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format('YYYY-MM-DD'));
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedDayNode, setSelectedDayNode] = useState<HTMLDivElement | null>(null);
   const [isReservationSheetOpen, setIsReservationSheetOpen] = useState(false);
@@ -79,12 +81,15 @@ export default function ReservationCalendar({
   return (
     <div ref={calendarRef}>
       <Calendar.Root
-        className='gap-8 rounded-3xl pt-20 pb-10 md:gap-30 md:shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
+        className='gap-8 rounded-2xl pt-20 pb-10 md:gap-30 md:border md:border-gray-50'
+        initialDate={currentMonth}
         onDateChange={(date) => {
           handleDateSelect(date);
           onChange?.(date);
         }}
-        onMonthChange={onMonthChange}
+        onMonthChange={(newMonth) => {
+          setCurrentMonth(dayjs(newMonth).format('YYYY-MM-DD'));
+        }}
       >
         <Calendar.Header headerClass='py-6' titleClass='md:text-xl' />
         <Calendar.Grid divider weekdayClass='text-sm font-bold md:text-lg' weekdayType='long'>
@@ -115,7 +120,6 @@ export default function ReservationCalendar({
 
       {/* ✅ 모바일: BottomSheet */}
       <BottomSheet.Root
-        className='h-[80vh]'
         isOpen={isReservationSheetOpen && !responsive.isDesktop}
         onClose={() => setIsReservationSheetOpen(false)}
       >
@@ -132,7 +136,7 @@ export default function ReservationCalendar({
         onOpenChange={setIsReservationSheetOpen}
       >
         <Popover.Content
-          className='z-50 rounded-3xl bg-white px-24 py-30 shadow-[0px_4px_24px_rgba(156,180,202,0.2)]'
+          className='rounded-2xl border border-gray-50 bg-white px-24 py-30'
           style={reservationPopupPosition}
         >
           <div className='h-460 w-292'>

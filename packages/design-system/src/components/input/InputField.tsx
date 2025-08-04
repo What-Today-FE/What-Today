@@ -18,7 +18,7 @@ function InputField({ value, onChange, type = 'text', className, ...props }: Inp
       {...props}
       aria-describedby={error ? `${id}-error` : undefined}
       aria-invalid={!!error}
-      className={twMerge('flex-1 placeholder:text-gray-400 focus:outline-none', className)}
+      className={twMerge('min-w-50 flex-1 placeholder:text-gray-400 focus:outline-none', className)}
       disabled={disabled}
       id={id}
       type={type}

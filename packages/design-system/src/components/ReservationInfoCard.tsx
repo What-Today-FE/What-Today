@@ -1,5 +1,3 @@
-import { twMerge } from 'tailwind-merge';
-
 import Button from '@/components/button';
 import type { ManageableReservationStatus } from '@/components/calendar';
 import UserBadge from '@/components/UserBadge';
@@ -52,31 +50,26 @@ export default function ReservationInfoCard({
   onApprove,
   onReject,
 }: ReservationInfoCardProps) {
-  const ActionButton = 'h-29 w-68 text-gray-600 hover:outline-2 hover:outline-gray-200';
   return (
-    <div className='flex w-full items-center justify-between rounded-2xl border border-gray-100 px-16 py-13'>
-      <dl className='flex flex-col gap-4 text-sm'>
+    <div className='flex w-full items-center justify-between rounded-xl border border-gray-100 bg-white px-16 py-13'>
+      <dl className='caption-text flex flex-col gap-4'>
         <dt className='flex gap-8'>
-          <span className='font-bold text-gray-500'>닉네임</span>
-          <span className='font-medium text-gray-950'>{nickname}</span>
+          <span className='text-gray-400'>닉네임</span>
+          <span className=''>{nickname}</span>
         </dt>
         <dt className='flex gap-8'>
-          <span className='font-bold text-gray-500'>인원</span>
-          <span className='font-medium text-gray-950'>{headCount}명</span>
+          <span className='text-gray-400'>인원</span>
+          <span className=''>{headCount}명</span>
         </dt>
       </dl>
       {ownerStatus === 'pending' ? (
-        <div className='flex flex-col gap-8' role='group'>
-          <Button
-            className={twMerge(ActionButton, 'border border-gray-50')}
-            variant='none'
-            onClick={() => onApprove?.(reservationId)}
-          >
+        <div className='caption-text flex flex-col gap-8' role='group'>
+          <Button className='h-29 w-auto' variant='outline' onClick={() => onApprove?.(reservationId)}>
             승인하기
           </Button>
           <Button
-            className={twMerge(ActionButton, 'bg-gray-50')}
-            variant='none'
+            className='h-29 w-auto bg-gray-50 text-gray-600'
+            variant='fill'
             onClick={() => onReject?.(reservationId)}
           >
             거절하기

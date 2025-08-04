@@ -1,4 +1,4 @@
-import { EmptyLogo, ImageLogo, ProfileLogo, TextLogo, WarningLogo } from '@components/logos';
+import { EmptyLogo, ImageLogo, NotFoundLogo, ProfileLogo, TextLogo, WarningLogo } from '@components/logos';
 
 import Playground from '@/layouts/Playground';
 
@@ -16,13 +16,14 @@ export default function LogoDoc() {
         description={`
 # Logo 컴포넌트
 
-총 5종의 로고 컴포넌트를 제공합니다:
+총 6종의 로고 컴포넌트를 제공합니다:
 
 - \`ImageLogo\`
 - \`TextLogo\`
 - \`EmptyLogo\`
 - \`ProfileLogo\`
 - \`WarningLogo\`
+- \`NotFoundLogo\`
 
 로고는 다음 두 가지 방식으로 크기를 조절할 수 있습니다(2번 권장):
 
@@ -68,6 +69,10 @@ export default function LogoDoc() {
           <WarningLogo size={100} />
           <span className='mt-2 text-sm'>WarningLogo</span>
         </div>
+        <div className='flex flex-col items-center rounded-lg border p-4'>
+          <NotFoundLogo size={100} />
+          <span className='mt-2 text-sm'>NotFoundLogo</span>
+        </div>
       </div>
 
       <div className='mt-24'>
@@ -81,6 +86,7 @@ export default function LogoDoc() {
             EmptyLogo,
             ProfileLogo,
             WarningLogo,
+            NotFoundLogo,
           }}
         />
       </div>

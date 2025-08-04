@@ -9,7 +9,7 @@ const EmailInput = memo(function EmailInput() {
   const [value, setValue] = useState('');
 
   return (
-    <Input.Root>
+    <Input.Root disabled>
       <Input.Label>이메일</Input.Label>
       <Input.Wrapper>
         <Input.Field

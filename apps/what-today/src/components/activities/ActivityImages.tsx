@@ -12,7 +12,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
   return (
     <section className={`grid h-400 grid-cols-${subImageCount === 0 ? '1' : '2'} rounded-xl'} gap-8`}>
       {/* 왼쪽 메인이미지 */}
-      <div className='h-full w-full overflow-hidden rounded-xl border border-gray-200'>
+      <div className='h-full w-full overflow-hidden rounded-xl border border-gray-50'>
         <img alt='배너 이미지' className='h-full w-full object-cover' src={bannerImageUrl} onError={handleImageError} />
       </div>
 
@@ -21,7 +21,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
         <div className='h-full w-full'>
           {/* 1개일 때: 전체 영역 사용 */}
           {subImageCount === 1 && (
-            <div className='h-full w-full overflow-hidden rounded-xl border border-gray-200'>
+            <div className='h-full w-full overflow-hidden rounded-xl border border-gray-50'>
               <img
                 alt='서브 이미지'
                 className='h-full w-full object-cover object-center'
@@ -35,7 +35,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
           {subImageCount === 2 && (
             <div className='h-full w-full'>
               <div className='grid h-400 w-full grid-rows-[196px_196px] gap-8'>
-                <div className='overflow-hidden rounded-xl border border-gray-200'>
+                <div className='overflow-hidden rounded-xl border border-gray-50'>
                   <img
                     alt='서브 이미지 1'
                     className='h-full w-full object-cover object-center'
@@ -43,7 +43,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
                     onError={handleImageError}
                   />
                 </div>
-                <div className='overflow-hidden rounded-xl border border-gray-200'>
+                <div className='overflow-hidden rounded-xl border border-gray-50'>
                   <img
                     alt='서브 이미지 2'
                     className='h-full w-full object-cover object-center'
@@ -60,7 +60,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
             <div className='h-full w-full'>
               <div className='grid h-400 w-full grid-cols-2 grid-rows-[196px_196px] gap-8'>
                 {/* 이미지 1 */}
-                <div className='overflow-hidden rounded-xl border border-gray-200'>
+                <div className='overflow-hidden rounded-xl border border-gray-50'>
                   <img
                     alt='서브 이미지 1'
                     className='h-full w-full object-cover object-center'
@@ -70,7 +70,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
                 </div>
 
                 {/* 이미지 2 */}
-                <div className='overflow-hidden rounded-xl border border-gray-200'>
+                <div className='overflow-hidden rounded-xl border border-gray-50'>
                   <img
                     alt='서브 이미지 2'
                     className='h-full w-full object-cover object-center'
@@ -80,7 +80,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
                 </div>
 
                 {/* 이미지 3 - col-span-2 */}
-                <div className='col-span-2 overflow-hidden rounded-xl border border-gray-200'>
+                <div className='col-span-2 overflow-hidden rounded-xl border border-gray-50'>
                   <img
                     alt='서브 이미지 3'
                     className='h-full w-full object-cover object-center'
@@ -97,7 +97,7 @@ export default function ActivityImages({ bannerImageUrl, subImages }: ActivityIm
             <div className='h-full w-full'>
               <div className='grid h-400 w-full grid-cols-2 grid-rows-[196px_196px] gap-8'>
                 {subImages.slice(0, 4).map((img, index) => (
-                  <div key={img.id} className='overflow-hidden rounded-xl border border-gray-200'>
+                  <div key={img.id} className='overflow-hidden rounded-xl border border-gray-50'>
                     <img
                       alt={`서브 이미지 ${index + 1}`}
                       className='h-full w-full object-cover object-center'

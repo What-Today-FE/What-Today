@@ -55,6 +55,8 @@ export interface PopoverContextType {
   triggerWidth: number | null;
   /** Controlled 여부 */
   isControlled: boolean;
+  /** Disabled */
+  disabled?: boolean;
 }
 
 /**

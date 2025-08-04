@@ -5,6 +5,7 @@ export { default as BusIcon } from './BusIcon';
 export { default as CalendarIcon } from './CalendarIcon';
 export { default as ChevronIcon } from './ChevronIcon';
 export { default as ClockIcon } from './ClockIcon';
+export { default as CloudIcon } from './CloudIcon';
 export { default as DeleteIcon } from './DeleteIcon';
 export { default as DocumentIcon } from './DocumentIcon';
 export { default as DotIcon } from './DotIcon';

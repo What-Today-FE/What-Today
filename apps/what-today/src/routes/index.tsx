@@ -10,9 +10,11 @@ import KakaoCallbackSignup from '@/pages/kakao-callback-signup';
 import LoginPage from '@/pages/login';
 import MainPage from '@/pages/main';
 import EditProfilePage from '@/pages/mypage/edit-profile';
+import MyPage from '@/pages/mypage/main';
 import ManageActivitiesPage from '@/pages/mypage/manage-activities';
 import ReservationsListPage from '@/pages/mypage/reservations-list';
 import ReservationsStatusPage from '@/pages/mypage/reservations-status';
+import NotFoundPage from '@/pages/not-found-page';
 import SignupPage from '@/pages/signup';
 
 import { authGuardLoader, redirectIfLoggedInLoader } from './authGuardLoader';
@@ -36,14 +38,19 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <MainPage /> },
           { path: 'activities/:id', element: <ActivityDetailPage /> },
-          { path: 'experiences/create', element: <CreateExperience /> },
-          { path: 'experiences/create/:id', element: <CreateExperience /> },
+          {
+            loader: authGuardLoader,
+            children: [
+              { path: 'experiences/create', element: <CreateExperience /> },
+              { path: 'experiences/create/:id', element: <CreateExperience /> },
+            ],
+          },
           {
             path: 'mypage',
             loader: authGuardLoader,
             element: <MyPageLayout />,
             children: [
-              { index: true, element: <EditProfilePage /> },
+              { index: true, element: <MyPage /> },
               { path: 'edit-profile', element: <EditProfilePage /> },
               { path: 'reservations-list', element: <ReservationsListPage /> },
               { path: 'manage-activities', element: <ManageActivitiesPage /> },
@@ -52,6 +59,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);

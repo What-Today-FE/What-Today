@@ -43,6 +43,11 @@ export default function DesignSystemLayout() {
             <SidebarNavItem label='StarRating' to='/docs/StarRating' />
             <SidebarNavItem label='TimePicker' to='/docs/TimePicker' />
             <SidebarNavItem label='AddressInput' to='/docs/AddressInput' />
+            <SidebarNavItem label='MypageProfileHeader' to='/docs/MypageProfileHeader' />
+            <SidebarNavItem label='MypageSummaryCard' to='/docs/MypageSummaryCard' />
+            <SidebarNavItem label='UpcomingSchedule' to='/docs/UpcomingSchedule' />
+            <SidebarNavItem label='OngoingExperienceCard' to='/docs/OngoingExperienceCard' />
+            <SidebarNavItem label='MainPageSkeleton' to='/docs/MainPageSkeleton' />
           </ul>
         </nav>
       </aside>

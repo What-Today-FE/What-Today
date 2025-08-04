@@ -72,6 +72,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
       return lastPage.cursorId;
     },
     staleTime: 30 * 1000,
+    enabled: open, // 팝오버가 열렸을 때만 API 요청
   });
 
   /**

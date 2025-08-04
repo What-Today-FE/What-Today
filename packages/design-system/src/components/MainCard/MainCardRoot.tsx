@@ -11,11 +11,12 @@ export default function MainCardRoot({
   reviewCount,
   children,
   className,
+  category,
   onClick,
 }: MainCardProps) {
   return (
-    <MainCardContext.Provider value={{ title, price, bannerImageUrl, rating, reviewCount, onClick }}>
-      <div className=''>
+    <MainCardContext.Provider value={{ title, price, bannerImageUrl, rating, reviewCount, category, onClick }}>
+      <div className='rounded-xl'>
         <div
           className={twMerge(
             'relative flex flex-shrink-0 cursor-pointer flex-col transition-transform duration-300',

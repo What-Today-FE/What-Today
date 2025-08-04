@@ -4,6 +4,7 @@ import axiosInstance from './axiosInstance';
 
 // ✅ 체험(Activity) 타입 정의 (category 추가)
 export interface Activity {
+  createdAt?: string | number | Date;
   id: number;
   title: string;
   price: number;
@@ -29,6 +30,7 @@ export const activityListSchema = z.array(
     reviewCount: z.number(),
     bannerImageUrl: z.string().url(),
     category: z.string(),
+    createdAt: z.string(),
   }),
 );
 

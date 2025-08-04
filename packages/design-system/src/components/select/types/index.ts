@@ -10,6 +10,7 @@ export interface SelectContextType {
   selectedItem: SelectItem | null;
   open?: boolean;
   setOpen?: (v: boolean) => void;
+  disabled?: boolean;
 }
 
 export interface BaseProps {
