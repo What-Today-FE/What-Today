@@ -100,6 +100,10 @@ export default function MyPage() {
     enabled: Boolean(user),
   });
 
+  const sortedReservations = [...(confirmedData?.reservations ?? [])].sort((a, b) =>
+    dayjs(a.date).isAfter(b.date) ? 1 : -1,
+  );
+
   // 이번 달 모집 중인 체험
   const reservationAvailableResults = useQueries({
     queries: activityIds.map((id) => ({
@@ -168,15 +172,14 @@ export default function MyPage() {
   };
   return (
     <div className='flex gap-30'>
-      {/* <MypageMainSidebar /> */}
-      <div className='flex w-full flex-col gap-24'>
+      <div className='flex w-full flex-col gap-36'>
         <MypageProfileHeader
           email={user?.email}
           name={user?.nickname}
           profileImageUrl={user?.profileImageUrl ?? undefined}
           onLogoutClick={handleLogout}
         />
-        <div className='flex flex-col gap-24 md:flex-row'>
+        <div className='flex flex-col gap-12 md:flex-row md:gap-24'>
           <MypageSummaryCard.Root>
             <MypageSummaryCard.Item count={totalActivity || 0} label='등록한 체험' />
             <MypageSummaryCard.Item count={totalPending} label={`${dayjs().format('M')}월 승인 대기`} />
@@ -196,8 +199,8 @@ export default function MyPage() {
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='relative flex h-fit w-full flex-col gap-8 rounded-3xl border-gray-50 pr-0 md:gap-16 md:border md:px-40 md:py-24'>
-          <p className='text-lg font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
+        <div className='relative flex h-fit w-full flex-col gap-8 rounded-3xl border-gray-50 bg-white pr-0 md:gap-16 md:border md:px-40 md:py-24'>
+          <p className='section-text font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
           <div className='grid h-210 w-full grid-cols-1'>
             <div className='flex gap-12 overflow-x-auto'>
               {/* flex로 한 줄로 나열해두고 overflow-x-auto를 부모 너비가 같이 늘어났음 */}
@@ -206,14 +209,47 @@ export default function MyPage() {
           </div>
         </div>
 
-        <div className='flex min-h-300 flex-col gap-8 rounded-3xl border-gray-50 md:max-h-540 md:gap-16 md:border md:px-32 md:pt-24'>
-          <p className='text-lg font-bold'>다가오는 일정</p>
-          <UpcomingSchedule
-            className='w-full md:overflow-y-auto'
-            reservation={confirmedData?.reservations || []}
-            onClick={() => navigate('/')}
-            onClickReservation={(id) => navigate(`/activities/${id}`)}
-          />
+        <div className='grid min-h-300 grid-rows-[auto_1fr] gap-8 rounded-3xl border-gray-50 bg-white md:max-h-540 md:gap-16 md:border md:px-32 md:pt-24'>
+          <p className='section-text font-bold'>다가오는 일정</p>
+
+          <div className='ml-12 w-full overflow-y-auto'>
+            <div className='flex w-full items-stretch gap-12'>
+              {/* 왼쪽 타임라인 */}
+              <div className='flex flex-col items-center'>
+                <div className='bg-primary-500 size-12 shrink-0 rounded-full' />
+                <div className='from-primary-500 w-3 flex-1 bg-gradient-to-b to-transparent' />
+              </div>
+              <div className='mt-12 flex w-full flex-col gap-24'>
+                {(() => {
+                  let prevDate: string | null = null; // 이전 아이템의 날짜 저장
+
+                  return sortedReservations?.map((res, idx, arr) => {
+                    const showDateLabel = res.date !== prevDate; // 이전과 날짜가 다르면 라벨 노출
+                    const isLast = idx === arr.length - 1; // 마지막 아이템 여부
+                    prevDate = res.date; // 현재 날짜를 다음 루프를 위한 기준으로 저장
+
+                    return (
+                      <div
+                        key={res.id}
+                        className={`flex flex-col gap-8 ${isLast ? 'pb-32' : ''}`}
+                        onClick={() => navigate(`/activities/${res.activity.id}`)}
+                      >
+                        {/* 날짜 구분선: 날짜가 바뀌는 시점에만 출력 */}
+                        {showDateLabel && <p className='caption-text text-gray-400'>{res.date}</p>}
+                        <UpcomingSchedule
+                          headCount={res.headCount}
+                          price={res.totalPrice}
+                          src={res.activity.bannerImageUrl}
+                          time={`${res.startTime}~${res.endTime}`}
+                          title={res.activity.title}
+                        />
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
