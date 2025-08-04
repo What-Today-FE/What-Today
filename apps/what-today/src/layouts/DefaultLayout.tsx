@@ -17,7 +17,7 @@ export default function DefaultLayout() {
   const floatingButtonClass = !isDesktop && isActivityDetailPage ? 'bottom-160' : undefined;
 
   return (
-    <div className='flex w-full flex-col items-center gap-8'>
+    <div className='flex w-full min-w-375 flex-col items-center gap-8'>
       <header className='w-full max-w-7xl px-[5vw]'>
         <Header />
       </header>
