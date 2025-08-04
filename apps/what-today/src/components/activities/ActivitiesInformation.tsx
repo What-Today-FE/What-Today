@@ -64,12 +64,12 @@ export default function ActivitiesInformation({
     <>
       <section
         className={twMerge(
-          'flex h-fit w-full flex-col items-start gap-8 rounded-xl border border-gray-50 p-20',
+          'bg-gray-25 flex h-fit w-full flex-col items-start gap-8 rounded-xl border border-gray-50 p-20',
           className,
         )}
       >
         <div className='flex w-full items-center justify-between'>
-          <p className='caption-text'>{category}</p>
+          <p className='caption-text text-gray-400'>{category}</p>
           {isAuthor && (
             <Dropdown.Root>
               <Dropdown.Trigger className='flex size-24 items-center justify-center' />
@@ -84,16 +84,17 @@ export default function ActivitiesInformation({
         <div className='body-text mt-9 flex items-center gap-6'>
           <StarIcon filled />
           <span>
-            {rating.toFixed(1)} ({reviewCount})
+            {rating.toFixed(1)} <span className='text-gray-400'>({reviewCount})</span>
           </span>
         </div>
         <div className='body-text mt-2 ml-2 flex items-center gap-4'>
-          <LocationIcon />
-          <span>{address}</span>
+          <LocationIcon className='shrink-0' color='var(--color-gray-400)' />
+          <span className='break-words'>{address}</span>
         </div>
         <div className='body-text mt-2 ml-2 flex items-center gap-4'>
-          <p className='body-text'>
-            <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
+          <p className='body-text text-gray-400'>
+            <span className='font-bold text-gray-400'>₩</span>
+            <span className='font-bold text-gray-950'> {price.toLocaleString()}</span> / 인
           </p>
         </div>
       </section>
