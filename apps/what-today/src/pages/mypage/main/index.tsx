@@ -5,6 +5,7 @@ import {
   MypageProfileHeader,
   MypageSummaryCard,
   OngoingExperienceCard,
+  OngoingExperienceCardSkeleton,
   UpcomingSchedule,
   useToast,
 } from '@what-today/design-system';
@@ -49,7 +50,7 @@ export default function MyPage() {
   const month = dayjs().format('MM');
 
   // 등록한 체험 갯수
-  const { data: activityData } = useInfiniteMyActivitiesQuery(MAX_PAGE_SIZE);
+  const { data: activityData, isLoading: isLoadingActivities } = useInfiniteMyActivitiesQuery(MAX_PAGE_SIZE);
   const totalActivity = activityData?.pages[0]?.totalCount;
 
   // 이번달 예약 승인 대기 갯수
@@ -109,14 +110,52 @@ export default function MyPage() {
       enabled: !!id,
     })),
   });
+
+  // useQueries 로딩 상태
+  const isLoadingAvailableQueries =
+    reservationAvailableResults.length === 0 || // 아직 activityIds 준비 전
+    reservationAvailableResults.some((q) => q.isLoading || q.isFetching);
+
   const availableActivityIds = reservationAvailableResults
     .map((result, index) => ({ data: result.data, activityId: activityIds[index] }))
     .filter(({ data }) => Array.isArray(data) && data.length > 0)
     .map(({ activityId }) => activityId);
+
   // 1. useInfiniteMyActivitiesQuery에서 받은 모든 pages를 펼침
   const allActivities = activityData?.pages.flatMap((page) => page.activities) ?? [];
   // 2. 예약 가능 activityId와 일치하는 항목만 필터링
   const availableActivities = allActivities.filter((activity) => availableActivityIds.includes(activity.id));
+  // 3. 최종 스켈레톤 노출 여부
+  const isLoadingAvailable = isLoadingActivities || isLoadingAvailableQueries;
+  // 4. 모집 중인 체험에 띄울 콘텐츠 결정 (스켈레톤 UI or 데이터 없음 or 실제 데이터)
+  let ongoingExperienceContent = null;
+  if (isLoadingAvailable) {
+    ongoingExperienceContent = (
+      <>
+        <OngoingExperienceCardSkeleton />
+        <OngoingExperienceCardSkeleton />
+        <OngoingExperienceCardSkeleton />
+        <OngoingExperienceCardSkeleton />
+      </>
+    );
+  } else if (availableActivities.length > 0) {
+    ongoingExperienceContent = (
+      <>
+        {availableActivities.map((act) => (
+          <OngoingExperienceCard
+            key={act.id}
+            bannerImageUrl={act.bannerImageUrl}
+            id={act.id}
+            price={act.price}
+            title={act.title}
+            onClickActivity={(id) => navigate(`/activities/${id}`)}
+          />
+        ))}
+      </>
+    );
+  } else {
+    ongoingExperienceContent = <NoResultOngoing />;
+  }
 
   const handleLogout = () => {
     logoutUser();
@@ -157,22 +196,12 @@ export default function MyPage() {
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='relative flex h-full w-full flex-col gap-8 rounded-3xl border-gray-50 pr-0 md:gap-16 md:border md:px-40 md:py-24'>
+        <div className='relative flex h-fit w-full flex-col gap-8 rounded-3xl border-gray-50 pr-0 md:gap-16 md:border md:px-40 md:py-24'>
           <p className='text-lg font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
           <div className='grid h-210 w-full grid-cols-1'>
             <div className='flex gap-12 overflow-x-auto'>
               {/* flex로 한 줄로 나열해두고 overflow-x-auto를 부모 너비가 같이 늘어났음 */}
-              {availableActivities.map((act) => (
-                <OngoingExperienceCard
-                  key={act.id}
-                  bannerImageUrl={act.bannerImageUrl}
-                  id={act.id}
-                  price={act.price}
-                  title={act.title}
-                  onClickActivity={(id) => navigate(`/activities/${id}`)}
-                />
-              ))}
-              {availableActivities.length === 0 && <NoResultOngoing />}
+              {ongoingExperienceContent}
             </div>
           </div>
         </div>
