@@ -20,31 +20,11 @@ const getSatisfactionText = (rating: number) => {
 };
 
 export default function ReviewSection({ activityId }: ReviewSectionProps) {
-  const {
-    allReviews,
-    averageRating,
-    totalCount,
-    isLoading,
-    isError,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useActivityReviews(activityId, 10);
+  const { allReviews, averageRating, totalCount, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useActivityReviews(activityId, 10);
 
   // 무한스크롤 트리거
   const observerRef = useIntersectionObserver(() => fetchNextPage(), isFetchingNextPage, !hasNextPage);
-
-  if (isLoading) {
-    return (
-      <section className='w-full'>
-        <div className='mb-8 flex gap-8'>
-          <h2 className='section-text'>체험 후기</h2>
-        </div>
-        <p className='py-8 text-center'>후기를 불러오는 중...</p>
-      </section>
-    );
-  }
 
   if (isError) {
     return (
