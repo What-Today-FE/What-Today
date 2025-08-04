@@ -71,7 +71,7 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
       <div ref={observerRef} className='h-4' />
 
       {isFetchingNextPage && (
-        <div className='flex flex-col gap-16'>
+        <div className='flex flex-col gap-12'>
           <ReviewCardSkeleton />
           <ReviewCardSkeleton />
         </div>
