@@ -1,4 +1,4 @@
-import { StarIcon } from '@what-today/design-system';
+import { NoResult, StarIcon } from '@what-today/design-system';
 
 import { ReviewCardSkeleton } from '@/components/skeletons/activities';
 import { useActivityReviews } from '@/hooks/activityDetail';
@@ -81,7 +81,9 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
         {allReviews.length > 0 ? (
           allReviews.map((review: ActivityReview) => <ActivitiesReview key={review.id} review={review} />)
         ) : (
-          <p className='py-8 text-center text-gray-500'>아직 등록된 후기가 없습니다.</p>
+          <div className='mt-20 flex items-center justify-center'>
+            <NoResult dataName='후기가' />
+          </div>
         )}
       </div>
 
