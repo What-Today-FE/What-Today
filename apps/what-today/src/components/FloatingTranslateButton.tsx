@@ -27,11 +27,21 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
   // 현재 번역된 언어 감지
   const detectCurrentLanguage = useCallback(() => {
     try {
-      // URL에서 현재 번역 언어 감지
+      // 우선 googtrans 쿠키 확인
+      const match = document.cookie.match(/(?:^|;\s*)googtrans=\/[a-z]+\/([a-z]+)/);
+      if (match && match[1]) {
+        const detectedLang = match[1];
+        setCurrentTranslatedLang(detectedLang);
+        const foundLang = findLanguageByCode(detectedLang);
+        if (foundLang) {
+          setSelectedLanguage(foundLang);
+        }
+        return;
+      }
+
+      // fallback: URL 파라미터 확인
       const urlParams = new URLSearchParams(window.location.search);
       const langFromUrl = urlParams.get('lang');
-
-      // Google Translate가 URL에 추가하는 언어 코드 확인
       if (langFromUrl) {
         setCurrentTranslatedLang(langFromUrl);
         const foundLang = findLanguageByCode(langFromUrl);
@@ -41,7 +51,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
         return;
       }
 
-      // body 클래스에서 번역 상태 확인
+      // fallback: body class 확인
       const bodyClasses = document.body.className;
       if (bodyClasses.includes('translated-')) {
         const matches = bodyClasses.match(/translated-(\w+)/);
@@ -54,10 +64,14 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
           }
         }
       }
-    } catch (error) {
-      console.warn('언어 감지 중 오류:', error);
+    } catch {
+      toast({
+        title: '번역 오류',
+        description: '언어 감지 중 오류가 발생했습니다. 새로고침 부탁드려요',
+        type: 'error',
+      });
     }
-  }, []);
+  }, [toast]);
 
   // Google Translate 위젯 초기화
   const initializeGoogleTranslate = useCallback(() => {
