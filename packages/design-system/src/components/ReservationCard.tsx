@@ -78,7 +78,7 @@ export default function ReservationCard({
 
   return (
     <article
-      className='flex h-fit cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:-space-x-20 xl:-space-x-26'
+      className='flex h-fit w-auto cursor-pointer items-stretch -space-x-38 rounded-2xl border border-gray-50 md:-space-x-20 xl:-space-x-26'
       onClick={onClick}
     >
       <section className='z-5 flex w-full flex-col justify-between rounded-l-2xl rounded-r-3xl bg-white p-20 xl:gap-6'>

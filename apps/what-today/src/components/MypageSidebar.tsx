@@ -72,15 +72,6 @@ export default function MypageSidebar({ onLogoutClick, onClick, isOpen }: Mypage
           'md:flex',
         )}
       >
-        {/* {profileImgUrl ? (
-          <img
-            alt='프로필 이미지'
-            className='bg-white-100 size-120 rounded-full border border-gray-50 object-cover'
-            src={profileImgUrl}
-          />
-        ) : (
-          <ProfileLogo className='rounded-full' size={120} />
-        )} */}
         <ul className='flex w-full flex-col justify-center gap-4'>
           {items.map(({ label, icon: Icon, to }) => {
             const isSelected = location.pathname === to;
