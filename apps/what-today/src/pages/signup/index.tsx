@@ -112,14 +112,15 @@ export default function SignupPage() {
             )}
 
             <div className='flex w-full flex-col items-start justify-center gap-2'>
-              <label className='mb-4 flex cursor-pointer gap-8'>
+              <label className='mb-4 flex cursor-pointer items-center gap-8' htmlFor='all-agree'>
                 <input
                   checked={
                     (watch('agreeToTerms') ?? false) &&
                     (watch('agreeToPrivacy') ?? false) &&
                     (watch('agreeToLocation') ?? false)
                   }
-                  className='cursor-pointer'
+                  className='cursor-pointer accent-black focus:ring-black/30 focus:outline-none'
+                  id='all-agree'
                   type='checkbox'
                   onChange={(e) => {
                     const checked = e.target.checked;

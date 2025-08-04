@@ -16,7 +16,12 @@ function AgreeCheckbox({ error, content, label, required = false, ...props }: Ag
     <>
       <div className='flex w-full items-center'>
         <label className='flex cursor-pointer items-center gap-8' htmlFor={id}>
-          <input id={id} type='checkbox' {...props} className='cursor-pointer' />
+          <input
+            id={id}
+            type='checkbox'
+            {...props}
+            className='cursor-pointer accent-black focus:ring-black/30 focus:outline-none'
+          />
           <p className='caption-text'>
             {label} {required && <span className='text-primary-500'>(필수)</span>}
           </p>
