@@ -100,7 +100,7 @@ export default function ImageInput({ value, onChange, max, className }: ImageInp
       </label>
 
       {/* 미리보기 이미지들 */}
-      <div className='flex w-full gap-12 overflow-x-scroll'>
+      <div className='flex w-full gap-12 overflow-x-auto'>
         {urls.map((preview, i) => (
           <div key={i} className='relative'>
             <div className='size-80 overflow-hidden rounded-xl border border-gray-100 bg-white md:size-100'>
