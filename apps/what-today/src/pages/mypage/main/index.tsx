@@ -1,5 +1,7 @@
 import { useQueries, useQuery } from '@tanstack/react-query';
 import {
+  Button,
+  EmptyLogo,
   MypageProfileHeader,
   MypageSummaryCard,
   OngoingExperienceCard,
@@ -17,6 +19,23 @@ import useAuth from '@/hooks/useAuth';
 import type { monthlyScheduleResponse } from '@/schemas/myActivities';
 import type { MyReservationsResponse } from '@/schemas/myReservations';
 import { useWhatTodayStore } from '@/stores';
+
+function NoResultOngoing() {
+  const navigate = useNavigate();
+
+  return (
+    <div className='flex w-full flex-col items-center justify-center gap-20 pt-32'>
+      <EmptyLogo size={80} />
+      <Button
+        className='text-md w-auto font-semibold'
+        variant='outline'
+        onClick={() => navigate('/experiences/create')}
+      >
+        체험 등록하러 가기
+      </Button>
+    </div>
+  );
+}
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -138,14 +157,26 @@ export default function MyPage() {
             />
           </MypageSummaryCard.Root>
         </div>
-        <div className='flex h-248 w-full flex-col gap-8 rounded-3xl border-gray-50 md:h-300 md:gap-16 md:border md:px-40 md:py-24'>
+        <div className='relative flex h-full w-full flex-col gap-8 rounded-3xl border-gray-50 pr-0 md:gap-16 md:border md:px-40 md:py-24'>
           <p className='text-lg font-bold'>{`${dayjs().format('M')}월 모집 중인 체험`}</p>
-          <OngoingExperienceCard
-            activities={availableActivities}
-            onClick={() => navigate('/experiences/create')}
-            onClickActivity={(id) => navigate(`/activities/${id}`)}
-          />
+          <div className='grid h-210 w-full grid-cols-1'>
+            <div className='flex gap-12 overflow-x-auto'>
+              {/* flex로 한 줄로 나열해두고 overflow-x-auto를 부모 너비가 같이 늘어났음 */}
+              {availableActivities.map((act) => (
+                <OngoingExperienceCard
+                  key={act.id}
+                  bannerImageUrl={act.bannerImageUrl}
+                  id={act.id}
+                  price={act.price}
+                  title={act.title}
+                  onClickActivity={(id) => navigate(`/activities/${id}`)}
+                />
+              ))}
+              {availableActivities.length === 0 && <NoResultOngoing />}
+            </div>
+          </div>
         </div>
+
         <div className='flex min-h-300 flex-col gap-8 rounded-3xl border-gray-50 md:max-h-540 md:gap-16 md:border md:px-32 md:pt-24'>
           <p className='text-lg font-bold'>다가오는 일정</p>
           <UpcomingSchedule
