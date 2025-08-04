@@ -28,7 +28,7 @@ function NoResultUpcoming() {
   return (
     <div className='flex w-full flex-col items-center justify-center gap-20 pt-32'>
       <EmptyLogo size={80} />
-      <Button className='text-md w-auto font-semibold' variant='outline' onClick={() => navigate('/')}>
+      <Button className='caption-text w-auto font-semibold' variant='outline' onClick={() => navigate('/')}>
         체험 예약하러 가기
       </Button>
     </div>
@@ -42,7 +42,7 @@ function NoResultOngoing() {
     <div className='flex w-full flex-col items-center justify-center gap-20 pt-32'>
       <EmptyLogo size={80} />
       <Button
-        className='text-md w-auto font-semibold'
+        className='caption-text w-auto font-semibold'
         variant='outline'
         onClick={() => navigate('/experiences/create')}
       >
