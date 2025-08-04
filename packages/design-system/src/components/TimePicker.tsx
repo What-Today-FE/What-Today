@@ -72,7 +72,7 @@ export default function TimePicker({ value, onChange, className, disabled = fals
 
         <Select.Content className='flex gap-4 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
           {/* 시 선택 */}
-          <div className='flex flex-1 flex-col gap-4 overflow-y-scroll pr-4'>
+          <div className='flex flex-1 flex-col gap-4 overflow-y-auto pr-4'>
             {Array.from({ length: 24 }).map((_, i) => {
               const hour = String(i).padStart(2, '0');
               const isSelected = value?.hour === hour;
@@ -91,7 +91,7 @@ export default function TimePicker({ value, onChange, className, disabled = fals
           </div>
 
           {/* 분 선택 */}
-          <div className='flex flex-1 flex-col gap-4 overflow-y-scroll pr-4'>
+          <div className='flex flex-1 flex-col gap-4 overflow-y-auto pr-4'>
             {Array.from({ length: 12 }).map((_, i) => {
               const minute = String(i * 5).padStart(2, '0');
               const isSelected = value?.minute === minute;
