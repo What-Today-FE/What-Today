@@ -178,13 +178,23 @@ export default function ReservationsListPage() {
   const submitReview = useMutation({
     mutationFn: ({ id, rating, content }: { id: number; rating: number; content: string }) =>
       createReview(id, { rating, content }),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast({
         title: '후기 작성 완료',
         description: '소중한 후기가 등록되었습니다.',
         type: 'success',
       });
+
+      // 해당 예약의 reviewSubmitted를 즉시 업데이트 (optimistic update)
+      setAllReservations((prev) =>
+        prev.map((reservation) =>
+          reservation.id === variables.id ? { ...reservation, reviewSubmitted: true } : reservation,
+        ),
+      );
+
       setReviewTarget(null);
+      setReviewContent('');
+      setStarRating(0);
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
     },
     onError: (error) => {
