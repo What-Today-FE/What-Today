@@ -14,6 +14,7 @@ interface ActivitiesInformationProps {
   className?: string;
   id?: string;
   isAuthor: boolean;
+  price: number;
 }
 
 /**
@@ -28,6 +29,7 @@ export default function ActivitiesInformation({
   address,
   className,
   isAuthor,
+  price,
 }: ActivitiesInformationProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -60,36 +62,46 @@ export default function ActivitiesInformation({
 
   return (
     <>
-      <section className={twMerge('flex h-fit w-full flex-col items-start gap-8', className)}>
+      <section
+        className={twMerge(
+          'flex h-fit w-full flex-col items-start gap-8 rounded-xl border border-gray-50 p-20',
+          className,
+        )}
+      >
         <div className='flex w-full items-center justify-between'>
-          <p className='text-md text-gray-950'>{category}</p>
+          <p className='caption-text'>{category}</p>
           {isAuthor && (
             <Dropdown.Root>
               <Dropdown.Trigger className='flex size-24 items-center justify-center' />
-              <Dropdown.Menu>
+              <Dropdown.Menu className='-left-95'>
                 <Dropdown.Item onClick={() => navigate(`/experiences/create/${id}`)}>수정하기</Dropdown.Item>
                 <Dropdown.Item onClick={() => setIsDeleteOpen(true)}>삭제하기</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown.Root>
           )}
         </div>
-        <p className='text-2xl font-bold'>{title}</p>
-        <div className='mt-9 flex items-center gap-6 text-base text-gray-700'>
+        <p className='title-text'>{title}</p>
+        <div className='body-text mt-9 flex items-center gap-6'>
           <StarIcon filled />
           <span>
             {rating.toFixed(1)} ({reviewCount})
           </span>
         </div>
-        <div className='mt-2 ml-2 flex items-center gap-4 text-base text-gray-700'>
+        <div className='body-text mt-2 ml-2 flex items-center gap-4'>
           <LocationIcon />
           <span>{address}</span>
+        </div>
+        <div className='body-text mt-2 ml-2 flex items-center gap-4'>
+          <p className='body-text'>
+            <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
+          </p>
         </div>
       </section>
       <Modal.Root open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
         <Modal.Content className='flex max-w-300 flex-col items-center gap-6 text-center md:max-w-350 lg:max-w-400'>
           <div className='flex flex-col items-center gap-6 text-center'>
             <WarningLogo className='md:size-110 lg:size-150' size={88} />
-            <p className='text-2lg font-bold'>체험을 삭제하시겠습니까?</p>
+            <p className='section-text'>체험을 삭제하시겠습니까?</p>
           </div>
           <Modal.Actions>
             <Modal.CancelButton>아니요</Modal.CancelButton>

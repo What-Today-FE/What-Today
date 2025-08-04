@@ -11,8 +11,8 @@ interface ActivitiesDescriptionProps {
 export default function ActivitiesDescription({ description, className }: ActivitiesDescriptionProps) {
   return (
     <section className={twMerge(`flex h-fit w-full flex-col justify-start gap-8`, className)}>
-      <div className='text-2lg font-bold text-gray-950'>체험 설명</div>
-      <p className='text-lg text-gray-950'>{description}</p>
+      <div className='section-text'>체험 설명</div>
+      <p className='body-text'>{description}</p>
     </section>
   );
 }

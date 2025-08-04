@@ -1,0 +1,9 @@
+export { default as ActivitiesDescriptionSkeleton } from './ActivitiesDescriptionSkeleton';
+export { default as ActivitiesInformationSkeleton } from './ActivitiesInformationSkeleton';
+export { default as ActivitiesMapSkeleton } from './ActivitiesMapSkeleton';
+export { default as ActivityDetailPageSkeleton } from './ActivityDetailPageSkeleton';
+export { default as ActivityImagesSkeleton } from './ActivityImagesSkeleton';
+export { default as DividerSkeleton } from './DividerSkeleton';
+export { default as ReservationFormSkeleton } from './ReservationFormSkeleton';
+export { default as ReviewCardSkeleton } from './ReviewCardSkeleton';
+export { default as ReviewSectionSkeleton } from './ReviewSectionSkeleton';

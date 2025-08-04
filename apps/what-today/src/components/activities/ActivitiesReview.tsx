@@ -20,15 +20,15 @@ export default function ActivitiesReview({ review }: ActivitiesReviewProps) {
   });
 
   return (
-    <div className='mb-20 rounded-3xl bg-white px-20 py-20 shadow-[0_2px_12px_rgba(0,0,0,0.1)]'>
+    <div className='mb-20 rounded-xl border border-gray-50 px-20 py-20'>
       <div className='mb-4 flex items-center gap-8'>
-        <div className='text-lg font-bold text-gray-950'>{user.nickname}</div>
-        <div className='text-md text-[#A4A1AA]'>{formattedDate}</div>
+        <div className='body-text font-bold'>{user.nickname}</div>
+        <div className='caption-text text-gray-400'>{formattedDate}</div>
       </div>
       <div className='mb-12'>
         <RatingStars rating={rating} />
       </div>
-      <p className='text-lg whitespace-pre-wrap text-gray-950'>{content}</p>
+      <p className='body-text whitespace-pre-wrap'>{content}</p>
     </div>
   );
 }

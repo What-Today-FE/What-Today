@@ -1,4 +1,4 @@
-import { BottomSheet, Button } from '@what-today/design-system';
+import { BottomSheet, Button, ClockIcon } from '@what-today/design-system';
 import { ArrowIcon } from '@what-today/design-system';
 import { useState } from 'react';
 
@@ -81,10 +81,8 @@ export default function MobileReservationSheet({
       {/* 1단계: 날짜/시간 선택 */}
       {currentStep === 'dateTime' && (
         <BottomSheet.Content>
-          <div className='flex flex-col gap-24 px-20 py-24'>
-            <div className='mb-20'>
-              <h2 className='text-xl font-bold text-gray-950'>날짜 및 시간 선택</h2>
-            </div>
+          <div className='flex flex-col gap-24 px-10 py-14'>
+            <h2 className='subtitle-text'>날짜 및 시간 선택</h2>
 
             <div className='flex flex-col gap-20'>
               {/* 캘린더 */}
@@ -100,27 +98,27 @@ export default function MobileReservationSheet({
               {/* 시간 선택 */}
               {selectedDate && (
                 <div className='flex flex-col gap-12'>
-                  <p className='text-lg font-bold text-gray-950'>예약 가능한 시간</p>
-                  <TimeSelector
-                    availableTimes={availableTimes}
-                    selectedScheduleId={selectedScheduleId}
-                    onSelect={setSelectedScheduleId}
-                  />
+                  <p className='section-text'>예약 가능한 시간</p>
+                  <div className='max-h-290 overflow-y-auto pr-4'>
+                    <TimeSelector
+                      availableTimes={availableTimes}
+                      selectedScheduleId={selectedScheduleId}
+                      onSelect={setSelectedScheduleId}
+                    />
+                  </div>
+
+                  {/* 확인 버튼*/}
+                  <Button
+                    className='w-full'
+                    disabled={!selectedScheduleId || isAuthor || !isLoggedIn}
+                    size='lg'
+                    variant='fill'
+                    onClick={handleNextStep}
+                  >
+                    {buttonText}
+                  </Button>
                 </div>
               )}
-            </div>
-
-            {/* 확인 버튼 */}
-            <div className='pt-8'>
-              <Button
-                className='w-full'
-                disabled={!selectedScheduleId || isAuthor || !isLoggedIn}
-                size='lg'
-                variant='fill'
-                onClick={handleNextStep}
-              >
-                {buttonText}
-              </Button>
             </div>
           </div>
         </BottomSheet.Content>
@@ -129,13 +127,13 @@ export default function MobileReservationSheet({
       {/* 2단계: 인원 선택 */}
       {currentStep === 'headCount' && (
         <BottomSheet.Content>
-          <div className='flex flex-col gap-24 px-20 py-24'>
+          <div className='flex flex-col gap-24 px-10 py-14'>
             <div className='mb-20'>
               <div className='flex items-center gap-12'>
                 <Button className='h-fit w-fit p-0' variant='none' onClick={handleBackToDateTime}>
                   <ArrowIcon />
                 </Button>
-                <h2 className='text-xl font-bold text-gray-950'>참여 인원 선택</h2>
+                <h2 className='subtitle-text text-gray-950'>참여 인원 선택</h2>
               </div>
             </div>
 
@@ -143,8 +141,11 @@ export default function MobileReservationSheet({
               {/* 선택된 날짜/시간 요약 */}
               {selectedDate && selectedScheduleId && (
                 <div className='rounded-lg bg-gray-50 p-16'>
-                  <p className='text-sm text-gray-600'>선택된 날짜/시간</p>
-                  <p className='text-lg font-medium text-gray-950'>
+                  <p className='caption-text flex items-center gap-4 text-gray-600'>
+                    <ClockIcon className='size-14' color='var(--color-gray-600)' />
+                    선택된 날짜/시간
+                  </p>
+                  <p className='body-text font-bold'>
                     {selectedDate.replace(/-/g, '/')}{' '}
                     {availableTimes.find((t) => t.id === selectedScheduleId)?.startTime} ~{' '}
                     {availableTimes.find((t) => t.id === selectedScheduleId)?.endTime}
@@ -156,11 +157,10 @@ export default function MobileReservationSheet({
               <HeadCountSelector headCount={headCount} onDecrease={decreaseHeadCount} onIncrease={increaseHeadCount} />
 
               {/* 총 금액 */}
-              <div className='bg-primary-50 rounded-lg p-16'>
-                <div className='flex items-center justify-between'>
-                  <span className='text-lg font-medium text-gray-700'>총 금액</span>
-                  <span className='text-primary-600 text-xl font-bold'>₩ {totalPrice.toLocaleString()}</span>
-                </div>
+
+              <div className='flex items-center justify-between'>
+                <span className='section-text'>총 금액</span>
+                <span className='section-text'>₩ {totalPrice.toLocaleString()}</span>
               </div>
             </div>
 

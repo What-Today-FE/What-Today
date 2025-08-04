@@ -1,6 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, useToast } from '@what-today/design-system';
 
+import Divider from '@/components/activities/Divider';
+
 import CalendarSelector from './CalendarSelector';
 import HeadCountSelector from './HeadCountSelector';
 import { useReservation } from './hooks/useReservation';
@@ -88,9 +90,9 @@ export default function ReservationForm({
   const content = (
     <div className='flex flex-col gap-24'>
       {/* 가격 표시 */}
-      <p className='text-xl text-[#79747E]'>
+      {/* <p className='text-xl text-[#79747E]'>
         <span className='font-bold text-gray-950'>₩ {price.toLocaleString()}</span> / 인
-      </p>
+      </p> */}
 
       {/* 캘린더 */}
       <CalendarSelector reservableDates={reservableDates} selectedDate={selectedDate} onDateChange={setSelectedDate} />
@@ -98,22 +100,24 @@ export default function ReservationForm({
       {/* 시간 선택 */}
       {selectedDate && (
         <>
-          <p className='text-lg font-bold text-gray-950'>예약 가능한 시간</p>
-          <TimeSelector
-            availableTimes={availableTimes}
-            selectedScheduleId={selectedScheduleId}
-            onSelect={setSelectedScheduleId}
-          />
+          <p className='section-text'>예약 가능한 시간</p>
+          <div className='max-h-350 overflow-y-auto pr-4'>
+            <TimeSelector
+              availableTimes={availableTimes}
+              selectedScheduleId={selectedScheduleId}
+              onSelect={setSelectedScheduleId}
+            />
+          </div>
         </>
       )}
 
       {/* 인원 선택 */}
       <HeadCountSelector headCount={headCount} onDecrease={decreaseHeadCount} onIncrease={increaseHeadCount} />
-
+      <Divider />
       {/* 총 합계 */}
       <div className='flex items-center justify-between'>
-        <p className='text-xl font-medium text-[#79747E]'>
-          총 합계 <span className='font-bold text-gray-950'>₩ {totalPrice.toLocaleString()}</span>
+        <p className='section-text flex max-w-155 flex-col'>
+          총 합계 <span className='inline-block max-w-full truncate'>₩ {totalPrice.toLocaleString()}</span>
         </p>
 
         {showSubmitButton && (
@@ -130,9 +134,5 @@ export default function ReservationForm({
     </div>
   );
 
-  return (
-    <section className='flex flex-col justify-between rounded-3xl border border-[#DDDDDD] p-30 shadow-sm'>
-      {content}
-    </section>
-  );
+  return <section className='flex flex-col justify-between rounded-xl border border-gray-50 p-20'>{content}</section>;
 }
