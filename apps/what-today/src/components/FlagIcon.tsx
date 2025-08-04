@@ -1,4 +1,5 @@
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface FlagIconProps {
   flagCode: string;
@@ -19,7 +20,7 @@ const FlagIcon: React.FC<FlagIconProps> = ({ flagCode, alt = 'Flag', className =
   return (
     <img
       alt={alt}
-      className={`inline-block rounded-lg object-cover ${sizeClasses[size]} ${className}`}
+      className={twMerge(`inline-block rounded-lg object-cover ${sizeClasses[size]}, ${className}`)}
       src={flagUrl}
       onError={(e) => {
         // 이미지 로드 실패 시 기본 아이콘으로 대체

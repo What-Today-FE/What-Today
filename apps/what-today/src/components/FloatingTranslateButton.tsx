@@ -276,9 +276,9 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
       <div ref={containerRef} className={twMerge('fixed right-10 bottom-10 z-50', className)}>
         {/* 언어 선택 드롭다운 */}
         {isOpen && (
-          <div className='absolute right-0 bottom-60 flex h-300 w-160 transform flex-col rounded-xl border border-gray-50 bg-white p-2 transition-all duration-200 ease-out'>
-            <div className='caption-text mb-2 p-2'>언어 선택</div>
-            <div className='flex-1 space-y-4 overflow-y-auto px-3 py-2'>
+          <div className='absolute right-0 bottom-60 flex h-300 w-160 transform flex-col rounded-xl border border-gray-50 bg-white p-6 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all duration-200 ease-out'>
+            <div className='caption-text mb-2 p-2 text-gray-400'>언어 선택</div>
+            <div className='mr-4 flex-1 space-y-4 overflow-y-auto px-3 py-2'>
               {languages.map((language) => (
                 <button
                   key={language.code}
@@ -291,7 +291,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
                   onClick={() => changeLanguage(language)}
                 >
                   <FlagIcon alt={language.name} flagCode={language.flag} />
-                  <span className='flex-1 text-left'>{language.name}</span>
+                  <span className='caption-text flex-1 text-left'>{language.name}</span>
                   {currentTranslatedLang === language.code && <span className='text-primary-500 pr-4'>✓</span>}
                 </button>
               ))}
@@ -301,13 +301,11 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
 
         {/* 플로팅 버튼 */}
         <button
-          className={`flex h-40 w-40 items-center justify-center rounded-lg bg-white shadow-lg transition-all hover:shadow-xl focus:ring-2 focus:ring-gray-50 focus:ring-offset-2 focus:outline-none ${
-            isOpen ? 'ring-2 ring-gray-50' : ''
-          }`}
+          className='flex h-40 w-40 items-center justify-center rounded-full border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all'
           type='button'
           onClick={handleButtonClick}
         >
-          <FlagIcon alt={selectedLanguage.name} flagCode={selectedLanguage.flag} size='md' />
+          <FlagIcon alt={selectedLanguage.name} className='rounded-full' flagCode={selectedLanguage.flag} size='md' />
         </button>
       </div>
     </>
