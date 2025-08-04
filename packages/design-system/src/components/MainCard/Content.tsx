@@ -24,7 +24,7 @@ export default function MainCardContent({
     <div className='absolute bottom-0 left-0 w-full'>
       <div
         className={twMerge(
-          'flex flex-col gap-8 rounded-xl border border-gray-50 bg-white px-20 py-12 md:px-20 md:py-30 lg:py-15',
+          'flex flex-col gap-8 rounded-xl border border-gray-50 bg-white px-20 py-12 md:px-20 md:py-20 xl:py-15',
           className,
         )}
       >

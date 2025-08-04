@@ -12,22 +12,28 @@ export function Skeleton({ className }: SkeletonProps) {
 export function ActivityCardSkeleton() {
   return (
     <div className='relative w-full'>
-      <Skeleton className='h-260 w-full rounded-xl border border-gray-50 md:h-366 lg:h-340' />
+      <Skeleton className='h-260 w-full rounded-xl border border-gray-50 md:h-366 xl:h-340' />
       <div className='absolute bottom-0 left-0 w-full'>
         <div
           className={twMerge(
             'flex flex-col gap-8 rounded-xl border border-gray-50 bg-white',
-            'px-20 py-12 md:px-20 md:py-30 lg:py-15',
+            'px-20 py-12 md:px-20 md:py-20 xl:py-15',
           )}
         >
-          <Skeleton className='h-16 w-1/3' />
-          <Skeleton className='h-16 w-3/4' />
-          <div className='flex items-center gap-8'>
-            <Skeleton className='h-14 w-14 rounded-full' />
-            <Skeleton className='h-14 w-12' />
-            <Skeleton className='h-14 w-12' />
+          <div className='flex flex-col gap-13 md:gap-21 xl:gap-30'>
+            <div className='flex flex-col gap-13 md:gap-16 xl:gap-12'>
+              <Skeleton className='h-16 w-1/3' />
+              <Skeleton className='h-16 w-3/4' />
+              <div className='flex gap-4'>
+                <Skeleton className='h-14 w-14 rounded-full' />
+                <Skeleton className='h-14 w-12' />
+                <Skeleton className='h-14 w-12' />
+              </div>
+            </div>
+            <div>
+              <Skeleton className='h-16 w-1/2' />
+            </div>
           </div>
-          <Skeleton className='h-16 w-1/2' />
         </div>
       </div>
     </div>
@@ -61,7 +67,6 @@ export function ActivityCardGridSkeleton() {
 }
 
 // Carousel용 스켈레톤 (인기 체험 반응형)
-
 interface CarouselSkeletonProps {
   count?: number;
 }
@@ -77,11 +82,10 @@ export function CarouselSkeleton({ count = 4 }: CarouselSkeletonProps) {
   };
 
   const [perPage, setPerPage] = useState(() => getInitial());
+  const itemWidthPercent = 100 / perPage; // ✅ 실제 Carousel과 동일 계산
 
   useEffect(() => {
     const onResize = () => setPerPage(getInitial());
-    // 마운트 시 한 번 실행
-    onResize();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, [count]);
@@ -95,14 +99,15 @@ export function CarouselSkeleton({ count = 4 }: CarouselSkeletonProps) {
             {Array.from({ length: perPage }).map((_, i) => (
               <div
                 key={i}
-                className={twMerge('box-border shrink-0', i !== perPage - 1 ? 'pr-10' : '')}
-                style={{ width: `${100 / perPage}%` }}
+                className={`box-border shrink-0 ${i % perPage !== perPage - 1 ? 'pr-10' : ''}`} // ✅ gap 대신 padding-right 적용
+                style={{ width: `${itemWidthPercent}%` }}
               >
                 <ActivityCardSkeleton />
               </div>
             ))}
           </div>
         </div>
+
         {/* 모바일 */}
         <div
           className='flex w-full gap-6 overflow-x-auto px-4 md:hidden'
