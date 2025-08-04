@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useToast } from '@what-today/design-system';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -15,6 +16,7 @@ interface FloatingTranslateButtonProps {
 }
 
 const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ className }) => {
+  const { toast } = useToast();
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(languages[0]);
   const [isReady, setIsReady] = useState(false);
   const [currentTranslatedLang, setCurrentTranslatedLang] = useState<string>('ko');
@@ -88,11 +90,15 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
           detectCurrentLanguage();
         }, 300);
       }
-    } catch (error) {
-      console.error('Google Translate 초기화 실패:', error);
+    } catch {
+      toast({
+        title: '번역 오류',
+        description: '번역 중 오류가 발생했습니다. 새로고침 부탁드려요',
+        type: 'error',
+      });
       initializationAttempted.current = false;
     }
-  }, [detectCurrentLanguage]);
+  }, [detectCurrentLanguage, toast]);
 
   // Google Translate 스크립트 로드
   useEffect(() => {
@@ -123,12 +129,16 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
       script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
       script.async = true;
       script.onerror = () => {
-        console.error('Google Translate 스크립트 로드 실패');
+        toast({
+          title: '번역 오류',
+          description: '번역 중 오류가 발생했습니다. 새로고침 부탁드려요',
+          type: 'error',
+        });
         isGoogleTranslateLoading = false;
       };
       document.head.appendChild(script);
     }
-  }, [initializeGoogleTranslate]);
+  }, [initializeGoogleTranslate, toast]);
 
   // URL 변경 감지 (번역 후 URL이 변경되므로)
   useEffect(() => {
@@ -165,7 +175,11 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
   const changeLanguage = useCallback(
     (language: Language) => {
       if (!isReady) {
-        console.warn('Google Translate가 아직 준비되지 않았습니다.');
+        toast({
+          title: '번역 오류',
+          description: '번역 중 오류가 발생했습니다. 새로고침 부탁드려요',
+          type: 'error',
+        });
         return;
       }
 
@@ -221,8 +235,12 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
               // ✅ 최종: URL 파라미터 제거 & 페이지 새로고침
               const newUrl = window.location.origin + window.location.pathname;
               window.location.href = newUrl;
-            } catch (error) {
-              console.error('원문 복귀 실패:', error);
+            } catch {
+              toast({
+                title: '번역 오류',
+                description: '번역 중 오류가 발생했습니다. 새로고침 부탁드려요',
+                type: 'error',
+              });
             }
 
             return;
@@ -250,16 +268,24 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
             setIsOpen(false);
           }
         } else {
-          console.error('Google Translate select 요소를 찾을 수 없습니다.');
+          toast({
+            title: '번역 오류',
+            description: '번역 중 오류가 발생했습니다. 새로고침 부탁드려요',
+            type: 'error',
+          });
           // 초기화 재시도
           initializationAttempted.current = false;
           setTimeout(() => initializeGoogleTranslate(), 500);
         }
-      } catch (error) {
-        console.error('언어 변경 중 오류:', error);
+      } catch {
+        toast({
+          title: '번역 오류',
+          description: '번역 중 오류가 발생했습니다. 새로고침 부탁드려요',
+          type: 'error',
+        });
       }
     },
-    [isReady, currentTranslatedLang, initializeGoogleTranslate],
+    [isReady, currentTranslatedLang, initializeGoogleTranslate, toast],
   );
 
   // 버튼 클릭 핸들러
