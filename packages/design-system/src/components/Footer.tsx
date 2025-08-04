@@ -37,7 +37,28 @@ export default function Footer() {
             </a>
           </div>
 
-          <p>© CODEIT FE 15</p>
+          <p className='space-x-2 text-center text-sm text-gray-500'>
+            <a
+              aria-label='JIHYUN GitHub'
+              href='https://github.com/kjhyun0830'
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              지현
+            </a>
+            <span>|</span>
+            <a aria-label='TAEIL GitHub' href='https://github.com/Taeil08' rel='noopener noreferrer' target='_blank'>
+              태일
+            </a>
+            <span>|</span>
+            <a aria-label='JIWOO GitHub' href='https://github.com/MyungJiwoo' rel='noopener noreferrer' target='_blank'>
+              지우
+            </a>
+            <span>|</span>
+            <a aria-label='JISEOP GitHub' href='https://github.com/HarrySeop' rel='noopener noreferrer' target='_blank'>
+              지섭
+            </a>
+          </p>
         </div>
       </div>
     </footer>
