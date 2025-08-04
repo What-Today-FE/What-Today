@@ -12,6 +12,7 @@ import {
 } from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
+import { motion } from 'motion/react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
@@ -143,7 +144,14 @@ export default function ReservationsListPage() {
     });
 
     return sortedByDateDesc.map(([date, group], index) => (
-      <section key={date} className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}>
+      <motion.section
+        key={date}
+        className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}
+        initial={{ opacity: 0, y: 80 }}
+        transition={{ duration: 1, ease: 'easeOut' }}
+        viewport={{ once: true, amount: 0.2 }}
+        whileInView={{ opacity: 1, y: 0 }}
+      >
         <h3 className='section-text'>{date}</h3>
         <ul>
           {group.map((res) => {
@@ -197,7 +205,7 @@ export default function ReservationsListPage() {
             );
           })}
         </ul>
-      </section>
+      </motion.section>
     ));
   };
 

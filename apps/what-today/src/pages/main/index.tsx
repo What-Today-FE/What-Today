@@ -18,7 +18,8 @@ import {
   TourIcon,
   WellbeingIcon,
 } from '@what-today/design-system';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,6 +55,17 @@ export default function MainPage() {
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
+
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  // 페이지 마운트 시 무조건 맨 위로
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
 
   // 반응형 카드 수
   const handleResize = useCallback(() => {
@@ -124,7 +136,9 @@ export default function MainPage() {
   // 이벤트 핸들러
   const handlePageChange = useCallback(
     (page: number) => {
-      if (page !== currentPage) setCurrentPage(page);
+      if (page !== currentPage) {
+        setCurrentPage(page);
+      }
     },
     [currentPage],
   );
@@ -147,25 +161,6 @@ export default function MainPage() {
     setSelectedCategory(category);
     setCurrentPage(1);
   }, []);
-
-  // 카드 렌더링 최적화
-  const renderCards = useCallback(() => {
-    return pagedItems.map((item, idx) => (
-      <MemoizedMainCard
-        key={`${item.id}-${currentPage}-${idx}`}
-        bannerImageUrl={item.bannerImageUrl}
-        category={item.category}
-        price={item.price}
-        rating={item.rating}
-        reviewCount={item.reviewCount}
-        title={item.title}
-        onClick={() => navigate(`/activities/${item.id}`)}
-      >
-        <MainCard.Image />
-        <MainCard.Content />
-      </MemoizedMainCard>
-    ));
-  }, [pagedItems, currentPage, navigate]);
 
   return (
     <>
@@ -252,7 +247,28 @@ export default function MainPage() {
                 <NoResult />
               </div>
             ) : (
-              renderCards()
+              pagedItems.map((item, idx) => (
+                <motion.div
+                  key={`${item.id}-${currentPage}-${idx}`}
+                  initial={{ opacity: 0, y: 100 }}
+                  transition={{ duration: 1 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                >
+                  <MemoizedMainCard
+                    bannerImageUrl={item.bannerImageUrl}
+                    category={item.category}
+                    price={item.price}
+                    rating={item.rating}
+                    reviewCount={item.reviewCount}
+                    title={item.title}
+                    onClick={() => navigate(`/activities/${item.id}`)}
+                  >
+                    <MainCard.Image />
+                    <MainCard.Content />
+                  </MemoizedMainCard>
+                </motion.div>
+              ))
             )}
           </div>
 
