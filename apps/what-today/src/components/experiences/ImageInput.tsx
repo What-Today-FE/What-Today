@@ -1,4 +1,4 @@
-import { Button, DeleteIcon, PlusIcon } from '@what-today/design-system';
+import { Button, DeleteIcon, PlusIcon, useToast } from '@what-today/design-system';
 import { useId, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,6 +17,7 @@ type ImageInputProps =
     };
 
 export default function ImageInput({ value, onChange, max, className }: ImageInputProps) {
+  const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const id = useId();
   let urls: string[] = [];
@@ -30,6 +31,25 @@ export default function ImageInput({ value, onChange, max, className }: ImageInp
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 파일 최대 크기 5MB
+    if (file.size > MAX_FILE_SIZE) {
+      toast({
+        title: '이미지 업로드 오류',
+        description: '파일 크기는 5MB 이하여야 합니다',
+        type: 'error',
+      });
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: '이미지 업로드 오류',
+        description: '이미지 파일만 업로드 가능합니다',
+        type: 'error',
+      });
+      return;
+    }
 
     const url = URL.createObjectURL(file);
 
