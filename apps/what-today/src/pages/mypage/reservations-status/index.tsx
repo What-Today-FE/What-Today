@@ -4,6 +4,8 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ReservationCalendar from '@/components/reservations-status/ReservationCalendar';
+import ReservationCalendarSkeleton from '@/components/reservations-status/ReservationCalendarSkeleton';
+import ReservationSelectSkeleton from '@/components/reservations-status/ReservationSelectSkeleton';
 import { useInfiniteMyActivitiesQuery } from '@/hooks/myActivity/useMyActivitiesQuery';
 import { useMonthlyScheduleQuery } from '@/hooks/myReservation/useMonthlyScheduleQuery';
 
@@ -50,7 +52,12 @@ export default function ReservationsStatusPage() {
 
   let scheduleContent;
   if (isLoadingActivities || isLoadingCalendar) {
-    scheduleContent = <div className='flex justify-center p-40 text-gray-500'>로딩 중...</div>;
+    scheduleContent = (
+      <div className='flex flex-col md:gap-24 xl:gap-30'>
+        <ReservationSelectSkeleton />
+        <ReservationCalendarSkeleton />
+      </div>
+    );
   } else if (activityList.length > 0) {
     scheduleContent = (
       <div className='flex flex-col md:gap-24 xl:gap-30'>
