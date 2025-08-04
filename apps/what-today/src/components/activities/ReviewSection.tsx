@@ -57,7 +57,7 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
         </div>
       )}
 
-      <div className='mb-24'>
+      <div className='flex flex-col gap-12'>
         {allReviews.length > 0 ? (
           allReviews.map((review: ActivityReview) => <ActivitiesReview key={review.id} review={review} />)
         ) : (

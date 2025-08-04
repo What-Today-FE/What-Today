@@ -20,7 +20,7 @@ export default function ActivitiesReview({ review }: ActivitiesReviewProps) {
   });
 
   return (
-    <div className='mb-20 rounded-xl border border-gray-50 px-20 py-20'>
+    <div className='rounded-xl border border-gray-50 px-20 py-20'>
       <div className='mb-4 flex items-center gap-8'>
         <div className='body-text font-bold'>{user.nickname}</div>
         <div className='caption-text text-gray-400'>{formattedDate}</div>
