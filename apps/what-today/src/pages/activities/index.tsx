@@ -124,7 +124,6 @@ export default function ActivityDetailPage() {
         ) : (
           <div className='flex flex-col gap-30'>
             <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
-            <Divider className='border-gray-200' />
             <ActivitiesInformation
               address={activity.address}
               category={activity.category}

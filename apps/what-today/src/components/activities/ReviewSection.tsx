@@ -57,7 +57,7 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
         </div>
       )}
 
-      <div className='mb-24'>
+      <div className='flex flex-col gap-12'>
         {allReviews.length > 0 ? (
           allReviews.map((review: ActivityReview) => <ActivitiesReview key={review.id} review={review} />)
         ) : (
@@ -71,7 +71,7 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
       <div ref={observerRef} className='h-4' />
 
       {isFetchingNextPage && (
-        <div className='flex flex-col gap-16'>
+        <div className='flex flex-col gap-12'>
           <ReviewCardSkeleton />
           <ReviewCardSkeleton />
         </div>
