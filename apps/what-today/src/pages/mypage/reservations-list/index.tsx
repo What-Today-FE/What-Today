@@ -290,7 +290,7 @@ export default function ReservationsListPage() {
         <p className='body-text text-gray-400 md:pt-10'>예약내역 변경 및 취소할 수 있습니다.</p>
       </header>
 
-      <section className='mb-10'>
+      <section className='mb-10 overflow-x-hidden'>
         <RadioGroup
           radioGroupClassName='flex flex-nowrap gap-6 overflow-x-auto no-scrollbar'
           selectedValue={selectedStatus}

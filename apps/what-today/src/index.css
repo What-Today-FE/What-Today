@@ -58,6 +58,10 @@
     color: var(--color-gray-950);
     background-color: white;
   }
+
+  font {
+    word-break: break-all;
+  }
 }
 
 @layer components {

@@ -48,7 +48,7 @@ export default function MyPageLayout() {
         <ChevronIcon className='h-16' color='var(--color-gray-600)' direction='right' />
       </Button>
       {/* Outlet으로 상세 화면 표시 */}
-      <div className='flex-1 p-4'>
+      <div className='flex-1 overflow-x-hidden p-4 md:max-w-768 xl:max-w-635'>
         <Outlet />
       </div>
     </div>
