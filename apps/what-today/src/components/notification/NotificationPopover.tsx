@@ -39,7 +39,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
    */
   const fetchNotifications = async ({ cursorId }: { cursorId: number | null }): Promise<NotificationsResponse> => {
     const params = {
-      size: 3,
+      size: 10,
       cursorId: cursorId || null,
     };
 
