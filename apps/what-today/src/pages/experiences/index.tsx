@@ -291,11 +291,12 @@ export default function CreateExperience() {
 
         <DescriptionTextarea {...register('description')} error={errors.description?.message} />
 
-        <PriceInput
-          {...register('price', {
-            valueAsNumber: true,
-          })}
-          error={errors.price?.message}
+        <Controller
+          control={control}
+          name='price'
+          render={({ field }) => (
+            <PriceInput error={errors.price?.message} value={field.value} onChange={field.onChange} />
+          )}
         />
 
         <Controller
