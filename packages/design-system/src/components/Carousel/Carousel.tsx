@@ -16,71 +16,79 @@ export default function Carousel({ items, itemsPerPage, onClick }: Props<Carouse
 
   return (
     <div className='relative w-full overflow-visible'>
-      <div className='relative mx-auto flex items-center justify-center'>
-        {/* 왼쪽 버튼 */}
-        <NavigationButton direction='left' disabled={page === 0} onClick={handlePrev} />
+      {/* 왼쪽 버튼 (absolute 배치) */}
+      <NavigationButton
+        className='absolute top-1/2 left-0 z-10 -translate-x-1/2 -translate-y-1/2'
+        direction='left'
+        disabled={page === 0}
+        onClick={handlePrev}
+      />
 
-        {/* 데스크탑/태블릿 캐러셀 */}
-        <div className='relative hidden w-full overflow-hidden md:block'>
-          <motion.div
-            animate={{ x: `-${page * 100}%` }}
-            className='flex'
-            style={{ pointerEvents: 'auto' }}
-            transition={{ duration: 0.5, ease: [0.45, 0.05, 0.55, 0.95] }}
-          >
-            {items.map((item, idx) => (
-              <div
-                key={item.id}
-                className={`box-border shrink-0 ${idx % itemsPerPage !== itemsPerPage - 1 ? 'pr-10' : ''}`}
-                style={{ width: `${itemWidthPercent}%` }}
-              >
-                <MainCard.Root
-                  bannerImageUrl={item.bannerImageUrl}
-                  category={item.category}
-                  price={item.price}
-                  rating={item.rating}
-                  reviewCount={item.reviewCount}
-                  title={item.title}
-                  onClick={() => onClick?.(item.id)}
-                >
-                  <MainCard.Image />
-                  <MainCard.Content />
-                </MainCard.Root>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* 모바일 캐러셀 */}
-        <div
-          className='flex w-full gap-6 overflow-x-auto px-4 md:hidden'
-          style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
+      {/* 데스크탑/태블릿 캐러셀 */}
+      <div className='relative hidden w-full overflow-hidden md:block'>
+        <motion.div
+          animate={{ x: `-${page * 100}%` }}
+          className='flex'
+          style={{ pointerEvents: 'auto' }}
+          transition={{ duration: 0.5, ease: [0.45, 0.05, 0.55, 0.95] }}
         >
-          <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-          {items.map((item) => (
-            <MainCard.Root
+          {items.map((item, idx) => (
+            <div
               key={item.id}
-              bannerImageUrl={item.bannerImageUrl}
-              category={item.category}
-              className='w-265 shrink-0'
-              price={item.price}
-              rating={item.rating}
-              reviewCount={item.reviewCount}
-              title={item.title}
-              onClick={() => onClick?.(item.id)}
+              className={`box-border shrink-0 ${idx % itemsPerPage !== itemsPerPage - 1 ? 'pr-10' : ''}`}
+              style={{ width: `${itemWidthPercent}%` }}
             >
-              <MainCard.Image className='brightness-90 contrast-125' />
-              <MainCard.Content />
-            </MainCard.Root>
+              <MainCard.Root
+                bannerImageUrl={item.bannerImageUrl}
+                category={item.category}
+                price={item.price}
+                rating={item.rating}
+                reviewCount={item.reviewCount}
+                title={item.title}
+                onClick={() => onClick?.(item.id)}
+              >
+                <MainCard.Image />
+                <MainCard.Content />
+              </MainCard.Root>
+            </div>
           ))}
-        </div>
-
-        {/* 오른쪽 버튼 */}
-        <NavigationButton direction='right' disabled={page === totalPages - 1} onClick={handleNext} />
+        </motion.div>
       </div>
+
+      {/* 모바일 캐러셀 */}
+      <div
+        className='flex w-full gap-6 overflow-x-auto px-4 md:hidden'
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
+        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+        {items.map((item) => (
+          <MainCard.Root
+            key={item.id}
+            bannerImageUrl={item.bannerImageUrl}
+            category={item.category}
+            className='w-265 shrink-0'
+            price={item.price}
+            rating={item.rating}
+            reviewCount={item.reviewCount}
+            title={item.title}
+            onClick={() => onClick?.(item.id)}
+          >
+            <MainCard.Image className='brightness-90 contrast-125' />
+            <MainCard.Content />
+          </MainCard.Root>
+        ))}
+      </div>
+
+      {/* 오른쪽 버튼 (absolute 배치) */}
+      <NavigationButton
+        className='absolute top-1/2 right-0 z-10 translate-x-1/2 -translate-y-1/2'
+        direction='right'
+        disabled={page === totalPages - 1}
+        onClick={handleNext}
+      />
     </div>
   );
 }

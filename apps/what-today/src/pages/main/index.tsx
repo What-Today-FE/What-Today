@@ -26,7 +26,7 @@ import { type Activity, getActivities } from '@/apis/activities';
 
 const MemoizedMainCard = React.memo(MainCard.Root);
 
-// ✅ 화면 너비에 따른 카드 개수
+// ✅ 화면 너비에 따른 카드 개수 (모든 체험용)
 const getCount = () => {
   const w = window.innerWidth;
   if (w < 768) return 6; // 모바일
@@ -34,18 +34,31 @@ const getCount = () => {
   return 8; // 데스크탑
 };
 
+// ✅ 인기 체험용 반응형 카드 개수
+const MOBILE_BREAK = 768;
+const TABLET_BREAK = 1280;
+
+const getPopularPerPage = () => {
+  const w = window.innerWidth;
+  if (w < MOBILE_BREAK) return 4; // 모바일
+  if (w < TABLET_BREAK) return 2; // 태블릿
+  return 4; // 데스크탑
+};
+
 export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(() => getCount());
+  const [popularPerPage, setPopularPerPage] = useState(() => getPopularPerPage());
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest');
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
 
-  //  반응형 카드 수
+  // 반응형 카드 수
   const handleResize = useCallback(() => {
     setItemsPerPage(getCount());
+    setPopularPerPage(getPopularPerPage());
   }, []);
 
   useEffect(() => {
@@ -157,7 +170,7 @@ export default function MainPage() {
   return (
     <>
       <div className='to-primary-500/40 absolute top-0 left-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
-      <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
+      <div className='relative z-10 flex h-auto flex-col gap-60'>
         <MainBanner />
 
         {/* 인기 체험 */}
@@ -166,7 +179,11 @@ export default function MainPage() {
           {isLoading ? (
             <CarouselSkeleton />
           ) : (
-            <Carousel items={popularActivities} itemsPerPage={4} onClick={(id) => navigate(`/activities/${id}`)} />
+            <Carousel
+              items={popularActivities}
+              itemsPerPage={popularPerPage}
+              onClick={(id) => navigate(`/activities/${id}`)}
+            />
           )}
         </div>
 
