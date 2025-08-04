@@ -156,9 +156,9 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
   };
 
   const BASE_STYLE =
-    'flex gap-8 caption-text cursor-pointer items-center rounded-full border px-10 py-6 md:px-14 md:py-6 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
-  const SELECTED_STYLE = 'bg-black text-white ';
-  const UNSELECTED_STYLE = 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100';
+    'flex gap-8 body-text cursor-pointer items-center rounded-full border px-10 py-6 md:px-14 md:py-6 font-bold whitespace-nowrap transition-all duration-300 ease-in-out';
+  const SELECTED_STYLE = 'bg-black text-white';
+  const UNSELECTED_STYLE = 'border-gray-100 bg-white hover:bg-gray-50';
 
   const mergedClassName = twMerge(
     BASE_STYLE,
