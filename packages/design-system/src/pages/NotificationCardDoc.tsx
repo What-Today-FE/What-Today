@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
+import { NotificationCardSkeleton } from '@/components';
 import Playground from '@/layouts/Playground';
 
 import NotificationCard from '../components/NotificationCard';
@@ -55,6 +56,7 @@ Header의 알림창 팝오버에서 보여지며, 알림은 개별 삭제 가능
           onClickDetail={() => navigate('/mypage/reservations-list')}
           onDelete={() => alert('삭제 API 요청')}
         />
+        <NotificationCardSkeleton />
         <NotificationCard
           content='메시지 파싱에 실패하면 이렇게 보여집니다.'
           onClickDetail={() => navigate('/mypage/reservations-list')}
