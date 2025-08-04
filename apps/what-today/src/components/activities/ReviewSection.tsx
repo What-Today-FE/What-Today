@@ -38,7 +38,7 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
     return (
       <section className='w-full'>
         <div className='mb-8 flex gap-8'>
-          <h2 className='text-2lg font-bold text-gray-900'>체험 후기</h2>
+          <h2 className='section-text'>체험 후기</h2>
         </div>
         <p className='py-8 text-center'>후기를 불러오는 중...</p>
       </section>
@@ -49,7 +49,7 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
     return (
       <section className='w-full'>
         <div className='mb-8 flex gap-8'>
-          <h2 className='text-2lg font-bold text-gray-900'>체험 후기</h2>
+          <h2 className='section-text'>체험 후기</h2>
         </div>
         <p className='py-8 text-center text-red-500'>
           후기를 불러오는 중 오류가 발생했습니다: {error instanceof Error ? error.message : '알 수 없는 오류'}
@@ -60,16 +60,16 @@ export default function ReviewSection({ activityId }: ReviewSectionProps) {
 
   return (
     <section className='w-full'>
-      <div className='mb-8 flex gap-8'>
-        <h2 className='text-2lg font-bold text-gray-900'>체험 후기</h2>
-        <span className='text-lg font-bold text-[#79747E]'>{totalCount.toLocaleString()}개</span>
+      <div className='mb-8 flex items-center gap-8'>
+        <h2 className='section-text'>체험 후기</h2>
+        <span className='body-text text-gray-400'>{totalCount.toLocaleString()}개</span>
       </div>
 
       {totalCount > 0 && (
         <div className='mb-34 flex flex-col items-center'>
-          <div className='text-3xl font-bold text-gray-950'>{averageRating.toFixed(1)}</div>
-          <div className='text-lg font-bold text-gray-950'>{getSatisfactionText(averageRating)}</div>
-          <div className='text-md flex items-center gap-2 text-[#79747E]'>
+          <div className='title-text'>{averageRating.toFixed(1)}</div>
+          <div className='section-text'>{getSatisfactionText(averageRating)}</div>
+          <div className='body-text flex items-center gap-4 text-gray-400'>
             <StarIcon filled className='size-16' />
             <span>{totalCount.toLocaleString()}개 후기</span>
           </div>
