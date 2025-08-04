@@ -13,9 +13,9 @@ interface ActivitiesMapProps {
  */
 export default function ActivitiesMap({ address, className }: ActivitiesMapProps) {
   return (
-    <section className={twMerge(`flex h-511 w-full flex-col justify-start text-xl font-bold`, className)}>
-      <div className='text-2lg mb-8 text-left font-bold'>오시는 길</div>
-      <div className='text-md mb-8 text-left font-semibold text-gray-950'>{address}</div>
+    <section className={twMerge(`section-text flex h-511 w-full flex-col justify-start gap-8`, className)}>
+      <div>오시는 길</div>
+      <div className='body-text'>{address}</div>
       <div className='h-full w-full overflow-hidden rounded-3xl'>
         <KakaoMap address={address} />
       </div>
