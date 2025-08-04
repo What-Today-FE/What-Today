@@ -28,7 +28,7 @@ export default function MyPageLayout() {
   }, [location.pathname]);
 
   return (
-    <div className='flex h-full w-full flex-col md:flex-row md:gap-30'>
+    <div className='flex h-full w-full flex-col justify-center md:flex-row md:gap-30'>
       {/* 모바일: 오버레이 배경 */}
       {isSidebarOpen && (
         <div className='fixed inset-0 z-50 bg-black/30 md:hidden' onClick={() => setSidebarOpen(false)} />
@@ -40,7 +40,7 @@ export default function MyPageLayout() {
         onLogoutClick={handleLogout}
       />
       <Button
-        className={twMerge('fixed top-92 left-4 z-55 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
+        className={twMerge('fixed top-92 left-3 z-55 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
         size='xs'
         variant='none'
         onClick={() => setSidebarOpen(true)}
