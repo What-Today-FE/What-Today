@@ -40,7 +40,7 @@ export default function MyPageLayout() {
         onLogoutClick={handleLogout}
       />
       <Button
-        className={twMerge('fixed top-68 left-4 z-55 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
+        className={twMerge('fixed top-92 left-4 z-55 w-fit p-0 md:hidden', isSidebarOpen && 'hidden')}
         size='xs'
         variant='none'
         onClick={() => setSidebarOpen(true)}
@@ -48,7 +48,7 @@ export default function MyPageLayout() {
         <ChevronIcon className='h-16' color='var(--color-gray-600)' direction='right' />
       </Button>
       {/* Outlet으로 상세 화면 표시 */}
-      <div className='flex-1 p-4'>
+      <div className='flex-1 overflow-x-hidden p-4 md:max-w-768 xl:max-w-635'>
         <Outlet />
       </div>
     </div>

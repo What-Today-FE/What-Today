@@ -101,6 +101,7 @@ export default function RadioGroup({
       <motion.div
         animate={{ x: 0, opacity: 1 }}
         className={twMerge('no-scrollbar flex flex-nowrap gap-4 overflow-x-auto scroll-smooth', radioGroupClassName)}
+        initial={{ x: 0, opacity: 1 }}
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
@@ -170,7 +171,7 @@ RadioGroup.Radio = function Radio({ value, children, className = '', name = 'rad
     <label className='cursor-pointer select-none' htmlFor={id}>
       <input
         checked={isSelected}
-        className='sr-only'
+        className='sr-only hidden'
         id={id}
         name={name || 'radioGroup'}
         role='radio'

@@ -1,4 +1,4 @@
-import UpcomingSchedule from '@/components/UpcomingSchedule';
+// import UpcomingSchedule from '@/components/UpcomingSchedule';
 
 import DocTemplate, { DocCode } from '../layouts/DocTemplate';
 
@@ -26,7 +26,7 @@ export default function UpcomingScheduleDoc() {
       {/* 예시 코드 */}
       <DocCode code={`<UpcomingSchedule variant="primary">Click me</UpcomingSchedule>`} />
 
-      <UpcomingSchedule reservation={[]} onClickReservation={() => {}} />
+      {/* <UpcomingSchedule reservation={[]} onClickReservation={() => {}} /> */}
     </>
   );
 }

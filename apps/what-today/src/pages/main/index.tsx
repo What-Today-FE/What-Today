@@ -165,6 +165,7 @@ export default function MainPage() {
   return (
     <>
       <div className='to-primary-500/40 absolute top-0 left-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
+
       <div className='relative z-10 flex h-auto flex-col gap-60'>
         <MainBanner />
 

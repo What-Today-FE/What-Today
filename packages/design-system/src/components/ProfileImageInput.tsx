@@ -1,6 +1,7 @@
 import Button from '@components/button';
 import { DeleteIcon } from '@components/icons';
 import { ProfileLogo } from '@components/logos';
+import { useToast } from '@components/Toast';
 import { useCallback, useEffect, useState } from 'react';
 
 interface ProfileImageInputProps {
@@ -70,6 +71,7 @@ export function DeleteButton({ onDelete }: { onDelete: () => void }) {
  * @param {(value: string) => void} onChange - 이미지가 변경되었을 때 호출되는 콜백 함수. base64 string 또는 URL을 인자로 받습니다.
  */
 export default function ProfileImageInput({ src, initial = src, onChange }: ProfileImageInputProps) {
+  const { toast } = useToast();
   const [initialSrc, setInitialSrc] = useState(initial);
   const [previewUrl, setPreviewUrl] = useState<string>(src);
 
@@ -88,12 +90,20 @@ export default function ProfileImageInput({ src, initial = src, onChange }: Prof
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 파일 최대 크기 5MB
     if (file.size > MAX_FILE_SIZE) {
-      alert('파일 크기는 5MB 이하여야 합니다.');
+      toast({
+        title: '이미지 업로드 오류',
+        description: '파일 크기는 5MB 이하여야 합니다',
+        type: 'error',
+      });
       return;
     }
 
     if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드 가능합니다.');
+      toast({
+        title: '이미지 업로드 오류',
+        description: '이미지 파일만 업로드 가능합니다',
+        type: 'error',
+      });
       return;
     }
 

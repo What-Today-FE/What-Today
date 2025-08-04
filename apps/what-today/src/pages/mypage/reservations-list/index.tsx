@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   ChevronIcon,
@@ -7,18 +7,17 @@ import {
   NoResult,
   RadioGroup,
   ReservationCard,
-  SpinIcon,
   StarRating,
 } from '@what-today/design-system';
 import { WarningLogo } from '@what-today/design-system';
 import { useToast } from '@what-today/design-system';
 import { motion } from 'motion/react';
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { twJoin } from 'tailwind-merge';
 
 import { cancelMyReservation, createReview, fetchMyReservations } from '@/apis/myReservations';
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import { ReservationCardSkeleton, ReservationsListPageSkeleton } from '@/components/skeletons';
 import type { MyReservationsResponse, Reservation, ReservationStatus } from '@/schemas/myReservations';
 
 // 필터링 가능한 상태 타입 (전체 상태 + 빈 문자열)
@@ -51,23 +50,79 @@ export default function ReservationsListPage() {
   const [starRating, setStarRating] = useState(0);
   const isReviewValid = starRating > 0 && reviewContent.trim().length > 0;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
-    MyReservationsResponse,
-    Error
-  >({
+  // 🎯 수동 페이지네이션 상태 관리
+  const [allReservations, setAllReservations] = useState<Reservation[]>([]);
+  const [currentCursor, setCurrentCursor] = useState<number | null>(null);
+  const [hasMoreData, setHasMoreData] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  const pageSize = 10;
+
+  // 🎯 첫 페이지 로드 (일반 useQuery 사용)
+  const { data: firstPageData, isLoading } = useQuery<MyReservationsResponse>({
     queryKey: ['reservations', selectedStatus],
-    queryFn: ({ pageParam = null }) =>
+    queryFn: () =>
       fetchMyReservations({
-        cursorId: pageParam as number | null,
-        size: 10,
+        cursorId: null,
+        size: pageSize,
         status: selectedStatus ? (selectedStatus as ReservationStatus) : null,
       }),
-    initialPageParam: null,
-    getNextPageParam: (lastPage) => lastPage.cursorId ?? undefined,
     staleTime: 1000 * 30,
   });
 
-  const reservations = data?.pages.flatMap((page) => page.reservations) ?? [];
+  // 🎯 첫 페이지 데이터가 로드되면 상태 업데이트 (중복 제거 포함)
+  useEffect(() => {
+    if (firstPageData) {
+      const reservations = firstPageData.reservations || [];
+      // 🎯 id + scheduleId 조합으로 중복 체크
+      const uniqueReservations = reservations.filter(
+        (res, index, arr) =>
+          arr.findIndex((r) => `${r.id}_${r.scheduleId}` === `${res.id}_${res.scheduleId}`) === index,
+      );
+      setAllReservations(uniqueReservations);
+      setCurrentCursor(firstPageData.cursorId);
+      setHasMoreData(!!firstPageData.cursorId);
+    }
+  }, [firstPageData]);
+
+  // 🎯 선택된 상태가 변경되면 리셋
+  useEffect(() => {
+    setAllReservations([]);
+    setCurrentCursor(null);
+    setHasMoreData(true);
+  }, [selectedStatus]);
+
+  // 🎯 수동 다음 페이지 로드 함수
+  const loadMoreData = useCallback(async () => {
+    if (!hasMoreData || isFetchingMore) return;
+
+    setIsFetchingMore(true);
+    try {
+      const nextPageData = await fetchMyReservations({
+        cursorId: currentCursor,
+        size: pageSize,
+        status: selectedStatus ? (selectedStatus as ReservationStatus) : null,
+      });
+
+      // 🎯 id + scheduleId 조합으로 중복 체크
+      setAllReservations((prev) => {
+        const newReservations = nextPageData.reservations || [];
+        const existingKeys = new Set(prev.map((r) => `${r.id}_${r.scheduleId}`));
+        const uniqueNewReservations = newReservations.filter((r) => !existingKeys.has(`${r.id}_${r.scheduleId}`));
+        return [...prev, ...uniqueNewReservations];
+      });
+      setCurrentCursor(nextPageData.cursorId);
+      setHasMoreData(!!nextPageData.cursorId);
+    } catch (error) {
+      toast({
+        title: '데이터 로드 실패',
+        description: error instanceof Error ? error.message : '더 많은 데이터를 불러오는 중 오류가 발생했습니다.',
+        type: 'error',
+      });
+    } finally {
+      setIsFetchingMore(false);
+    }
+  }, [hasMoreData, isFetchingMore, currentCursor, pageSize, selectedStatus, toast]);
 
   const noResultMessage = NO_RESULT_MESSAGES[selectedStatus];
 
@@ -78,14 +133,28 @@ export default function ReservationsListPage() {
     setStarRating(0);
   };
 
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const observerRef = useIntersectionObserver(
-    fetchNextPage,
-    isFetchingNextPage,
-    !hasNextPage,
-    scrollContainerRef.current,
-    selectedStatus,
-  );
+  // 🎯 자체 무한스크롤 observer 구현 (수동 페이지네이션용)
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const target = observerRef.current;
+    if (!target || isFetchingMore || !hasMoreData) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreData();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [loadMoreData, hasMoreData, isFetchingMore]);
 
   const cancelReservation = useMutation({
     mutationFn: (id: number) => cancelMyReservation(id, { status: 'canceled' }),
@@ -137,13 +206,8 @@ export default function ReservationsListPage() {
       return acc;
     }, {});
 
-    // 날짜 기준으로 내림차순 정렬 (최근 날짜가 먼저)
-    const sortedByDateDesc = Object.entries(grouped).sort(([dateA], [dateB]) => {
-      const shouldSwap = dateA < dateB;
-      return shouldSwap ? 1 : -1;
-    });
-
-    return sortedByDateDesc.map(([date, group], index) => (
+    // 🎯 날짜별 그룹핑만 하고 정렬 제거 (자연스러운 순서 유지)
+    return Object.entries(grouped).map(([date, group], index) => (
       <motion.section
         key={date}
         className={twJoin('space-y-12 pt-20 pb-30', index !== 0 && 'border-t border-gray-50')}
@@ -211,13 +275,9 @@ export default function ReservationsListPage() {
 
   let content;
   if (isLoading) {
-    content = (
-      <div className='flex items-center justify-center p-40'>
-        <SpinIcon className='size-200' color='var(--color-gray-100)' />
-      </div>
-    );
-  } else if (reservations.length > 0) {
-    content = <div className='space-y-10'>{renderGroupedReservations(reservations)}</div>;
+    content = <ReservationsListPageSkeleton />;
+  } else if (allReservations.length > 0) {
+    content = <div className='space-y-10'>{renderGroupedReservations(allReservations)}</div>;
   } else {
     content = (
       <div className='flex justify-center p-40'>
@@ -227,7 +287,7 @@ export default function ReservationsListPage() {
   }
 
   return (
-    <div ref={scrollContainerRef} className='flex flex-col gap-13 md:gap-20'>
+    <div className='flex flex-col gap-13 md:gap-20'>
       <header className='mb-16 flex flex-col gap-12'>
         <div className='flex items-center gap-4 border-b border-b-gray-50 pb-8 md:pb-12'>
           <Button className='w-30 p-0' size='sm' variant='none' onClick={() => navigate('/mypage')}>
@@ -238,7 +298,7 @@ export default function ReservationsListPage() {
         <p className='body-text text-gray-400 md:pt-10'>예약내역 변경 및 취소할 수 있습니다.</p>
       </header>
 
-      <section className='mb-10'>
+      <section className='mb-10 overflow-x-hidden'>
         <RadioGroup
           radioGroupClassName='flex flex-nowrap gap-6 overflow-x-auto no-scrollbar'
           selectedValue={selectedStatus}
@@ -254,7 +314,15 @@ export default function ReservationsListPage() {
 
       <section aria-label='예약 카드 목록' className='flex flex-col gap-30 xl:gap-24'>
         {content}
-        <div ref={observerRef} />
+        <div ref={observerRef} className='h-4' />
+
+        {/* 무한스크롤 로딩 중 스켈레톤 */}
+        {isFetchingMore && (
+          <div>
+            <ReservationCardSkeleton />
+            <ReservationCardSkeleton />
+          </div>
+        )}
       </section>
 
       {/* 예약 취소 확인 모달 */}

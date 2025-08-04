@@ -1,5 +1,13 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { BellIcon, Button, DotIcon, NotificationCard, Popover, useToast } from '@what-today/design-system';
+import {
+  BellIcon,
+  Button,
+  DotIcon,
+  NotificationCard,
+  NotificationCardSkeleton,
+  Popover,
+  useToast,
+} from '@what-today/design-system';
 import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -129,10 +137,17 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
         </Button>
       </Popover.Trigger>
       <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
-        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount}개</h1>
+        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount ?? 0}개</h1>
 
-        <div ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-scroll'>
-          {isLoading && <p className='text-md my-70 text-center text-gray-400'>Loading...</p>}
+        <section ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-scroll'>
+          {isLoading && (
+            <>
+              <NotificationCardSkeleton />
+              <NotificationCardSkeleton />
+              <NotificationCardSkeleton />
+              <NotificationCardSkeleton />
+            </>
+          )}
           <div className='divide-y divide-gray-50'>
             {data?.pages.map((page) =>
               page.notifications.map((notification) => (
@@ -152,7 +167,8 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
             <p className='text-md my-70 text-center text-gray-400'>알림이 없습니다.</p>
           )}
           <div ref={observerRef} className='h-6 w-full' /> {/* 무한 스크롤 감지용 */}
-        </div>
+          {isFetchingNextPage && <NotificationCardSkeleton />}
+        </section>
       </Popover.Content>
     </Popover.Root>
   );
