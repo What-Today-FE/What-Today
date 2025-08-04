@@ -31,7 +31,7 @@ export default function MainSearchInput({ onClick }: MainSearchInputProps) {
   return (
     <div className='relative flex w-full items-center justify-between bg-white'>
       <Input.Root className='w-full'>
-        <Input.Wrapper className='body-textn rounded-3xl border-gray-50 py-20'>
+        <Input.Wrapper className='body-textn relative rounded-3xl border-gray-50 py-20'>
           <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-32'>
             <SearchIcon className='cursor-pointer text-gray-400' />
           </div>
