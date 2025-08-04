@@ -195,9 +195,10 @@ export default function MainPage() {
 
         {/* 모든 체험 */}
         <div className='flex flex-col gap-20'>
-          {/* 제목 + 가격 드롭다운 */}
-          <div className='flex flex-wrap items-center justify-between gap-12'>
+          {/* 제목 */}
+          <div className='flex flex-wrap items-center justify-between gap-12 md:hidden'>
             <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
+            {/* 모바일에서만 보이는 가격 드롭다운 */}
             <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
               <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
@@ -215,8 +216,11 @@ export default function MainPage() {
             </Select.Root>
           </div>
 
-          {/* 카테고리 */}
-          <div className='overflow-x-hidden'>
+          {/* 데스크톱/태블릿에서만 보이는 제목 */}
+          <h2 className='title-text hidden items-center gap-12 md:flex'>🛼 모든 체험</h2>
+
+          {/* 카테고리 + 가격 드롭다운 */}
+          <div className='flex items-center justify-between gap-12 overflow-x-hidden'>
             <RadioGroup
               radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
               selectedValue={selectedCategory}
@@ -241,6 +245,24 @@ export default function MainPage() {
                 <TourIcon className='size-12' /> 웰빙
               </RadioGroup.Radio>
             </RadioGroup>
+            {/* 데스크톱/태블릿에서만 보이는 가격 드롭다운 */}
+            <div className='hidden md:block'>
+              <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
+                <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
+                  <Select.Value className='body-text text-gray-950' placeholder='가격' />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Group className='caption-text text-center whitespace-nowrap'>
+                    <Select.Item className='flex justify-center' value='desc'>
+                      높은순
+                    </Select.Item>
+                    <Select.Item className='flex justify-center' value='asc'>
+                      낮은순
+                    </Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            </div>
           </div>
 
           {/* 카드 리스트 */}
