@@ -336,7 +336,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
               {languages.map((language) => (
                 <button
                   key={language.code}
-                  className={`body-text flex w-full items-center gap-5 rounded-lg px-4 py-3 text-left transition-all hover:bg-gray-50 ${
+                  className={`body-text flex w-full cursor-pointer items-center gap-5 rounded-lg px-4 py-3 text-left transition-all hover:bg-gray-50 ${
                     currentTranslatedLang === language.code
                       ? 'text-primary-500 bg-blue-50 ring-1 ring-blue-200'
                       : 'text-gray-90'
@@ -355,7 +355,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
 
         {/* 플로팅 버튼 */}
         <button
-          className='flex h-40 w-40 items-center justify-center rounded-full border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all'
+          className='flex h-40 w-40 cursor-pointer items-center justify-center rounded-full border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all'
           type='button'
           onClick={handleButtonClick}
         >
