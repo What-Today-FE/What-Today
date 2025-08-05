@@ -37,7 +37,7 @@ export default function Footer() {
             </a>
           </div>
 
-          <p className='space-x-2 text-center text-sm text-gray-500'>
+          <p className='space-x-2 text-center'>
             <a
               aria-label='JIHYUN GitHub'
               href='https://github.com/kjhyun0830'
