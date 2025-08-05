@@ -92,7 +92,7 @@ export default function CreateExperience() {
         });
       }
     },
-    [reset, toast],
+    [reset],
   );
 
   useEffect(() => {
