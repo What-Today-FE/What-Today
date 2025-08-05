@@ -101,7 +101,7 @@ export default function ActivityDetailPage() {
               <Divider />
               <ReviewSection activityId={activity.id} />
             </div>
-            <div className='sticky top-16 flex h-fit flex-col gap-38'>
+            <div className='flex flex-col gap-38'>
               <ActivitiesInformation
                 address={activity.address}
                 category={activity.category}
@@ -112,19 +112,20 @@ export default function ActivityDetailPage() {
                 reviewCount={activity.reviewCount}
                 title={activity.title}
               />
-              <ReservationForm
-                activityId={activity.id}
-                isAuthor={user?.id ? activity?.userId === user.id : false}
-                isLoggedIn={!!user}
-                price={activity.price}
-                schedules={activity.schedules}
-              />
+              <div className='sticky top-16'>
+                <ReservationForm
+                  activityId={activity.id}
+                  isAuthor={user?.id ? activity?.userId === user.id : false}
+                  isLoggedIn={!!user}
+                  price={activity.price}
+                  schedules={activity.schedules}
+                />
+              </div>
             </div>
           </div>
         ) : (
           <div className='flex flex-col gap-30'>
             <ActivityImages bannerImageUrl={activity.bannerImageUrl} subImages={activity.subImages} />
-            <Divider className='border-gray-200' />
             <ActivitiesInformation
               address={activity.address}
               category={activity.category}

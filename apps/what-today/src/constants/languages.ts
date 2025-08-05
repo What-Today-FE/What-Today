@@ -7,16 +7,16 @@ export interface Language {
 export const languages: Language[] = [
   { code: 'ko', name: '한국어', flag: 'kr' }, // 한국어
   { code: 'en', name: 'English', flag: 'us' }, // 영어
-  { code: 'fr', name: 'Français', flag: 'fr' }, // 프랑스어
-  { code: 'de', name: 'Deutsch', flag: 'de' }, // 독일어
-  { code: 'zh-TW', name: '中文(繁體)', flag: 'tw' }, // 중국어(번체, 대만)
   { code: 'ja', name: '日本語', flag: 'jp' }, // 일본어
+  { code: 'de', name: 'Deutsch', flag: 'de' }, // 독일어
+  { code: 'hi', name: 'हिन्दी', flag: 'in' }, // 힌디어
+  { code: 'fr', name: 'Français', flag: 'fr' }, // 프랑스어
+  { code: 'zh-TW', name: '中文(繁體)', flag: 'tw' }, // 중국어(번체, 대만)
   { code: 'es', name: 'Español', flag: 'es' }, // 스페인어
   { code: 'ru', name: 'Русский', flag: 'ru' }, // 러시아어
   { code: 'it', name: 'Italiano', flag: 'it' }, // 이탈리아어
   { code: 'pt', name: 'Português', flag: 'pt' }, // 포르투갈어
   { code: 'ar', name: 'العربية', flag: 'sa' }, // 아랍어
-  { code: 'hi', name: 'हिन्दी', flag: 'in' }, // 힌디어
   { code: 'th', name: 'ไทย', flag: 'th' }, // 태국어
   { code: 'tr', name: 'Türkçe', flag: 'tr' }, // 터키어
   { code: 'el', name: 'Ελληνικά', flag: 'gr' }, // 그리스어

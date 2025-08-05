@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useToast } from '@what-today/design-system';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -15,6 +16,7 @@ interface FloatingTranslateButtonProps {
 }
 
 const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ className }) => {
+  const { toast } = useToast();
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(languages[0]);
   const [isReady, setIsReady] = useState(false);
   const [currentTranslatedLang, setCurrentTranslatedLang] = useState<string>('ko');
@@ -25,11 +27,21 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
   // 현재 번역된 언어 감지
   const detectCurrentLanguage = useCallback(() => {
     try {
-      // URL에서 현재 번역 언어 감지
+      // 우선 googtrans 쿠키 확인
+      const match = document.cookie.match(/(?:^|;\s*)googtrans=\/[a-z]+\/([a-z]+)/);
+      if (match && match[1]) {
+        const detectedLang = match[1];
+        setCurrentTranslatedLang(detectedLang);
+        const foundLang = findLanguageByCode(detectedLang);
+        if (foundLang) {
+          setSelectedLanguage(foundLang);
+        }
+        return;
+      }
+
+      // fallback: URL 파라미터 확인
       const urlParams = new URLSearchParams(window.location.search);
       const langFromUrl = urlParams.get('lang');
-
-      // Google Translate가 URL에 추가하는 언어 코드 확인
       if (langFromUrl) {
         setCurrentTranslatedLang(langFromUrl);
         const foundLang = findLanguageByCode(langFromUrl);
@@ -39,7 +51,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
         return;
       }
 
-      // body 클래스에서 번역 상태 확인
+      // fallback: body class 확인
       const bodyClasses = document.body.className;
       if (bodyClasses.includes('translated-')) {
         const matches = bodyClasses.match(/translated-(\w+)/);
@@ -52,10 +64,16 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
           }
         }
       }
-    } catch (error) {
-      console.warn('언어 감지 중 오류:', error);
+    } catch {
+      toast({
+        title: '번역 오류',
+        description: '언어 감지 오류로 새로고침합니다.',
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
-  }, []);
+  }, [toast]);
 
   // Google Translate 위젯 초기화
   const initializeGoogleTranslate = useCallback(() => {
@@ -88,11 +106,17 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
           detectCurrentLanguage();
         }, 300);
       }
-    } catch (error) {
-      console.error('Google Translate 초기화 실패:', error);
+    } catch {
+      toast({
+        title: '번역 오류',
+        description: '번역 오류로 새로고침합니다.',
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
       initializationAttempted.current = false;
     }
-  }, [detectCurrentLanguage]);
+  }, [detectCurrentLanguage, toast]);
 
   // Google Translate 스크립트 로드
   useEffect(() => {
@@ -123,12 +147,18 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
       script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
       script.async = true;
       script.onerror = () => {
-        console.error('Google Translate 스크립트 로드 실패');
+        toast({
+          title: '번역 오류',
+          description: '번역 오류로 새로고침합니다.',
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         isGoogleTranslateLoading = false;
       };
       document.head.appendChild(script);
     }
-  }, [initializeGoogleTranslate]);
+  }, [initializeGoogleTranslate, toast]);
 
   // URL 변경 감지 (번역 후 URL이 변경되므로)
   useEffect(() => {
@@ -165,7 +195,13 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
   const changeLanguage = useCallback(
     (language: Language) => {
       if (!isReady) {
-        console.warn('Google Translate가 아직 준비되지 않았습니다.');
+        toast({
+          title: '번역 오류',
+          description: '번역 오류로 새로고침합니다.',
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         return;
       }
 
@@ -221,8 +257,14 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
               // ✅ 최종: URL 파라미터 제거 & 페이지 새로고침
               const newUrl = window.location.origin + window.location.pathname;
               window.location.href = newUrl;
-            } catch (error) {
-              console.error('원문 복귀 실패:', error);
+            } catch {
+              toast({
+                title: '번역 오류',
+                description: '번역 오류로 새로고침합니다.',
+              });
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
             }
 
             return;
@@ -250,16 +292,28 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
             setIsOpen(false);
           }
         } else {
-          console.error('Google Translate select 요소를 찾을 수 없습니다.');
+          toast({
+            title: '번역 오류',
+            description: '번역 오류로 새로고침합니다.',
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
           // 초기화 재시도
           initializationAttempted.current = false;
           setTimeout(() => initializeGoogleTranslate(), 500);
         }
-      } catch (error) {
-        console.error('언어 변경 중 오류:', error);
+      } catch {
+        toast({
+          title: '번역 오류',
+          description: '번역 오류로 새로고침합니다.',
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       }
     },
-    [isReady, currentTranslatedLang, initializeGoogleTranslate],
+    [isReady, currentTranslatedLang, initializeGoogleTranslate, toast],
   );
 
   // 버튼 클릭 핸들러
@@ -273,12 +327,12 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
       <div className='hidden' id='google_translate_element' />
 
       {/* 플로팅 번역 버튼 */}
-      <div ref={containerRef} className={twMerge('fixed right-10 bottom-10 z-50', className)}>
+      <div ref={containerRef} className={twMerge('fixed right-10 bottom-10 z-45', className)}>
         {/* 언어 선택 드롭다운 */}
         {isOpen && (
-          <div className='absolute right-0 bottom-60 flex h-300 w-160 transform flex-col rounded-xl border border-gray-50 bg-white p-2 transition-all duration-200 ease-out'>
-            <div className='caption-text mb-2 p-2'>언어 선택</div>
-            <div className='flex-1 space-y-4 overflow-y-auto px-3 py-2'>
+          <div className='absolute right-0 bottom-50 flex h-300 w-170 transform flex-col rounded-xl border border-gray-50 bg-white p-10 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all duration-200 ease-out'>
+            <div className='caption-text mb-2 p-2 text-gray-400'>언어 선택</div>
+            <div className='mr-4 flex-1 space-y-4 overflow-y-auto px-3 py-2'>
               {languages.map((language) => (
                 <button
                   key={language.code}
@@ -291,7 +345,7 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
                   onClick={() => changeLanguage(language)}
                 >
                   <FlagIcon alt={language.name} flagCode={language.flag} />
-                  <span className='flex-1 text-left'>{language.name}</span>
+                  <span className='caption-text flex-1 text-left'>{language.name}</span>
                   {currentTranslatedLang === language.code && <span className='text-primary-500 pr-4'>✓</span>}
                 </button>
               ))}
@@ -301,13 +355,11 @@ const FloatingTranslateButton: React.FC<FloatingTranslateButtonProps> = ({ class
 
         {/* 플로팅 버튼 */}
         <button
-          className={`flex h-40 w-40 items-center justify-center rounded-lg bg-white shadow-lg transition-all hover:shadow-xl focus:ring-2 focus:ring-gray-50 focus:ring-offset-2 focus:outline-none ${
-            isOpen ? 'ring-2 ring-gray-50' : ''
-          }`}
+          className='flex h-40 w-40 items-center justify-center rounded-full border border-gray-50 bg-white shadow-[0px_4px_24px_rgba(156,180,202,0.2)] transition-all'
           type='button'
           onClick={handleButtonClick}
         >
-          <FlagIcon alt={selectedLanguage.name} flagCode={selectedLanguage.flag} size='md' />
+          <FlagIcon alt={selectedLanguage.name} className='rounded-full' flagCode={selectedLanguage.flag} size='md' />
         </button>
       </div>
     </>

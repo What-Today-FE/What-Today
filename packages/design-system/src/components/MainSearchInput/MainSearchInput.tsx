@@ -29,15 +29,18 @@ export default function MainSearchInput({ onClick }: MainSearchInputProps) {
   }, [value, onClick, hasSearched]);
 
   return (
-    <div className='relative flex w-full items-center justify-between bg-white'>
-      <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-32'>
-        <SearchIcon className='cursor-pointer text-gray-400' />
-      </div>
-
+    <div className='relative mx-auto flex w-full max-w-700 items-center justify-between bg-white'>
       <Input.Root className='w-full'>
-        <Input.Wrapper className='body-textn rounded-3xl border-none py-20 shadow-sm'>
-          <Input.Icon className='cursor-pointer'>🔎</Input.Icon>
-          <Input.Field placeholder='내가 원하는 체험은...' value={value} onChange={(e) => setValue(e.target.value)} />
+        <Input.Wrapper className='body-text relative rounded-3xl border border-gray-100 py-20'>
+          <div className='absolute inset-y-0 left-0 flex items-center pl-20 md:pl-32'>
+            <SearchIcon className='size-20 cursor-pointer' color='var(--color-primary-500)' />
+          </div>
+          <Input.Field
+            className='px-35 md:px-45'
+            placeholder='내가 원하는 체험은...'
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
         </Input.Wrapper>
         <Input.ErrorMessage />
       </Input.Root>

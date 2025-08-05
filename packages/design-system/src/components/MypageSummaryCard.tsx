@@ -12,7 +12,7 @@ function SummaryRoot({ children, className }: { children: React.ReactNode; class
   return (
     <div
       className={twMerge(
-        'flex w-full items-center justify-around rounded-3xl border border-gray-50 bg-white px-36 py-12',
+        'flex w-full items-center justify-around rounded-3xl border border-gray-50 bg-white px-36 py-16',
         className,
       )}
     >
@@ -23,9 +23,9 @@ function SummaryRoot({ children, className }: { children: React.ReactNode; class
 
 function SummaryItem({ count, label, onClick, countClassName, labelClassName }: SummaryItemProps) {
   return (
-    <div className='flex cursor-pointer flex-col items-center gap-12' onClick={onClick}>
-      <p className={twMerge('text-2xl font-bold', countClassName)}>{count}</p>
-      <p className={twMerge('text-gray-500', labelClassName)}>{label}</p>
+    <div className='flex cursor-pointer flex-col items-center gap-4' onClick={onClick}>
+      <p className={twMerge('subtitle-text font-bold', countClassName)}>{count}</p>
+      <p className={twMerge('caption-text text-gray-400', labelClassName)}>{label}</p>
     </div>
   );
 }

@@ -18,7 +18,8 @@ import {
   TourIcon,
   WellbeingIcon,
 } from '@what-today/design-system';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +27,7 @@ import { type Activity, getActivities } from '@/apis/activities';
 
 const MemoizedMainCard = React.memo(MainCard.Root);
 
-// ✅ 화면 너비에 따른 카드 개수
+// ✅ 화면 너비에 따른 카드 개수 (모든 체험용)
 const getCount = () => {
   const w = window.innerWidth;
   if (w < 768) return 6; // 모바일
@@ -34,18 +35,42 @@ const getCount = () => {
   return 8; // 데스크탑
 };
 
+// ✅ 인기 체험용 반응형 카드 개수
+const MOBILE_BREAK = 768;
+const TABLET_BREAK = 1280;
+
+const getPopularPerPage = () => {
+  const w = window.innerWidth;
+  if (w < MOBILE_BREAK) return 4; // 모바일
+  if (w < TABLET_BREAK) return 2; // 태블릿
+  return 4; // 데스크탑
+};
+
 export default function MainPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(() => getCount());
+  const [popularPerPage, setPopularPerPage] = useState(() => getPopularPerPage());
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortOrder, setSortOrder] = useState<'latest' | 'asc' | 'desc'>('latest');
   const [selectedValue, setSelectedValue] = useState<SelectItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | number>('');
   const navigate = useNavigate();
 
-  //  반응형 카드 수
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  // 페이지 마운트 시 무조건 맨 위로
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
+  // 반응형 카드 수
   const handleResize = useCallback(() => {
     setItemsPerPage(getCount());
+    setPopularPerPage(getPopularPerPage());
   }, []);
 
   useEffect(() => {
@@ -111,7 +136,9 @@ export default function MainPage() {
   // 이벤트 핸들러
   const handlePageChange = useCallback(
     (page: number) => {
-      if (page !== currentPage) setCurrentPage(page);
+      if (page !== currentPage) {
+        setCurrentPage(page);
+      }
     },
     [currentPage],
   );
@@ -135,29 +162,10 @@ export default function MainPage() {
     setCurrentPage(1);
   }, []);
 
-  // 카드 렌더링 최적화
-  const renderCards = useCallback(() => {
-    return pagedItems.map((item, idx) => (
-      <MemoizedMainCard
-        key={`${item.id}-${currentPage}-${idx}`}
-        bannerImageUrl={item.bannerImageUrl}
-        category={item.category}
-        price={item.price}
-        rating={item.rating}
-        reviewCount={item.reviewCount}
-        title={item.title}
-        onClick={() => navigate(`/activities/${item.id}`)}
-      >
-        <MainCard.Image />
-        <MainCard.Content />
-      </MemoizedMainCard>
-    ));
-  }, [pagedItems, currentPage, navigate]);
-
   return (
     <>
       <div className='to-primary-500/40 absolute top-0 left-0 h-1/2 w-full bg-gradient-to-t from-transparent' />
-      <div className='relative z-10 mt-40 flex h-auto flex-col gap-60'>
+      <div className='relative z-10 flex h-auto flex-col gap-100'>
         <MainBanner />
 
         {/* 인기 체험 */}
@@ -166,7 +174,11 @@ export default function MainPage() {
           {isLoading ? (
             <CarouselSkeleton />
           ) : (
-            <Carousel items={popularActivities} itemsPerPage={4} onClick={(id) => navigate(`/activities/${id}`)} />
+            <Carousel
+              items={popularActivities}
+              itemsPerPage={popularPerPage}
+              onClick={(id) => navigate(`/activities/${id}`)}
+            />
           )}
         </div>
 
@@ -178,52 +190,75 @@ export default function MainPage() {
 
         {/* 모든 체험 */}
         <div className='flex flex-col gap-20'>
-          {/* 제목 + 가격 드롭다운 */}
-          <div className='flex flex-wrap items-center justify-between gap-12'>
+          {/* 제목 */}
+          <div className='flex flex-wrap items-center justify-between gap-12 md:hidden'>
             <h2 className='title-text flex items-center gap-12'>🛼 모든 체험</h2>
+            {/* 모바일에서만 보이는 가격 드롭다운 */}
             <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
-              <Select.Trigger className='flex min-w-fit gap-6 rounded-lg border border-gray-300 bg-white px-8 text-sm'>
-                <Select.Value className='body-text text-gray-950' placeholder='가격' />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Group className='caption-text text-center whitespace-nowrap'>
-                  <Select.Item className='flex justify-center' value='desc'>
-                    높은순
-                  </Select.Item>
-                  <Select.Item className='flex justify-center' value='asc'>
-                    낮은순
-                  </Select.Item>
-                </Select.Group>
-              </Select.Content>
-            </Select.Root>
+               <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
+                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
+               </Select.Trigger>
+               <Select.Content>
+                 <Select.Group className='text-center whitespace-nowrap'>
+                   <Select.Item className='flex justify-center' value='desc'>
+                     높은순
+                    </Select.Item>
+                    <Select.Item className='flex justify-center' value='asc'>
+                      낮은순
+                    </Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
           </div>
 
-          {/* 카테고리 */}
-          <div className='overflow-x-hidden'>
+          {/* 데스크톱/태블릿에서만 보이는 제목 */}
+          <h2 className='title-text hidden items-center gap-12 md:flex'>🛼 모든 체험</h2>
+
+          {/* 카테고리 + 가격 드롭다운 */}
+          <div className='flex items-center justify-between gap-12 overflow-x-hidden'>
             <RadioGroup
               radioGroupClassName='items-center min-w-0 max-w-full overflow-x-auto no-scrollbar'
               selectedValue={selectedCategory}
               onSelect={handleCategoryChange}
             >
-              <RadioGroup.Radio className='flex gap-8' value='문화 · 예술'>
+              <RadioGroup.Radio className='flex gap-8 font-normal' value='문화 · 예술'>
                 <ArtIcon className='size-12' /> 문화 예술
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='식음료'>
+              <RadioGroup.Radio className='font-normal' value='식음료'>
                 <FoodIcon className='size-12' /> 식음료
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='스포츠'>
+              <RadioGroup.Radio className='font-normal' value='스포츠'>
                 <SportIcon className='size-12' /> 스포츠
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='투어'>
+              <RadioGroup.Radio className='font-normal' value='투어'>
                 <WellbeingIcon className='size-12' /> 투어
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='관광'>
+              <RadioGroup.Radio className='font-normal' value='관광'>
                 <BusIcon className='size-12' /> 관광
               </RadioGroup.Radio>
-              <RadioGroup.Radio value='웰빙'>
+              <RadioGroup.Radio className='font-normal' value='웰빙'>
                 <TourIcon className='size-12' /> 웰빙
               </RadioGroup.Radio>
             </RadioGroup>
+            
+            {/* 데스크톱/태블릿에서만 보이는 가격 드롭다운 */}
+            <div className='hidden md:block'>
+              <Select.Root value={selectedValue} onChangeValue={handleSortChange}>
+                <Select.Trigger className='flex min-w-fit gap-6 rounded-xl border border-gray-100 bg-white py-6'>
+                 <Select.Value className='body-text text-gray-950' placeholder='가격' />
+               </Select.Trigger>
+               <Select.Content>
+                 <Select.Group className='text-center whitespace-nowrap'>
+                   <Select.Item className='flex justify-center' value='desc'>
+                     높은순
+                    </Select.Item>
+                    <Select.Item className='flex justify-center' value='asc'>
+                      낮은순
+                    </Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            </div>
           </div>
 
           {/* 카드 리스트 */}
@@ -235,7 +270,28 @@ export default function MainPage() {
                 <NoResult />
               </div>
             ) : (
-              renderCards()
+              pagedItems.map((item) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 100 }}
+                  transition={{ duration: 1 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                >
+                  <MemoizedMainCard
+                    bannerImageUrl={item.bannerImageUrl}
+                    category={item.category}
+                    price={item.price}
+                    rating={item.rating}
+                    reviewCount={item.reviewCount}
+                    title={item.title}
+                    onClick={() => navigate(`/activities/${item.id}`)}
+                  >
+                    <MainCard.Image />
+                    <MainCard.Content />
+                  </MemoizedMainCard>
+                </motion.div>
+              ))
             )}
           </div>
 

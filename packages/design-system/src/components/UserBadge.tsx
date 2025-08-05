@@ -32,7 +32,7 @@ export default function UserBadge({ status }: UserBadgeProps) {
   const { label, style } = reservationStatus[status];
 
   const baseClass =
-    ' flex items-center justify-center gap-2 w-auto rounded-full px-6 py-1 text-center caption-text font-bold';
+    ' flex items-center justify-center gap-2 w-fit rounded-full px-8 py-2 text-center caption-text font-bold';
 
   return (
     <span className={twMerge(baseClass, style)} role='status'>

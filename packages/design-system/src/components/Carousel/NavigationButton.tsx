@@ -17,6 +17,11 @@ interface Props {
    * 버튼 비활성화 여부
    */
   disabled: boolean;
+
+  /**
+   * 추가 클래스명
+   */
+  className?: string;
 }
 
 /**
@@ -24,12 +29,12 @@ interface Props {
  * - 화면 너비가 md 이상일 때만 표시됩니다.
  * - 방향에 따라 왼쪽 또는 오른쪽 버튼을 렌더링합니다.
  */
-export default function NavigationButton({ direction, onClick, disabled }: Props) {
+export default function NavigationButton({ direction, onClick, disabled, className = '' }: Props) {
   const marginClass = direction === 'left' ? '-mr-20' : '-ml-20';
 
   return (
     <button
-      className={`z-10 ${marginClass} hidden size-40 cursor-pointer items-center justify-center rounded-full border border-gray-50 bg-white text-xl hover:bg-gray-50 disabled:opacity-0 md:flex`}
+      className={`z-10 ${marginClass} hidden size-40 cursor-pointer items-center justify-center rounded-full border border-gray-50 bg-white text-xl shadow-[0_4px_24px_rgba(156,180,202,0.2)] hover:bg-gray-50 disabled:opacity-0 md:flex ${className}`}
       disabled={disabled}
       onClick={onClick}
     >

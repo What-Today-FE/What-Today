@@ -25,12 +25,12 @@ export default function ReservationBottomBar({
   else buttonText = '예약하기';
 
   return (
-    <div className='fixed bottom-0 left-0 z-50 w-full border-t border-[#E6E6E6] bg-white px-20 pt-18 pb-18 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'>
+    <div className='fixed bottom-0 left-0 z-50 w-full border-t border-gray-50 bg-white px-20 pt-18 pb-18 shadow-[0px_-4px_24px_rgba(156,180,202,0.2)]'>
       <div className='mb-12 flex items-center justify-between'>
         <div>
           <p className='body-text font-bold'>
             ₩ {totalPrice.toLocaleString()}
-            <span className='font-normal'> / {reservation?.headCount ?? 1}명</span>
+            <span className='font-normal text-gray-400'> / {reservation?.headCount ?? 1}명</span>
           </p>
           {reservation && <p className='caption-text mt-4 text-gray-400'>{formattedDateTime}</p>}
         </div>

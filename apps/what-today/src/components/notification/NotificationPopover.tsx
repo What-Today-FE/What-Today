@@ -1,5 +1,12 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { BellIcon, Button, DotIcon, NotificationCard, Popover, useToast } from '@what-today/design-system';
+import {
+  BellIcon,
+  Button,
+  NotificationCard,
+  NotificationCardSkeleton,
+  Popover,
+  useToast,
+} from '@what-today/design-system';
 import type { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -86,7 +93,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
     onError: (error: AxiosError<{ message: string }>) => {
       const message = error.response?.data?.message ?? '알 수 없는 오류가 발생했습니다.';
       toast({
-        title: '내 알림 삭제 오류',
+        title: '내 알림 삭제 실패',
         description: message,
         type: 'error',
       });
@@ -119,20 +126,27 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
           variant='none'
           onClick={() => setOpen((prev) => !prev)}
         >
-          <DotIcon
+          {/* <DotIcon
             aria-label='새 알림 있음'
             className='absolute top-2 left-12 size-8'
             color='var(--color-red-500)'
             id='notification-dot'
-          />
+          /> */}
           <BellIcon className='size-20' color={open ? 'var(--color-primary-500)' : 'var(--color-gray-600)'} />
         </Button>
       </Popover.Trigger>
-      <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-sm'>
-        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount}개</h1>
+      <Popover.Content className='mt-8 rounded-2xl border border-gray-100 bg-white p-10 shadow-[0_4px_24px_rgba(156,180,202,0.2)]'>
+        <h1 className='my-8 ml-auto px-16 font-bold text-gray-950'>알림 {data?.pages[0].totalCount ?? 0}개</h1>
 
-        <div ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-scroll'>
-          {isLoading && <p className='text-md my-70 text-center text-gray-400'>Loading...</p>}
+        <section ref={scrollContainerRef} className='relative max-h-400 w-300 overflow-y-auto'>
+          {isLoading && (
+            <>
+              <NotificationCardSkeleton />
+              <NotificationCardSkeleton />
+              <NotificationCardSkeleton />
+              <NotificationCardSkeleton />
+            </>
+          )}
           <div className='divide-y divide-gray-50'>
             {data?.pages.map((page) =>
               page.notifications.map((notification) => (
@@ -152,7 +166,8 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
             <p className='text-md my-70 text-center text-gray-400'>알림이 없습니다.</p>
           )}
           <div ref={observerRef} className='h-6 w-full' /> {/* 무한 스크롤 감지용 */}
-        </div>
+          {isFetchingNextPage && <NotificationCardSkeleton />}
+        </section>
       </Popover.Content>
     </Popover.Root>
   );
