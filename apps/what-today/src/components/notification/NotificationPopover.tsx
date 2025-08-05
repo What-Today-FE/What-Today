@@ -93,7 +93,7 @@ export default function NotificationPopover({ isMobile }: NotificationPopoverPro
     onError: (error: AxiosError<{ message: string }>) => {
       const message = error.response?.data?.message ?? '알 수 없는 오류가 발생했습니다.';
       toast({
-        title: '내 알림 삭제 오류',
+        title: '내 알림 삭제 실패',
         description: message,
         type: 'error',
       });

@@ -86,13 +86,13 @@ export default function CreateExperience() {
       } catch (err) {
         console.error('체험 상세 로딩 실패:', err);
         toast({
-          title: '불러오기 실패',
+          title: '체험 로딩 실패',
           description: `체험 정보를 불러오지 못했습니다.`,
           type: 'error',
         });
       }
     },
-    [reset],
+    [reset, toast],
   );
 
   useEffect(() => {
