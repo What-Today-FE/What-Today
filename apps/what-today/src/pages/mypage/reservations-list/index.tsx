@@ -114,8 +114,8 @@ export default function ReservationsListPage() {
       setHasMoreData(!!nextPageData.cursorId);
     } catch (error) {
       toast({
-        title: '데이터 로드 실패',
-        description: error instanceof Error ? error.message : '더 많은 데이터를 불러오는 중 오류가 발생했습니다.',
+        title: '예약 내역 조회 실패',
+        description: error instanceof Error ? error.message : '예약 내역 조회 중 오류가 발생했습니다.',
         type: 'error',
       });
     } finally {
